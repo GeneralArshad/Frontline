@@ -446,10 +446,20 @@ function openProfile(code){
  const dayRows=days.slice(-60).reverse().map(dt=>{const cs=calls.filter(v=>v[0]===dt);
    const rx=cs.reduce((s,v)=>s+(+v[8]||0),0), dr=cs.filter(v=>v[2]).length;
    return '<tr><td>'+dt+'</td><td class=n>'+cs.length+'</td><td class=n>'+dr+'</td><td class=n>'+(cs.length-dr)+'</td><td class=n><b>'+fmt(rx)+'</b></td></tr>';}).join('');
- const hrBlock = hr ? dl([['Designation',hr.designation],['Staff type',hr.staffType],['Joining date',hr.joining],
-     ['Mobile',hr.mobile],['Official email',hr.email],['Personal email',hr.personalEmail],
-     ['Reporting to',hr.reportsTo],['Standard HQ',hr.stdHQ],['Employee status',hr.status]])
-   : '<div class="phint">HR details will appear here once the HR organogram roster is loaded into the report.</div>';
+ const dif=(a,b)=>(a&&b&&String(a).toUpperCase().replace(/[^A-Z]/g,'')!==String(b).toUpperCase().replace(/[^A-Z]/g,''))
+   ?' <span style="color:var(--red);font-weight:700">&#9888;</span>':'';
+ const hrBlock = hr ? '<div class="psec" style="margin-top:16px">HR record</div>'+dl([
+     ['Name (HR)',(hr.name||'')+dif(hr.name,r.n)],
+     ['Designation',(hr.designation||'')+dif(hr.designation,r.r)],
+     ['Staff type',hr.staffType],['Division',hr.division],
+     ['Date of joining',hr.doj],['Confirmation date',hr.confirmed],
+     ['HQ (HR)',(hr.hq||'')],['Standard HQ',hr.stdHQ],
+     ['State (HR)',(hr.state||'')+dif(hr.state,r.st)],['Zone (HR)',hr.zone],
+     ['Contact',hr.contact],['Official email',hr.email],
+     ['Replacement for',hr.replacement],['Remarks',hr.remarks],['Experience',hr.experience]])
+   + '<div class="phint">&#9888; marks a field that differs from the Frontline record &mdash; worth reconciling.</div>'
+   : '<div class="phint">No HR record matched this employee code. The HR roster currently covers the '
+     +'<b>BB Main Division</b> only, so Specialty-division staff have no HR row yet.</div>';
  $('pcard').innerHTML=
   '<div class="phead"><div class="row"><div class="pav">'+initials(r.n)+'</div>'+
     '<div><h2>'+r.n+'</h2><div class="meta">'+r.c+' &middot; '+r.r+' &middot; '+(r.hq||'—')+' &middot; '+(r.st||'—')+

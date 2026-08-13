@@ -10,7 +10,7 @@ Computes the standard metrics and renders the interactive report to report.html.
 Run standalone (python etl.py) or import run_etl() from the web app.
 Safe to run concurrently-ish: uses a lock file so two refreshes don't overlap.
 """
-import os, json, gzip, base64, time, sqlite3, datetime, threading, sys
+import os, json, gzip, base64, time, sqlite3, datetime, threading, sys, re
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -119,6 +119,20 @@ def months_from(start_ym):
     return out
 
 # ------------------------------------------------------------------ store
+HR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hr.json")
+
+def load_hr():
+    """Organisational HR fields keyed by employee code. Optional — absent file is fine.
+    A copy on the data disk (hr.json) overrides the repo copy, so HR can be refreshed
+    without a redeploy."""
+    for p in (os.path.join(DATA_DIR, "hr.json"), HR_PATH):
+        try:
+            if os.path.exists(p):
+                with open(p, encoding="utf-8") as fh: return json.load(fh)
+        except Exception:
+            pass
+    return {}
+
 def db():
     con = sqlite3.connect(DB_PATH, timeout=60)
     con.execute("""CREATE TABLE IF NOT EXISTS dayplan(
@@ -275,10 +289,10 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                     SPEC[spec or "?"] = SPEC.get(spec or "?",0)+vrx
                     CAT[cat or "?"]   = CAT.get(cat or "?",0)+vrx
                 if cat == "supercore": ag["scDoc"] += 1
-                re = v["react"]
-                if re:
-                    REACT[re] = REACT.get(re,0)+1; ag["reactAny"] += 1
-                    if re in ("Positive","Committed"): ag["reactPos"] += 1
+                rx_react = v["react"]
+                if rx_react:
+                    REACT[rx_react] = REACT.get(rx_react,0)+1; ag["reactAny"] += 1
+                    if rx_react in ("Positive","Committed"): ag["reactPos"] += 1
             prod_str = "|".join(f"{p[0]}~{p[1]}" if p[1] else p[0] for p in v["prods"])
             CALLS.append([empCode, date, _ist(v["t"]), isDoc, v["name"], v["code"], spec,
                           cat, v["clinic"], vrx, v["presc"], v["react"], prod_str, v["sm"],
@@ -441,9 +455,19 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     for c in CALLS:
         calls_by_code.setdefault(c[0],[]).append([c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11],c[12],c[13],
                                                   (round(float(c[14]),5) if c[14] else ""),(round(float(c[15]),5) if c[15] else "")])
+    # HR roster (organisational fields only) — matched on employee code, case/space-insensitive.
+    hr_all, hr_used, hr_missing = load_hr(), {}, 0
+    if hr_all:
+        idx = {re.sub(r'[^A-Z0-9]', '', k.upper()): v for k, v in hr_all.items()}
+        for x in R:
+            rec = idx.get(re.sub(r'[^A-Z0-9]', '', str(x["c"]).upper()))
+            if rec: hr_used[x["c"]] = rec
+            else:   hr_missing += 1
+
     label = f"Lifetime · {win_start} → {win_end} · {len(R)}-rep roster"
     D = dict(label=label, gen=datetime.date.today().isoformat(), rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
-             mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code)
+             mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
+             hr=hr_used)
     payload = json.dumps(D, separators=(",", ":"))
     b64 = base64.b64encode(gzip.compress(payload.encode(), 6)).decode()
     with open(TEMPLATE, encoding="utf-8") as fh: tpl = fh.read()
@@ -452,7 +476,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     with open(tmp, "w", encoding="utf-8") as fh: fh.write(html)
     os.replace(tmp, REPORT)
     return dict(reps=len(R), totRx=totRx, totVisits=sum(r["vis"] for r in R), docMet=docMet,
-                activeBO=len(bo), conv=round(100*rxDoctors/docMet,1) if docMet else 0, mb=round(len(html)/1048576,2))
+                activeBO=len(bo), conv=round(100*rxDoctors/docMet,1) if docMet else 0, mb=round(len(html)/1048576,2),
+                hrRecords=len(hr_all), hrMatched=len(hr_used), hrUnmatched=hr_missing)
 
 # ------------------------------------------------------------------ orchestrate
 def rerender_only():
