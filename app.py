@@ -150,10 +150,22 @@ def healthz():
     return "ok", 200
 
 # ------------------------------------------------------- background scheduler
+TEMPLATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "template.html")
+
 def _scheduler():
     # backfill once on boot if no report yet
     if not os.path.exists(REPORT):
         _refresh_bg()
+    # If only the template/UI changed (newer than the last render), re-render from the
+    # cached store — instant, no API pull. Makes UI deploys show up immediately.
+    else:
+        try:
+            if os.path.getmtime(TEMPLATE) > os.path.getmtime(REPORT):
+                _running["v"] = True
+                try: etl.rerender_only()
+                finally: _running["v"] = False
+        except Exception:
+            pass
     while EVERY > 0:
         time.sleep(EVERY * 60)
         if not _running["v"]:

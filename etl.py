@@ -455,6 +455,33 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                 activeBO=len(bo), conv=round(100*rxDoctors/docMet,1) if docMet else 0, mb=round(len(html)/1048576,2))
 
 # ------------------------------------------------------------------ orchestrate
+def rerender_only():
+    """Re-render report.html from the cached store WITHOUT hitting the API.
+    Used when only the template/UI changed, so a UI deploy is instant."""
+    if not _LOCK.acquire(blocking=False):
+        return {"skipped": "busy"}
+    t0 = time.time()
+    try:
+        con = db()
+        row = con.execute("SELECT v FROM kv WHERE k='roster'").fetchone()
+        s1r = con.execute("SELECT v FROM kv WHERE k='s1'").fetchone()
+        rmr = con.execute("SELECT v FROM kv WHERE k='rolemap'").fetchone()
+        if not (row and s1r):
+            return {"ok": False, "error": "no cached roster yet — run a full refresh first"}
+        emps = json.loads(row[0]); s1 = json.loads(s1r[0]); role_map = json.loads(rmr[0]) if rmr else {}
+        win_start = LIFE_START + "-01"
+        win_end = datetime.date.today().isoformat()
+        stats = compute_and_render(con, emps, s1, role_map, win_start, win_end)
+        meta = {"ok": True, "generatedAt": datetime.datetime.utcnow().isoformat() + "Z",
+                "durationSec": round(time.time() - t0, 1), "roster": len(emps),
+                "rerenderOnly": True, **stats}
+        with open(META, "w") as fh: json.dump(meta, fh)
+        return meta
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+    finally:
+        _LOCK.release()
+
 def run_etl():
     if not _LOCK.acquire(blocking=False):
         return {"skipped": "already running"}

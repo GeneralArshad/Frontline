@@ -1,9 +1,9 @@
-<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
 :root{--royal:#1B2A6B;--navy:#0E1740;--red:#C8102E;--green:#0A7C4A;--amber:#E8911A;--purple:#7C3AED;--blue:#2563EB;
 --bg:#EEF1F8;--surface:#fff;--surface2:#F7F9FD;--ink:#0E1740;--muted:#5B6478;--faint:#8A93A8;--line:#E4E9F4;--chip:#EEF1F8;--accent:#1B2A6B;
 --sh1:0 1px 2px rgba(16,23,64,.05);--sh2:0 4px 14px rgba(16,23,64,.06);--sh3:0 14px 40px rgba(16,23,64,.12);}
 [data-theme=dark]{--bg:#080E28;--surface:#111B40;--surface2:#0E1738;--ink:#EAEEFB;--muted:#9AA6CC;--faint:#6B77A0;--line:#22305C;--chip:#16224B;--accent:#9FB0FF;--sh2:0 6px 18px rgba(0,0,0,.35);--sh3:0 20px 50px rgba(0,0,0,.5);}
-*{box-sizing:border-box}html,body{margin:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}html,body{margin:0}body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-feature-settings:'cv11','ss01';background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
 .gradbar{height:4px;background:linear-gradient(90deg,#E8911A,#D81E5B,#C8102E,#7C3AED,#1B2A6B)}
 header{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
 .topin{max-width:1660px;margin:0 auto;padding:13px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -73,24 +73,138 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .eh2 .m2{margin-left:auto;color:var(--muted);font-size:12px;text-align:right}
 .eb2{display:none;border-top:1px solid var(--line)}.erow.op .eb2{display:block}
 .eb2 .sub{color:var(--muted);font-size:10.5px}
+/* ---------- app shell: fixed sidebar + main ---------- */
+:root{--side:256px}
+.app{display:flex;min-height:100vh}
+.side{width:var(--side);flex:0 0 var(--side);position:fixed;left:0;top:0;bottom:0;z-index:60;
+  background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+.side .brand{padding:18px 18px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
+.side .brand svg{display:block;width:132px;height:auto}
+[data-theme=dark] .side .brand svg{filter:brightness(1.25)}
+.side .brandsub{font-size:10.5px;color:var(--faint);margin-top:7px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.sidescroll{overflow-y:auto;overflow-x:hidden;flex:1 1 auto;padding-bottom:14px}
+.navsec{padding:14px 12px 4px;font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+.nav{display:flex;flex-direction:column;gap:2px;padding:0 10px}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;
+  color:var(--muted);padding:9px 11px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer;transition:.13s;font-family:inherit}
+.nav button:hover{background:var(--chip);color:var(--ink)}
+.nav button.on{background:var(--ink);color:var(--surface);font-weight:700}
+.nav button .ic{width:16px;text-align:center;font-size:13px;flex:0 0 16px}
+.main{flex:1 1 auto;margin-left:var(--side);min-width:0;display:flex;flex-direction:column}
+/* slim sticky topbar */
+.topbar{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:14px;padding:12px 26px}
+.topbar h1{font-size:15px;font-weight:800;letter-spacing:-.2px;margin:0}
+.topbar .sub{font-size:11.5px;color:var(--faint);margin-top:1px}
+.burger{display:none}
+/* filters inside the sidebar */
+.fpanel{padding:2px 12px 0}
+.fhead{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:9px;cursor:pointer;
+  font-size:9.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--faint)}
+.fhead:hover{background:var(--chip)}
+.fhead .chev{margin-left:auto;transition:transform .2s;font-size:10px}
+.fpanel.closed .chev{transform:rotate(-90deg)}
+.fpanel.closed .fbody{display:none}
+.fbody{padding:4px 2px 8px}
+.fbody .fitem{margin-bottom:9px}
+.fbody label{font-size:9.5px;color:var(--faint);font-weight:800;text-transform:uppercase;display:block;margin-bottom:4px;letter-spacing:.05em}
+.fbody select,.fbody input{width:100%;max-width:none;font-family:inherit;font-size:12.5px;padding:8px 10px;
+  border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--ink)}
+.fbody select:focus,.fbody input:focus{outline:2px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:0}
+.fcount{background:var(--red);color:#fff;border-radius:999px;font-size:9px;padding:1px 6px;font-weight:800}
+.sidefoot{border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.sidefoot button{flex:1;font-family:inherit}
+/* main content spacing */
+.wrap{max-width:1560px;margin:0 auto;padding:4px 26px 80px;width:100%}
+@media(max-width:1000px){
+  .side{transform:translateX(-100%);transition:transform .22s;box-shadow:var(--sh3)}
+  .side.open{transform:none}
+  .main{margin-left:0}
+  .burger{display:inline-flex;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    border-radius:9px;padding:7px 11px;font-size:15px;cursor:pointer;line-height:1}
+}
+/* ---------- visual hierarchy ---------- */
+.secttl{margin:26px 2px 14px}
+.secttl .eye{font-size:10px;font-weight:800;letter-spacing:.12em}
+.secttl .big{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-top:3px}
+.kpi .v{font-size:24px;letter-spacing:-.03em}
+.kpi .l{font-size:10px;letter-spacing:.05em}
+.card h3{font-size:13.5px;letter-spacing:-.1px}
+thead th{font-size:9.5px;letter-spacing:.05em}
+tbody td{font-size:12.5px}
+/* clickable rep names */
+.pl{color:var(--accent);cursor:pointer;font-weight:700;text-decoration:underline;
+  text-decoration-color:color-mix(in srgb,var(--accent) 30%,transparent);text-underline-offset:2px}
+.pl:hover{text-decoration-color:var(--accent)}
+/* ---------- employee profile overlay ---------- */
+.pscrim{position:fixed;inset:0;background:rgba(7,12,35,.55);opacity:0;pointer-events:none;transition:.2s;z-index:90;
+  display:flex;align-items:flex-start;justify-content:center;padding:26px;overflow:auto}
+.pscrim.open{opacity:1;pointer-events:auto}
+.pcard{background:var(--bg);border-radius:20px;box-shadow:var(--sh3);width:min(1180px,96vw);overflow:hidden;margin:auto}
+.phead{background:linear-gradient(120deg,#1B2A6B,#0E1740 62%,#231b5e);color:#fff;padding:24px 28px;position:relative;overflow:hidden}
+.phead::after{content:"";position:absolute;right:-50px;top:-60px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,122,69,.45),transparent 70%)}
+.phead .row{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.pav{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex:0 0 auto}
+.phead h2{margin:0;font-size:23px;font-weight:800;letter-spacing:-.4px}
+.phead .meta{font-size:12.5px;color:#c9d2ee;margin-top:4px}
+.pclose{margin-left:auto;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;
+  width:34px;height:34px;border-radius:10px;cursor:pointer;font-size:16px;line-height:1;flex:0 0 auto}
+.pchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.pchip{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:999px;
+  padding:4px 11px;font-size:11px;font-weight:600}
+.pchip.warn{background:rgba(255,138,160,.18);border-color:rgba(255,138,160,.4);color:#ffd9df}
+.pbody{padding:22px 26px 28px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.pm{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:13px 15px;box-shadow:var(--sh1)}
+.pm .v{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.pm .l{font-size:9.5px;color:var(--muted);text-transform:uppercase;font-weight:800;margin-top:5px;letter-spacing:.05em}
+.psec{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:20px 0 10px}
+.pcols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.pcols{grid-template-columns:1fr}}
+.pdl{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:12.5px;
+  background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:15px 17px}
+.pdl dt{color:var(--faint);font-weight:700}
+.pdl dd{margin:0;font-weight:600}
+.phint{font-size:11.5px;color:var(--faint);background:var(--surface2);border:1px dashed var(--line);
+  border-radius:11px;padding:11px 14px;margin-top:8px}
+
 </style></head><body>
-<div id="load">Decompressing report…</div><div class="gradbar"></div>
-<header><div class="topin">
-<span class="wm"><span class="r">FRONTLINE</span> <span class="b">&raquo;</span></span>
-<div><h1>Field BI — July 2026 · Prescription-first</h1><div class="sub" id="sub"></div></div>
-<span class="spacer"></span>
-<span class="tabs" id="tabs"><button data-t="rx" class="on">💊 Rx Engine</button><button data-t="ov">Overview</button><button data-t="prod">Productivity</button><button data-t="mgr">Managers</button><button data-t="exc">Exceptions</button><button data-t="daily">Daily Calls</button><button data-t="docs">Doctors</button><button data-t="calls">📋 Call Detail</button><button data-t="roster">🩺 Doctors × Rep</button><button data-t="guide">📖 Guide</button></span>
-<button class="icbtn" id="theme">🌙</button>
-</div>
-<div class="topin" style="padding-top:0"><div class="filters" style="margin:0;flex:1">
-<div><label>Search</label><input id="q" placeholder="rep name/code…"></div>
-<div><label>Division</label><select id="fdi"></select></div><div><label>Zone</label><select id="fzn"></select></div>
-<div><label>State</label><select id="fst"></select></div><div><label>HQ</label><select id="fhq"></select></div>
-<div><label>Role</label><select id="frl"></select></div><div><label>Manager</label><select id="fmg"></select></div>
-<div><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
-<div><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div><div><label>Specialization</label><select id="fsp"></select></div><div><label>Activity</label><select id="fac"><option value="">All activity</option><option value="act">Active &le;3d</option><option value="s37">Silent 3&ndash;7d</option><option value="s7">Silent 7d+</option><option value="s14">Silent 14d+</option></select></div><div><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
-<span class="spacer"></span><button class="icbtn" id="reset">↺ Reset</button>
-</div></div></header>
+<div id="load">Decompressing report&hellip;</div>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg><div class="brandsub">Field Rx Intelligence</div></div>
+  <div class="sidescroll">
+    <div id="tabs"><div class="navsec">CORE</div><div class="nav"><button data-t="rx" class="on"><span class="ic">&#128138;</span>Rx Engine</button><button data-t="ov"><span class="ic">&#9632;</span>Overview</button><button data-t="prod"><span class="ic">&#9650;</span>Productivity</button><button data-t="mgr"><span class="ic">&#128101;</span>Managers</button><button data-t="exc"><span class="ic">&#9888;</span>Exceptions</button></div><div class="navsec">DETAIL</div><div class="nav"><button data-t="daily"><span class="ic">&#128197;</span>Daily Calls</button><button data-t="docs"><span class="ic">&#127973;</span>Doctors</button><button data-t="calls"><span class="ic">&#128203;</span>Call Detail</button><button data-t="roster"><span class="ic">&#129658;</span>Doctors &times; Rep</button></div><div class="navsec">REFERENCE</div><div class="nav"><button data-t="guide"><span class="ic">&#128214;</span>Guide</button></div></div>
+    <div class="fpanel" id="fpanel">
+<div class="fhead" id="fhead">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
+<div class="fbody">
+<div class="fitem"><label>Search</label><input id="q" placeholder="rep name or code&hellip;"></div>
+<div class="fitem"><label>Division</label><select id="fdi"></select></div>
+<div class="fitem"><label>Zone</label><select id="fzn"></select></div>
+<div class="fitem"><label>State</label><select id="fst"></select></div>
+<div class="fitem"><label>HQ</label><select id="fhq"></select></div>
+<div class="fitem"><label>Role</label><select id="frl"></select></div>
+<div class="fitem"><label>Manager</label><select id="fmg"></select></div>
+<div class="fitem"><label>Specialization</label><select id="fsp"></select></div>
+<div class="fitem"><label>Activity</label><select id="fac"><option value="">All activity</option><option value="act">Active &le;3d</option><option value="s37">Silent 3&ndash;7d</option><option value="s7">Silent 7d+</option><option value="s14">Silent 14d+</option></select></div>
+<div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
+<div class="fitem"><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
+<div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
+</div></div>
+  </div>
+  <div class="sidefoot">
+    <button class="icbtn" id="reset">&#8634; Reset</button>
+    <button class="icbtn" id="theme">&#127769;</button>
+  </div>
+</aside>
+<div class="main">
+  <div class="gradbar"></div>
+  <div class="topbar">
+    <button class="burger" id="burger">&#9776;</button>
+    <div><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
+  </div>
 <div class="wrap">
 <section class="sec on" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
@@ -131,6 +245,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
 <section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
+</div></div>
+<div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><div class="mx" onclick="cm()">✕</div></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
@@ -174,17 +290,19 @@ function th(k,l){return '<th data-k="'+k+'"'+(TT[k]?' title="'+TT[k].replace(/"/
 function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=>r.vis>0);const zero=bo.filter(r=>r.zeroRx);
  const totRx=rows.reduce((a,r)=>a+r.rx,0);const rxProd=act.filter(r=>r.rx>0);
  const avg=(a,f)=>a.length?Math.round(100*a.reduce((s,r)=>s+r[f],0)/a.length)/100:0;
+ const _md=rows.reduce((a,r)=>a+(r.ud||0),0),_rd=rows.reduce((a,r)=>a+(r.rxD||0),0);
+ const _cv=_md?Math.round(100*_rd/_md):0;
  $('rxkpis').innerHTML=[kpi('#0A7C4A',fmt(totRx),'Total Rx',GL.rx,''),
-  kpi('#2563EB',fmt(D.rx.metDoctors),'Doctors met','Unique doctors visited (all reps).',''),
-  kpi('#E8911A',fmt(D.rx.rxDoctors),'Rx doctors',GL.rxD,Math.round(100*D.rx.rxDoctors/D.rx.metDoctors)+'% converted'),
-  kpi('#C8102E',Math.round(100*D.rx.rxDoctors/D.rx.metDoctors)+'%','Rx conversion',GL.rxConv,'of doctors met'),
+  kpi('#2563EB',fmt(_md),'Doctors met','Unique doctors met by the reps in view.',''),
+  kpi('#E8911A',fmt(_rd),'Rx doctors',GL.rxD,_cv+'% converted'),
+  kpi('#C8102E',_cv+'%','Rx conversion',GL.rxConv,'of doctors met'),
   kpi('#C8102E',fmt(zero.length),'Zero-Rx reps',GL.zeroRx,act.length?Math.round(100*zero.length/act.length)+'% of active':''),
   kpi('#1B2A6B',avg(rxProd,'rpc'),'Avg Rx / call',GL.rpc,''),
   kpi('#7C3AED',avg(rxProd,'rxPerDoc'),'Rx / doctor met',GL.rxPerDoc,''),
   kpi('#7C3AED',avg(rxProd,'rxPerDay'),'Rx / day',GL.rxPerDay,''),
   kpi('#E8911A',avg(rxProd,'s2r'),'Samples / Rx',GL.s2r,'lower is better')].join('');
- $('rxBig').textContent=Math.round(100*(D.rx.metDoctors-D.rx.rxDoctors)/D.rx.metDoctors)+'% of doctors met produced no prescription';
- $('rxT').textContent=fmt(D.rx.metDoctors-D.rx.rxDoctors)+' of '+fmt(D.rx.metDoctors)+' doctors met gave zero Rx, and '+zero.length+' active field reps generated none at all. '+D.rx.pareto+'% of all Rx comes from just '+D.rx.paretoN+' reps — the biggest growth lever is converting existing visits, not adding more.';
+ $('rxBig').textContent=(_md?Math.round(100*(_md-_rd)/_md):0)+'% of doctors met produced no prescription';
+ const _sorted=act.slice().sort((a,b)=>b.rx-a.rx);const _n20=Math.max(1,Math.round(_sorted.length*0.2));const _t20=_sorted.slice(0,_n20).reduce((s,r)=>s+r.rx,0);const _boRx=_sorted.reduce((s,r)=>s+r.rx,0);const _par=_boRx?Math.round(100*_t20/_boRx):0;$('rxT').textContent=fmt(_md-_rd)+' of '+fmt(_md)+' doctors met gave zero Rx, and '+zero.length+' active field reps generated none at all. '+_par+'% of all Rx comes from just '+_n20+' reps — the biggest growth lever is converting existing visits, not adding more.';
  const noRx=D.rx.metDoctors-D.rx.rxDoctors;
  chart('ch_rxconv',{type:'doughnut',data:{labels:['Produced Rx','No Rx'],datasets:[{data:[D.rx.rxDoctors,noRx],backgroundColor:['#0A7C4A','#C8102E'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Rx conversion of doctors met',def:GL.rxConv,type:'doughnut',labels:['Produced Rx','No Rx'],values:[D.rx.rxDoctors,noRx],colors:['#0A7C4A','#C8102E']});
  const sp=D.rx.bySpec.slice(0,12);chart('ch_rxspec',{type:'bar',data:{labels:sp.map(x=>x[0]),datasets:[{data:sp.map(x=>x[1]),backgroundColor:'#1B2A6B',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Rx by specialization',def:'Prescriptions grouped by the doctor\'s specialization.',type:'barh',labels:sp.map(x=>x[0]),values:sp.map(x=>x[1])});
@@ -202,7 +320,7 @@ function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=
  // rx performance table
  const RP=[['c','Code'],['n','Name'],['st','State'],['hq','HQ'],['mg','Manager'],['vis','Visits'],['rx','Rx'],['rpc','Rx/Call'],['rxPerDoc','Rx/Doctor'],['rxPerDay','Rx/Day'],['ud','Drs Met'],['rxD','Rx Drs'],['rxConv','Rx Conv%'],['s2r','Samp/Rx'],['att','Attend%'],['repc','Repeat%'],['cl','Max/30m'],['rpct','React+%'],['ds','Day Start'],['scf','SC Focus%'],['mpc','Min/Call'],['ndc','NewDr Conv%'],['zeroRx','Zero Rx']];
  $('rph').innerHTML=RP.map(c=>th(c[0],c[1])).join('');
- $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">ZERO</span>':'')+'</td></tr>').join('');
+ $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">ZERO</span>':'')+'</td></tr>').join('');
  $('rpcnt').textContent='('+bo.length+' field reps)';
  $('rph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===rS)rA=!rA;else{rS=k;rA=false;}rxView(fr());});}
 /* ---- OVERVIEW ---- */
@@ -226,7 +344,7 @@ function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
  chart('ch_role',{type:'bar',data:{labels:rr.map(x=>x[0]),datasets:[{data:rr.map(x=>x[1]),backgroundColor:'#7C3AED',borderRadius:4}]},options:gopt()},{title:'Visits by role',def:'Visits by designation.',type:'bar',labels:rr.map(x=>x[0]),values:rr.map(x=>x[1])});}
 const EC=[['c','Code'],['n','Name'],['r','Role'],['di','Div'],['zn','Zone'],['st','State'],['hq','HQ'],['mg','Manager'],['da','Drs'],['vis','Visits'],['ud','Met'],['cov','Cov%'],['cpd','Calls/Day'],['rx','Rx'],['rpc','Rx/Call'],['pi','PI'],['tp','Tour'],['newd','New Drs'],['mom','Mom'],['chsh','Chem%'],['fhrs','Fld Hrs'],['tdc','TopDoc%'],['ob','Onb']];
 function empTable(rows){$('eh').innerHTML=EC.map(c=>th(c[0],c[1])).join('');
- $('eb').innerHTML=sortRows(rows,eS,eA).slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.r+'</td><td>'+r.di+'</td><td>'+r.zn+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.da)+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+r.cov+'</td><td class=n>'+r.cpd+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+(r.pi!==''?'<span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span>':'')+'</td><td>'+r.tp+'</td><td class=n>'+r.newd+'</td><td class=n>'+(r.mom===''?'':r.mom)+'</td><td class=n>'+r.chsh+'</td><td class=n>'+r.fhrs+'</td><td class=n>'+r.tdc+'</td><td><span class="pill '+(r.ob?'yes':'no')+'">'+(r.ob?'Y':'N')+'</span></td></tr>').join('');
+ $('eb').innerHTML=sortRows(rows,eS,eA).slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.di+'</td><td>'+r.zn+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.da)+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+r.cov+'</td><td class=n>'+r.cpd+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+(r.pi!==''?'<span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span>':'')+'</td><td>'+r.tp+'</td><td class=n>'+r.newd+'</td><td class=n>'+(r.mom===''?'':r.mom)+'</td><td class=n>'+r.chsh+'</td><td class=n>'+r.fhrs+'</td><td class=n>'+r.tdc+'</td><td><span class="pill '+(r.ob?'yes':'no')+'">'+(r.ob?'Y':'N')+'</span></td></tr>').join('');
  $('cnt').textContent='('+fmt(rows.length)+(rows.length>700?' — 700 shown':'')+')';
  $('eh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===eS)eA=!eA;else{eS=k;eA=false;}empTable(fr());});}
 const PC=[['rank','#'],['c','Code'],['n','Name'],['st','State'],['mg','Manager'],['pi','Prod Index'],['cpd','Calls/Day'],['rpc','Rx/Call'],['cov','Cov%'],['rx','Rx'],['vis','Visits']];
@@ -234,7 +352,7 @@ function prodView(rows){const bo=rows.filter(r=>r.r==='BO'&&r.pi!=='');
  const bk=[0,0,0,0,0];bo.forEach(r=>{const v=r.pi;if(v<20)bk[0]++;else if(v<40)bk[1]++;else if(v<60)bk[2]++;else if(v<80)bk[3]++;else bk[4]++;});const bl=['0-19','20-39','40-59','60-79','80-100'];
  chart('ch_pi',{type:'bar',data:{labels:bl,datasets:[{data:bk,backgroundColor:['#C8102E','#E8911A','#96700A','#2563EB','#0A7C4A'],borderRadius:4}]},options:gopt()},{title:'Productivity Index distribution',def:GL.pi,type:'bar',labels:bl,values:bk});wireExp();
  $('ph').innerHTML=PC.map(c=>th(c[0],c[1])).join('');
- $('pb').innerHTML=sortRows(bo,pS,pA).slice(0,600).map((r,i)=>'<tr><td class=n>'+(pS==='pi'&&!pA?i+1:'')+'</td><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td class=n><span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span></td><td class=n>'+r.cpd+'</td><td class=n>'+r.rpc+'</td><td class=n>'+r.cov+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+fmt(r.vis)+'</td></tr>').join('');
+ $('pb').innerHTML=sortRows(bo,pS,pA).slice(0,600).map((r,i)=>'<tr><td class=n>'+(pS==='pi'&&!pA?i+1:'')+'</td><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td class=n><span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span></td><td class=n>'+r.cpd+'</td><td class=n>'+r.rpc+'</td><td class=n>'+r.cov+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+fmt(r.vis)+'</td></tr>').join('');
  $('ph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k==='rank')return;if(k===pS)pA=!pA;else{pS=k;pA=false;}prodView(fr());});}
 const MC=[['name','Manager (ABM)'],['team','Team'],['active','Active'],['actPct','Active%'],['vis','Visits'],['rx','Rx'],['zeroRx','Zero-Rx'],['cov','Avg Cov%'],['pi','Avg PI']];
 function mgrView(){const top=D.mgrScore.slice().sort((a,b)=>b.rx-a.rx).slice(0,12);const ll=top.map(m=>m.name.split(' ').slice(0,2).join(' '));
@@ -248,7 +366,7 @@ function excView(rows){const fc={};rows.forEach(r=>r.fl.forEach(f=>fc[f]=(fc[f]|
  chart('ch_flag',{type:'bar',data:{labels:fe.map(x=>x[0]),datasets:[{data:fe.map(x=>x[1]),backgroundColor:'#C8102E',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Exceptions by type',def:'Reps carrying each risk flag.',type:'barh',labels:fe.map(x=>x[0]),values:fe.map(x=>x[1])});wireExp();
  const flagged=rows.filter(r=>r.fl.length);const sorted=sortRows(flagged.map(r=>({...r,flc:r.fl.length})),xS==='fl'?'flc':xS,xA);
  $('xh').innerHTML=[['c','Code'],['n','Name'],['st','State'],['mg','Manager'],['fl','Flags'],['vis','Visits'],['rx','Rx'],['cov','Cov%']].map(c=>th(c[0],c[1])).join('');
- $('xb').innerHTML=sorted.slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td>'+r.fl.map(f=>'<span class=flag>'+f+'</span>').join('')+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+r.cov+'</td></tr>').join('');
+ $('xb').innerHTML=sorted.slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td>'+r.fl.map(f=>'<span class=flag>'+f+'</span>').join('')+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+r.cov+'</td></tr>').join('');
  $('xcnt').textContent='('+flagged.length+' flagged)';
  $('xh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===xS)xA=!xA;else{xS=k;xA=false;}excView(fr());});}
 function dailyView(){const codes=new Set(fr().map(r=>r.c));const rm={};D.reps.forEach(r=>rm[r.c]=r);
@@ -275,26 +393,113 @@ function guide(){const G=[['Prescriptions (core)',[['Rx',GL.rx],['Rx / call',GL.
  ['Risk flags',[['Zero Rx despite visits','Logged visits but generated no prescriptions — the biggest conversion gap.'],['Silent (no activity)','No visits, plans or doctors.'],['New joiner not activated','New hire who has not used the app.'],['Went silent mid-month','Active early, then stopped.'],['Tour plan not submitted','Active but no monthly plan filed.'],['Low coverage <25%','Met under a quarter of assigned doctors.'],['Sample-heavy / low Rx','Many samples for very few prescriptions.'],['Rx declining','Last-7-day Rx well below the rep\'s run-rate.'],['Single-doctor dependent','60%+ of Rx from one doctor.'],['Rushed calls (audit)','Under 8 min between calls across a busy day — superficial or bulk-logged.'],['New doctors not converting','Meeting new doctors but under 15% of them prescribe.']]]];
  $('gloss').innerHTML=G.map(g=>'<div class="gcard"><h4>'+g[0]+'</h4>'+g[1].map(i=>'<div class="gitem"><b>'+i[0]+'</b><span>'+i[1]+'</span></div>').join('')+'</div>').join('');}
 function callsView(){const rows=fr().filter(r=>r.vis>0);$('clcnt').textContent='('+rows.length+' reps)';
- const L=$('cllist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+r.n+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.vis)+' visits &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b></span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';
+ const L=$('cllist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.vis)+' visits &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b></span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';
  L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=callTable(el.dataset.c);el.dataset.l='1';}};});}
-function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+r.n+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
+function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
  const rows=cs.map(v=>{const pr=(v[11]||'').split('|').map(p=>{const m=p.split('~');return m[0]+(m[1]?' <b style="color:#C8102E">Rx'+m[1]+'</b>':'');}).join('<br>');
   const gps=(v[13]&&v[14])?'<a href="https://maps.google.com/?q='+v[13]+','+v[14]+'">map</a>':'';
   const pres=v[2]?'<span class="pill '+(v[9]?'yes':'no')+'">'+(v[9]?'Y':'N')+'</span>':'';
   return '<tr><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+(v[2]?'DR':'CH')+'</td><td><b>'+(v[3]||'')+'</b><div class="sub">'+(v[4]||'')+'</div></td><td>'+(v[5]||'')+'</td><td>'+(v[6]||'')+'</td><td>'+(v[7]||'')+'</td><td>'+pres+'</td><td>'+(v[10]||'')+'</td><td class=n><b>'+(v[8]||'')+'</b></td><td>'+pr+'</td><td class=n>'+(v[12]||'')+'</td><td>'+gps+'</td></tr>';}).join('');
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
-function render(){const rows=fr();
+function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
+function render(){fcount();const rows=fr();
  if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;}
 function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
  fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');$('dtot').textContent=fmt(D.docs.length)+' doctors';
- $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
  const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});
  $('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};
  $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};
- $('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};
+ $('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};
  $('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};
  $('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});
  $('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;render();}
+/* ---------------- employee profiles ---------------- */
+function pl(r){return '<span class="pl" data-p="'+r.c+'">'+r.n+'</span>';}
+/* HR roster: filled from D.hr (keyed by employee code) when the HR file is loaded. */
+function hrOf(code){return (D.hr&&D.hr[code])||null;}
+function initials(n){return (n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
+function pmet(v,l){return '<div class="pm"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>';}
+function dl(pairs){return '<dl class="pdl">'+pairs.map(p=>'<dt>'+p[0]+'</dt><dd>'+(p[1]===''||p[1]==null?'&mdash;':p[1])+'</dd>').join('')+'</dl>';}
+function openProfile(code){
+ const r=D.reps.find(x=>x.c===code); if(!r)return;
+ const hr=hrOf(code);
+ const calls=(D.calls&&D.calls[code])||[];
+ /* doctor roster from this rep's calls */
+ const dm={};
+ for(const v of calls){ if(!v[2])continue; const k=v[4]||('_'+v[3]);
+   const o=dm[k]||(dm[k]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:''});
+   o.vis++; o.rx+=(+v[8]||0); if(v[9])o.presc=1; if(v[0]>o.last)o.last=v[0]; }
+ const docs=Object.values(dm).sort((a,b)=>b.rx-a.rx||b.vis-a.vis);
+ const presc=docs.filter(o=>o.presc).length, rxd=docs.filter(o=>o.rx>0).length;
+ /* activity by date */
+ const byDay={}; for(const v of calls){ byDay[v[0]]=(byDay[v[0]]||0)+1; }
+ const days=Object.keys(byDay).sort();
+ const chips=[];
+ if(r.zeroRx)chips.push('<span class="pchip warn">Zero Rx despite visits</span>');
+ (r.fl||[]).forEach(f=>{ if(f!=='Zero Rx despite visits')chips.push('<span class="pchip warn">'+f+'</span>'); });
+ if(!chips.length)chips.push('<span class="pchip">No exceptions flagged</span>');
+ const docRows=docs.slice(0,400).map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+
+   '</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+
+   '</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+o.last+'</td></tr>').join('');
+ const dayRows=days.slice(-60).reverse().map(dt=>{const cs=calls.filter(v=>v[0]===dt);
+   const rx=cs.reduce((s,v)=>s+(+v[8]||0),0), dr=cs.filter(v=>v[2]).length;
+   return '<tr><td>'+dt+'</td><td class=n>'+cs.length+'</td><td class=n>'+dr+'</td><td class=n>'+(cs.length-dr)+'</td><td class=n><b>'+fmt(rx)+'</b></td></tr>';}).join('');
+ const hrBlock = hr ? dl([['Designation',hr.designation],['Staff type',hr.staffType],['Joining date',hr.joining],
+     ['Mobile',hr.mobile],['Official email',hr.email],['Personal email',hr.personalEmail],
+     ['Reporting to',hr.reportsTo],['Standard HQ',hr.stdHQ],['Employee status',hr.status]])
+   : '<div class="phint">HR details will appear here once the HR organogram roster is loaded into the report.</div>';
+ $('pcard').innerHTML=
+  '<div class="phead"><div class="row"><div class="pav">'+initials(r.n)+'</div>'+
+    '<div><h2>'+r.n+'</h2><div class="meta">'+r.c+' &middot; '+r.r+' &middot; '+(r.hq||'—')+' &middot; '+(r.st||'—')+
+      ' &middot; reports to '+(r.mg||'—')+'</div></div>'+
+    '<button class="pclose" onclick="closeProfile()">&#10005;</button></div>'+
+    '<div class="pchips">'+chips.join('')+'</div></div>'+
+  '<div class="pbody">'+
+    '<div class="pgrid">'+
+      pmet(fmt(r.rx),'Total Rx')+pmet(fmt(r.vis),'Visits')+pmet(fmt(r.ud),'Doctors met')+
+      pmet(r.rxConv+'%','Rx conversion')+pmet(r.cov+'%','Coverage')+
+      pmet((r.pi===''?'—':'<span class="pi" style="background:'+piColor(r.pi)+'">'+r.pi+'</span>'),'Prod. Index')+
+    '</div>'+
+    '<div class="pcols">'+
+      '<div><div class="psec">Activity &amp; quality</div>'+
+        dl([['Doctor visits',fmt(r.dv)],['Chemist visits',fmt(r.cv)],['Calls / active day',r.cpd],
+            ['Attendance',r.att+'%'],['Repeat coverage',r.repc+'%'],['Days silent',r.rec===''?'—':r.rec+'d'],
+            ['Rx / call',r.rpc],['Rx / doctor met',r.rxPerDoc],['Rx / day',r.rxPerDay],
+            ['Samples / Rx',r.s2r],['Field hrs / day',r.fhrs],['Day start',r.ds||'—'],
+            ['Mins / call',r.mpc===''?'—':r.mpc],['Reaction positivity',r.rpct===''?'—':r.rpct+'%'],
+            ['Supercore focus',r.scf+'%'],['Rx momentum',r.mom===''?'—':r.mom],
+            ['New doctors (7d)',r.newd],['New-doctor conversion',r.ndc===''?'—':r.ndc+'%'],
+            ['Top-doctor concentration',r.tdc+'%'],['Chemist share',r.chsh+'%']])+
+      '</div>'+
+      '<div><div class="psec">Identity &amp; HR</div>'+
+        dl([['Employee code',r.c],['Name',r.n],['Role',r.r],['Division',r.di],['Zone',r.zn],
+            ['State',r.st],['HQ',r.hq],['Reporting manager',r.mg],['Onboarded',r.ob?'Yes':'No'],
+            ['Doctors on list',fmt(r.da)],['Specializations covered',(r.sp||[]).join(', ')||'—']])+
+        hrBlock+
+      '</div>'+
+    '</div>'+
+    '<div class="psec">Doctors covered &middot; '+docs.length+' total &middot; '+presc+' prescribers &middot; '+rxd+' produced Rx</div>'+
+    (docs.length?'<div class="tablewrap" style="max-height:360px;margin-top:0"><table><thead><tr><th>Doctor</th><th>Code</th>'+
+      '<th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th>'+
+      '<th style="text-align:right">Rx</th><th>Last seen</th></tr></thead><tbody>'+docRows+'</tbody></table></div>'
+      :'<div class="phint">No doctor visits recorded in this window.</div>')+
+    '<div class="psec">Recent activity &middot; last '+Math.min(days.length,60)+' active days</div>'+
+    (days.length?'<div class="tablewrap" style="max-height:300px;margin-top:0"><table><thead><tr><th>Date</th>'+
+      '<th style="text-align:right">Calls</th><th style="text-align:right">Doctors</th>'+
+      '<th style="text-align:right">Chemists</th><th style="text-align:right">Rx</th></tr></thead><tbody>'+dayRows+'</tbody></table></div>'
+      :'<div class="phint">No activity recorded in this window.</div>')+
+  '</div>';
+ $('pscrim').classList.add('open');document.body.style.overflow='hidden';
+}
+function closeProfile(){$('pscrim').classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('click',function(e){
+  const t=e.target.closest&&e.target.closest('.pl');
+  if(t&&t.dataset.p){e.stopPropagation();e.preventDefault();openProfile(t.dataset.p);}
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProfile();});
+
+$('pscrim').onclick=e=>{if(e.target===$('pscrim'))closeProfile();};
 boot();
 </script></body></html>
