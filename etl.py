@@ -170,6 +170,11 @@ def _ist(t):
     total = (int(hh)*60 + int(mm) + 330) % 1440
     return f"{total//60:02d}:{total%60:02d}"
 
+def _sstr(x):
+    """Frontline returns specialization (and sometimes category) as a list — coerce to a string."""
+    if isinstance(x, list): return ", ".join(str(i) for i in x)
+    return x or ""
+
 def parse_visits(visits):
     rows = []
     for v in visits:
@@ -185,7 +190,7 @@ def parse_visits(visits):
         loc = v.get("location") or {}
         rows.append({"isDoc": 1 if isDoc else 0, "name": en.get("fullName") or en.get("name") or "",
                      "code": en.get("doctorCode") or en.get("chemistCode") or "",
-                     "spec": en.get("specialization") or "", "cat": en.get("category") or "",
+                     "spec": _sstr(en.get("specialization")), "cat": _sstr(en.get("category")),
                      "clinic": en.get("clinicName") or "", "rx": vrx, "sm": sm, "react": react,
                      "presc": presc, "t": tm, "prods": prods,
                      "lat": (loc.get("lat") or loc.get("latitude") or ""),
@@ -252,6 +257,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                 try: times.append(int(v["t"][:2])*60 + int(v["t"][3:5]))
                 except Exception: pass
             isDoc = v["isDoc"]
+            spec = _sstr(v["spec"]); cat = _sstr(v["cat"])   # tolerate list-valued specialization
             if isDoc: ag["dv"] += 1; day["dv"] += 1
             else: ag["cv"] += 1; day["cv"] += 1
             docId = v["code"] or ("__" + v["name"])
@@ -266,16 +272,16 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                 if docId not in ag["dcDate"] or date < ag["dcDate"][docId]: ag["dcDate"][docId] = date
                 if vrx > 0: ag["rxd"].add(docId)
                 if vrx > 0:
-                    SPEC[v["spec"] or "?"] = SPEC.get(v["spec"] or "?",0)+vrx
-                    CAT[v["cat"] or "?"]   = CAT.get(v["cat"] or "?",0)+vrx
-                if v["cat"] == "supercore": ag["scDoc"] += 1
+                    SPEC[spec or "?"] = SPEC.get(spec or "?",0)+vrx
+                    CAT[cat or "?"]   = CAT.get(cat or "?",0)+vrx
+                if cat == "supercore": ag["scDoc"] += 1
                 re = v["react"]
                 if re:
                     REACT[re] = REACT.get(re,0)+1; ag["reactAny"] += 1
                     if re in ("Positive","Committed"): ag["reactPos"] += 1
             prod_str = "|".join(f"{p[0]}~{p[1]}" if p[1] else p[0] for p in v["prods"])
-            CALLS.append([empCode, date, _ist(v["t"]), isDoc, v["name"], v["code"], v["spec"],
-                          v["cat"], v["clinic"], vrx, v["presc"], v["react"], prod_str, v["sm"],
+            CALLS.append([empCode, date, _ist(v["t"]), isDoc, v["name"], v["code"], spec,
+                          cat, v["clinic"], vrx, v["presc"], v["react"], prod_str, v["sm"],
                           v["lat"], v["lng"]])
         if times:
             times.sort(); ist = (times[0]+330) % 1440; ag["firstSum"] += ist; ag["firstDays"] += 1
