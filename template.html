@@ -27,7 +27,7 @@
 [data-theme=dark]{
   --bg:#0D0E13; --surface:#15171E; --surface2:#1B1E27; --surface3:#232734;
   --ink:#EEF1F8; --muted:#98A2B3; --faint:#667085; --line:#262B36;
-  --chip:#1F2330; --hover:rgba(255,255,255,.045);
+  --chip:#1F2330; --hover:rgba(255,255,255,.045); --hover-solid:#1C1F29;
   --ok:#32D583; --warn:#FDB022; --bad:#FF6B6B; --info:#53B1FD; --accent:#9E86FF;
   --sh1:0 1px 2px rgba(0,0,0,.4); --sh2:0 4px 16px rgba(0,0,0,.45); --sh3:0 20px 56px rgba(0,0,0,.6);
 }
@@ -35,7 +35,7 @@
 [data-theme=light]{
   --bg:#F5F7FB; --surface:#FFFFFF; --surface2:#F8FAFC; --surface3:#F1F4F9;
   --ink:#101828; --muted:#5B6478; --faint:#8A93A8; --line:#E4E9F2;
-  --chip:#F1F4F9; --hover:rgba(16,24,40,.035);
+  --chip:#F1F4F9; --hover:rgba(16,24,40,.035); --hover-solid:#F3F6FB;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -268,6 +268,15 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .phint{font-size:12px;color:var(--muted);background:var(--surface2);border:1px dashed var(--line);
   border-radius:var(--r2);padding:10px var(--s3);margin-top:var(--s2);line-height:1.6}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* ------------- sticky identity columns (horizontal scroll) ------------- */
+table.stk th.sk,table.stk td.sk{position:sticky;z-index:3;background:var(--surface)}
+table.stk thead th.sk{z-index:6;background:var(--surface2)}
+table.stk tbody tr:hover td.sk{background:var(--hover-solid)}
+/* the seam gets a hairline, and a soft shadow once you've actually scrolled */
+table.stk .sk.edge{border-right:1px solid var(--line)}
+.tablewrap.xscroll table.stk .sk.edge{box-shadow:6px 0 10px -6px rgba(0,0,0,.45)}
+[data-theme=light] .tablewrap.xscroll table.stk .sk.edge{box-shadow:6px 0 10px -6px rgba(16,24,40,.16)}
+
 /* ---------------- insight carousel ---------------- */
 .ins{position:relative;border-radius:var(--r4);overflow:hidden;margin-top:var(--s4);
   background:linear-gradient(120deg,#1B1F3A,#171A2B 58%,#2A1B33);border:1px solid rgba(255,255,255,.07);
@@ -289,9 +298,22 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
   border:1px solid rgba(255,255,255,.26);color:#fff;border-radius:99px;padding:7px 15px;font-size:12px;
   font-weight:650;cursor:pointer;font-family:inherit;transition:.14s}
 .insact:hover{background:rgba(255,255,255,.24)}
-.insnav{position:absolute;right:var(--s5);bottom:var(--s4);display:flex;align-items:center;gap:var(--s2);z-index:2}
-.insdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.2s;border:0;padding:0}
-.insdot.on{background:#fff;width:20px;border-radius:99px}
+.insnav{position:absolute;right:var(--s5);bottom:var(--s4);display:flex;align-items:center;gap:9px;z-index:3;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:5px 9px;
+  backdrop-filter:blur(8px)}
+.insdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.36);cursor:pointer;transition:.2s;border:0;padding:0}
+.insdot:hover{background:rgba(255,255,255,.75)}
+.insdot.on{background:#fff;width:22px;border-radius:99px}
+.inscnt{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.82);letter-spacing:.05em;
+  font-variant-numeric:tabular-nums;padding-right:2px;white-space:nowrap}
+/* progress bar — the clearest signal that slides auto-advance */
+.insprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.13);z-index:2}
+.insprog i{display:block;height:100%;width:0;border-radius:0 3px 3px 0;
+  background:linear-gradient(90deg,var(--brand-2,#FF7A45),#fff)}
+.insprog i.run{animation:insfill var(--insdur,5000ms) linear forwards}
+@keyframes insfill{from{width:0}to{width:100%}}
+/* hovering pauses the rotation, so pause the bar too */
+.ins:hover .insprog i.run{animation-play-state:paused}
 .insbtn{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
   color:#fff;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center}
 .insbtn:hover{background:rgba(255,255,255,.22)}
@@ -366,7 +388,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <section class="sec on" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
 <div class="kpis" id="rxkpis"></div>
-<div class="ins" id="ins"><div class="insvp" id="insvp"></div><div class="insnav"><button class="insbtn" id="insprev" aria-label="Previous insight">&#10094;</button><span id="insdots" style="display:flex;gap:6px;align-items:center"></span><button class="insbtn" id="insnext" aria-label="Next insight">&#10095;</button></div></div>
+<div class="ins" id="ins"><div class="insvp" id="insvp"></div><div class="insnav"><span class="inscnt" id="inscnt"></span><button class="insbtn" id="insprev" title="Previous insight" aria-label="Previous insight">&#10094;</button><span id="insdots" style="display:flex;gap:6px;align-items:center"></span><button class="insbtn" id="insnext" title="Next insight" aria-label="Next insight">&#10095;</button></div><div class="insprog" id="insprog"><i id="insbar"></i></div></div>
 <div class="grid" style="margin-top:18px">
 <div class="card click c4" data-exp="ch_rxconv"><div class="ch"><div><h3>Rx conversion of doctors met</h3><div class="cs">Did the visit produce a prescription?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxconv"></canvas></div></div>
 <div class="card click c8" data-exp="ch_rxspec"><div class="ch"><div><h3>Rx by specialization</h3><div class="cs">Where prescriptions come from</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxspec"></canvas></div></div>
@@ -542,7 +564,7 @@ function excView(rows){const fc={};rows.forEach(r=>r.fl.forEach(f=>fc[f]=(fc[f]|
  $('xb').innerHTML=sorted.slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td>'+r.fl.map(f=>'<span class=flag>'+f+'</span>').join('')+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+r.cov+'</td></tr>').join('');
  $('xcnt').textContent='('+flagged.length+' flagged)';
  $('xh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===xS)xA=!xA;else{xS=k;xA=false;}excView(fr());});}
-function dailyView(){const codes=new Set(fr().map(r=>r.c));const rm={};D.reps.forEach(r=>rm[r.c]=r);
+function dailyView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const codes=new Set(fr().map(r=>r.c));const rm={};D.reps.forEach(r=>rm[r.c]=r);
  const dl=dailyAgg(codes,2);chart('ch_daily2',{type:'line',data:{labels:dl.map(d=>d[0].slice(5)),datasets:[{data:dl.map(d=>d[1]),borderColor:'#1B2A6B',backgroundColor:'rgba(27,42,107,.12)',fill:true,tension:.3,pointRadius:2}]},options:gopt()},{title:'Daily calls trend',def:'Calls logged per day.',type:'line',labels:dl.map(d=>d[0]),values:dl.map(d=>d[1])});wireExp();
  let rows=D.daily.filter(x=>codes.has(x[0])).map(x=>{const r=rm[x[0]]||{};return [x[0],r.n||'',r.st||'',x[1],x[2],x[3],x[4],x[5],x[6]];});
  rows.sort((a,b)=>{let x=a[dS],y=b[dS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(dA?1:-1);});
@@ -550,7 +572,7 @@ function dailyView(){const codes=new Set(fr().map(r=>r.c));const rm={};D.reps.fo
  $('db2').innerHTML=rows.slice(0,1200).map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class=n>'+r[4]+'</td><td class=n>'+r[5]+'</td><td class=n>'+r[6]+'</td><td class=n><b>'+r[7]+'</b></td><td class=n>'+r[8]+'</td></tr>').join('');
  $('dcnt').textContent='('+fmt(rows.length)+' rows'+(rows.length>1200?' — 1200 shown':'')+')';
  $('dh2').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===dS)dA=!dA;else{dS=i;dA=true;}dailyView();});}
-function docsView(){const codes=new Set(fr().map(r=>r.c));let rows=D.docs.filter(d=>codes.has(d[12]));
+function docsView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const codes=new Set(fr().map(r=>r.c));let rows=D.docs.filter(d=>codes.has(d[12]));
  if(DF.st)rows=rows.filter(d=>d[9]===DF.st);if(DF.sp)rows=rows.filter(d=>d[2]===DF.sp);if(DF.ca)rows=rows.filter(d=>d[7]===DF.ca);
  if(DF.q){const q=DF.q.toLowerCase();rows=rows.filter(d=>(d[1]||'').toLowerCase().includes(q)||(d[6]||'').toLowerCase().includes(q)||(d[0]||'').toLowerCase().includes(q));}
  rows.sort((a,b)=>{let x=a[mmS],y=b[mmS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(mmA?1:-1);});
@@ -565,10 +587,10 @@ function guide(){const G=[['Prescriptions (core)',[['Rx',GL.rx],['Rx / call',GL.
  ['Adoption',[['Onboarded',GL.ob],['New joiner','Created in the July onboarding batch.']]],
  ['Risk flags',[['Zero Rx despite visits','Logged visits but generated no prescriptions — the biggest conversion gap.'],['Silent (no activity)','No visits, plans or doctors.'],['New joiner not activated','New hire who has not used the app.'],['Went silent mid-month','Active early, then stopped.'],['Tour plan not submitted','Active but no monthly plan filed.'],['Low coverage <25%','Met under a quarter of assigned doctors.'],['Sample-heavy / low Rx','Many samples for very few prescriptions.'],['Rx declining','Last-7-day Rx well below the rep\'s run-rate.'],['Single-doctor dependent','60%+ of Rx from one doctor.'],['Rushed calls (audit)','Under 8 min between calls across a busy day — superficial or bulk-logged.'],['New doctors not converting','Meeting new doctors but under 15% of them prescribe.']]]];
  $('gloss').innerHTML=G.map(g=>'<div class="gcard"><h4>'+g[0]+'</h4>'+g[1].map(i=>'<div class="gitem"><b>'+i[0]+'</b><span>'+i[1]+'</span></div>').join('')+'</div>').join('');}
-function callsView(){const rows=fr().filter(r=>r.vis>0);$('clcnt').textContent='('+rows.length+' reps)';
+function callsView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const rows=fr().filter(r=>r.vis>0);$('clcnt').textContent='('+rows.length+' reps)';
  const L=$('cllist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.vis)+' visits &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b></span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';
- L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=callTable(el.dataset.c);el.dataset.l='1';}};});}
-function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
+ L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=callTable(el.dataset.c);el.dataset.l='1';stickyCols(el);}};});}
+function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';stickyCols(el);}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
  const rows=cs.map(v=>{const pr=(v[11]||'').split('|').map(p=>{const m=p.split('~');return m[0]+(m[1]?' <b style="color:#C8102E">Rx'+m[1]+'</b>':'');}).join('<br>');
   const gps=(v[13]&&v[14])?'<a href="https://maps.google.com/?q='+v[13]+','+v[14]+'">map</a>':'';
   const pres=v[2]?'<span class="pill '+(v[9]?'yes':'no')+'">'+(v[9]?'Y':'N')+'</span>':'';
@@ -577,7 +599,10 @@ function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').text
 function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
 function render(){fcount();const rows=fr();
  if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='notes')notesView();else guide();
- $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;}
+ $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
+ try{stickyCols();}catch(_){}}
+/* re-measure pinned column widths when the layout changes */
+addEventListener('resize',()=>{clearTimeout(window.__stkT);window.__stkT=setTimeout(()=>{try{stickyCols();}catch(_){}} ,180);});
 function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
  fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');$('dtot').textContent=fmt(D.docs.length)+' doctors';
  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
@@ -719,6 +744,39 @@ function buildInsights(rows,md,rd,act,zero,par,parN){
  ];
  insI=Math.min(insI,INS.length-1); drawIns(); startIns();
 }
+/* ==================== sticky identity columns ====================
+   Wide tables scroll sideways and you lose track of whose row you're on.
+   Pin the leading identity column(s), detected from the header text so no
+   table needs special markup. Offsets are measured, not guessed. */
+function stickyCols(root){
+ (root||document).querySelectorAll('.tablewrap table').forEach(t=>{
+  const hr=t.tHead&&t.tHead.rows[0], tb=t.tBodies&&t.tBodies[0];
+  if(!hr||!tb||!tb.rows.length)return;
+  const H=i=>(hr.cells[i]?hr.cells[i].textContent.trim().toUpperCase():'');
+  let n=0;
+  if(H(0)==='CODE'&&/^(NAME|REP|DOCTOR|EMPLOYEE)/.test(H(1)))n=2;
+  else if(/^(NAME|REP|DOCTOR|EMPLOYEE)$/.test(H(0)))n=1;
+  if(!n)return;
+  t.classList.add('stk');
+  let off=0;
+  for(let i=0;i<n&&i<hr.cells.length;i++){
+   const last=(i===n-1), L=off+'px';
+   const th=hr.cells[i];
+   th.classList.add('sk'); th.style.left=L; th.classList.toggle('edge',last);
+   for(let r=0;r<tb.rows.length;r++){
+    const c=tb.rows[r].cells[i]; if(!c)continue;
+    c.classList.add('sk'); c.style.left=L; c.classList.toggle('edge',last);
+   }
+   off+=th.getBoundingClientRect().width;
+  }
+  /* drop-shadow on the seam only once the table is actually scrolled */
+  const w=t.closest('.tablewrap');
+  if(w&&!w.dataset.xs){w.dataset.xs='1';
+   const upd=()=>w.classList.toggle('xscroll',w.scrollLeft>0);
+   w.addEventListener('scroll',upd,{passive:true}); upd();}
+ });
+}
+
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;
@@ -726,15 +784,24 @@ function drawIns(){
   '<div class="ico"><svg viewBox="0 0 24 24">'+INSICO[s.ic]+'</svg></div>'+
   '<div><div class="eyeb">'+s.eye+'</div><h3>'+s.h+'</h3><p>'+s.p+'</p>'+
   '<button class="insact" data-i="'+i+'">'+s.act+' &rarr;</button></div></div>').join('');
- $('insdots').innerHTML=INS.map((s,i)=>'<button class="insdot'+(i===insI?' on':'')+'" data-d="'+i+'" aria-label="Insight '+(i+1)+'"></button>').join('');
+ $('insdots').innerHTML=INS.map((s,i)=>'<button class="insdot'+(i===insI?' on':'')+'" data-d="'+i+'" title="Insight '+(i+1)+' of '+INS.length+'" aria-label="Insight '+(i+1)+'"></button>').join('');
+ if($('inscnt'))$('inscnt').textContent=INS.length>1?(insI+1)+' / '+INS.length:'';
+ if($('insprog'))$('insprog').style.display=INS.length>1?'':'none';
+ if($('ins'))$('ins').style.setProperty('--insdur',INSDUR+'ms');
  vp.querySelectorAll('.insact').forEach(b=>b.onclick=()=>{stopIns();INS[+b.dataset.i].fn();});
  $('insdots').querySelectorAll('.insdot').forEach(b=>b.onclick=()=>{insI=+b.dataset.d;drawIns();startIns();});
 }
-function startIns(){stopIns(); if(INS.length<2)return; insT=setInterval(()=>{insI=(insI+1)%INS.length;drawIns();},6500);}
+const INSDUR=5000;
+/* restart the fill animation from zero for the current slide */
+function insBar(run){const b=$('insbar'); if(!b)return;
+ b.classList.remove('run'); b.style.width='0'; void b.offsetWidth;
+ if(run&&INS.length>1){b.style.removeProperty('width');b.classList.add('run');}}
+function startIns(){stopIns(); insBar(INS.length>1);
+ if(INS.length<2)return; insT=setInterval(()=>{insI=(insI+1)%INS.length;drawIns();insBar(true);},INSDUR);}
 function insStep(k){if(!INS.length)return;insI=(insI+k+INS.length)%INS.length;drawIns();startIns();}
 (function(){const p=document.getElementById('insprev'),n=document.getElementById('insnext'),c=document.getElementById('ins');
  if(p)p.onclick=()=>insStep(-1); if(n)n.onclick=()=>insStep(1);
- if(c){c.addEventListener('mouseenter',stopIns);c.addEventListener('mouseleave',startIns);}
+ if(c){c.addEventListener('mouseenter',()=>{if(insT){clearInterval(insT);insT=null;}});c.addEventListener('mouseleave',startIns);}
  document.addEventListener('visibilitychange',()=>{document.hidden?stopIns():startIns();});})();
 function stopIns(){if(insT){clearInterval(insT);insT=null;}}
 /* ==================== metric drill-down ==================== */
