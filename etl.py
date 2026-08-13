@@ -318,7 +318,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         dc = s.get("docCount") or 0; mgr = role_map.get(s.get("parent"))
         base = dict(c=e.get("employeeCode"), n=e.get("name"), r=role_of(e), di=g.get("division") or "",
                     zn=g.get("zone") or "", st=g.get("state") or "—", hq=g.get("hq") or "—",
-                    mg=mgr["name"] if mgr else "—", da=dc, du=dc)
+                    mg=mgr["name"] if mgr else "—", mgc=(mgr.get("code") or "") if mgr else "",
+                    da=dc, du=dc)
         if not a_:
             R.append({**base, "vis":0,"dv":0,"cv":0,"ud":0,"cov":0,"cpd":0,"rx":0,"rpc":0,"rxPerDoc":0,
                       "rxPerDay":0,"rxConv":0,"rxD":0,"s2r":0,"sm":0,"pq":0,"tp":"None","ob":0,"zeroRx":0,
@@ -377,6 +378,37 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             if c[2] and c[5]: s.add(c[5])
     for x in R: x["sp"] = sorted(repSp.get(x["c"], []))
     del repSp
+
+    # ---- per-rep monthly series (drives the trend chart in the profile) ----
+    # [[YYYY-MM, visits, rx, doctorVisits], ...] — two ints per rep-month.
+    # Deliberately NOT tracking distinct doctors per month: that needed a set of doctor
+    # codes per rep per month and cost ~70 MB peak for a figure nothing renders.
+    for x in R:
+        mser = {}
+        for c in calls_by_code.get(x["c"], []):
+            k = c[0][:7]
+            e = mser.get(k)
+            if e is None: e = mser[k] = [0, 0, 0]
+            e[0] += 1; e[1] += c[8]
+            if c[2]: e[2] += 1
+        x["ms"] = [[k, v[0], v[1], v[2]] for k, v in sorted(mser.items())]
+
+    # ---- peer ranks within the same designation ----
+    # A raw number is meaningless without context: "4,683 Rx" reads very differently
+    # as #5 of 487 than as #300 of 487. Rank 1 = best. Ties share the better rank.
+    RANKED = ["rx", "vis", "ud", "rxConv", "cov", "pi", "cpd", "rpc", "rxPerDoc", "att"]
+    by_role = {}
+    for x in R: by_role.setdefault(x["r"], []).append(x)
+    for role, grp in by_role.items():
+        n = len(grp)
+        for m in RANKED:
+            vals = sorted(((x.get(m) or 0) for x in grp), reverse=True)
+            pos = {}
+            for i, v in enumerate(vals):
+                if v not in pos: pos[v] = i + 1
+            for x in grp:
+                x.setdefault("rk", {})[m] = [pos[(x.get(m) or 0)], n]
+    del by_role
     # flags
     for x in R:
         f=[]
