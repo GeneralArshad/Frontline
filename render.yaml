@@ -1,0 +1,49 @@
+# Render Blueprint — New + → Blueprint → point at this repo.
+# ONE web service with a persistent disk. It serves the report instantly from an
+# incremental store, and refreshes that store in a background thread (on a schedule
+# and via the in-app "Refresh now" button). No separate cron job, because a Render
+# disk can only attach to a single service.
+services:
+  - type: web
+    name: frontline-report
+    runtime: python
+    region: singapore            # same region as your channel-health service
+    plan: starter                # starter is always-on (free tier spins down + loses the timer)
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    disk:
+      name: frontline-data
+      mountPath: /var/data       # SQLite store + rendered report cache live here
+      sizeGB: 2
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: FRONTLINE_BASE
+        value: https://hive-frontline-backend.com
+      - key: FRONTLINE_ORG_ID
+        sync: false              # your org id (set in dashboard)
+      - key: FRONTLINE_SVC_EMAIL
+        sync: false              # svc_analytics@britishbiologicals.com (secret)
+      - key: FRONTLINE_SVC_PASSWORD
+        sync: false              # secret
+      - key: LIFETIME_START
+        value: "2026-01"         # earliest month to backfill (YYYY-MM)
+      - key: ETL_CONCURRENCY
+        value: "8"
+      - key: REFRESH_EVERY_MIN
+        value: "60"              # background refresh cadence in minutes (0 = only manual)
+      # ---- Auth: Microsoft (Entra) SSO, restricted to your tenant/domain ----
+      - key: FLASK_SECRET
+        generateValue: true
+      - key: MS_CLIENT_ID
+        sync: false              # Entra app registration (Application/client ID)
+      - key: MS_CLIENT_SECRET
+        sync: false
+      - key: MS_TENANT_ID
+        sync: false              # your Microsoft 365 tenant id
+      - key: ALLOWED_EMAIL_DOMAIN
+        value: britishbiologicals.com
+      # If MS_CLIENT_ID is empty, the app falls back to a shared password gate:
+      - key: REPORT_PASSWORD
+        sync: false              # optional interim gate until SSO is configured

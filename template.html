@@ -1,0 +1,300 @@
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
+:root{--royal:#1B2A6B;--navy:#0E1740;--red:#C8102E;--green:#0A7C4A;--amber:#E8911A;--purple:#7C3AED;--blue:#2563EB;
+--bg:#EEF1F8;--surface:#fff;--surface2:#F7F9FD;--ink:#0E1740;--muted:#5B6478;--faint:#8A93A8;--line:#E4E9F4;--chip:#EEF1F8;--accent:#1B2A6B;
+--sh1:0 1px 2px rgba(16,23,64,.05);--sh2:0 4px 14px rgba(16,23,64,.06);--sh3:0 14px 40px rgba(16,23,64,.12);}
+[data-theme=dark]{--bg:#080E28;--surface:#111B40;--surface2:#0E1738;--ink:#EAEEFB;--muted:#9AA6CC;--faint:#6B77A0;--line:#22305C;--chip:#16224B;--accent:#9FB0FF;--sh2:0 6px 18px rgba(0,0,0,.35);--sh3:0 20px 50px rgba(0,0,0,.5);}
+*{box-sizing:border-box}html,body{margin:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.gradbar{height:4px;background:linear-gradient(90deg,#E8911A,#D81E5B,#C8102E,#7C3AED,#1B2A6B)}
+header{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
+.topin{max-width:1660px;margin:0 auto;padding:13px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.wm{font-size:21px;font-weight:800;letter-spacing:-.6px}.wm .r{color:var(--red)}.wm .b{color:var(--royal)}[data-theme=dark] .wm .b{color:#9FB0FF}
+h1{font-size:14.5px;margin:0;font-weight:700}.sub{font-size:11px;color:var(--faint)}.spacer{flex:1}
+.tabs{display:flex;gap:5px;flex-wrap:wrap}
+.tabs button{border:1px solid transparent;background:transparent;color:var(--muted);padding:8px 14px;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;transition:.15s}
+.tabs button:hover{background:var(--chip);color:var(--ink)}.tabs button.on{background:var(--ink);color:var(--surface);box-shadow:var(--sh2)}
+.icbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 11px;font-weight:600;cursor:pointer;font-size:13px}
+.wrap{max-width:1660px;margin:0 auto;padding:6px 26px 72px}
+.secttl{margin:26px 2px 14px}.secttl .eye{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--red)}
+.secttl .big{font-size:18px;font-weight:800;letter-spacing:-.3px;margin-top:2px}.secttl .d{font-size:12px;color:var(--muted);margin-top:2px}
+.filters{display:flex;flex-wrap:wrap;gap:11px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:14px 16px;box-shadow:var(--sh2);margin:18px 0}
+.filters label{font-size:9.5px;color:var(--faint);font-weight:800;text-transform:uppercase;display:block;margin-bottom:4px}
+.filters select,.filters input{font-family:inherit;font-size:12.5px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);color:var(--ink);max-width:158px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:6px 0 4px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--sh2);position:relative;overflow:hidden;transition:.18s}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--sh3)}
+.kpi .v{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.02em}.kpi .l{font-size:10.5px;color:var(--muted);margin-top:8px;font-weight:700;text-transform:uppercase}
+.kpi .h{font-size:10.5px;color:var(--faint);margin-top:3px}
+.kpi::before{content:"";position:absolute;inset:0;background:radial-gradient(120px 80px at 100% 0%,color-mix(in srgb,var(--kc,#1B2A6B) 12%,transparent),transparent)}
+.kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--kc,#1B2A6B)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--sh2);transition:.18s}
+.card.click{cursor:pointer}.card.click:hover{transform:translateY(-3px);box-shadow:var(--sh3);border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.card .ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
+.card h3{margin:0;font-size:13px;font-weight:800}.card .cs{font-size:11px;color:var(--faint);margin-top:2px}
+.exp{font-size:13px;color:var(--faint);border:1px solid var(--line);border-radius:8px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.c8{grid-column:span 8}.c5{grid-column:span 5}.c7{grid-column:span 7}.c12{grid-column:span 12}
+.cbox{position:relative;height:260px}.cbox.sm{height:220px}
+.tablewrap{overflow:auto;max-height:620px;border:1px solid var(--line);border-radius:12px;margin-top:14px}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px}
+thead th{position:sticky;top:0;background:var(--chip);text-align:left;padding:10px 12px;font-size:10px;text-transform:uppercase;font-weight:800;cursor:pointer;white-space:nowrap;border-bottom:1px solid var(--line)}
+thead th[title]{text-decoration:underline dotted color-mix(in srgb,var(--muted) 50%,transparent);text-underline-offset:3px}
+tbody td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}tbody tr:nth-child(even){background:color-mix(in srgb,var(--surface2) 60%,transparent)}tbody tr:hover{background:var(--chip)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.pill{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:800}.yes{background:rgba(10,124,74,.14);color:var(--green)}.no{background:rgba(200,16,46,.12);color:var(--red)}
+.flag{display:inline-block;background:rgba(200,16,46,.09);color:var(--red);border:1px solid rgba(200,16,46,.18);border-radius:6px;padding:2px 7px;font-size:10px;margin:1px 3px 1px 0;font-weight:600}
+[data-theme=dark] .yes{color:#5fd6a0}[data-theme=dark] .no,[data-theme=dark] .flag{color:#ff8aa0}
+.pi{display:inline-block;min-width:36px;text-align:center;border-radius:7px;padding:3px 7px;font-weight:800;font-size:11px;color:#fff}
+.sec{display:none}.sec.on{display:block;animation:fade .25s ease}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.callout{background:linear-gradient(120deg,#1B2A6B,#0E1740 60%,#231b5e);color:#fff;border-radius:18px;padding:24px 28px;box-shadow:var(--sh3);position:relative;overflow:hidden;display:flex;gap:22px;align-items:center}
+.callout .ring{font-size:34px}.callout .big{font-size:28px;font-weight:800;line-height:1.15}.callout .t{font-size:13px;opacity:.85;margin-top:6px;max-width:820px}
+.callout::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,.5),transparent 70%)}
+#load{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:99;font-weight:700;color:var(--muted)}
+.foot{color:var(--faint);font-size:11px;margin-top:30px;text-align:center}
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.gcard{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:16px 18px;box-shadow:var(--sh2)}
+.gcard h4{margin:0 0 10px;font-size:12px;font-weight:800;text-transform:uppercase;color:var(--red)}
+.gitem{padding:8px 0;border-top:1px solid var(--line)}.gitem:first-of-type{border-top:0}
+.gitem b{font-size:12.5px}.gitem span{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.55}
+.mscrim{position:fixed;inset:0;background:rgba(7,12,35,.55);opacity:0;pointer-events:none;transition:.2s;z-index:80;display:flex;align-items:center;justify-content:center;padding:24px}
+.mscrim.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh3);width:min(940px,96vw);max-height:92vh;overflow:auto}
+.mhead{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface)}
+.mhead h3{margin:0;font-size:16px;font-weight:800}.mhead .cs{font-size:12px;color:var(--muted);margin-top:3px;max-width:640px}
+.mx{cursor:pointer;font-size:20px;color:var(--muted);border:1px solid var(--line);border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center}
+.mbody{padding:20px 22px}.mbox{position:relative;height:360px;margin-bottom:16px}
+@media(max-width:1250px){.c6,.c4,.c8,.c5,.c7{grid-column:span 12}.c3{grid-column:span 6}}
+
+.erow{border:1px solid var(--line);border-radius:10px;margin-top:10px;overflow:hidden}
+.eh2{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;flex-wrap:wrap;font-size:13px}
+.eh2:hover{background:var(--hover,rgba(0,0,0,.02))}
+.eh2 .chev2{color:var(--muted);font-size:11px;transition:transform .2s}.erow.op .chev2{transform:rotate(90deg)}
+.eh2 .cc{color:#7C3AED;font-weight:700;font-size:12px}
+.eh2 .rl2{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--line);color:var(--muted)}
+.eh2 .m2{margin-left:auto;color:var(--muted);font-size:12px;text-align:right}
+.eb2{display:none;border-top:1px solid var(--line)}.erow.op .eb2{display:block}
+.eb2 .sub{color:var(--muted);font-size:10.5px}
+</style></head><body>
+<div id="load">Decompressing report…</div><div class="gradbar"></div>
+<header><div class="topin">
+<span class="wm"><span class="r">FRONTLINE</span> <span class="b">&raquo;</span></span>
+<div><h1>Field BI — July 2026 · Prescription-first</h1><div class="sub" id="sub"></div></div>
+<span class="spacer"></span>
+<span class="tabs" id="tabs"><button data-t="rx" class="on">💊 Rx Engine</button><button data-t="ov">Overview</button><button data-t="prod">Productivity</button><button data-t="mgr">Managers</button><button data-t="exc">Exceptions</button><button data-t="daily">Daily Calls</button><button data-t="docs">Doctors</button><button data-t="calls">📋 Call Detail</button><button data-t="roster">🩺 Doctors × Rep</button><button data-t="guide">📖 Guide</button></span>
+<button class="icbtn" id="theme">🌙</button>
+</div>
+<div class="topin" style="padding-top:0"><div class="filters" style="margin:0;flex:1">
+<div><label>Search</label><input id="q" placeholder="rep name/code…"></div>
+<div><label>Division</label><select id="fdi"></select></div><div><label>Zone</label><select id="fzn"></select></div>
+<div><label>State</label><select id="fst"></select></div><div><label>HQ</label><select id="fhq"></select></div>
+<div><label>Role</label><select id="frl"></select></div><div><label>Manager</label><select id="fmg"></select></div>
+<div><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
+<div><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div><div><label>Specialization</label><select id="fsp"></select></div><div><label>Activity</label><select id="fac"><option value="">All activity</option><option value="act">Active &le;3d</option><option value="s37">Silent 3&ndash;7d</option><option value="s7">Silent 7d+</option><option value="s14">Silent 14d+</option></select></div><div><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
+<span class="spacer"></span><button class="icbtn" id="reset">↺ Reset</button>
+</div></div></header>
+<div class="wrap">
+<section class="sec on" id="sec_rx">
+<div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
+<div class="kpis" id="rxkpis"></div>
+<div class="callout" style="margin-top:18px"><div class="ring">💊</div><div><div class="big" id="rxBig"></div><div class="t" id="rxT"></div></div></div>
+<div class="grid" style="margin-top:18px">
+<div class="card click c4" data-exp="ch_rxconv"><div class="ch"><div><h3>Rx conversion of doctors met</h3><div class="cs">Did the visit produce a prescription?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxconv"></canvas></div></div>
+<div class="card click c8" data-exp="ch_rxspec"><div class="ch"><div><h3>Rx by specialization</h3><div class="cs">Where prescriptions come from</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxspec"></canvas></div></div>
+<div class="card click c6" data-exp="ch_rxprod"><div class="ch"><div><h3>Rx by product</h3><div class="cs">Which products drive Rx</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxprod"></canvas></div></div>
+<div class="card click c6" data-exp="ch_rxcat"><div class="ch"><div><h3>Rx by doctor category</h3><div class="cs">Are premium doctors delivering?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxcat"></canvas></div></div>
+</div>
+<div class="secttl" style="margin-top:30px"><div class="eye">Leaders</div><div class="big">Top Rx-generating doctors</div></div>
+<div class="card"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="tdh"></tr></thead><tbody id="tdb"></tbody></table></div></div>
+<div class="secttl" style="margin-top:30px"><div class="eye">Action</div><div class="big">Rx performance by rep</div></div>
+<div class="card"><div class="ch"><div><h3>Rx performance <span id="rpcnt" class="sub"></span></h3><div class="cs">Sortable · hover headers for definitions · zero-Rx reps flagged</div></div></div><div class="tablewrap"><table><thead><tr id="rph"></tr></thead><tbody id="rpb"></tbody></table></div></div>
+</section>
+<section class="sec" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid" id="ovcharts" style="margin-top:18px"></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Employees <span id="cnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="eh"></tr></thead><tbody id="eb"></tbody></table></div></div></section>
+<section class="sec" id="sec_prod"><div class="secttl"><div class="eye">Performance</div><div class="big">Rep Productivity Index</div></div>
+<div class="grid"><div class="card click c5" data-exp="ch_pi"><div class="ch"><div><h3>Index distribution</h3><div class="cs">Active field reps</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_pi"></canvas></div></div>
+<div class="card c7"><div class="ch"><div><h3>How it works</h3></div></div><p style="line-height:1.8;color:var(--muted);margin:4px 0 0"><b style="color:var(--ink)">30%</b> calls/active day · <b style="color:var(--ink)">25%</b> Rx per call · <b style="color:var(--ink)">30%</b> coverage · <b style="color:var(--ink)">15%</b> tour-plan — each a percentile vs peers.</p></div></div>
+<div class="card" style="margin-top:18px"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="ph"></tr></thead><tbody id="pb"></tbody></table></div></div></section>
+<section class="sec" id="sec_mgr"><div class="secttl"><div class="eye">Leadership</div><div class="big">Manager &amp; zone accountability</div></div>
+<div class="card click" data-exp="ch_mgr"><div class="ch"><div><h3>Top ABM teams by Rx</h3><div class="cs">Team prescription output</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_mgr"></canvas></div></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Manager scorecard</h3></div></div><div class="tablewrap"><table><thead><tr id="mh"></tr></thead><tbody id="mb"></tbody></table></div></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Zone scorecard</h3></div></div><div class="tablewrap"><table><thead><tr id="zh"></tr></thead><tbody id="zb"></tbody></table></div></div></section>
+<section class="sec" id="sec_exc"><div class="secttl"><div class="eye">Risk</div><div class="big">Exceptions</div></div>
+<div class="grid"><div class="card click c5" data-exp="ch_flag"><div class="ch"><div><h3>Exceptions by type</h3></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_flag"></canvas></div></div>
+<div class="card c7"><div class="ch"><div><h3>What these flags mean</h3></div></div><p style="line-height:1.85;color:var(--muted);margin:4px 0 0"><b style="color:var(--ink)">Zero Rx despite visits</b> · <b style="color:var(--ink)">Silent</b> · <b style="color:var(--ink)">New joiner not activated</b> · <b style="color:var(--ink)">Went silent mid-month</b> · <b style="color:var(--ink)">Tour plan not submitted</b> · <b style="color:var(--ink)">Low coverage</b> · <b style="color:var(--ink)">Sample-heavy / low Rx</b></p></div></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Flagged reps <span id="xcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="xh"></tr></thead><tbody id="xb"></tbody></table></div></div></section>
+<section class="sec" id="sec_daily"><div class="secttl"><div class="eye">Activity</div><div class="big">Daily calls &amp; Rx</div></div>
+<div class="card click" data-exp="ch_daily2"><div class="ch"><div><h3>Daily trend</h3><div class="cs">Calls per day</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_daily2"></canvas></div></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Daily Call Report <span id="dcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="dh2"></tr></thead><tbody id="db2"></tbody></table></div></div></section>
+<section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div></div>
+<div class="filters"><div><label>Doctor search</label><input id="dq" placeholder="name/clinic/code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><span class="spacer"></span><span class="sub" id="dtot"></span></div>
+<div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
+<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
+<div class="foot" id="foot"></div></div>
+<div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><div class="mx" onclick="cm()">✕</div></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
+<script id="d" type="application/json">__DATA_MARKER__</script><script>
+const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
+let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:''};const DF={q:'',st:'',sp:'',ca:''};
+let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=0,mmA=true,rS='rx',rA=false,tS=5,tA=false;
+const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
+const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
+async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+ D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());$('load').style.display='none';init();}
+function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
+function fill(id,v,l){$(id).innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
+function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includes(q)||r.c.toLowerCase().includes(q)))return false;}
+ if(F.di&&r.di!==F.di)return false;if(F.zn&&r.zn!==F.zn)return false;if(F.st&&r.st!==F.st)return false;if(F.hq&&r.hq!==F.hq)return false;if(F.rl&&r.r!==F.rl)return false;if(F.mg&&r.mg!==F.mg)return false;
+ if(F.ob!==''&&r.ob!==+F.ob)return false;
+ if(F.rx==='zero'&&!r.zeroRx)return false;if(F.rx==='has'&&!(r.rx>0))return false;
+ if(F.sp&&!(r.sp&&r.sp.includes(F.sp)))return false;
+ if(F.ac){const rc=r.rec;if(F.ac==='act'&&!(rc!==''&&rc<=3))return false;if(F.ac==='s37'&&!(rc!==''&&rc>3&&rc<=7))return false;if(F.ac==='s7'&&!(rc!==''&&rc>7))return false;if(F.ac==='s14'&&!(rc!==''&&rc>14))return false;}
+ if(F.pf){if(F.pf==='pi80'&&!(r.pi!==''&&r.pi>=80))return false;if(F.pf==='pi40'&&!(r.pi!==''&&r.pi<40))return false;if(F.pf==='cov60'&&!(r.cov>=60))return false;if(F.pf==='cov25'&&!(r.vis>0&&r.cov<25))return false;if(F.pf==='cv40'&&!(r.rxConv>=40))return false;if(F.pf==='cv15'&&!(r.vis>0&&r.rxConv<15))return false;}
+ return true;}
+function fr(){return D.reps.filter(pass);}
+const muted=()=>getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
+const line=()=>getComputedStyle(document.documentElement).getPropertyValue('--line').trim();
+let CH={},META={};
+function chart(id,cfg,meta){if(CH[id])CH[id].destroy();CH[id]=new Chart($(id),cfg);if(meta)META[id]=meta;}
+const gopt=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:muted(),font:{size:9}},grid:{display:false}},y:{ticks:{color:muted(),font:{size:9}},grid:{color:line()}}}});
+function piColor(v){return v>=75?'#0A7C4A':v>=50?'#2563EB':v>=25?'#E8911A':'#C8102E';}
+function sortRows(rows,k,asc){return rows.slice().sort((a,b)=>{let x=a[k],y=b[k];if(x==='')x=-1;if(y==='')y=-1;if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase();}return(x<y?-1:x>y?1:0)*(asc?1:-1);});}
+function dailyAgg(codes,idx){const m={};D.daily.forEach(x=>{if(codes&&!codes.has(x[0]))return;if(!x[1])return;m[x[1]]=(m[x[1]]||0)+x[idx];});return Object.keys(m).sort().map(d=>[d,m[d]]);}
+window.expand=(id)=>{const m=META[id];if(!m)return;$('mtitle').textContent=m.title;$('mdef').textContent=m.def||'';
+ const tot=m.values.reduce((a,b)=>a+b,0);
+ $('modtab').innerHTML=m.labels.map((l,i)=>'<tr><td>'+l+'</td><td class=n>'+fmt(m.values[i])+'</td><td class=n>'+(tot?Math.round(1000*m.values[i]/tot)/10:0)+'%</td></tr>').join('');
+ if(CH.ch_modal)CH.ch_modal.destroy();
+ const horiz=m.type==='barh';
+ CH.ch_modal=new Chart($('ch_modal'),{type:m.type==='line'?'line':(m.type==='doughnut'?'doughnut':'bar'),data:{labels:m.labels,datasets:[{data:m.values,backgroundColor:m.type==='line'?'rgba(27,42,107,.12)':(m.colors||'#1B2A6B'),borderColor:m.type==='line'?'#1B2A6B':undefined,fill:m.type==='line',tension:.3,borderRadius:5,borderWidth:m.type==='doughnut'?0:undefined}]},options:m.type==='doughnut'?{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{color:muted()}}}}:{...gopt(),indexAxis:horiz?'y':'x'}});
+ $('mscrim').classList.add('open');};
+window.cm=()=>$('mscrim').classList.remove('open');
+function wireExp(){document.querySelectorAll('.card.click[data-exp]').forEach(c=>c.onclick=()=>expand(c.dataset.exp));}
+function kpi(kc,v,l,def,h){return '<div class="kpi" style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')+'</div>';}
+function th(k,l){return '<th data-k="'+k+'"'+(TT[k]?' title="'+TT[k].replace(/"/g,'')+'"':'')+'>'+l+'</th>';}
+/* ---- RX ENGINE ---- */
+function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=>r.vis>0);const zero=bo.filter(r=>r.zeroRx);
+ const totRx=rows.reduce((a,r)=>a+r.rx,0);const rxProd=act.filter(r=>r.rx>0);
+ const avg=(a,f)=>a.length?Math.round(100*a.reduce((s,r)=>s+r[f],0)/a.length)/100:0;
+ $('rxkpis').innerHTML=[kpi('#0A7C4A',fmt(totRx),'Total Rx',GL.rx,''),
+  kpi('#2563EB',fmt(D.rx.metDoctors),'Doctors met','Unique doctors visited (all reps).',''),
+  kpi('#E8911A',fmt(D.rx.rxDoctors),'Rx doctors',GL.rxD,Math.round(100*D.rx.rxDoctors/D.rx.metDoctors)+'% converted'),
+  kpi('#C8102E',Math.round(100*D.rx.rxDoctors/D.rx.metDoctors)+'%','Rx conversion',GL.rxConv,'of doctors met'),
+  kpi('#C8102E',fmt(zero.length),'Zero-Rx reps',GL.zeroRx,act.length?Math.round(100*zero.length/act.length)+'% of active':''),
+  kpi('#1B2A6B',avg(rxProd,'rpc'),'Avg Rx / call',GL.rpc,''),
+  kpi('#7C3AED',avg(rxProd,'rxPerDoc'),'Rx / doctor met',GL.rxPerDoc,''),
+  kpi('#7C3AED',avg(rxProd,'rxPerDay'),'Rx / day',GL.rxPerDay,''),
+  kpi('#E8911A',avg(rxProd,'s2r'),'Samples / Rx',GL.s2r,'lower is better')].join('');
+ $('rxBig').textContent=Math.round(100*(D.rx.metDoctors-D.rx.rxDoctors)/D.rx.metDoctors)+'% of doctors met produced no prescription';
+ $('rxT').textContent=fmt(D.rx.metDoctors-D.rx.rxDoctors)+' of '+fmt(D.rx.metDoctors)+' doctors met gave zero Rx, and '+zero.length+' active field reps generated none at all. '+D.rx.pareto+'% of all Rx comes from just '+D.rx.paretoN+' reps — the biggest growth lever is converting existing visits, not adding more.';
+ const noRx=D.rx.metDoctors-D.rx.rxDoctors;
+ chart('ch_rxconv',{type:'doughnut',data:{labels:['Produced Rx','No Rx'],datasets:[{data:[D.rx.rxDoctors,noRx],backgroundColor:['#0A7C4A','#C8102E'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Rx conversion of doctors met',def:GL.rxConv,type:'doughnut',labels:['Produced Rx','No Rx'],values:[D.rx.rxDoctors,noRx],colors:['#0A7C4A','#C8102E']});
+ const sp=D.rx.bySpec.slice(0,12);chart('ch_rxspec',{type:'bar',data:{labels:sp.map(x=>x[0]),datasets:[{data:sp.map(x=>x[1]),backgroundColor:'#1B2A6B',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Rx by specialization',def:'Prescriptions grouped by the doctor\'s specialization.',type:'barh',labels:sp.map(x=>x[0]),values:sp.map(x=>x[1])});
+ const pr=D.rx.prod.slice(0,10);chart('ch_rxprod',{type:'bar',data:{labels:pr.map(x=>x[0]),datasets:[{data:pr.map(x=>x[2]),backgroundColor:'#0A7C4A',borderRadius:4}]},options:{...gopt(),scales:{x:{ticks:{color:muted(),font:{size:8},maxRotation:55,minRotation:40},grid:{display:false}},y:{ticks:{color:muted(),font:{size:9}},grid:{color:line()}}}}},{title:'Rx by product',def:'Prescriptions generated per product.',type:'bar',labels:pr.map(x=>x[0]),values:pr.map(x=>x[2])});
+ const ct=D.rx.byCat.slice(0,10);chart('ch_rxcat',{type:'bar',data:{labels:ct.map(x=>x[0]),datasets:[{data:ct.map(x=>x[1]),backgroundColor:'#7C3AED',borderRadius:4}]},options:gopt()},{title:'Rx by doctor category',def:'Prescriptions grouped by the doctor category (A/B/C etc.).',type:'bar',labels:ct.map(x=>x[0]),values:ct.map(x=>x[1])});
+ wireExp();
+ // top Rx doctors
+ const TD=[['Doctor',0],['Code',1],['Specialization',2],['Category',3],['Clinic',4],['Rx',5],['Visits',6],['Rep',7],['Rep Name',8],['State',9]];
+ $('tdh').innerHTML=TD.map(c=>'<th data-i="'+c[1]+'">'+c[0]+'</th>').join('');
+ const codes=new Set(rows.map(r=>r.c));
+ let td=D.rx.topDocs.filter(d=>codes.has(d[7]));
+ td.sort((a,b)=>{let x=a[tS],y=b[tS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(tA?1:-1);});
+ $('tdb').innerHTML=td.slice(0,200).map(d=>'<tr><td>'+d[0]+'</td><td>'+d[1]+'</td><td>'+(d[2]||'')+'</td><td>'+(d[3]||'')+'</td><td>'+(d[4]||'')+'</td><td class=n><b>'+fmt(d[5])+'</b></td><td class=n>'+d[6]+'</td><td>'+d[7]+'</td><td>'+d[8]+'</td><td>'+d[9]+'</td></tr>').join('');
+ $('tdh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===tS)tA=!tA;else{tS=i;tA=false;}rxView(fr());});
+ // rx performance table
+ const RP=[['c','Code'],['n','Name'],['st','State'],['hq','HQ'],['mg','Manager'],['vis','Visits'],['rx','Rx'],['rpc','Rx/Call'],['rxPerDoc','Rx/Doctor'],['rxPerDay','Rx/Day'],['ud','Drs Met'],['rxD','Rx Drs'],['rxConv','Rx Conv%'],['s2r','Samp/Rx'],['att','Attend%'],['repc','Repeat%'],['cl','Max/30m'],['rpct','React+%'],['ds','Day Start'],['scf','SC Focus%'],['mpc','Min/Call'],['ndc','NewDr Conv%'],['zeroRx','Zero Rx']];
+ $('rph').innerHTML=RP.map(c=>th(c[0],c[1])).join('');
+ $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">ZERO</span>':'')+'</td></tr>').join('');
+ $('rpcnt').textContent='('+bo.length+' field reps)';
+ $('rph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===rS)rA=!rA;else{rS=k;rA=false;}rxView(fr());});}
+/* ---- OVERVIEW ---- */
+function kpis(rows){const sum=f=>rows.reduce((a,r)=>a+r[f],0);const onb=rows.filter(r=>r.ob).length,active=rows.filter(r=>r.vis>0).length;
+ const bc=rows.filter(r=>r.r==='BO'&&r.du>0);const cov=bc.length?(bc.reduce((a,r)=>a+r.cov,0)/bc.length).toFixed(1):0;
+ const pis=rows.filter(r=>r.r==='BO'&&r.pi!=='');const avgpi=pis.length?Math.round(pis.reduce((a,r)=>a+r.pi,0)/pis.length):0;
+ $('kpis').innerHTML=[kpi('#0A7C4A',fmt(sum('rx')),'Rx',GL.rx,''),kpi('#C8102E',fmt(onb),'Onboarded',GL.ob,''),kpi('#7C3AED',fmt(active),'Active reps','Logged ≥1 visit.',''),
+  kpi('#1B2A6B',fmt(sum('vis')),'Visits',GL.vis,''),kpi('#E8911A',fmt(sum('sm')),'Samples','Sample units distributed.',''),
+  kpi('#2563EB',cov+'%','Coverage',GL.cov,''),kpi('#7C3AED',avgpi,'Avg Prod Index',GL.pi,''),kpi('#C8102E',fmt(rows.filter(r=>r.zeroRx).length),'Zero-Rx reps',GL.zeroRx,'')].join('');}
+function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
+ $('ovcharts').innerHTML=['<div class="card click c8" data-exp="ch_daily"><div class="ch"><div><h3>Daily Rx trend</h3><div class="cs">Prescriptions per day</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_daily"></canvas></div></div>',
+ '<div class="card click c4" data-exp="ch_onb"><div class="ch"><div><h3>Onboarding</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_onb"></canvas></div></div>',
+ '<div class="card click c6" data-exp="ch_state"><div class="ch"><div><h3>Rx by state</h3><div class="cs">Top 12</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_state"></canvas></div></div>',
+ '<div class="card click c6" data-exp="ch_role"><div class="ch"><div><h3>Visits by role</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_role"></canvas></div></div>'].join('');
+ wireExp();
+ const dl=dailyAgg(codes,5);chart('ch_daily',{type:'line',data:{labels:dl.map(d=>d[0].slice(5)),datasets:[{data:dl.map(d=>d[1]),borderColor:'#0A7C4A',backgroundColor:'rgba(10,124,74,.12)',fill:true,tension:.3,pointRadius:2}]},options:gopt()},{title:'Daily Rx trend',def:'Prescriptions generated per day.',type:'line',labels:dl.map(d=>d[0]),values:dl.map(d=>d[1])});
+ const onb=rows.filter(r=>r.ob).length;chart('ch_onb',{type:'doughnut',data:{labels:['Onboarded','Not'],datasets:[{data:[onb,rows.length-onb],backgroundColor:['#0A7C4A','#C8102E'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Onboarding',def:GL.ob,type:'doughnut',labels:['Onboarded','Not'],values:[onb,rows.length-onb],colors:['#0A7C4A','#C8102E']});
+ const sv={};rows.forEach(r=>{if(r.st)sv[r.st]=(sv[r.st]||0)+r.rx;});const st=Object.entries(sv).sort((a,b)=>b[1]-a[1]).slice(0,12);
+ chart('ch_state',{type:'bar',data:{labels:st.map(x=>x[0]),datasets:[{data:st.map(x=>x[1]),backgroundColor:'#0A7C4A',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Rx by state',def:'Prescriptions grouped by rep state.',type:'barh',labels:st.map(x=>x[0]),values:st.map(x=>x[1])});
+ const rv={};rows.forEach(r=>{if(r.r)rv[r.r]=(rv[r.r]||0)+r.vis;});const rr=Object.entries(rv).sort((a,b)=>b[1]-a[1]);
+ chart('ch_role',{type:'bar',data:{labels:rr.map(x=>x[0]),datasets:[{data:rr.map(x=>x[1]),backgroundColor:'#7C3AED',borderRadius:4}]},options:gopt()},{title:'Visits by role',def:'Visits by designation.',type:'bar',labels:rr.map(x=>x[0]),values:rr.map(x=>x[1])});}
+const EC=[['c','Code'],['n','Name'],['r','Role'],['di','Div'],['zn','Zone'],['st','State'],['hq','HQ'],['mg','Manager'],['da','Drs'],['vis','Visits'],['ud','Met'],['cov','Cov%'],['cpd','Calls/Day'],['rx','Rx'],['rpc','Rx/Call'],['pi','PI'],['tp','Tour'],['newd','New Drs'],['mom','Mom'],['chsh','Chem%'],['fhrs','Fld Hrs'],['tdc','TopDoc%'],['ob','Onb']];
+function empTable(rows){$('eh').innerHTML=EC.map(c=>th(c[0],c[1])).join('');
+ $('eb').innerHTML=sortRows(rows,eS,eA).slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.r+'</td><td>'+r.di+'</td><td>'+r.zn+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.da)+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+r.cov+'</td><td class=n>'+r.cpd+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+(r.pi!==''?'<span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span>':'')+'</td><td>'+r.tp+'</td><td class=n>'+r.newd+'</td><td class=n>'+(r.mom===''?'':r.mom)+'</td><td class=n>'+r.chsh+'</td><td class=n>'+r.fhrs+'</td><td class=n>'+r.tdc+'</td><td><span class="pill '+(r.ob?'yes':'no')+'">'+(r.ob?'Y':'N')+'</span></td></tr>').join('');
+ $('cnt').textContent='('+fmt(rows.length)+(rows.length>700?' — 700 shown':'')+')';
+ $('eh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===eS)eA=!eA;else{eS=k;eA=false;}empTable(fr());});}
+const PC=[['rank','#'],['c','Code'],['n','Name'],['st','State'],['mg','Manager'],['pi','Prod Index'],['cpd','Calls/Day'],['rpc','Rx/Call'],['cov','Cov%'],['rx','Rx'],['vis','Visits']];
+function prodView(rows){const bo=rows.filter(r=>r.r==='BO'&&r.pi!=='');
+ const bk=[0,0,0,0,0];bo.forEach(r=>{const v=r.pi;if(v<20)bk[0]++;else if(v<40)bk[1]++;else if(v<60)bk[2]++;else if(v<80)bk[3]++;else bk[4]++;});const bl=['0-19','20-39','40-59','60-79','80-100'];
+ chart('ch_pi',{type:'bar',data:{labels:bl,datasets:[{data:bk,backgroundColor:['#C8102E','#E8911A','#96700A','#2563EB','#0A7C4A'],borderRadius:4}]},options:gopt()},{title:'Productivity Index distribution',def:GL.pi,type:'bar',labels:bl,values:bk});wireExp();
+ $('ph').innerHTML=PC.map(c=>th(c[0],c[1])).join('');
+ $('pb').innerHTML=sortRows(bo,pS,pA).slice(0,600).map((r,i)=>'<tr><td class=n>'+(pS==='pi'&&!pA?i+1:'')+'</td><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td class=n><span class=pi style="background:'+piColor(r.pi)+'">'+r.pi+'</span></td><td class=n>'+r.cpd+'</td><td class=n>'+r.rpc+'</td><td class=n>'+r.cov+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+fmt(r.vis)+'</td></tr>').join('');
+ $('ph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k==='rank')return;if(k===pS)pA=!pA;else{pS=k;pA=false;}prodView(fr());});}
+const MC=[['name','Manager (ABM)'],['team','Team'],['active','Active'],['actPct','Active%'],['vis','Visits'],['rx','Rx'],['zeroRx','Zero-Rx'],['cov','Avg Cov%'],['pi','Avg PI']];
+function mgrView(){const top=D.mgrScore.slice().sort((a,b)=>b.rx-a.rx).slice(0,12);const ll=top.map(m=>m.name.split(' ').slice(0,2).join(' '));
+ chart('ch_mgr',{type:'bar',data:{labels:ll,datasets:[{data:top.map(m=>m.rx),backgroundColor:'#0A7C4A',borderRadius:4}]},options:gopt()},{title:'Top ABM teams by Rx',def:'Total prescriptions generated by each ABM team.',type:'bar',labels:ll,values:top.map(m=>m.rx)});wireExp();
+ $('mh').innerHTML=MC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('mb').innerHTML=sortRows(D.mgrScore,mS,mA).map(m=>'<tr><td>'+m.name+'</td><td class=n>'+m.team+'</td><td class=n>'+m.active+'</td><td class=n>'+m.actPct+'%</td><td class=n>'+fmt(m.vis)+'</td><td class=n><b>'+fmt(m.rx)+'</b></td><td class=n>'+m.zeroRx+'</td><td class=n>'+m.cov+'</td><td class=n><span class=pi style="background:'+piColor(m.pi)+'">'+m.pi+'</span></td></tr>').join('');
+ $('mh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===mS)mA=!mA;else{mS=k;mA=false;}mgrView();});
+ $('zh').innerHTML=['Zone','Reps','Active','Active%','Visits','Rx','Zero-Rx','Avg Cov%'].map(h=>'<th>'+h+'</th>').join('');
+ $('zb').innerHTML=D.zoneScore.map(z=>'<tr><td>'+z.name+'</td><td class=n>'+z.reps+'</td><td class=n>'+z.active+'</td><td class=n>'+z.actPct+'%</td><td class=n>'+fmt(z.vis)+'</td><td class=n><b>'+fmt(z.rx)+'</b></td><td class=n>'+z.zeroRx+'</td><td class=n>'+z.cov+'</td></tr>').join('');}
+function excView(rows){const fc={};rows.forEach(r=>r.fl.forEach(f=>fc[f]=(fc[f]||0)+1));const fe=Object.entries(fc).sort((a,b)=>b[1]-a[1]);
+ chart('ch_flag',{type:'bar',data:{labels:fe.map(x=>x[0]),datasets:[{data:fe.map(x=>x[1]),backgroundColor:'#C8102E',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Exceptions by type',def:'Reps carrying each risk flag.',type:'barh',labels:fe.map(x=>x[0]),values:fe.map(x=>x[1])});wireExp();
+ const flagged=rows.filter(r=>r.fl.length);const sorted=sortRows(flagged.map(r=>({...r,flc:r.fl.length})),xS==='fl'?'flc':xS,xA);
+ $('xh').innerHTML=[['c','Code'],['n','Name'],['st','State'],['mg','Manager'],['fl','Flags'],['vis','Visits'],['rx','Rx'],['cov','Cov%']].map(c=>th(c[0],c[1])).join('');
+ $('xb').innerHTML=sorted.slice(0,700).map(r=>'<tr><td>'+r.c+'</td><td>'+r.n+'</td><td>'+r.st+'</td><td>'+r.mg+'</td><td>'+r.fl.map(f=>'<span class=flag>'+f+'</span>').join('')+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n>'+fmt(r.rx)+'</td><td class=n>'+r.cov+'</td></tr>').join('');
+ $('xcnt').textContent='('+flagged.length+' flagged)';
+ $('xh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===xS)xA=!xA;else{xS=k;xA=false;}excView(fr());});}
+function dailyView(){const codes=new Set(fr().map(r=>r.c));const rm={};D.reps.forEach(r=>rm[r.c]=r);
+ const dl=dailyAgg(codes,2);chart('ch_daily2',{type:'line',data:{labels:dl.map(d=>d[0].slice(5)),datasets:[{data:dl.map(d=>d[1]),borderColor:'#1B2A6B',backgroundColor:'rgba(27,42,107,.12)',fill:true,tension:.3,pointRadius:2}]},options:gopt()},{title:'Daily calls trend',def:'Calls logged per day.',type:'line',labels:dl.map(d=>d[0]),values:dl.map(d=>d[1])});wireExp();
+ let rows=D.daily.filter(x=>codes.has(x[0])).map(x=>{const r=rm[x[0]]||{};return [x[0],r.n||'',r.st||'',x[1],x[2],x[3],x[4],x[5],x[6]];});
+ rows.sort((a,b)=>{let x=a[dS],y=b[dS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(dA?1:-1);});
+ $('dh2').innerHTML=['Code','Name','State','Date','Calls','Dr','Chem','Rx','Samples'].map((h,i)=>'<th data-i="'+i+'">'+h+'</th>').join('');
+ $('db2').innerHTML=rows.slice(0,1200).map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class=n>'+r[4]+'</td><td class=n>'+r[5]+'</td><td class=n>'+r[6]+'</td><td class=n><b>'+r[7]+'</b></td><td class=n>'+r[8]+'</td></tr>').join('');
+ $('dcnt').textContent='('+fmt(rows.length)+' rows'+(rows.length>1200?' — 1200 shown':'')+')';
+ $('dh2').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===dS)dA=!dA;else{dS=i;dA=true;}dailyView();});}
+function docsView(){const codes=new Set(fr().map(r=>r.c));let rows=D.docs.filter(d=>codes.has(d[12]));
+ if(DF.st)rows=rows.filter(d=>d[9]===DF.st);if(DF.sp)rows=rows.filter(d=>d[2]===DF.sp);if(DF.ca)rows=rows.filter(d=>d[7]===DF.ca);
+ if(DF.q){const q=DF.q.toLowerCase();rows=rows.filter(d=>(d[1]||'').toLowerCase().includes(q)||(d[6]||'').toLowerCase().includes(q)||(d[0]||'').toLowerCase().includes(q));}
+ rows.sort((a,b)=>{let x=a[mmS],y=b[mmS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(mmA?1:-1);});
+ $('mmh').innerHTML=[['Doctor',1],['Code',0],['Specialization',2],['Clinic',6],['Category',7],['City',8],['State',9],['Added',10],['Rep',13]].map(c=>'<th data-i="'+c[1]+'">'+c[0]+'</th>').join('');
+ $('mmb').innerHTML=rows.slice(0,1000).map(d=>'<tr><td>'+(d[1]||'')+'</td><td>'+d[0]+'</td><td>'+(d[2]||'')+'</td><td>'+(d[6]||'')+'</td><td>'+(d[7]||'')+'</td><td>'+(d[8]||'')+'</td><td>'+(d[9]||'')+'</td><td>'+(d[10]||'')+'</td><td>'+(d[13]||'')+'</td></tr>').join('');
+ $('doccnt').textContent='('+fmt(rows.length)+' of '+fmt(D.docs.length)+(rows.length>1000?' — 1000 shown':'')+')';
+ $('mmh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===mmS)mmA=!mmA;else{mmS=i;mmA=true;}docsView();});}
+function guide(){const G=[['Prescriptions (core)',[['Rx',GL.rx],['Rx / call',GL.rpc],['Rx / doctor met',GL.rxPerDoc],['Rx / day',GL.rxPerDay],['Rx conversion %',GL.rxConv],['Rx doctors',GL.rxD],['Zero Rx',GL.zeroRx],['Samples / Rx',GL.s2r]]],
+ ['Activity',[['Visits',GL.vis],['Calls / day',GL.cpd],['Active reps','Logged at least one visit.'],['Attendance %',GL.att],['Field hours/day',GL.fhrs],['Day start (first call)',GL.ds],['Minutes per call',GL.mpc]]],['Acquisition & quality',[['New doctors (7d)',GL.newd],['New-doctor conversion',GL.ndc],['Rx momentum',GL.mom],['Repeat coverage',GL.repc],['Supercore focus',GL.scf],['Reaction positivity',GL.rpct],['Chemist-visit share',GL.chsh],['Top-doctor Rx conc.',GL.tdc],['Max calls/30min',GL.cl]]],
+ ['Coverage',[['Coverage %',GL.cov],['Doctors met',GL.ud],['Doctors added',GL.da],['Coverage frequency',GL.freq]]],
+ ['Productivity',[['Productivity Index',GL.pi],['Tour plan',GL.tp],['PI colour','Green ≥75 · Blue 50–74 · Amber 25–49 · Red <25.']]],
+ ['Adoption',[['Onboarded',GL.ob],['New joiner','Created in the July onboarding batch.']]],
+ ['Risk flags',[['Zero Rx despite visits','Logged visits but generated no prescriptions — the biggest conversion gap.'],['Silent (no activity)','No visits, plans or doctors.'],['New joiner not activated','New hire who has not used the app.'],['Went silent mid-month','Active early, then stopped.'],['Tour plan not submitted','Active but no monthly plan filed.'],['Low coverage <25%','Met under a quarter of assigned doctors.'],['Sample-heavy / low Rx','Many samples for very few prescriptions.'],['Rx declining','Last-7-day Rx well below the rep\'s run-rate.'],['Single-doctor dependent','60%+ of Rx from one doctor.'],['Rushed calls (audit)','Under 8 min between calls across a busy day — superficial or bulk-logged.'],['New doctors not converting','Meeting new doctors but under 15% of them prescribe.']]]];
+ $('gloss').innerHTML=G.map(g=>'<div class="gcard"><h4>'+g[0]+'</h4>'+g[1].map(i=>'<div class="gitem"><b>'+i[0]+'</b><span>'+i[1]+'</span></div>').join('')+'</div>').join('');}
+function callsView(){const rows=fr().filter(r=>r.vis>0);$('clcnt').textContent='('+rows.length+' reps)';
+ const L=$('cllist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+r.n+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.vis)+' visits &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b></span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';
+ L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=callTable(el.dataset.c);el.dataset.l='1';}};});}
+function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+r.n+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
+ const rows=cs.map(v=>{const pr=(v[11]||'').split('|').map(p=>{const m=p.split('~');return m[0]+(m[1]?' <b style="color:#C8102E">Rx'+m[1]+'</b>':'');}).join('<br>');
+  const gps=(v[13]&&v[14])?'<a href="https://maps.google.com/?q='+v[13]+','+v[14]+'">map</a>':'';
+  const pres=v[2]?'<span class="pill '+(v[9]?'yes':'no')+'">'+(v[9]?'Y':'N')+'</span>':'';
+  return '<tr><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+(v[2]?'DR':'CH')+'</td><td><b>'+(v[3]||'')+'</b><div class="sub">'+(v[4]||'')+'</div></td><td>'+(v[5]||'')+'</td><td>'+(v[6]||'')+'</td><td>'+(v[7]||'')+'</td><td>'+pres+'</td><td>'+(v[10]||'')+'</td><td class=n><b>'+(v[8]||'')+'</b></td><td>'+pr+'</td><td class=n>'+(v[12]||'')+'</td><td>'+gps+'</td></tr>';}).join('');
+ return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
+function render(){const rows=fr();
+ if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else guide();
+ $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;}
+function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
+ fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');$('dtot').textContent=fmt(D.docs.length)+' doctors';
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
+ const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});
+ $('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};
+ $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};
+ $('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};
+ $('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};
+ $('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});
+ $('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;render();}
+boot();
+</script></body></html>
