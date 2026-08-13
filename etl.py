@@ -418,15 +418,28 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             e["calls"]+=1; e["dr"]+=1 if c[2] else 0; e["chem"]+=0 if c[2] else 1; e["rx"]+=c[8]; e["sm"]+=c[12]
             if c[2]:
                 code=c[4] or ("__"+c[3])
-                dc=docm.setdefault(code,dict(name=c[3],code=c[4],spec=c[5],cat=c[6],clinic=c[7],rx=0,vis=0,byRep={}))
+                dc=docm.setdefault(code,dict(name=c[3],code=c[4],spec=c[5],cat=c[6],clinic=c[7],
+                                             rx=0,vis=0,byRep={},sm=0,presc=0,first=c[0],last=c[0],react=""))
                 dc["rx"]+=c[8]; dc["vis"]+=1; dc["byRep"][empCode]=dc["byRep"].get(empCode,0)+1
+                dc["sm"]+=c[12]
+                if c[9]: dc["presc"]=1
+                if c[0]<dc["first"]: dc["first"]=c[0]
+                if c[0]>=dc["last"]: dc["last"]=c[0]; dc["react"]=c[10] or dc["react"]
     D_daily=[[d["code"],d["date"],d["calls"],d["dr"],d["chem"],d["rx"],d["sm"]] for d in dm.values()]
     docArr=[]
     for dc in docm.values():
         best=max(dc["byRep"].items(), key=lambda kv:kv[1])[0] if dc["byRep"] else None
         docArr.append((dc,best))
     st_by_code={r["c"]:r["st"] for r in R}
-    D_docs=[[dc["code"],dc["name"],dc["spec"],"","","",dc["clinic"],dc["cat"],"",st_by_code.get(best,""),"","",best or "", ""] for dc,best in docArr]
+    nm_by_code={r["c"]:r["n"]  for r in R}
+    hq_by_code={r["c"]:r["hq"] for r in R}
+    # Doctor master. Positions 0,1,2,6,7,9,12 are unchanged (other views depend on them);
+    # the slots that used to be hardcoded "" now carry real per-doctor facts, and 13-16 are new.
+    #  0 code  1 name  2 spec  3 rx  4 visits  5 prescriber  6 clinic  7 category  8 hq
+    #  9 state 10 lastSeen 11 firstSeen 12 repCode 13 repName 14 repsCovering 15 samples 16 lastReaction
+    D_docs=[[dc["code"],dc["name"],dc["spec"],dc["rx"],dc["vis"],dc["presc"],dc["clinic"],dc["cat"],
+             hq_by_code.get(best,""),st_by_code.get(best,""),dc["last"],dc["first"],best or "",
+             nm_by_code.get(best,""),len(dc["byRep"]),dc["sm"],dc["react"]] for dc,best in docArr]
     D_topDocs=sorted(([dc["name"],dc["code"],dc["spec"],dc["cat"],dc["clinic"],dc["rx"],dc["vis"],best or "","",st_by_code.get(best,"")] for dc,best in docArr), key=lambda x:-x[5])[:600]
     dsb={}
     for d in D_docs:

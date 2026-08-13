@@ -268,6 +268,45 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .phint{font-size:12px;color:var(--muted);background:var(--surface2);border:1px dashed var(--line);
   border-radius:var(--r2);padding:10px var(--s3);margin-top:var(--s2);line-height:1.6}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* -------- inline filter toolbar (section-scoped filters) --------
+   These controls had no styling at all: the v5 design-system rewrite only
+   defined .fbody form controls (sidebar), so .filters rendered as raw HTML. */
+.filters{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--s3);margin-top:var(--s4);
+  padding:var(--s4) var(--s5);background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r3);box-shadow:var(--sh1)}
+.filters>div{display:flex;flex-direction:column;flex:0 1 auto;min-width:158px}
+.filters>div.wide{min-width:236px;flex:1 1 236px}
+.filters label{font-size:9.5px;color:var(--faint);font-weight:700;text-transform:uppercase;
+  display:block;margin-bottom:var(--s1);letter-spacing:.05em}
+.filters select,.filters input{font-family:inherit;font-size:12.5px;padding:8px 10px;width:100%;
+  box-sizing:border-box;border:1px solid var(--line);border-radius:var(--r1);
+  background:var(--surface2);color:var(--ink);appearance:none;-webkit-appearance:none;transition:.14s}
+.filters select{padding-right:28px;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--faint) 50%),
+                   linear-gradient(135deg,var(--faint) 50%,transparent 50%);
+  background-position:calc(100% - 15px) calc(1em + 1px),calc(100% - 10px) calc(1em + 1px);
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+.filters input::placeholder{color:var(--faint)}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}
+.filters .spacer{flex:1 1 auto}
+.filters .fbtn{background:var(--chip);border:1px solid var(--line);color:var(--muted);
+  border-radius:var(--r1);padding:8px 13px;font-size:12px;font-weight:650;cursor:pointer;
+  font-family:inherit;white-space:nowrap}
+.filters .fbtn:hover{color:var(--ink);border-color:var(--faint)}
+/* summary stats that sit with the toolbar */
+.fstats{display:flex;flex-wrap:wrap;gap:var(--s3);margin-top:var(--s3)}
+.fstat{flex:1 1 132px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);
+  padding:var(--s3) var(--s4)}
+.fstat .v{font-size:var(--t-xl);font-weight:750;letter-spacing:-.4px;font-variant-numeric:tabular-nums;
+  color:var(--ink);line-height:1.15}
+.fstat .l{font-size:9.5px;color:var(--faint);font-weight:700;text-transform:uppercase;
+  letter-spacing:.05em;margin-top:3px}
+/* idle-days emphasis in the doctor table */
+.idle{font-variant-numeric:tabular-nums}
+.idle.warn{color:var(--warn);font-weight:700}
+.idle.bad{color:var(--bad);font-weight:700}
+
 /* ------------- sticky identity columns (horizontal scroll) ------------- */
 table.stk th.sk,table.stk td.sk{position:sticky;z-index:3;background:var(--surface)}
 table.stk thead th.sk{z-index:6;background:var(--surface2)}
@@ -419,8 +458,8 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <section class="sec" id="sec_daily"><div class="secttl"><div class="eye">Activity</div><div class="big">Daily calls &amp; Rx</div></div>
 <div class="card click" data-exp="ch_daily2"><div class="ch"><div><h3>Daily trend</h3><div class="cs">Calls per day</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_daily2"></canvas></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Daily Call Report <span id="dcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="dh2"></tr></thead><tbody id="db2"></tbody></table></div></div></section>
-<section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div></div>
-<div class="filters"><div><label>Doctor search</label><input id="dq" placeholder="name/clinic/code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><span class="spacer"></span><span class="sub" id="dtot"></span></div>
+<section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
+<div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
 <section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes &amp; observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
@@ -429,8 +468,8 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><div class="mx" onclick="cm()">✕</div></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
-let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:''};const DF={q:'',st:'',sp:'',ca:''};
-let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=0,mmA=true,rS='rx',rA=false,tS=5,tA=false;
+let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
+let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
 const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
 window.addEventListener('error',function(e){
@@ -572,14 +611,68 @@ function dailyView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch
  $('db2').innerHTML=rows.slice(0,1200).map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td class=n>'+r[4]+'</td><td class=n>'+r[5]+'</td><td class=n>'+r[6]+'</td><td class=n><b>'+r[7]+'</b></td><td class=n>'+r[8]+'</td></tr>').join('');
  $('dcnt').textContent='('+fmt(rows.length)+' rows'+(rows.length>1200?' — 1200 shown':'')+')';
  $('dh2').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===dS)dA=!dA;else{dS=i;dA=true;}dailyView();});}
-function docsView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const codes=new Set(fr().map(r=>r.c));let rows=D.docs.filter(d=>codes.has(d[12]));
- if(DF.st)rows=rows.filter(d=>d[9]===DF.st);if(DF.sp)rows=rows.filter(d=>d[2]===DF.sp);if(DF.ca)rows=rows.filter(d=>d[7]===DF.ca);
- if(DF.q){const q=DF.q.toLowerCase();rows=rows.filter(d=>(d[1]||'').toLowerCase().includes(q)||(d[6]||'').toLowerCase().includes(q)||(d[0]||'').toLowerCase().includes(q));}
- rows.sort((a,b)=>{let x=a[mmS],y=b[mmS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(mmA?1:-1);});
- $('mmh').innerHTML=[['Doctor',1],['Code',0],['Specialization',2],['Clinic',6],['Category',7],['City',8],['State',9],['Added',10],['Rep',13]].map(c=>'<th data-i="'+c[1]+'">'+c[0]+'</th>').join('');
- $('mmb').innerHTML=rows.slice(0,1000).map(d=>'<tr><td>'+(d[1]||'')+'</td><td>'+d[0]+'</td><td>'+(d[2]||'')+'</td><td>'+(d[6]||'')+'</td><td>'+(d[7]||'')+'</td><td>'+(d[8]||'')+'</td><td>'+(d[9]||'')+'</td><td>'+(d[10]||'')+'</td><td>'+(d[13]||'')+'</td></tr>').join('');
- $('doccnt').textContent='('+fmt(rows.length)+' of '+fmt(D.docs.length)+(rows.length>1000?' — 1000 shown':'')+')';
- $('mmh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const i=+t.dataset.i;if(i===mmS)mmA=!mmA;else{mmS=i;mmA=true;}docsView();});}
+function docsView(){
+ const codes=new Set(fr().map(r=>r.c));
+ let rows=D.docs.filter(d=>codes.has(d[12]));
+ if(DF.st)rows=rows.filter(d=>d[9]===DF.st);
+ if(DF.sp)rows=rows.filter(d=>d[2]===DF.sp);
+ if(DF.ca)rows=rows.filter(d=>d[7]===DF.ca);
+ if(DF.pr==='y')rows=rows.filter(d=>d[5]);
+ if(DF.pr==='n')rows=rows.filter(d=>!d[5]);
+ if(DF.id)rows=rows.filter(d=>idleDays(d[10])>=+DF.id);
+ if(DF.q){const q=DF.q.toLowerCase();
+  rows=rows.filter(d=>(d[1]||'').toLowerCase().includes(q)||(d[6]||'').toLowerCase().includes(q)
+   ||(d[0]||'').toLowerCase().includes(q)||(d[13]||'').toLowerCase().includes(q));}
+ /* headline stats for the current filter */
+ const n=rows.length, pn=rows.filter(d=>d[5]).length, rx=rows.reduce((s,d)=>s+(+d[3]||0),0),
+       vis=rows.reduce((s,d)=>s+(+d[4]||0),0), idle=rows.filter(d=>idleDays(d[10])>=30).length,
+       multi=rows.filter(d=>(+d[14]||0)>1).length;
+ $('dstats').innerHTML=
+   st(fmt(n),'Doctors')+
+   st(fmt(pn)+(n?' · '+Math.round(100*pn/n)+'%':''),'Prescribers')+
+   st(fmt(rx),'Total Rx')+
+   st(n?(rx/n).toFixed(1):'0','Rx / doctor')+
+   st(vis?(rx/vis).toFixed(2):'0','Rx / visit')+
+   st(fmt(idle)+(n?' · '+Math.round(100*idle/n)+'%':''),'Idle 30+ days')+
+   st(fmt(multi),'Seen by 2+ reps');
+ /* mmS is a column index, or a negative sentinel for a derived column */
+ const KEY = mmS===-1 ? (d=>{const v=+d[4]||0;return v?(+d[3]||0)/v:0;})
+           : mmS===-2 ? (d=>{const x=idleDays(d[10]);return x===''?-1:x;})
+           : (d=>d[mmS]);
+ rows.sort((a,b)=>{let x=KEY(a),y=KEY(b);
+  if(typeof x==='string'||typeof y==='string'){x=(x==null?'':x).toString().toLowerCase();y=(y==null?'':y).toString().toLowerCase();}
+  return(x<y?-1:x>y?1:0)*(mmA?1:-1);});
+ const COLS=[['Doctor',1],['Code',0],['Specialization',2],['Category',7],['Clinic',6],
+             ['Rx',3],['Visits',4],['Rx/visit',-1],['Samples',15],['Prescriber',5],
+             ['Idle days',-2],['Last seen',10],['First seen',11],['Reps',14],
+             ['Primary rep',13],['HQ',8],['State',9],['Last reaction',16]];
+ const NUM={3:1,4:1,15:1,14:1};
+ $('mmh').innerHTML=COLS.map(c=>'<th data-i="'+c[1]+'"'+(NUM[c[1]]||c[1]<0?' style="text-align:right"':'')+'>'+c[0]+'</th>').join('');
+ $('mmb').innerHTML=rows.slice(0,1000).map(d=>{
+   const v=+d[4]||0, r=+d[3]||0, id=idleDays(d[10]);
+   return '<tr><td><b>'+(d[1]||'')+'</b></td><td>'+d[0]+'</td><td>'+(d[2]||'')+'</td><td>'+(d[7]||'')+
+    '</td><td>'+(d[6]||'')+'</td><td class=n><b>'+fmt(r)+'</b></td><td class=n>'+fmt(v)+
+    '</td><td class=n>'+(v?(r/v).toFixed(2):'0')+'</td><td class=n>'+fmt(+d[15]||0)+
+    '</td><td>'+(d[5]?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+
+    '</td><td class="n idle'+(id>=60?' bad':id>=30?' warn':'')+'">'+(id===''?'—':id)+
+    '</td><td>'+(d[10]||'')+'</td><td>'+(d[11]||'')+'</td><td class=n>'+(d[14]||'')+
+    '</td><td>'+(d[13]||'')+'</td><td>'+(d[8]||'')+'</td><td>'+(d[9]||'')+
+    '</td><td>'+(d[16]||'')+'</td></tr>';}).join('')
+   ||'<tr><td colspan="18" style="padding:22px;color:var(--muted)">No doctors match these filters.</td></tr>';
+ $('doccnt').textContent='('+fmt(n)+' of '+fmt(D.docs.length)+(n>1000?' — first 1,000 shown, sort to change':'')+')';
+ $('mmh').querySelectorAll('th').forEach(t=>t.onclick=()=>{
+   const i=+t.dataset.i;
+   if(i===mmS)mmA=!mmA;else{mmS=i;mmA=(i!==3&&i!==4&&i!==-1&&i!==-2);}
+   docsView();});
+ try{stickyCols();}catch(_){}
+}
+function st(v,l){return '<div class="fstat"><div class="v">'+v+'</div><div class="l">'+l+'</div></div>';}
+/* days since a doctor was last seen; '' when never recorded */
+function idleDays(last){if(!last)return '';
+ const t=Date.parse(last+'T00:00:00Z'); if(isNaN(t))return '';
+ const now=Date.parse((D.gen||new Date().toISOString().slice(0,10))+'T00:00:00Z');
+ return Math.max(0,Math.round((now-t)/86400000));}
+
 function guide(){const G=[['Prescriptions (core)',[['Rx',GL.rx],['Rx / call',GL.rpc],['Rx / doctor met',GL.rxPerDoc],['Rx / day',GL.rxPerDay],['Rx conversion %',GL.rxConv],['Rx doctors',GL.rxD],['Zero Rx',GL.zeroRx],['Samples / Rx',GL.s2r]]],
  ['Activity',[['Visits',GL.vis],['Calls / day',GL.cpd],['Active reps','Logged at least one visit.'],['Attendance %',GL.att],['Field hours/day',GL.fhrs],['Day start (first call)',GL.ds],['Minutes per call',GL.mpc]]],['Acquisition & quality',[['New doctors (7d)',GL.newd],['New-doctor conversion',GL.ndc],['Rx momentum',GL.mom],['Repeat coverage',GL.repc],['Supercore focus',GL.scf],['Reaction positivity',GL.rpct],['Chemist-visit share',GL.chsh],['Top-doctor Rx conc.',GL.tdc],['Max calls/30min',GL.cl]]],
  ['Coverage',[['Coverage %',GL.cov],['Doctors met',GL.ud],['Doctors added',GL.da],['Coverage frequency',GL.freq]]],
@@ -608,7 +701,7 @@ function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'Al
  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
  const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});
  $('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};
- $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};
+ $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};
  $('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};
  $('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};
  $('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});
