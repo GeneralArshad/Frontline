@@ -1,4 +1,4 @@
-<!DOCTYPE html><html data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
 /* =========================================================================
    Hive Frontline — design system v5
    Dark-first. Tokens → primitives → components. Every value is on a scale.
@@ -124,7 +124,9 @@ svg{flex:0 0 auto}
 .secttl .big{font-size:var(--t-xl);font-weight:700;letter-spacing:-.4px;margin-top:3px;line-height:1.2}
 .secttl .d{font-size:var(--t-md);color:var(--muted);margin-top:var(--s1);max-width:900px;line-height:1.6}
 /* ================================= KPIs ================================= */
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:var(--s3);margin:var(--s2) 0}
+.kpis{display:grid;gap:var(--s3);margin:var(--s2) 0;grid-template-columns:repeat(2,1fr)}
+@media(min-width:700px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1100px){.kpis{grid-template-columns:repeat(5,1fr)}}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s4);
   box-shadow:var(--sh1);position:relative;overflow:hidden;transition:transform .16s,box-shadow .16s,border-color .16s}
 .kpi:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:color-mix(in srgb,var(--kc,var(--accent)) 40%,var(--line))}
@@ -504,7 +506,7 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   </div>
   <div class="sidefoot">
     <button class="icbtn" id="reset">&#8634; Reset</button>
-    <button class="icbtn" id="theme">&#9728;</button>
+    <button class="icbtn" id="theme" title="Switch theme">&#127769;</button>
   </div>
 </aside>
 <div class="main">
