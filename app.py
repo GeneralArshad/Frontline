@@ -8,7 +8,7 @@ Frontline live report — web service.
 - Access control: Microsoft (Entra) SSO restricted to your tenant/domain when
   MS_CLIENT_ID is set; otherwise a shared-password gate (interim).
 """
-import os, json, threading, time, functools, datetime
+import os, json, threading, time, functools, datetime, sqlite3, re
 from flask import Flask, session, redirect, url_for, request, Response, jsonify, render_template_string
 import etl
 
@@ -148,6 +148,65 @@ def status():
 @app.route("/healthz")
 def healthz():
     return "ok", 200
+
+# ------------------------------------------------------------------ notes
+# Notes live in their OWN sqlite file on the data disk, so an ETL rebuild can
+# never touch them. scope='rep' (key = employee code) or 'report' (key = '').
+NOTES_DB = os.path.join(DATA_DIR, "notes.db")
+
+def ndb():
+    con = sqlite3.connect(NOTES_DB, timeout=30)
+    con.execute("""CREATE TABLE IF NOT EXISTS note(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        scope TEXT NOT NULL, key TEXT NOT NULL DEFAULT '',
+        author TEXT NOT NULL DEFAULT '', body TEXT NOT NULL,
+        created TEXT NOT NULL, resolved INTEGER NOT NULL DEFAULT 0)""")
+    con.execute("CREATE INDEX IF NOT EXISTS note_scope_key ON note(scope,key)")
+    return con
+
+def _clean(s, n):
+    return re.sub(r"\s+", " ", str(s or "")).strip()[:n]
+
+@app.route("/api/notes")
+@require_auth
+def notes_list():
+    con = ndb()
+    rows = con.execute("SELECT id,scope,key,author,body,created,resolved FROM note ORDER BY id DESC").fetchall()
+    con.close()
+    return jsonify([{"id": r[0], "scope": r[1], "key": r[2], "author": r[3],
+                     "body": r[4], "created": r[5], "resolved": bool(r[6])} for r in rows])
+
+@app.route("/api/notes", methods=["POST"])
+@require_auth
+def notes_add():
+    j = request.get_json(silent=True) or {}
+    body = _clean(j.get("body"), 2000)
+    if not body:
+        return jsonify({"error": "empty note"}), 400
+    scope = "rep" if j.get("scope") == "rep" else "report"
+    key = _clean(j.get("key"), 40) if scope == "rep" else ""
+    if scope == "rep" and not key:
+        return jsonify({"error": "missing key"}), 400
+    author = _clean(j.get("author"), 60) or (session.get("user", {}).get("email") or "team")
+    created = datetime.datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    con = ndb()
+    cur = con.execute("INSERT INTO note(scope,key,author,body,created,resolved) VALUES(?,?,?,?,?,0)",
+                      (scope, key, author, body, created))
+    con.commit(); nid = cur.lastrowid; con.close()
+    return jsonify({"id": nid, "scope": scope, "key": key, "author": author,
+                    "body": body, "created": created, "resolved": False})
+
+@app.route("/api/notes/<int:nid>", methods=["PATCH", "DELETE"])
+@require_auth
+def notes_update(nid):
+    con = ndb()
+    if request.method == "DELETE":
+        con.execute("DELETE FROM note WHERE id=?", (nid,))
+    else:
+        j = request.get_json(silent=True) or {}
+        con.execute("UPDATE note SET resolved=? WHERE id=?", (1 if j.get("resolved") else 0, nid))
+    con.commit(); con.close()
+    return jsonify({"ok": True})
 
 # ------------------------------------------------------- background scheduler
 TEMPLATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "template.html")

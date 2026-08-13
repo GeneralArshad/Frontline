@@ -268,13 +268,72 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .phint{font-size:12px;color:var(--muted);background:var(--surface2);border:1px dashed var(--line);
   border-radius:var(--r2);padding:10px var(--s3);margin-top:var(--s2);line-height:1.6}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+/* ---------------- insight carousel ---------------- */
+.ins{position:relative;border-radius:var(--r4);overflow:hidden;margin-top:var(--s4);
+  background:linear-gradient(120deg,#1B1F3A,#171A2B 58%,#2A1B33);border:1px solid rgba(255,255,255,.07);
+  box-shadow:var(--sh2)}
+[data-theme=light] .ins{background:linear-gradient(120deg,#1B2A6B,#0E1740 60%,#231b5e);border-color:transparent}
+.ins::after{content:"";position:absolute;right:-40px;top:-56px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--brand-2) 38%,transparent),transparent 68%);pointer-events:none}
+.insvp{position:relative;min-height:150px}
+.inss{position:absolute;inset:0;padding:var(--s5) var(--s6);color:#fff;opacity:0;transform:translateY(8px);
+  transition:opacity .38s ease,transform .38s ease;pointer-events:none;display:flex;gap:var(--s5);align-items:center}
+.inss.on{opacity:1;transform:none;pointer-events:auto;position:relative}
+.inss .ico{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.inss .ico svg{width:22px;height:22px;stroke:#fff;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.inss .eyeb{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#FFB89B}
+.inss h3{margin:4px 0 0;font-size:var(--t-2xl);font-weight:750;letter-spacing:-.5px;line-height:1.18}
+.inss p{margin:var(--s2) 0 0;font-size:var(--t-md);color:#c9d2ee;line-height:1.62;max-width:760px}
+.insact{margin-top:var(--s3);display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.26);color:#fff;border-radius:99px;padding:7px 15px;font-size:12px;
+  font-weight:650;cursor:pointer;font-family:inherit;transition:.14s}
+.insact:hover{background:rgba(255,255,255,.24)}
+.insnav{position:absolute;right:var(--s5);bottom:var(--s4);display:flex;align-items:center;gap:var(--s2);z-index:2}
+.insdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.2s;border:0;padding:0}
+.insdot.on{background:#fff;width:20px;border-radius:99px}
+.insbtn{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center}
+.insbtn:hover{background:rgba(255,255,255,.22)}
+/* ---------------- metric drill-down ---------------- */
+.kpi[data-m]{cursor:pointer}
+.kpi[data-m]::before{content:"↗";position:absolute;top:9px;right:11px;font-size:11px;color:var(--faint);opacity:0;transition:.15s}
+.kpi[data-m]:hover::before{opacity:1}
+.mform{display:grid;grid-template-columns:auto 1fr;gap:8px var(--s4);font-size:12.5px;background:var(--surface2);
+  border:1px solid var(--line);border-radius:var(--r2);padding:var(--s4);margin-bottom:var(--s4)}
+.mform dt{color:var(--faint);font-weight:600}
+.mform dd{margin:0}
+.mform code{background:var(--chip);border:1px solid var(--line);border-radius:5px;padding:1px 6px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+/* ---------------- notes ---------------- */
+.nbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);padding:var(--s4)}
+.nadd{display:flex;gap:var(--s2);margin-top:var(--s2)}
+.nadd textarea{flex:1;font-family:inherit;font-size:12.5px;padding:9px 11px;border:1px solid var(--line);
+  border-radius:var(--r1);background:var(--surface2);color:var(--ink);resize:vertical;min-height:38px;line-height:1.5}
+.nadd textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.nbtn{background:var(--accent);color:#fff;border:0;border-radius:var(--r1);padding:8px 15px;font-weight:650;
+  font-size:12px;cursor:pointer;font-family:inherit;flex:0 0 auto;align-self:flex-start}
+.nbtn:hover{filter:brightness(1.08)}
+.nbtn[disabled]{opacity:.5;cursor:default}
+.nitem{border-top:1px solid var(--line);padding:var(--s3) 0;display:flex;gap:var(--s3);align-items:flex-start}
+.nitem:first-of-type{border-top:0}
+.nitem.done .nbody{opacity:.55;text-decoration:line-through}
+.nbody{font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.nmeta{font-size:10.5px;color:var(--faint);margin-top:3px}
+.nact{margin-left:auto;display:flex;gap:6px;flex:0 0 auto}
+.nact button{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;
+  padding:3px 8px;font-size:10.5px;cursor:pointer;font-family:inherit}
+.nact button:hover{color:var(--ink);border-color:var(--faint)}
+.nbadge{display:inline-flex;align-items:center;gap:4px;background:var(--chip);border:1px solid var(--line);
+  color:var(--muted);border-radius:99px;padding:1px 7px;font-size:10px;font-weight:650;margin-left:6px}
+
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec">CORE</div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec">DETAIL</div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec">REFERENCE</div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
+    <div id="tabs"><div class="navsec">CORE</div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec">DETAIL</div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec">TEAM</div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec">REFERENCE</div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
     <div class="fpanel" id="fpanel">
 <div class="fhead" id="fhead">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
 <div class="fbody">
@@ -307,7 +366,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <section class="sec on" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
 <div class="kpis" id="rxkpis"></div>
-<div class="callout" style="margin-top:18px"><div class="ring">💊</div><div><div class="big" id="rxBig"></div><div class="t" id="rxT"></div></div></div>
+<div class="ins" id="ins"><div class="insvp" id="insvp"></div><div class="insnav"><button class="insbtn" id="insprev" aria-label="Previous insight">&#10094;</button><span id="insdots" style="display:flex;gap:6px;align-items:center"></span><button class="insbtn" id="insnext" aria-label="Next insight">&#10095;</button></div></div>
 <div class="grid" style="margin-top:18px">
 <div class="card click c4" data-exp="ch_rxconv"><div class="ch"><div><h3>Rx conversion of doctors met</h3><div class="cs">Did the visit produce a prescription?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxconv"></canvas></div></div>
 <div class="card click c8" data-exp="ch_rxspec"><div class="ch"><div><h3>Rx by specialization</h3><div class="cs">Where prescriptions come from</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxspec"></canvas></div></div>
@@ -341,7 +400,7 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div></div>
 <div class="filters"><div><label>Doctor search</label><input id="dq" placeholder="name/clinic/code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><span class="spacer"></span><span class="sub" id="dtot"></span></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
+<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes &amp; observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
 <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
@@ -353,7 +412,7 @@ let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
 const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
 async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
- D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());$('load').style.display='none';init();}
+ D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());$('load').style.display='none';loadNotes().then(()=>{init();}).catch(()=>init());}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
 function fill(id,v,l){$(id).innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
 function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includes(q)||r.c.toLowerCase().includes(q)))return false;}
@@ -390,7 +449,7 @@ window.expand=(id)=>{const m=META[id];if(!m)return;$('mtitle').textContent=m.tit
  $('mscrim').classList.add('open');};
 window.cm=()=>$('mscrim').classList.remove('open');
 function wireExp(){document.querySelectorAll('.card.click[data-exp]').forEach(c=>c.onclick=()=>expand(c.dataset.exp));}
-function kpi(kc,v,l,def,h){kc=TC(kc);return '<div class="kpi" style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')+'</div>';}
+function kpi(kc,v,l,def,h,mk){kc=TC(kc);return '<div class="kpi"'+(mk?' data-m="'+mk+'"':'')+' style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')+'</div>';}
 function th(k,l){return '<th data-k="'+k+'"'+(TT[k]?' title="'+TT[k].replace(/"/g,'')+'"':'')+'>'+l+'</th>';}
 /* ---- RX ENGINE ---- */
 function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=>r.vis>0);const zero=bo.filter(r=>r.zeroRx);
@@ -398,17 +457,17 @@ function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=
  const avg=(a,f)=>a.length?Math.round(100*a.reduce((s,r)=>s+r[f],0)/a.length)/100:0;
  const _md=rows.reduce((a,r)=>a+(r.ud||0),0),_rd=rows.reduce((a,r)=>a+(r.rxD||0),0);
  const _cv=_md?Math.round(100*_rd/_md):0;
- $('rxkpis').innerHTML=[kpi('#0A7C4A',fmt(totRx),'Total Rx',GL.rx,''),
-  kpi('#2563EB',fmt(_md),'Doctors met','Unique doctors met by the reps in view.',''),
-  kpi('#E8911A',fmt(_rd),'Rx doctors',GL.rxD,_cv+'% converted'),
-  kpi('#C8102E',_cv+'%','Rx conversion',GL.rxConv,'of doctors met'),
-  kpi('#C8102E',fmt(zero.length),'Zero-Rx reps',GL.zeroRx,act.length?Math.round(100*zero.length/act.length)+'% of active':''),
-  kpi('#1B2A6B',avg(rxProd,'rpc'),'Avg Rx / call',GL.rpc,''),
-  kpi('#7C3AED',avg(rxProd,'rxPerDoc'),'Rx / doctor met',GL.rxPerDoc,''),
-  kpi('#7C3AED',avg(rxProd,'rxPerDay'),'Rx / day',GL.rxPerDay,''),
-  kpi('#E8911A',avg(rxProd,'s2r'),'Samples / Rx',GL.s2r,'lower is better')].join('');
- $('rxBig').textContent=(_md?Math.round(100*(_md-_rd)/_md):0)+'% of doctors met produced no prescription';
- const _sorted=act.slice().sort((a,b)=>b.rx-a.rx);const _n20=Math.max(1,Math.round(_sorted.length*0.2));const _t20=_sorted.slice(0,_n20).reduce((s,r)=>s+r.rx,0);const _boRx=_sorted.reduce((s,r)=>s+r.rx,0);const _par=_boRx?Math.round(100*_t20/_boRx):0;$('rxT').textContent=fmt(_md-_rd)+' of '+fmt(_md)+' doctors met gave zero Rx, and '+zero.length+' active field reps generated none at all. '+_par+'% of all Rx comes from just '+_n20+' reps — the biggest growth lever is converting existing visits, not adding more.';
+ $('rxkpis').innerHTML=[kpi('#0A7C4A',fmt(totRx),'Total Rx',GL.rx,'','rx'),
+  kpi('#2563EB',fmt(_md),'Doctors met','Unique doctors met by the reps in view.','','ud'),
+  kpi('#E8911A',fmt(_rd),'Rx doctors',GL.rxD,_cv+'% converted','rxD'),
+  kpi('#C8102E',_cv+'%','Rx conversion',GL.rxConv,'of doctors met','rxConv'),
+  kpi('#C8102E',fmt(zero.length),'Zero-Rx reps',GL.zeroRx,act.length?Math.round(100*zero.length/act.length)+'% of active':'','zeroRx'),
+  kpi('#1B2A6B',avg(rxProd,'rpc'),'Avg Rx / call',GL.rpc,'','rpc'),
+  kpi('#7C3AED',avg(rxProd,'rxPerDoc'),'Rx / doctor met',GL.rxPerDoc,'','rxPerDoc'),
+  kpi('#7C3AED',avg(rxProd,'rxPerDay'),'Rx / day',GL.rxPerDay,'','rxPerDay'),
+  kpi('#E8911A',avg(rxProd,'s2r'),'Samples / Rx',GL.s2r,'lower is better','s2r')].join('');
+ 
+ const _sorted=act.slice().sort((a,b)=>b.rx-a.rx);const _n20=Math.max(1,Math.round(_sorted.length*0.2));const _t20=_sorted.slice(0,_n20).reduce((s,r)=>s+r.rx,0);const _boRx=_sorted.reduce((s,r)=>s+r.rx,0);const _par=_boRx?Math.round(100*_t20/_boRx):0;buildInsights(rows,_md,_rd,act,zero,_par,_n20);
  const noRx=D.rx.metDoctors-D.rx.rxDoctors;
  chart('ch_rxconv',{type:'doughnut',data:{labels:['Produced Rx','No Rx'],datasets:[{data:[D.rx.rxDoctors,noRx],backgroundColor:['#0A7C4A','#C8102E'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Rx conversion of doctors met',def:GL.rxConv,type:'doughnut',labels:['Produced Rx','No Rx'],values:[D.rx.rxDoctors,noRx],colors:['#0A7C4A','#C8102E']});
  const sp=D.rx.bySpec.slice(0,12);chart('ch_rxspec',{type:'bar',data:{labels:sp.map(x=>x[0]),datasets:[{data:sp.map(x=>x[1]),backgroundColor:'#1B2A6B',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Rx by specialization',def:'Prescriptions grouped by the doctor\'s specialization.',type:'barh',labels:sp.map(x=>x[0]),values:sp.map(x=>x[1])});
@@ -509,11 +568,11 @@ function rosterView(){const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').text
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
 function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
 function render(){fcount();const rows=fr();
- if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else guide();
+ if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;}
 function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
  fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');$('dtot').textContent=fmt(D.docs.length)+' doctors';
- $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
  const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});
  $('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};
  $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};
@@ -600,6 +659,8 @@ function openProfile(code){
         hrBlock+
       '</div>'+
     '</div>'+
+    '<div class="psec">Team notes'+(noteCount(code)?'<span class="nbadge">'+noteCount(code)+' open</span>':'')+'</div>'+
+    '<div id="pnotes"></div>'+
     '<div class="psec">Doctors covered &middot; '+docs.length+' total &middot; '+presc+' prescribers &middot; '+rxd+' produced Rx</div>'+
     (docs.length?'<div class="tablewrap" style="max-height:360px;margin-top:0"><table><thead><tr><th>Doctor</th><th>Code</th>'+
       '<th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th>'+
@@ -611,8 +672,206 @@ function openProfile(code){
       '<th style="text-align:right">Chemists</th><th style="text-align:right">Rx</th></tr></thead><tbody>'+dayRows+'</tbody></table></div>'
       :'<div class="phint">No activity recorded in this window.</div>')+
   '</div>';
+ const pn=$('pnotes'); if(pn){pn.innerHTML='';pn.appendChild(notesBlock('rep',code,()=>openProfile(code)));}
  $('pscrim').classList.add('open');document.body.style.overflow='hidden';
 }
+/* ==================== actionable insight carousel ==================== */
+const INSICO={
+ conv:'<path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/>',
+ pareto:'<path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/>',
+ silent:'<path d="M12 2a4 4 0 0 1 4 4v5a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4Z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/><path d="m3 3 18 18"/>',
+ cov:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+let INS=[],insI=0,insT=null;
+function buildInsights(rows,md,rd,act,zero,par,parN){
+ const gapPct=md?Math.round(100*(md-rd)/md):0;
+ const silent=act.filter(r=>r.rec!==''&&r.rec>7).length;
+ const lowCov=act.filter(r=>r.du>0&&r.cov<25).length;
+ INS=[
+  {ic:'conv',eye:'Conversion gap',
+   h:gapPct+'% of doctors met produced no prescription',
+   p:fmt(md-rd)+' of '+fmt(md)+' doctors met gave zero Rx. The biggest growth lever is converting the visits you already make — not adding more.',
+   act:'Show reps with zero Rx',
+   fn:()=>{F.rx='zero';$('frx').value='zero';go('exc');}},
+  {ic:'pareto',eye:'Concentration',
+   h:par+'% of all Rx comes from just '+parN+' reps',
+   p:'Output is concentrated in the top fifth of the active field force. Protect and learn from them — and find what the rest are missing.',
+   act:'Open the productivity ranking',
+   fn:()=>{pS='rx';pA=false;go('prod');}},
+  {ic:'silent',eye:'Risk',
+   h:fmt(zero.length)+' active reps generated no prescriptions at all',
+   p:'These reps logged visits but zero Rx'+(silent?', and '+silent+' more have been silent for over a week':'')+'. Each one is a coaching conversation waiting to happen.',
+   act:'Open the exceptions list',
+   fn:()=>{F.rx='zero';$('frx').value='zero';go('exc');}},
+  {ic:'cov',eye:'Coverage',
+   h:fmt(lowCov)+' reps are covering under a quarter of their doctor list',
+   p:'Low coverage means most of their assigned doctors are never seen. Fixing the tour plan is usually cheaper than adding headcount.',
+   act:'Filter to low coverage',
+   fn:()=>{F.pf='cov25';$('fpf').value='cov25';go('prod');}}
+ ];
+ insI=Math.min(insI,INS.length-1); drawIns(); startIns();
+}
+function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
+function drawIns(){
+ const vp=$('insvp'); if(!vp)return;
+ vp.innerHTML=INS.map((s,i)=>'<div class="inss'+(i===insI?' on':'')+'">'+
+  '<div class="ico"><svg viewBox="0 0 24 24">'+INSICO[s.ic]+'</svg></div>'+
+  '<div><div class="eyeb">'+s.eye+'</div><h3>'+s.h+'</h3><p>'+s.p+'</p>'+
+  '<button class="insact" data-i="'+i+'">'+s.act+' &rarr;</button></div></div>').join('');
+ $('insdots').innerHTML=INS.map((s,i)=>'<button class="insdot'+(i===insI?' on':'')+'" data-d="'+i+'" aria-label="Insight '+(i+1)+'"></button>').join('');
+ vp.querySelectorAll('.insact').forEach(b=>b.onclick=()=>{stopIns();INS[+b.dataset.i].fn();});
+ $('insdots').querySelectorAll('.insdot').forEach(b=>b.onclick=()=>{insI=+b.dataset.d;drawIns();startIns();});
+}
+function startIns(){stopIns(); if(INS.length<2)return; insT=setInterval(()=>{insI=(insI+1)%INS.length;drawIns();},6500);}
+function insStep(k){if(!INS.length)return;insI=(insI+k+INS.length)%INS.length;drawIns();startIns();}
+(function(){const p=document.getElementById('insprev'),n=document.getElementById('insnext'),c=document.getElementById('ins');
+ if(p)p.onclick=()=>insStep(-1); if(n)n.onclick=()=>insStep(1);
+ if(c){c.addEventListener('mouseenter',stopIns);c.addEventListener('mouseleave',startIns);}
+ document.addEventListener('visibilitychange',()=>{document.hidden?stopIns():startIns();});})();
+function stopIns(){if(insT){clearInterval(insT);insT=null;}}
+/* ==================== metric drill-down ==================== */
+const MET={
+ rx:{l:'Total Rx',f:'sum of rxCount across every product on every visit',fld:'rx',agg:'sum',
+     src:'Frontline day-plan → visits[] → visitData.products[].rxCount'},
+ ud:{l:'Doctors met',f:'count of distinct doctors visited',fld:'ud',agg:'sum',
+     src:'Distinct entity id where entityType = DOCTOR'},
+ rxD:{l:'Rx doctors',f:'distinct doctors where the visit produced at least one Rx',fld:'rxD',agg:'sum',
+     src:'Distinct doctor id with rxCount > 0'},
+ rxConv:{l:'Rx conversion',f:'Rx doctors ÷ doctors met × 100',fld:'rxConv',agg:'avg',unit:'%',
+     src:'Derived from the two fields above'},
+ zeroRx:{l:'Zero-Rx reps',f:'active field reps (role BO, visits > 0) whose Rx total is 0',fld:'rx',agg:'count0',
+     src:'Derived per rep after aggregating all visits'},
+ rpc:{l:'Avg Rx / call',f:'rep Rx ÷ rep visits, averaged over Rx-producing reps',fld:'rpc',agg:'avg',
+     src:'Per-rep ratio'},
+ rxPerDoc:{l:'Rx / doctor met',f:'rep Rx ÷ distinct doctors met',fld:'rxPerDoc',agg:'avg',src:'Per-rep ratio'},
+ rxPerDay:{l:'Rx / day',f:'rep Rx ÷ active days (days with at least one visit)',fld:'rxPerDay',agg:'avg',src:'Per-rep ratio'},
+ s2r:{l:'Samples / Rx',f:'samples handed out ÷ Rx generated (lower is better)',fld:'s2r',agg:'avg',
+     src:'visitData.samples[].quantity ÷ rxCount'}
+};
+function openMetric(key){
+ const m=MET[key]; if(!m)return;
+ const rows=fr(), bo=rows.filter(r=>r.r==='BO'), act=bo.filter(r=>r.vis>0);
+ const pool=(m.agg==='count0')?act:act.filter(r=>r[m.fld]!==''&&r[m.fld]!=null);
+ let headline;
+ if(m.agg==='sum')headline=fmt(rows.reduce((a,r)=>a+(+r[m.fld]||0),0));
+ else if(m.agg==='count0')headline=fmt(act.filter(r=>r.rx===0).length);
+ else{const v=pool.length?pool.reduce((a,r)=>a+(+r[m.fld]||0),0)/pool.length:0;headline=(Math.round(v*100)/100)+(m.unit||'');}
+ const rank=pool.slice().sort((a,b)=>(+b[m.fld]||0)-(+a[m.fld]||0));
+ const top=rank.slice(0,12), bot=rank.slice(-8).reverse();
+ const bars=top.slice(0,10);
+ $('mtitle').textContent=m.l;
+ $('mdef').textContent=(GL[key]||m.f);
+ const mk=list=>list.map(r=>'<tr><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td class=n><b>'+
+   (typeof r[m.fld]==='number'?(Math.round(r[m.fld]*100)/100):r[m.fld])+'</b></td><td class=n>'+fmt(r.vis)+'</td></tr>').join('');
+ $('modtab').innerHTML='';
+ const box=document.querySelector('#mscrim .mbody');
+ box.innerHTML='<div class="mbox"><canvas id="ch_modal"></canvas></div>'+
+  '<dl class="mform"><dt>What it means</dt><dd>'+(GL[key]||m.f)+'</dd>'+
+  '<dt>How it&rsquo;s calculated</dt><dd><code>'+m.f+'</code></dd>'+
+  '<dt>Where it comes from</dt><dd>'+m.src+'</dd>'+
+  '<dt>Scope right now</dt><dd>'+fmt(rows.length)+' reps in view'+
+    (Object.values(F).some(v=>v!=='')?' (filters applied)':' (no filters)')+' &middot; '+
+    fmt(act.length)+' active field reps</dd>'+
+  '<dt>Value</dt><dd><b style="font-size:15px">'+headline+'</b></dd></dl>'+
+  '<div class="psec" style="margin-top:0">Top contributors</div>'+
+  '<div class="tablewrap" style="margin-top:0;max-height:280px"><table><thead><tr><th>Rep</th><th>State</th><th>HQ</th>'+
+  '<th style="text-align:right">'+m.l+'</th><th style="text-align:right">Visits</th></tr></thead><tbody>'+mk(top)+'</tbody></table></div>'+
+  (bot.length?'<div class="psec">Lowest</div><div class="tablewrap" style="margin-top:0;max-height:230px">'+
+   '<table><thead><tr><th>Rep</th><th>State</th><th>HQ</th><th style="text-align:right">'+m.l+'</th>'+
+   '<th style="text-align:right">Visits</th></tr></thead><tbody>'+mk(bot)+'</tbody></table></div>':'');
+ $('mscrim').classList.add('open');
+ setTimeout(()=>{try{
+  if(CH.ch_modal)CH.ch_modal.destroy();
+  CH.ch_modal=new Chart($('ch_modal'),{type:'bar',data:{labels:bars.map(r=>r.n.length>16?r.n.slice(0,15)+'…':r.n),
+   datasets:[{data:bars.map(r=>+r[m.fld]||0),backgroundColor:TC('#7C3AED'),borderRadius:4}]},
+   options:Object.assign(gopt(),{plugins:{legend:{display:false},title:{display:true,text:'Top 10 by '+m.l,
+    color:muted(),font:{size:11}}}})});
+ }catch(e){}},40);
+}
+document.addEventListener('click',function(e){
+ const k=e.target.closest&&e.target.closest('.kpi[data-m]');
+ if(k&&k.dataset.m){e.preventDefault();openMetric(k.dataset.m);}
+},true);
+/* ==================== team notes ==================== */
+let NOTES=[],NOTES_OK=false;
+function noteAuthor(force){
+ let n=null; try{n=localStorage.getItem('fl_note_author');}catch(_){}
+ if(!n||force){ n=prompt('Your name (shown next to your notes):', n||'')||''; n=n.trim().slice(0,60);
+   if(n){try{localStorage.setItem('fl_note_author',n);}catch(_){}} }
+ return n;
+}
+function loadNotes(){
+ return fetch('/api/notes',{credentials:'same-origin'}).then(r=>r.ok?r.json():Promise.reject())
+  .then(j=>{NOTES=j;NOTES_OK=true;}).catch(()=>{NOTES=[];NOTES_OK=false;});
+}
+function notesFor(scope,key){return NOTES.filter(n=>n.scope===scope&&(scope==='report'||n.key===key));}
+function noteCount(code){return notesFor('rep',code).filter(n=>!n.resolved).length;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function noteHTML(n){
+ return '<div class="nitem'+(n.resolved?' done':'')+'" data-n="'+n.id+'">'+av(n.author||'?',n.author)+
+  '<div style="min-width:0"><div class="nbody">'+esc(n.body)+'</div>'+
+  '<div class="nmeta">'+esc(n.author||'team')+' &middot; '+(n.created||'').slice(0,10)+
+  (n.scope==='rep'?' &middot; '+esc(n.key):'')+'</div></div>'+
+  '<div class="nact"><button data-act="res">'+(n.resolved?'Reopen':'Resolve')+'</button>'+
+  '<button data-act="del">Delete</button></div></div>';
+}
+function wireNotes(root,after){
+ root.querySelectorAll('.nitem').forEach(el=>{
+  const id=el.dataset.n;
+  el.querySelectorAll('.nact button').forEach(b=>b.onclick=()=>{
+   const act=b.dataset.act;
+   if(act==='del'){ if(!confirm('Delete this note?'))return;
+     fetch('/api/notes/'+id,{method:'DELETE',credentials:'same-origin'}).then(()=>loadNotes()).then(after); }
+   else{ const n=NOTES.find(x=>String(x.id)===String(id));
+     fetch('/api/notes/'+id,{method:'PATCH',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({resolved:!(n&&n.resolved)})}).then(()=>loadNotes()).then(after); }
+  });
+ });
+}
+function noteForm(scope,key,after){
+ const box=document.createElement('div');
+ box.className='nadd';
+ box.innerHTML='<textarea placeholder="Add context the team should know&hellip;"></textarea><button class="nbtn">Post</button>';
+ const ta=box.querySelector('textarea'),bt=box.querySelector('button');
+ bt.onclick=()=>{
+  const body=ta.value.trim(); if(!body)return;
+  const author=noteAuthor(false); if(!author)return;
+  bt.disabled=true;bt.textContent='Saving…';
+  fetch('/api/notes',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({scope:scope,key:key,author:author,body:body})})
+   .then(r=>r.ok?r.json():Promise.reject()).then(()=>loadNotes()).then(()=>{ta.value='';after();})
+   .catch(()=>{bt.disabled=false;bt.textContent='Post';alert('Could not save the note. This report may be an offline copy.');});
+ };
+ return box;
+}
+function notesBlock(scope,key,after){
+ const wrap=document.createElement('div'); wrap.className='nbox';
+ if(!NOTES_OK){ wrap.innerHTML='<div class="phint">Notes are only available on the live hosted report '+
+   '(this looks like a downloaded copy).</div>'; return wrap; }
+ const list=notesFor(scope,key);
+ wrap.innerHTML=list.length?list.map(noteHTML).join(''):
+   '<div class="phint" style="margin:0">No notes yet. Add the first one below.</div>';
+ wrap.appendChild(noteForm(scope,key,after));
+ wireNotes(wrap,after);
+ return wrap;
+}
+function notesView(){
+ const host=$('notesView'); if(!host)return; host.innerHTML='';
+ const g=document.createElement('div'); g.className='grid';
+ const c1=document.createElement('div'); c1.className='card c6';
+ c1.innerHTML='<div class="ch"><div><h3>Report log</h3><div class="cs">Period-level observations from the Opex team</div></div></div>';
+ c1.appendChild(notesBlock('report','',notesView));
+ const c2=document.createElement('div'); c2.className='card c6';
+ const repNotes=NOTES.filter(n=>n.scope==='rep');
+ c2.innerHTML='<div class="ch"><div><h3>Rep notes <span class="sub">('+repNotes.length+')</span></h3>'+
+  '<div class="cs">Context attached to individual employees &mdash; open a profile to add one</div></div></div>'+
+  (NOTES_OK?(repNotes.length?'<div class="nbox">'+repNotes.map(noteHTML).join('')+'</div>':
+   '<div class="phint">No rep notes yet. Click any rep name, then add a note on their profile.</div>')
+   :'<div class="phint">Notes are only available on the live hosted report.</div>');
+ g.appendChild(c1); g.appendChild(c2); host.appendChild(g);
+ if(NOTES_OK)wireNotes(c2,notesView);
+}
+
 function closeProfile(){$('pscrim').classList.remove('open');document.body.style.overflow='';}
 document.addEventListener('click',function(e){
   const t=e.target.closest&&e.target.closest('.pl');
