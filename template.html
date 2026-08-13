@@ -483,7 +483,7 @@ async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const 
  try{D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());}catch(err){$('load').innerHTML='<div style="text-align:center;padding:24px"><b>Could not read the report data.</b><div style="margin-top:8px;font-weight:400;font-size:12.5px;color:var(--muted)">'+String(err&&err.message||err)+'</div></div>';return;}
  $('load').style.display='none';init();loadNotesBg();}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
-function fill(id,v,l){$(id).innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
+function fill(id,v,l){const e=$(id); if(!e){console.warn('fill: missing #'+id);return;}e.innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
 function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includes(q)||r.c.toLowerCase().includes(q)))return false;}
  if(F.di&&r.di!==F.di)return false;if(F.zn&&r.zn!==F.zn)return false;if(F.st&&r.st!==F.st)return false;if(F.hq&&r.hq!==F.hq)return false;if(F.rl&&r.r!==F.rl)return false;if(F.mg&&r.mg!==F.mg)return false;
  if(F.ob!==''&&r.ob!==+F.ob)return false;
@@ -696,16 +696,43 @@ function render(){fcount();const rows=fr();
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
 addEventListener('resize',()=>{clearTimeout(window.__stkT);window.__stkT=setTimeout(()=>{try{stickyCols();}catch(_){}} ,180);});
-function init(){fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
- fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');$('dtot').textContent=fmt(D.docs.length)+' doctors';
- $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});
- const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});
- $('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};
- $('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};
- $('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};
- $('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};
- $('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});
- $('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;render();}
+function init(){
+ /* Each wiring step is isolated: one broken element reference can no longer stop
+    the rest of init(), and it can never stop render(). A page with a missing
+    handler is recoverable; a page with no data at all is not. */
+ const PROB=[];
+ const S=(n,f)=>{try{f();}catch(e){PROB.push(n+': '+((e&&e.message)||e));console.error('init['+n+']',e);}};
+  S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
+  S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
+  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
+  S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
+  S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
+  S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
+  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};});
+  S('theme toggle',()=>{$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};});
+  S('modal handlers',()=>{$('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});});
+  S('footer',()=>{$('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;});
+ try{render();}catch(e){PROB.push('render: '+((e&&e.message)||e));console.error('init[render]',e);}
+ if(PROB.length)bootWarn(PROB);
+}
+/* Visible, dismissible warning — silence is the thing that cost us a day. */
+function bootWarn(list){
+ let b=document.getElementById('__warn');
+ if(!b){b=document.createElement('div');b.id='__warn';
+  b.style.cssText='position:fixed;left:14px;bottom:14px;z-index:99998;max-width:440px;'+
+   'background:#7A271A;color:#FEE4E2;border:1px solid #F97066;border-radius:12px;'+
+   'padding:11px 14px;font:600 12px Inter,Segoe UI,Arial;box-shadow:0 8px 24px rgba(0,0,0,.4);line-height:1.5';
+  document.body.appendChild(b);}
+ b.innerHTML='<b>Part of this report failed to load.</b>'+
+  '<div style="font-weight:400;margin-top:6px;font-size:11.5px;opacity:.92">'+
+  list.map(x=>String(x).replace(/[<>&]/g,'')).join('<br>')+
+  '</div><div style="font-weight:400;margin-top:6px;font-size:11px;opacity:.8">'+
+  'The rest of the page is still usable. Please send this text to whoever maintains the report.</div>'+
+  '<button style="margin-top:8px;background:transparent;border:1px solid #F97066;color:#FEE4E2;'+
+  'border-radius:7px;padding:3px 10px;font:600 11px inherit;cursor:pointer" '+
+  'onclick="this.parentNode.remove()">Dismiss</button>';
+}
+
 /* ---------------- employee profiles ---------------- */
 const AVC=['#7C5CFF','#12B76A','#F79009','#2E90FA','#F04438','#0BA5EC','#EE46BC','#15B79E','#FDB022','#6172F3'];
 function avc(s){let h=0;for(let i=0;i<(s||'').length;i++)h=(h*31+s.charCodeAt(i))>>>0;return AVC[h%AVC.length];}
