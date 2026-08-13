@@ -16,7 +16,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 BASE      = os.environ.get("FRONTLINE_BASE", "https://hive-frontline-backend.com")
 ORG       = os.environ.get("FRONTLINE_ORG_ID", "")
-EMAIL     = os.environ.get("FRONTLINE_SVC_EMAIL", "")
+# The backend's /auth/login expects a USERNAME (e.g. "superadmin"), not an email.
+# Accept either env var name; FRONTLINE_SVC_EMAIL is kept for the existing render.yaml field.
+USERNAME  = os.environ.get("FRONTLINE_SVC_USERNAME") or os.environ.get("FRONTLINE_SVC_EMAIL", "")
 PASSWORD  = os.environ.get("FRONTLINE_SVC_PASSWORD", "")
 LIFE_START= os.environ.get("LIFETIME_START", "2026-01")            # YYYY-MM
 CONC      = int(os.environ.get("ETL_CONCURRENCY", "8"))
@@ -38,14 +40,16 @@ class Api:
 
     def login(self):
         r = self.s.post(f"{BASE}/auth/login",
-                        json={"email": EMAIL, "password": PASSWORD},
+                        json={"username": USERNAME, "password": PASSWORD},
                         headers={"X-Organization-Id": ORG}, timeout=30)
         r.raise_for_status()
         j = r.json()
-        self.token = j.get("accessToken") or (j.get("data") or {}).get("accessToken") \
-                     or (j.get("tokens") or {}).get("accessToken")
+        data = j.get("data") or j
+        self.token = (data.get("accessToken")
+                      or (data.get("tokens") or {}).get("accessToken")
+                      or j.get("accessToken"))
         if not self.token:
-            raise RuntimeError("login: no accessToken in response")
+            raise RuntimeError("login: no accessToken in response: " + str(j)[:200])
 
     def get(self, path, _retry=True):
         h = {"Authorization": f"Bearer {self.token}", "X-Organization-Id": ORG}
