@@ -8,9 +8,8 @@ Frontline live report — web service.
 - Access control: Microsoft (Entra) SSO restricted to your tenant/domain when
   MS_CLIENT_ID is set; otherwise a shared-password gate (interim).
 """
-import os, json, threading, time, functools, datetime, sqlite3, re
+import os, sys, json, threading, time, functools, datetime, sqlite3, re, subprocess
 from flask import Flask, session, redirect, url_for, request, Response, jsonify, render_template_string
-import etl
 
 DATA_DIR = os.environ.get("DATA_DIR", "./data")
 REPORT   = os.path.join(DATA_DIR, "report.html")
@@ -114,7 +113,7 @@ b.onclick=function(){b.disabled=true;b.textContent='Refreshing…';
 def index():
     if not os.path.exists(REPORT):
         # first boot before any ETL finished
-        threading.Thread(target=etl.run_etl, daemon=True).start()
+        threading.Thread(target=_refresh_bg, daemon=True).start()
         return ("<h2 style='font-family:sans-serif'>Building the report for the first time…</h2>"
                 "<p style='font-family:sans-serif'>The initial lifetime backfill is running. "
                 "Refresh this page in a few minutes.</p>"), 200
@@ -123,11 +122,45 @@ def index():
     return Response(html, mimetype="text/html")
 
 _running = {"v": False}
+ETL_PY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "etl.py")
+
+def _run_etl_subprocess(*args):
+    """Run the ETL in a CHILD PROCESS, never in this worker.
+
+    In-process it broke the service two ways: the CPU-bound compute phase held the
+    GIL and starved gunicorn's health-check thread (Render: "health check timed out
+    after 5 seconds" -> instance killed), and the memory peak stayed resident in the
+    long-lived worker. As a child it can't block request handling, and its memory is
+    fully reclaimed on exit.
+    """
+    _running["v"] = True
+    try:
+        p = subprocess.run([sys.executable, ETL_PY, *args],
+                           capture_output=True, text=True, timeout=3600)
+        if p.returncode != 0:
+            try:
+                with open(META, "w") as fh:
+                    json.dump({"ok": False,
+                               "error": (p.stderr or "")[-800:] or f"etl exited {p.returncode}",
+                               "at": datetime.datetime.utcnow().isoformat() + "Z"}, fh)
+            except Exception: pass
+    except subprocess.TimeoutExpired:
+        try:
+            with open(META, "w") as fh:
+                json.dump({"ok": False, "error": "ETL timed out after 60 min",
+                           "at": datetime.datetime.utcnow().isoformat() + "Z"}, fh)
+        except Exception: pass
+    except Exception as e:
+        try:
+            with open(META, "w") as fh:
+                json.dump({"ok": False, "error": str(e)[:800],
+                           "at": datetime.datetime.utcnow().isoformat() + "Z"}, fh)
+        except Exception: pass
+    finally:
+        _running["v"] = False
 
 def _refresh_bg():
-    _running["v"] = True
-    try: etl.run_etl()
-    finally: _running["v"] = False
+    _run_etl_subprocess()
 
 @app.route("/refresh", methods=["POST"])
 @require_auth
@@ -220,9 +253,7 @@ def _scheduler():
     else:
         try:
             if os.path.getmtime(TEMPLATE) > os.path.getmtime(REPORT):
-                _running["v"] = True
-                try: etl.rerender_only()
-                finally: _running["v"] = False
+                _run_etl_subprocess("--rerender")
         except Exception:
             pass
     while EVERY > 0:

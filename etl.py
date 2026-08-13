@@ -10,7 +10,7 @@ Computes the standard metrics and renders the interactive report to report.html.
 Run standalone (python etl.py) or import run_etl() from the web app.
 Safe to run concurrently-ish: uses a lock file so two refreshes don't overlap.
 """
-import os, json, gzip, base64, time, sqlite3, datetime, threading, sys, re
+import os, json, gzip, base64, time, sqlite3, datetime, threading, sys, re, io, gc
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -258,7 +258,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                           cluster=0,dcDate={},dcRx={},rxL7=0,spanSum=0,spanDays=0,reactPos=0,reactAny=0,
                           firstSum=0,firstDays=0,scDoc=0,legSum=0)
         return AGG[i]
-    CALLS = []  # for rollups (doctor master / daily / roster)
+    calls_by_code = {}   # empCode -> [ per-visit rows ] (the only full-size structure)
     q = con.execute("SELECT empId, empCode, date, visits_json FROM dayplan WHERE date>=? AND date<=?", (win_start, win_end))
     for empId, empCode, date, vj in q:
         visits = json.loads(vj)
@@ -294,9 +294,12 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                     REACT[rx_react] = REACT.get(rx_react,0)+1; ag["reactAny"] += 1
                     if rx_react in ("Positive","Committed"): ag["reactPos"] += 1
             prod_str = "|".join(f"{p[0]}~{p[1]}" if p[1] else p[0] for p in v["prods"])
-            CALLS.append([empCode, date, _ist(v["t"]), isDoc, v["name"], v["code"], spec,
-                          cat, v["clinic"], vrx, v["presc"], v["react"], prod_str, v["sm"],
-                          v["lat"], v["lng"]])
+            # single canonical per-visit row, in the shape the report consumes
+            calls_by_code.setdefault(empCode, []).append(
+                [date, _ist(v["t"]), 1 if isDoc else 0, v["name"], v["code"], spec, cat,
+                 v["clinic"], vrx, v["presc"], v["react"], prod_str, v["sm"],
+                 (round(float(v["lat"]), 5) if v["lat"] else ""),
+                 (round(float(v["lng"]), 5) if v["lng"] else "")])
         if times:
             times.sort(); ist = (times[0]+330) % 1440; ag["firstSum"] += ist; ag["firstDays"] += 1
         if len(times) >= 2:
@@ -368,9 +371,12 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         x["pi"] = round(.30*pC(x["cpd"])+.25*pR(x["rpc"])+.30*pV(x["cov"])+.15*pA(x["att"])) if (x["r"]=="BO" and x["vis"]>0) else ""
     # per-rep specializations
     repSp = {}
-    for c in CALLS:
-        if c[3] and c[6]: repSp.setdefault(c[0], set()).add(c[6])
+    for code, vs in calls_by_code.items():
+        s = repSp.setdefault(code, set())
+        for c in vs:
+            if c[2] and c[5]: s.add(c[5])
     for x in R: x["sp"] = sorted(repSp.get(x["c"], []))
+    del repSp
     # flags
     for x in R:
         f=[]
@@ -406,12 +412,14 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     DAYS=sorted(([d,v["v"],v["dv"],v["cv"],v["rx"]] for d,v in DAILY.items()))
     # doctor master + daily + top docs + calls-by-rep
     dm={}; docm={}
-    for c in CALLS:
-        k=c[0]+"|"+c[1]; d=dm.setdefault(k,dict(code=c[0],date=c[1],calls=0,dr=0,chem=0,rx=0,sm=0))
-        d["calls"]+=1; d["dr"]+=1 if c[3] else 0; d["chem"]+=0 if c[3] else 1; d["rx"]+=c[9]; d["sm"]+=c[13]
-        if c[3]:
-            code=c[5] or ("__"+c[4]); dc=docm.setdefault(code,dict(name=c[4],code=c[5],spec=c[6],cat=c[7],clinic=c[8],rx=0,vis=0,byRep={}))
-            dc["rx"]+=c[9]; dc["vis"]+=1; dc["byRep"][c[0]]=dc["byRep"].get(c[0],0)+1
+    for empCode, vs in calls_by_code.items():
+        for c in vs:
+            k=empCode+"|"+c[0]; e=dm.setdefault(k,dict(code=empCode,date=c[0],calls=0,dr=0,chem=0,rx=0,sm=0))
+            e["calls"]+=1; e["dr"]+=1 if c[2] else 0; e["chem"]+=0 if c[2] else 1; e["rx"]+=c[8]; e["sm"]+=c[12]
+            if c[2]:
+                code=c[4] or ("__"+c[3])
+                dc=docm.setdefault(code,dict(name=c[3],code=c[4],spec=c[5],cat=c[6],clinic=c[7],rx=0,vis=0,byRep={}))
+                dc["rx"]+=c[8]; dc["vis"]+=1; dc["byRep"][empCode]=dc["byRep"].get(empCode,0)+1
     D_daily=[[d["code"],d["date"],d["calls"],d["dr"],d["chem"],d["rx"],d["sm"]] for d in dm.values()]
     docArr=[]
     for dc in docm.values():
@@ -451,10 +459,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         return sorted(({"name":z["name"],"reps":z["reps"],"active":z["active"],"actPct":round(100*z["active"]/z["reps"]),
                         "vis":z["vis"],"rx":z["rx"],"zeroRx":z["zeroRx"],
                         "cov":round(sum(z["_cov"])/len(z["_cov"]),1) if z["_cov"] else 0} for z in zn.values()), key=lambda x:-x["rx"])
-    calls_by_code={}
-    for c in CALLS:
-        calls_by_code.setdefault(c[0],[]).append([c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11],c[12],c[13],
-                                                  (round(float(c[14]),5) if c[14] else ""),(round(float(c[15]),5) if c[15] else "")])
+    # calls_by_code was built during the scan — no second copy needed
     # HR roster (organisational fields only) — matched on employee code, case/space-insensitive.
     hr_all, hr_used, hr_missing = load_hr(), {}, 0
     if hr_all:
@@ -468,15 +473,38 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     D = dict(label=label, gen=datetime.date.today().isoformat(), rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
              hr=hr_used)
-    payload = json.dumps(D, separators=(",", ":"))
-    b64 = base64.b64encode(gzip.compress(payload.encode(), 6)).decode()
-    with open(TEMPLATE, encoding="utf-8") as fh: tpl = fh.read()
-    html = tpl.replace("__DATA_MARKER__", b64)
+    # ---- memory-frugal encode ----------------------------------------------
+    # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
+    # bytes, the final HTML string) which OOM-kills a small instance on lifetime data.
+    # Now: free the intermediates, stream JSON -> gzip, and stream the HTML to disk.
+    tot_visits = sum(r["vis"] for r in R)
+    del dm, docm, docArr
+    gc.collect()
+
+    buf = io.BytesIO()
+    with gzip.GzipFile(fileobj=buf, mode="wb", compresslevel=6) as gz:
+        for chunk in json.JSONEncoder(separators=(",", ":")).iterencode(D):
+            gz.write(chunk.encode("utf-8"))
+    del D
+    gc.collect()
+    b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+    del buf
+    gc.collect()
+
     tmp = REPORT + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as fh: fh.write(html)
+    with open(TEMPLATE, encoding="utf-8") as fh: tpl = fh.read()
+    head, _, tail = tpl.partition("__DATA_MARKER__")
+    assert _, "template is missing __DATA_MARKER__"
+    size = 0
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write(head); fh.write(b64); fh.write(tail)
+        size = len(head) + len(b64) + len(tail)
     os.replace(tmp, REPORT)
-    return dict(reps=len(R), totRx=totRx, totVisits=sum(r["vis"] for r in R), docMet=docMet,
-                activeBO=len(bo), conv=round(100*rxDoctors/docMet,1) if docMet else 0, mb=round(len(html)/1048576,2),
+    del b64, tpl, head, tail
+    gc.collect()
+    return dict(reps=len(R), totRx=totRx, totVisits=tot_visits, docMet=docMet,
+                activeBO=len(bo), conv=round(100*rxDoctors/docMet,1) if docMet else 0,
+                mb=round(size/1048576, 2),
                 hrRecords=len(hr_all), hrMatched=len(hr_used), hrUnmatched=hr_missing)
 
 # ------------------------------------------------------------------ orchestrate
@@ -541,4 +569,12 @@ def run_etl():
         _LOCK.release()
 
 if __name__ == "__main__":
-    print(json.dumps(run_etl(), indent=2))
+    # Run as a SUBPROCESS from the web service (see app.py). Two reasons:
+    #  1. GIL — the compute phase is CPU-bound; in-process it starved the health-check
+    #     thread and Render killed the instance ("health check timed out after 5s").
+    #  2. Memory — the peak lives in a short-lived child that exits and returns every
+    #     byte to the OS, instead of bloating the long-lived gunicorn worker.
+    if "--rerender" in sys.argv:
+        print(json.dumps(rerender_only(), indent=2))
+    else:
+        print(json.dumps(run_etl(), indent=2))

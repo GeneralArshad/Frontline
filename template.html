@@ -411,8 +411,16 @@ let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=0,mmA=true,rS='rx',rA=false,tS=5,tA=false;
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
 const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
+window.addEventListener('error',function(e){
+ const el=document.getElementById('load');
+ if(el&&el.style.display!=='none'){el.style.display='flex';
+  el.innerHTML='<div style="max-width:520px;text-align:center;padding:24px"><b>The report could not finish loading.</b>'+
+   '<div style="margin-top:8px;font-weight:400;font-size:12.5px;color:var(--muted)">'+
+   String(e&&e.message||'')+'<br>Try refreshing. If it persists, the server may be restarting.</div></div>';}
+});
 async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
- D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());$('load').style.display='none';loadNotes().then(()=>{init();}).catch(()=>init());}
+ try{D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());}catch(err){$('load').innerHTML='<div style="text-align:center;padding:24px"><b>Could not read the report data.</b><div style="margin-top:8px;font-weight:400;font-size:12.5px;color:var(--muted)">'+String(err&&err.message||err)+'</div></div>';return;}
+ $('load').style.display='none';init();loadNotesBg();}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
 function fill(id,v,l){$(id).innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
 function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includes(q)||r.c.toLowerCase().includes(q)))return false;}
@@ -801,8 +809,15 @@ function noteAuthor(force){
  return n;
 }
 function loadNotes(){
- return fetch('/api/notes',{credentials:'same-origin'}).then(r=>r.ok?r.json():Promise.reject())
-  .then(j=>{NOTES=j;NOTES_OK=true;}).catch(()=>{NOTES=[];NOTES_OK=false;});
+ const to=new Promise(res=>setTimeout(()=>res('TIMEOUT'),7000));
+ return Promise.race([
+   fetch('/api/notes',{credentials:'same-origin'}).then(r=>r.ok?r.json():null).catch(()=>null), to
+ ]).then(j=>{ if(j&&j!=='TIMEOUT'&&Array.isArray(j)){NOTES=j;NOTES_OK=true;} else {NOTES=[];NOTES_OK=false;} });
+}
+/* Fire-and-forget: the report must render whether or not notes are reachable. */
+function loadNotesBg(){
+ try{ loadNotes().then(()=>{ if(typeof TAB!=='undefined'&&TAB==='notes')notesView(); }).catch(()=>{}); }
+ catch(_){}
 }
 function notesFor(scope,key){return NOTES.filter(n=>n.scope===scope&&(scope==='report'||n.key===key));}
 function noteCount(code){return notesFor('rep',code).filter(n=>!n.resolved).length;}
