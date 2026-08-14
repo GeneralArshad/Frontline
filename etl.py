@@ -244,12 +244,26 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     TODAY = win_end
     d0 = datetime.date.fromisoformat(win_end)
     L7 = (d0 - datetime.timedelta(days=6)).isoformat()
-    # working days (non-Sundays) in window
-    a = datetime.date.fromisoformat(win_start); wd = 0
+
+    # ---- use the window where data ACTUALLY exists, not the ETL scan window ----
+    # LIFETIME_START is 2026-01, but Frontline captured nothing until 31 Mar. Counting
+    # working days from 1 Jan divided everyone's attendance by 193 days when only 117
+    # existed — understating it 1.65x and firing "Low attendance <50%" at reps who had
+    # worked ~80% of every day available to them. The scan window stays wide (so earlier
+    # data is picked up if it ever appears); only the DENOMINATORS use the real range.
+    row = con.execute("SELECT MIN(date), MAX(date) FROM dayplan "
+                      "WHERE date BETWEEN ? AND ? AND vc > 0", (win_start, win_end)).fetchone()
+    data_start = (row and row[0]) or win_start
+    data_end   = (row and row[1]) or win_end
+    if data_start < win_start: data_start = win_start
+    if data_end   > win_end:   data_end   = win_end
+
+    a = datetime.date.fromisoformat(data_start); wd = 0
     while a <= d0:
         if a.weekday() != 6: wd += 1
         a += datetime.timedelta(days=1)
-    span_days = max(1, (d0 - datetime.date.fromisoformat(win_start)).days + 1)
+    wd = max(1, wd)
+    span_days = max(1, (d0 - datetime.date.fromisoformat(data_start)).days + 1)
 
     AGG = {}; DAILY = {}; PROD = {}; SPEC = {}; CAT = {}; REACT = {}
     def A(i):
@@ -514,8 +528,10 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             if rec: hr_used[x["c"]] = rec
             else:   hr_missing += 1
 
-    label = f"Lifetime · {win_start} → {win_end} · {len(R)}-rep roster"
-    D = dict(label=label, gen=datetime.date.today().isoformat(), rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
+    label = f"{data_start} → {data_end} · {len(R)}-rep roster"
+    D = dict(label=label, gen=datetime.date.today().isoformat(),
+             dataStart=data_start, dataEnd=data_end, workDays=wd,
+             rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
              hr=hr_used)
     # ---- memory-frugal encode ----------------------------------------------

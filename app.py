@@ -9,10 +9,12 @@ Frontline live report — web service.
   MS_CLIENT_ID is set; otherwise a shared-password gate (interim).
 """
 import os, sys, json, threading, time, functools, datetime, sqlite3, re, subprocess
-from flask import Flask, session, redirect, url_for, request, Response, jsonify, render_template_string
+from flask import (Flask, session, redirect, url_for, request, Response, jsonify,
+                   render_template_string, send_file)
 
 DATA_DIR = os.environ.get("DATA_DIR", "./data")
 REPORT   = os.path.join(DATA_DIR, "report.html")
+SERVED   = os.path.join(DATA_DIR, "report_served.html")   # report.html + toolbar, prebuilt
 META     = os.path.join(DATA_DIR, "meta.json")
 DOMAIN   = os.environ.get("ALLOWED_EMAIL_DOMAIN", "").lower()
 MS_CID   = os.environ.get("MS_CLIENT_ID", "")
@@ -316,9 +318,43 @@ def index():
         return ("<h2 style='font-family:sans-serif'>Building the report for the first time…</h2>"
                 "<p style='font-family:sans-serif'>The initial lifetime backfill is running. "
                 "Refresh this page in a few minutes.</p>"), 200
-    with open(REPORT, encoding="utf-8") as fh: html = fh.read()
-    html = html.replace("</body>", TOOLBAR + "</body>")
-    return Response(html, mimetype="text/html")
+    # Serve a PREBUILT copy straight off disk.
+    #
+    # This used to read the 7.68 MB report into a Python string and then .replace()
+    # it — which allocates a second full copy, then a third when encoding the
+    # response. ~23 MB per concurrent request, on a 512 MB instance, while the ETL
+    # may also be running. send_file streams from disk instead, so a page load
+    # costs almost no process memory no matter how many people hit it at once.
+    _ensure_served()
+    return send_file(SERVED, mimetype="text/html", conditional=True,
+                     max_age=0, last_modified=os.path.getmtime(SERVED))
+
+_served_lock = threading.Lock()
+
+def _ensure_served():
+    """Rebuild report_served.html only when report.html is newer. Once per ETL, not per request."""
+    try:
+        if os.path.exists(SERVED) and os.path.getmtime(SERVED) >= os.path.getmtime(REPORT):
+            return
+    except OSError:
+        pass
+    with _served_lock:
+        try:
+            if os.path.exists(SERVED) and os.path.getmtime(SERVED) >= os.path.getmtime(REPORT):
+                return
+        except OSError:
+            pass
+        tmp = SERVED + ".tmp"
+        with open(REPORT, encoding="utf-8") as src:
+            html = src.read()
+        head, sep, tail = html.rpartition("</body>")
+        with open(tmp, "w", encoding="utf-8") as out:
+            if sep:
+                out.write(head); out.write(TOOLBAR); out.write(sep); out.write(tail)
+            else:
+                out.write(html); out.write(TOOLBAR)
+        del html, head, tail
+        os.replace(tmp, SERVED)
 
 _running = {"v": False}
 ETL_PY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "etl.py")
