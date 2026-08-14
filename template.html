@@ -118,6 +118,12 @@ svg{flex:0 0 auto}
   padding:7px 11px;font-weight:600;cursor:pointer;font-size:12px;font-family:inherit;transition:.12s}
 .icbtn:hover{background:var(--surface3);color:var(--ink);border-color:var(--faint)}
 .sidefoot .icbtn{flex:1}
+.sidefoot .signout{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  text-decoration:none;flex:1.2}
+.sidefoot .signout svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+.sidefoot .signout:hover{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent);
+  background:color-mix(in srgb,var(--bad) 8%,var(--surface2))}
 /* ============================ section titles ============================ */
 .secttl{margin:var(--s6) 2px var(--s4)}
 .secttl .eye{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
@@ -507,6 +513,9 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   <div class="sidefoot">
     <button class="icbtn" id="reset">&#8634; Reset</button>
     <button class="icbtn" id="theme" title="Switch theme">&#127769;</button>
+    <a class="icbtn signout" href="/logout" id="signout" title="Sign out of the report">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
+      <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg><span>Sign out</span></a>
   </div>
 </aside>
 <div class="main">
