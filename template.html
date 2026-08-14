@@ -7,35 +7,37 @@
    Apple's WWDC type guidance.
    ========================================================================= */
 :root{
-  /* spacing — 4px base, 8px rhythm */
+  /* spacing — 4px base */
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
-  /* radii */
-  --r1:6px; --r2:10px; --r3:14px; --r4:20px;
-  /* type scale */
+  /* radii — the redesign is deliberately sharp; 2px reads technical, not soft */
+  --r1:2px; --r2:2px; --r3:3px; --r4:4px;
   --t-xs:10.5px; --t-sm:11.5px; --t-md:13px; --t-base:13.5px; --t-lg:16px;
   --t-xl:20px; --t-2xl:26px; --t-3xl:32px;
-  /* brand */
   --brand-1:#2E3790; --brand-2:#FF7A45; --brand-3:#EB2227;
   --grad:linear-gradient(90deg,var(--brand-1),var(--brand-2) 46%,var(--brand-3));
-  /* status */
-  --ok:#12B76A; --warn:#F79009; --bad:#F04438; --info:#2E90FA; --accent:#7C5CFF;
-  --sh1:0 1px 2px rgba(0,0,0,.20);
-  --sh2:0 4px 14px rgba(0,0,0,.24);
-  --sh3:0 18px 48px rgba(0,0,0,.42);
+  --sh1:0 1px 2px rgba(16,24,40,.05);
+  --sh2:0 2px 8px rgba(16,24,40,.07);
+  --sh3:0 16px 44px rgba(16,24,40,.16);
 }
-/* ---- dark (default) ---- */
-[data-theme=dark]{
-  --bg:#0D0E13; --surface:#15171E; --surface2:#1B1E27; --surface3:#232734;
-  --ink:#EEF1F8; --muted:#98A2B3; --faint:#667085; --line:#262B36;
-  --chip:#1F2330; --hover:rgba(255,255,255,.045); --hover-solid:#1C1F29;
-  --ok:#32D583; --warn:#FDB022; --bad:#FF6B6B; --info:#53B1FD; --accent:#9E86FF;
-  --sh1:0 1px 2px rgba(0,0,0,.4); --sh2:0 4px 16px rgba(0,0,0,.45); --sh3:0 20px 56px rgba(0,0,0,.6);
-}
-/* ---- light ---- */
+/* ---- light (default) — the redesign's warm paper palette ---- */
 [data-theme=light]{
-  --bg:#F5F7FB; --surface:#FFFFFF; --surface2:#F8FAFC; --surface3:#F1F4F9;
-  --ink:#101828; --muted:#5B6478; --faint:#8A93A8; --line:#E4E9F2;
-  --chip:#F1F4F9; --hover:rgba(16,24,40,.035); --hover-solid:#F3F6FB;
+  --bg:#F2F0E9; --surface:#FBFAF7; --surface2:#ECEAE1; --surface3:#E4E1D6;
+  --ink:#191B20; --muted:#5F6470; --faint:#8A8D86; --line:#DBD7CA;
+  --chip:#ECEAE1; --hover:rgba(25,27,32,.045); --hover-solid:#E9E7DE;
+  --ok:#0E6E4A; --warn:#B26205; --bad:#C8102E; --info:#1B4FA0; --accent:#2E3790;
+  --acInk:#FFFFFF;
+}
+/* ---- dark — the redesign's values, with the surface steps widened.
+       The handoff shipped #0C0D10 / #13151A / #1A1D24: ~7 RGB points apart, the
+       same flatness Arshad flagged on the old dark theme. Widened so cards
+       actually separate from the page, and --muted lifted for small type. ---- */
+[data-theme=dark]{
+  --bg:#0A0B0E; --surface:#15181F; --surface2:#1F232C; --surface3:#2A2F3A;
+  --ink:#ECEEF2; --muted:#AAB1C0; --faint:#78808F; --line:#2C313D;
+  --chip:#1F232C; --hover:rgba(255,255,255,.05); --hover-solid:#1E222A;
+  --ok:#3ACF95; --warn:#F5A623; --bad:#FF5C69; --info:#6E86FF; --accent:#6E86FF;
+  --acInk:#0B0C0F;
+  --sh1:0 1px 2px rgba(0,0,0,.4); --sh2:0 4px 16px rgba(0,0,0,.45); --sh3:0 20px 56px rgba(0,0,0,.6);
 }
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -63,16 +65,25 @@ svg{flex:0 0 auto}
 .brandtxt b{display:block;font-size:var(--t-md);font-weight:700;letter-spacing:-.2px;line-height:1.2}
 .brandsub{font-size:9.5px;color:var(--faint);font-weight:600;letter-spacing:.09em;text-transform:uppercase;margin-top:1px}
 .sidescroll{overflow-y:auto;overflow-x:hidden;flex:1 1 auto;padding-bottom:var(--s3)}
-.navsec{padding:var(--s4) var(--s3) var(--s1);font-size:9.5px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--faint)}
+.navsec{padding:var(--s5) var(--s4) var(--s2);font-size:9px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:8px}
+/* numbered group markers with a rule — the hierarchy the flat nav was missing */
+.navsec::before{content:attr(data-n);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.navsec::after{content:"";flex:1 1 auto;height:1px;background:var(--line);order:-1;margin:0 2px 0 6px}
+.navsec>span{order:1}
 .nav{display:flex;flex-direction:column;gap:1px;padding:0 var(--s2)}
+.nav{padding:0 var(--s2);display:flex;flex-direction:column;gap:1px}
 .nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:transparent;
   color:var(--muted);padding:8px 10px;border-radius:var(--r1);font-weight:500;font-size:var(--t-md);
   cursor:pointer;transition:background .12s,color .12s;font-family:inherit;position:relative}
+.nav button .badge{margin-left:auto;font-size:9.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  background:color-mix(in srgb,var(--bad) 13%,transparent);color:var(--bad);
+  border:1px solid color-mix(in srgb,var(--bad) 30%,transparent);padding:1px 7px;border-radius:var(--r1)}
 .nav button svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.7;fill:none;
   stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 .nav button:hover{background:var(--hover);color:var(--ink)}
-.nav button.on{background:var(--surface3);color:var(--ink);font-weight:650}
+.nav button.on{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);font-weight:650;
+  box-shadow:inset 2px 0 0 var(--accent)}
 .nav button.on svg{opacity:1;stroke:var(--accent)}
 .nav button.on::before{content:"";position:absolute;left:-var(--s2);left:0;top:7px;bottom:7px;width:2.5px;
   border-radius:0 3px 3px 0;background:var(--accent)}
@@ -114,6 +125,18 @@ svg{flex:0 0 auto}
   box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
 .fcount{background:var(--accent);color:#fff;border-radius:99px;font-size:9px;padding:1px 6px;font-weight:700}
 .sidefoot{border-top:1px solid var(--line);padding:var(--s2) var(--s3);display:flex;gap:var(--s2);flex:0 0 auto}
+.userchip{border-top:1px solid var(--line);padding:var(--s3) var(--s3);display:flex;align-items:center;
+  gap:9px;flex:0 0 auto}
+.uavatar{width:26px;height:26px;border:1px solid var(--accent);color:var(--accent);display:flex;
+  align-items:center;justify-content:center;font:700 10px Inter,sans-serif;flex:0 0 auto;border-radius:var(--r1)}
+.uinfo{flex:1;min-width:0}
+.uname{font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.urole{font-size:9.5px;font-weight:600;letter-spacing:.1em;color:var(--faint);margin-top:1px}
+.uout{width:28px;height:28px;border:1px solid var(--line);color:var(--muted);display:flex;
+  align-items:center;justify-content:center;flex:0 0 auto;border-radius:var(--r1);transition:.14s}
+.uout svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round}
+.uout:hover{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
 .icbtn{border:1px solid var(--line);background:var(--surface2);color:var(--muted);border-radius:var(--r1);
   padding:7px 11px;font-weight:600;cursor:pointer;font-size:12px;font-family:inherit;transition:.12s}
 .icbtn:hover{background:var(--surface3);color:var(--ink);border-color:var(--faint)}
@@ -133,7 +156,7 @@ svg{flex:0 0 auto}
 .kpis{display:grid;gap:var(--s3);margin:var(--s2) 0;grid-template-columns:repeat(2,1fr)}
 @media(min-width:700px){.kpis{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:1100px){.kpis{grid-template-columns:repeat(5,1fr)}}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s4);
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);padding:var(--s4);
   box-shadow:var(--sh1);position:relative;overflow:hidden;transition:transform .16s,box-shadow .16s,border-color .16s}
 .kpi:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:color-mix(in srgb,var(--kc,var(--accent)) 40%,var(--line))}
 .kpi::after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--kc,var(--accent))}
@@ -145,7 +168,7 @@ svg{flex:0 0 auto}
 .c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c6{grid-column:span 6}
 .c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
 @media(max-width:1280px){.c6,.c4,.c8,.c5,.c7{grid-column:span 12}.c3{grid-column:span 6}}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);padding:var(--s4) var(--s5);
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);padding:var(--s4) var(--s5);
   box-shadow:var(--sh1);transition:border-color .16s,box-shadow .16s}
 .card.click{cursor:pointer}
 .card.click:hover{border-color:color-mix(in srgb,var(--accent) 35%,var(--line));box-shadow:var(--sh2)}
@@ -492,9 +515,9 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec">CORE</div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec">DETAIL</div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec">TEAM</div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec">REFERENCE</div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
+    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
     <div class="fpanel" id="fpanel">
-<div class="fhead" id="fhead">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
+<div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
 <div class="fbody">
 <div class="fitem"><label>Search</label><input id="q" placeholder="rep name or code&hellip;"></div>
 <div class="fitem"><label>Division</label><select id="fdi"></select></div>
@@ -510,12 +533,16 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
 </div></div>
   </div>
+  <div class="userchip">
+    <div class="uavatar">AR</div>
+    <div class="uinfo"><div class="uname">Arshad</div><div class="urole">HQ &middot; ADMIN</div></div>
+    <a class="uout" href="/logout" id="signout" title="Sign out">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
+      <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg></a>
+  </div>
   <div class="sidefoot">
     <button class="icbtn" id="reset">&#8634; Reset</button>
     <button class="icbtn" id="theme" title="Switch theme">&#127769;</button>
-    <a class="icbtn signout" href="/logout" id="signout" title="Sign out of the report">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
-      <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg><span>Sign out</span></a>
   </div>
 </aside>
 <div class="main">
@@ -795,6 +822,7 @@ function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}cons
 function render(){fcount();const rows=fr();
  if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
+ try{navBadge();}catch(_){}
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
 addEventListener('resize',()=>{clearTimeout(window.__stkT);window.__stkT=setTimeout(()=>{try{stickyCols();}catch(_){}} ,180);});
@@ -1192,6 +1220,16 @@ function stickyCols(root){
  });
 }
 
+/* Exceptions carries a live count in the nav, so the number of things needing
+   attention is visible without opening the tab. */
+function navBadge(){
+ const b=$('tabs')&&$('tabs').querySelector('button[data-t="exc"]'); if(!b)return;
+ const n=fr().filter(r=>(r.fl||[]).length).length;
+ let s=b.querySelector('.badge');
+ if(!n){ if(s)s.remove(); return; }
+ if(!s){ s=document.createElement('span'); s.className='badge'; b.appendChild(s); }
+ s.textContent=n>999?'999+':n;
+}
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;
