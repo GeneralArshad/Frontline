@@ -538,13 +538,49 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 .wdbar .wl{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
 .wdbar .wv{font-size:10px;font-variant-numeric:tabular-nums;color:var(--faint)}
 .wdbar>div.pk i{background:var(--ok)} .wdbar>div.lo i{background:var(--warn)}
+
+/* ---- org constellation ---- */
+.orgwrap{position:relative;border:1px solid var(--line);border-radius:var(--r2);
+  background:var(--surface);overflow:hidden;height:min(78vh,860px);min-height:460px}
+.orgwrap canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.orgwrap canvas.drag{cursor:grabbing}
+.orgtip{position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh3);
+  border-radius:var(--r2);padding:10px 12px;font-size:11.5px;line-height:1.55;
+  max-width:250px;z-index:6}
+.orgtip.on{opacity:1}
+.orgtip b{font-size:12.5px}
+.orgtip .rl{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--faint);margin-top:2px}
+.orgtip .kv{display:flex;justify-content:space-between;gap:14px;margin-top:3px;color:var(--muted)}
+.orgtip .kv b{font-size:11.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+.orgtip .hint{margin-top:7px;padding-top:6px;border-top:1px solid var(--line);
+  font-size:10px;color:var(--faint)}
+.orgctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;z-index:5}
+.orgctl button{width:30px;height:30px;border:1px solid var(--line);background:var(--surface);
+  color:var(--muted);border-radius:var(--r1);cursor:pointer;font:600 13px Inter,sans-serif;
+  display:flex;align-items:center;justify-content:center;transition:.14s}
+.orgctl button:hover{color:var(--ink);border-color:var(--accent)}
+.orgctl button.wide{width:auto;padding:0 10px;font-size:10px;letter-spacing:.1em;font-weight:700}
+.orgbar{position:absolute;left:12px;top:12px;display:flex;gap:8px;align-items:center;z-index:5;
+  flex-wrap:wrap;max-width:calc(100% - 120px)}
+.orgbar input{width:170px}
+.orglegend{position:absolute;left:12px;bottom:12px;display:flex;gap:12px;flex-wrap:wrap;
+  font-size:10px;color:var(--muted);z-index:5;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  padding:6px 10px;border:1px solid var(--line);border-radius:var(--r1)}
+.orglegend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;
+  vertical-align:middle}
+.orgstat{position:absolute;right:12px;bottom:12px;font-size:10px;color:var(--faint);z-index:5;
+  text-align:right;line-height:1.6}
+.orgwarn{margin-top:12px;padding:9px 13px;border:1px solid var(--warn);border-left-width:3px;
+  border-radius:var(--r2);background:color-mix(in srgb,var(--warn) 8%,var(--surface));font-size:11.5px}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
+    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="org"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v4.8M12 11.5H5.6a.6.6 0 0 0-.6.6v5.2M12 11.5h6.4a.6.6 0 0 1 .6.6v5.2"/></svg>Org tree</button><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
     <div class="fpanel" id="fpanel">
 <div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
 <div class="fbody">
@@ -663,7 +699,32 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes &amp; observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
+<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_org">
+<div class="secttl"><div class="eye">Structure</div><div class="big">The org, as it actually reports</div><div class="d">Every branch is a real reporting line, drawn from each employee&rsquo;s manager. Size is prescriptions, colour is health. Click anyone to open their profile; the sidebar filters and the period both apply, so this re-colours itself when you change either.</div></div>
+<div class="orgwrap" id="orgwrap">
+  <canvas id="orgcv"></canvas>
+  <div class="orgbar">
+    <input id="orgq" placeholder="find a person&hellip;" aria-label="Find a person in the tree">
+    <select id="orgcolor" style="width:auto" aria-label="Colour nodes by">
+      <option value="health">Colour: health</option>
+      <option value="role">Colour: role</option>
+      <option value="pi">Colour: productivity index</option>
+    </select>
+  </div>
+  <div class="orgctl">
+    <button id="orgin" title="Zoom in">+</button>
+    <button id="orgout" title="Zoom out">&minus;</button>
+    <button id="orgfit" class="wide" title="Fit the whole tree">FIT</button>
+  </div>
+  <div class="orglegend" id="orglegend"></div>
+  <div class="orgstat" id="orgstat"></div>
+  <div class="orgtip" id="orgtip"></div>
+</div>
+<div id="orgissues"></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Span of control</h3><div class="cs">Sortable &middot; every manager with at least one direct report, and what that team is producing</div></div></div>
+  <div class="tablewrap"><table><thead><tr id="sph"></tr></thead><tbody id="spb"></tbody></table></div></div>
+</section>
+<section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes &amp; observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
 <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
@@ -898,7 +959,7 @@ function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catc
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
 function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
 function render(){fcount();const rows=fr();
- if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='notes')notesView();else guide();
+ if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{stickyCols();}catch(_){}}
@@ -912,7 +973,7 @@ function init(){
  const S=(n,f)=>{try{f();}catch(e){PROB.push(n+': '+((e&&e.message)||e));console.error('init['+n+']',e);}};
   S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
-  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
+  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
@@ -1768,6 +1829,334 @@ function dlt(pc,abs){
  const c=v>0?'up':v<0?'dn':'fl';
  const s=pc!==''&&pc!==undefined?((v>0?'+':'')+v+'%'):((v>0?'+':'')+fmt(v));
  return '<span class="dlt '+c+'">'+s+'</span>';}
+
+/* ================================================================= ORG TREE
+   A radial partition of the real reporting structure. No force simulation: the
+   same roster must produce the same picture every time, or people stop trusting
+   that they are looking at the same thing twice.                             */
+const ORG={k:1,tx:0,ty:0,hot:null,q:'',color:'health',nodes:[],roots:[],issues:[],
+           w:0,h:0,dpr:1,fit:null,drag:null};
+
+/* Build the forest. Returns roots plus every node, with children resolved and
+   cycles broken. A cycle in an org chart is a data error, not a curiosity, so it
+   gets surfaced in the UI rather than silently rerouted. */
+function orgBuild(rows){
+ const byCode={},vis=new Set(rows.map(r=>r.c));
+ D.reps.forEach(r=>{byCode[r.c]={r:r,c:r.c,kids:[],p:null,depth:0,leaves:0,
+   sub:0,subRx:0,subVis:0,inView:vis.has(r.c),keep:false};});
+ const issues=[],roots=[];
+ for(const c in byCode){
+  const n=byCode[c],pc=n.r.mgc;
+  if(pc&&byCode[pc]&&pc!==c)n.p=byCode[pc];
+ }
+ /* break cycles: walk up from every node, and if we meet ourselves, cut the link */
+ for(const c in byCode){
+  const seen=new Set();let n=byCode[c];
+  while(n){ if(seen.has(n.c)){issues.push('Reporting loop involving '+n.r.n+' ('+n.c+') — link cut');
+             n.p=null;break;} seen.add(n.c);n=n.p;}
+ }
+ for(const c in byCode){const n=byCode[c];
+  if(n.p)n.p.kids.push(n);else roots.push(n);}
+
+ /* keep any node that is in view, or that is an ancestor of one — so filtering to
+    one state still shows the chain of command above it rather than a floating twig */
+ rows.forEach(r=>{let n=byCode[r.c];while(n&&!n.keep){n.keep=true;n=n.p;}});
+
+ const nodes=[];
+ const walk=(n,depth)=>{
+  n.depth=depth;n.kids=n.kids.filter(k=>k.keep);
+  n.kids.sort((a,b)=>(b.r.rx||0)-(a.r.rx||0)||a.r.n.localeCompare(b.r.n));
+  nodes.push(n);
+  n.sub=1;n.subRx=n.r.rx||0;n.subVis=n.r.vis||0;n.leaves=0;
+  n.kids.forEach(k=>{walk(k,depth+1);n.sub+=k.sub;n.subRx+=k.subRx;n.subVis+=k.subVis;
+   n.leaves+=k.leaves;});
+  if(!n.kids.length)n.leaves=1;
+ };
+ const live=roots.filter(r=>r.keep);
+ live.sort((a,b)=>(b.leaves||0)-(a.leaves||0));
+ live.forEach(r=>walk(r,1));
+ if(roots.length-live.length>0&&!rows.length)issues.push('No employees match the current filters.');
+ return{roots:live,nodes:nodes,byCode:byCode,issues:issues};}
+
+/* Angular partition. Each root owns a slice of the circle proportional to how many
+   leaves hang off it; each child owns a slice of its parent's. Radius is depth. */
+function orgLayout(T,R){
+ const tot=T.roots.reduce((a,n)=>a+Math.max(1,n.leaves),0)||1;
+ let maxDepth=1;T.nodes.forEach(n=>{if(n.depth>maxDepth)maxDepth=n.depth;});
+ const ring=R/Math.max(1,maxDepth);
+ let a0=-Math.PI/2;                       /* start at 12 o'clock, like the reference */
+ const place=(n,from,to)=>{
+  const mid=(from+to)/2;
+  n.a=mid;n.r0=n.depth*ring;
+  n.x=Math.cos(mid)*n.r0;n.y=Math.sin(mid)*n.r0;
+  const kt=n.kids.reduce((a,k)=>a+Math.max(1,k.leaves),0)||1;
+  let c=from;
+  n.kids.forEach(k=>{const span=(to-from)*Math.max(1,k.leaves)/kt;place(k,c,c+span);c+=span;});
+ };
+ /* a little air between the top-level wedges: without it the branches of adjacent
+    zones touch and the eye reads one blob instead of several teams */
+ const PAD=T.roots.length>1?Math.min(.06,1.2/T.roots.length)*2*Math.PI/T.roots.length:0;
+ T.roots.forEach(n=>{const span=2*Math.PI*Math.max(1,n.leaves)/tot;
+  place(n,a0+PAD/2,a0+span-PAD/2);a0+=span;});
+ T.maxDepth=maxDepth;T.ring=ring;
+ return T;}
+
+function orgPalette(){
+ const g=k=>getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+ return{ink:g('--ink'),muted:g('--muted'),faint:g('--faint'),line:g('--line'),
+  surface:g('--surface'),ok:g('--ok'),bad:g('--bad'),warn:g('--warn'),accent:g('--accent')};}
+
+function orgNodeColor(n,P){
+ const r=n.r;
+ if(ORG.color==='role')return rth(r.r).a;
+ if(ORG.color==='pi'){
+  if(r.pi==='')return P.faint;
+  return r.pi>=75?P.ok:r.pi>=50?P.accent:r.pi>=25?P.warn:P.bad;}
+ if(isMgr(r.r))return rth(r.r).a;
+ if(!r.vis)return P.faint;
+ if(!r.rx)return P.bad;
+ if(r.fl&&r.fl.length)return P.warn;
+ return P.ok;}
+
+function orgRadius(n){
+ const rx=n.r.rx||0;
+ if(isMgr(n.r.r))return 7+Math.min(6,Math.sqrt(n.subRx)/38);
+ return 2.6+Math.min(9,Math.sqrt(rx)/4.2);}
+
+/* Canvas has no letter-spacing in older engines; draw the glyphs manually so the
+   perimeter labels match the report's typographic voice everywhere. */
+function spacedText(x,y,s,sp,align){
+ const c=ORG.ctx;let w=0;
+ for(let i=0;i<s.length;i++)w+=c.measureText(s[i]).width+sp;
+ w-=sp;
+ let cx=align==='center'?x-w/2:align==='right'?x-w:x;
+ for(let i=0;i<s.length;i++){c.fillText(s[i],cx,y);cx+=c.measureText(s[i]).width+sp;}
+ return w;}
+
+function orgDraw(){
+ const cv=$('orgcv');if(!cv||!ORG.ctx)return;
+ const c=ORG.ctx,P=orgPalette(),W=ORG.w,H=ORG.h;
+ c.setTransform(ORG.dpr,0,0,ORG.dpr,0,0);
+ c.clearRect(0,0,W,H);
+ c.save();
+ c.translate(ORG.tx,ORG.ty);c.scale(ORG.k,ORG.k);
+
+ /* depth rings — decoration that means something: radius IS seniority */
+ c.strokeStyle=P.line;c.globalAlpha=.5;c.lineWidth=1/ORG.k;
+ for(let i=1;i<=(ORG.T.maxDepth||1);i++){
+  c.beginPath();c.arc(0,0,i*ORG.T.ring,0,2*Math.PI);c.stroke();}
+ c.globalAlpha=1;
+
+ const q=ORG.q.toLowerCase();
+ const hot=ORG.hot;
+ const path=new Set();
+ if(hot){let n=hot;while(n){path.add(n.c);n=n.p;}
+  const down=n2=>{n2.kids.forEach(k=>{path.add(k.c);down(k);});};down(hot);}
+
+ /* links first, so nodes sit on top */
+ ORG.T.nodes.forEach(n=>{
+  if(!n.p)return;
+  const on=!hot||path.has(n.c);
+  c.strokeStyle=on?P.line:P.line;
+  c.globalAlpha=hot?(on?.85:.12):.55;
+  c.lineWidth=(on&&hot?1.6:1)/ORG.k;
+  c.beginPath();c.moveTo(n.p.x,n.p.y);c.lineTo(n.x,n.y);c.stroke();});
+ c.globalAlpha=1;
+
+ /* nodes */
+ ORG.T.nodes.forEach(n=>{
+  const rad=orgRadius(n),col=orgNodeColor(n,P);
+  const match=q&&(n.r.n.toLowerCase().includes(q)||n.c.toLowerCase().includes(q));
+  const dim=(hot&&!path.has(n.c))||(q&&!match);
+  c.globalAlpha=dim?.14:1;
+  if(!n.inView)c.globalAlpha=Math.min(c.globalAlpha,.3);   /* filtered out: kept for context, visibly secondary */
+  c.beginPath();c.arc(n.x,n.y,rad,0,2*Math.PI);
+  c.fillStyle=col;c.fill();
+  if(isMgr(n.r.r)||!n.p){                       /* managers wear a ring, as in the reference */
+   c.beginPath();c.arc(n.x,n.y,rad+4.5,0,2*Math.PI);
+   c.strokeStyle=col;c.lineWidth=1.4/ORG.k;c.globalAlpha=dim?.14:.75;c.stroke();}
+  if(match){c.beginPath();c.arc(n.x,n.y,rad+9,0,2*Math.PI);
+   c.strokeStyle=P.accent;c.lineWidth=2/ORG.k;c.globalAlpha=1;c.stroke();}
+  c.globalAlpha=1;});
+
+ /* labels: managers always, everyone else once you have zoomed in far enough */
+ c.textBaseline='middle';
+ ORG.T.nodes.forEach(n=>{
+  const mgr=isMgr(n.r.r)||!n.p;
+  const show=mgr||ORG.k>=1.9||(hot&&path.has(n.c));
+  if(!show)return;
+  const dim=(hot&&!path.has(n.c))||(q&&!(n.r.n.toLowerCase().includes(q)||n.c.toLowerCase().includes(q)));
+  c.globalAlpha=dim?.12:(mgr?.95:.7);
+  c.fillStyle=mgr?P.ink:P.muted;
+  c.font=(mgr?'700 ':'500 ')+(mgr?11:9.5)/ORG.k+'px Inter,sans-serif';
+  const right=Math.cos(n.a)>=0;
+  c.textAlign=right?'left':'right';
+  const off=(orgRadius(n)+9)/1;
+  c.fillText(n.r.n,n.x+(right?off:-off),n.y);
+  c.globalAlpha=1;});
+ c.restore();
+
+ /* perimeter spoke labels, drawn in screen space so they never scale away */
+ c.font='700 11px Inter,sans-serif';c.textBaseline='middle';
+ orgSpokes().forEach(n=>{
+  const R=(ORG.T.maxDepth+0.55)*ORG.T.ring;
+  const x=Math.cos(n.a)*R*ORG.k+ORG.tx,y=Math.sin(n.a)*R*ORG.k+ORG.ty;
+  if(x<-60||x>W+60||y<-30||y>H+30)return;
+  const right=Math.cos(n.a)>=0;
+  c.fillStyle=P.ink;c.textAlign='left';
+  spacedText(x,y,(n.r.n||'').toUpperCase(),1.6,right?'left':'right');
+  c.fillStyle=P.faint;c.font='500 9.5px Inter,sans-serif';
+  spacedText(x,y+14,(rth(n.r.r).n+' · '+(n.sub-1)+' below').toLowerCase(),.5,right?'left':'right');
+  c.font='700 11px Inter,sans-serif';});
+}
+
+/* Which ring gets the perimeter labels. The reference had six neat spokes; a real
+   org might have one managing director at the top, which would label nothing useful.
+   So pick the shallowest ring holding a readable number of nodes. */
+function orgSpokes(){
+ const T=ORG.T;if(!T)return[];
+ const by={};T.nodes.forEach(n=>{(by[n.depth]||(by[n.depth]=[])).push(n);});
+ let best=null,bestScore=1e9;
+ for(const dp in by){const c=by[dp].length;
+  if(c<2||c>14)continue;
+  const sc=Math.abs(c-6)+ (+dp)*0.5;
+  if(sc<bestScore){bestScore=sc;best=by[dp];}}
+ return best||T.roots;}
+
+function orgFit(){
+ if(!ORG.T||!ORG.T.nodes.length)return;
+ const R=(ORG.T.maxDepth+0.6)*ORG.T.ring;
+ ORG.k=Math.min(ORG.w/(2.5*R),ORG.h/(2.3*R));
+ ORG.tx=ORG.w/2;ORG.ty=ORG.h/2;ORG.fit={k:ORG.k,tx:ORG.tx,ty:ORG.ty};
+ orgDraw();}
+
+function orgHit(mx,my){
+ const wx=(mx-ORG.tx)/ORG.k,wy=(my-ORG.ty)/ORG.k;
+ let best=null,bd=1e9;
+ ORG.T.nodes.forEach(n=>{const dx=n.x-wx,dy=n.y-wy,d2=dx*dx+dy*dy;
+  const rr=Math.max(orgRadius(n)+5,9/ORG.k);
+  if(d2<rr*rr&&d2<bd){bd=d2;best=n;}});
+ return best;}
+
+function orgTip(n,mx,my){
+ const t=$('orgtip');if(!t)return;
+ if(!n){t.classList.remove('on');return;}
+ const r=n.r,kids=n.kids.length;
+ const rk=(r.rk&&r.rk.rx)?(' · #'+r.rk.rx[0]+' of '+r.rk.rx[1]):'';
+ t.innerHTML='<b>'+r.n+'</b> <span style="color:var(--faint)">'+r.c+'</span>'+
+  '<div class="rl">'+rth(r.r).n+'</div>'+
+  '<div class="kv"><span>Prescriptions</span><b>'+fmt(r.rx||0)+'</b></div>'+
+  '<div class="kv"><span>Visits</span><b>'+fmt(r.vis||0)+'</b></div>'+
+  (kids?'<div class="kv"><span>Team below</span><b>'+(n.sub-1)+'</b></div>'+
+        '<div class="kv"><span>Team Rx</span><b>'+fmt(n.subRx)+'</b></div>':
+        '<div class="kv"><span>Coverage</span><b>'+(r.cov||0)+'%</b></div>')+
+  '<div class="kv"><span>'+(kids?'Direct reports':'Peer rank by Rx')+'</span><b>'+
+    (kids?kids:(rk?rk.replace(' · ',''):'—'))+'</b></div>'+
+  ((r.fl&&r.fl.length)?'<div class="hint" style="color:var(--bad)">'+r.fl.slice(0,3).join(' · ')+'</div>':'')+
+  '<div class="hint">Click to open the full profile</div>';
+ t.classList.add('on');
+ const W=ORG.w,x=mx+16>W-260?mx-266:mx+16;
+ t.style.left=Math.max(4,x)+'px';t.style.top=Math.max(4,Math.min(my+14,ORG.h-150))+'px';}
+
+function orgResize(){
+ const wrap=$('orgwrap'),cv=$('orgcv');if(!wrap||!cv)return;
+ const b=wrap.getBoundingClientRect();
+ if(!b.width||!b.height)return;
+ ORG.dpr=Math.min(2,window.devicePixelRatio||1);
+ ORG.w=b.width;ORG.h=b.height;
+ cv.width=Math.round(b.width*ORG.dpr);cv.height=Math.round(b.height*ORG.dpr);
+ ORG.ctx=cv.getContext('2d');
+ if(!ORG.ctx)return;
+ if(ORG.fit===null)orgFit();else orgDraw();}
+
+let ORGWIRED=false;
+function orgWire(){
+ if(ORGWIRED)return;const cv=$('orgcv');if(!cv)return;ORGWIRED=true;
+ cv.addEventListener('mousedown',e=>{ORG.drag={x:e.offsetX,y:e.offsetY,tx:ORG.tx,ty:ORG.ty};
+  cv.classList.add('drag');});
+ addEventListener('mouseup',()=>{ORG.drag=null;cv.classList.remove('drag');});
+ cv.addEventListener('mousemove',e=>{
+  if(ORG.drag){ORG.tx=ORG.drag.tx+(e.offsetX-ORG.drag.x);ORG.ty=ORG.drag.ty+(e.offsetY-ORG.drag.y);
+   orgDraw();orgTip(null);return;}
+  const n=orgHit(e.offsetX,e.offsetY);
+  if(n!==ORG.hot){ORG.hot=n;orgDraw();}
+  orgTip(n,e.offsetX,e.offsetY);
+  cv.style.cursor=n?'pointer':(ORG.drag?'grabbing':'grab');});
+ cv.addEventListener('mouseleave',()=>{ORG.hot=null;orgTip(null);orgDraw();});
+ cv.addEventListener('click',e=>{const n=orgHit(e.offsetX,e.offsetY);
+  if(n)openProfile(n.c,{});});
+ cv.addEventListener('wheel',e=>{e.preventDefault();
+  const f=e.deltaY<0?1.12:1/1.12,k2=Math.max(.15,Math.min(9,ORG.k*f));
+  const mx=e.offsetX,my=e.offsetY;
+  ORG.tx=mx-(mx-ORG.tx)*(k2/ORG.k);ORG.ty=my-(my-ORG.ty)*(k2/ORG.k);
+  ORG.k=k2;orgDraw();},{passive:false});
+ const zoom=f=>{const k2=Math.max(.15,Math.min(9,ORG.k*f)),mx=ORG.w/2,my=ORG.h/2;
+  ORG.tx=mx-(mx-ORG.tx)*(k2/ORG.k);ORG.ty=my-(my-ORG.ty)*(k2/ORG.k);ORG.k=k2;orgDraw();};
+ if($('orgin'))$('orgin').onclick=()=>zoom(1.25);
+ if($('orgout'))$('orgout').onclick=()=>zoom(1/1.25);
+ if($('orgfit'))$('orgfit').onclick=()=>orgFit();
+ if($('orgq'))$('orgq').oninput=e=>{ORG.q=e.target.value;orgDraw();};
+ if($('orgcolor'))$('orgcolor').onchange=e=>{ORG.color=e.target.value;orgLegend();orgDraw();};
+ if(typeof ResizeObserver==='function'){
+  try{new ResizeObserver(()=>{if(TAB==='org')orgResize();}).observe($('orgwrap'));}catch(_){}}
+}
+
+function orgLegend(){
+ const L=$('orglegend');if(!L)return;
+ const items=ORG.color==='role'
+  ?Object.keys(RTH).map(k=>[rth(k).a,rth(k).n])
+  :ORG.color==='pi'
+   ?[['var(--ok)','Index 75+'],['var(--accent)','50-74'],['var(--warn)','25-49'],
+     ['var(--bad)','Under 25'],['var(--faint)','Not scored']]
+   :[['var(--ok)','Producing, no flags'],['var(--warn)','Producing, flagged'],
+     ['var(--bad)','Visits but zero Rx'],['var(--faint)','No activity'],
+     ['var(--accent)','Manager']];
+ L.innerHTML=items.map(x=>'<span><i style="background:'+x[0]+'"></i>'+x[1]+'</span>').join('')+
+   '<span style="color:var(--faint)">· node size = Rx · ring = depth</span>';}
+
+let spS='team',spA=false;
+function orgView(rows){
+ const T=orgLayout(orgBuild(rows),320);
+ ORG.T=T;
+ orgWire();orgLegend();
+ /* the canvas has no size until its section is visible, so measure after paint */
+ requestAnimationFrame(()=>{ORG.fit=null;orgResize();});
+
+ const leaves=T.nodes.filter(n=>!n.kids.length).length;
+ const s=$('orgstat');
+ if(s)s.innerHTML=T.nodes.length+' people &middot; '+T.roots.length+
+   ' top of house &middot; '+leaves+' individual contributors<br>'+
+   'depth '+T.maxDepth+' &middot; drag to pan, scroll to zoom';
+
+ const iss=$('orgissues');
+ if(iss)iss.innerHTML=T.issues.length
+  ?'<div class="orgwarn"><b>Structure issues found in the roster.</b> These are data problems in '+
+   'Frontline, not display bugs &mdash; worth reporting.<br>'+T.issues.slice(0,6).join('<br>')+'</div>'
+  :'';
+
+ /* span of control */
+ const M=T.nodes.filter(n=>n.kids.length).map(n=>({
+  c:n.c,n:n.r.n,role:n.r.r,st:n.r.st,direct:n.kids.length,team:n.sub-1,
+  rx:n.subRx,vis:n.subVis,
+  silent:n.kids.filter(k=>!k.r.vis).length,
+  zero:n.kids.filter(k=>k.r.vis>0&&!k.r.rx).length,
+  perHead:(n.sub-1)?Math.round(n.subRx/(n.sub-1)):0,
+  own:n.r.rx||0,r:n.r}));
+ const SC=[['c','Code'],['n','Manager'],['role','Role'],['st','State'],['direct','Direct'],
+  ['team','Team below'],['rx','Team Rx'],['perHead','Rx / head'],['vis','Team visits'],
+  ['silent','Silent'],['zero','Zero-Rx'],['own','Own Rx']];
+ if($('sph')){
+  $('sph').innerHTML=SC.map(x=>'<th data-k="'+x[0]+'">'+x[1]+'</th>').join('');
+  $('spb').innerHTML=sortRows(M,spS,spA).map(m=>'<tr><td>'+m.c+'</td><td>'+pl(m.r)+'</td><td>'+
+   m.role+'</td><td>'+m.st+'</td><td class=n>'+m.direct+'</td><td class=n>'+m.team+
+   '</td><td class=n><b>'+fmt(m.rx)+'</b></td><td class=n>'+fmt(m.perHead)+'</td><td class=n>'+
+   fmt(m.vis)+'</td><td class=n>'+(m.silent?'<span class="pill no">'+m.silent+'</span>':'0')+
+   '</td><td class=n>'+(m.zero?'<span class="pill no">'+m.zero+'</span>':'0')+
+   '</td><td class=n>'+fmt(m.own)+'</td></tr>').join('')||
+   '<tr><td colspan="12" class="sub" style="padding:18px">No managers in view.</td></tr>';
+  $('sph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+   if(k===spS)spA=!spA;else{spS=k;spA=false;}orgView(rows);});}
+}
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
