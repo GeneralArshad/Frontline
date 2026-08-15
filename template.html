@@ -509,16 +509,67 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 .nbadge{display:inline-flex;align-items:center;gap:4px;background:var(--chip);border:1px solid var(--line);
   color:var(--muted);border-radius:99px;padding:1px 7px;font-size:10px;font-weight:650;margin-left:6px}
 
+
+/* ---- period control: visually senior to the other filters, because it changes
+        what every number in the report means, not merely which rows are shown ---- */
+.perbox{margin:var(--s2) 0 var(--s4);padding:var(--s3);border:1px solid var(--line);
+  border-radius:var(--r2);background:var(--surface2);position:relative}
+.perbox.on{border-color:var(--accent);box-shadow:inset 2px 0 0 var(--accent)}
+.perbox .plab{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--faint);display:flex;align-items:center;gap:6px;margin-bottom:var(--s2)}
+.perbox.on .plab{color:var(--accent)}
+.perbox select,.perbox input{width:100%}
+.prange{display:flex;gap:6px;margin-top:var(--s2)}
+.prange input{flex:1;min-width:0}
+.pnote{font-size:10px;line-height:1.5;color:var(--muted);margin-top:var(--s2)}
+.pbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 14px;margin:0 0 16px;
+  border:1px solid var(--accent);border-left-width:3px;border-radius:var(--r2);
+  background:color-mix(in srgb,var(--accent) 7%,var(--surface));font-size:12px}
+.pbar b{font-variant-numeric:tabular-nums}
+.pbar .px{margin-left:auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  font:600 11px Inter,sans-serif;padding:3px 10px;border-radius:var(--r1);cursor:pointer}
+.pbar .px:hover{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
+.dlt{font-variant-numeric:tabular-nums;font-weight:650}
+.dlt.up{color:var(--ok)} .dlt.dn{color:var(--bad)} .dlt.fl{color:var(--faint)}
+.wdbar{display:flex;align-items:flex-end;gap:6px;height:120px;margin:10px 0 4px}
+.wdbar>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}
+.wdbar i{display:block;width:100%;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px;
+  transition:height .3s}
+.wdbar .wl{font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--muted)}
+.wdbar .wv{font-size:10px;font-variant-numeric:tabular-nums;color:var(--faint)}
+.wdbar>div.pk i{background:var(--ok)} .wdbar>div.lo i{background:var(--warn)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
+    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
     <div class="fpanel" id="fpanel">
 <div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
 <div class="fbody">
+<div class="perbox" id="perbox">
+  <div class="plab"><span>Period</span><span id="perdot"></span></div>
+  <select id="fpr"></select>
+  <div class="prange" id="prange" style="display:none">
+    <input type="date" id="pfrom" aria-label="From date"><input type="date" id="pto" aria-label="To date">
+  </div>
+  <div style="margin-top:var(--s2)">
+    <label style="display:block;font-size:9px;font-weight:700;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--faint);margin-bottom:4px">Days of week</label>
+    <select id="fwd">
+      <option value="">Every day</option>
+      <option value="1,2,3,4,5">Weekdays (Mon&ndash;Fri)</option>
+      <option value="1,2,3,4,5,6">Mon&ndash;Sat (working week)</option>
+      <option value="6">Saturdays only</option>
+      <option value="0">Sundays only</option>
+      <option value="1">Monday</option><option value="2">Tuesday</option>
+      <option value="3">Wednesday</option><option value="4">Thursday</option>
+      <option value="5">Friday</option>
+    </select>
+  </div>
+  <div class="pnote" id="pnote"></div>
+</div>
 <div class="fitem"><label>Search</label><input id="q" placeholder="rep name or code&hellip;"></div>
 <div class="fitem"><label>Division</label><select id="fdi"></select></div>
 <div class="fitem"><label>Zone</label><select id="fzn"></select></div>
@@ -552,6 +603,7 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
     <div style="display:flex;align-items:center;gap:14px"><span style="display:block;width:118px" title="Frontline"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg></span></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
   </div>
 <div class="wrap">
+<div id="pbarw"></div>
 <section class="sec on" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
 <div class="kpis" id="rxkpis"></div>
@@ -586,6 +638,28 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <section class="sec" id="sec_daily"><div class="secttl"><div class="eye">Activity</div><div class="big">Daily calls &amp; Rx</div></div>
 <div class="card click" data-exp="ch_daily2"><div class="ch"><div><h3>Daily trend</h3><div class="cs">Calls per day</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_daily2"></canvas></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Daily Call Report <span id="dcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="dh2"></tr></thead><tbody id="db2"></tbody></table></div></div></section>
+<section class="sec" id="sec_trend">
+<div class="secttl"><div class="eye">Time</div><div class="big">Trends over time</div><div class="d">Month-on-month movement and day-of-week productivity for the reps currently in view. This tab always shows the full history so the shape is visible &mdash; the sidebar period filter governs every other tab.</div></div>
+<div class="kpis" id="trkpis"></div>
+<div class="grid" style="margin-top:18px">
+  <div class="card click c7" data-exp="ch_mom"><div class="ch"><div><h3>Rx and visits by month</h3><div class="cs">Bars are visits, the line is Rx</div></div><div class="exp">&#10530;</div></div><div class="cbox"><canvas id="ch_mom"></canvas></div></div>
+  <div class="card c5"><div class="ch"><div><h3>Day-of-week productivity</h3><div class="cs" id="wdsub">Rx per call by weekday</div></div></div>
+    <div class="wdbar" id="wdbar"></div>
+    <div class="pnote" id="wdnote" style="margin-top:10px"></div></div>
+</div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>Month on month</h3><div class="cs">Sortable &middot; &Delta; compares each month with the one before it</div></div></div>
+  <div class="tablewrap"><table><thead><tr id="mnh"></tr></thead><tbody id="mnb"></tbody></table></div></div>
+<div class="card" style="margin-top:18px"><div class="ch"><div><h3>By day of the week</h3><div class="cs">Sortable &middot; totals across the whole history for the reps in view</div></div></div>
+  <div class="tablewrap"><table><thead><tr id="wkh"></tr></thead><tbody id="wkb"></tbody></table></div></div>
+<div class="secttl" style="margin-top:30px"><div class="eye">Movement</div><div class="big">Who moved, month on month</div><div class="d" id="movsub"></div></div>
+<div class="card"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="mvh"></tr></thead><tbody id="mvb"></tbody></table></div></div>
+<div class="secttl" style="margin-top:30px"><div class="eye">Matrix</div><div class="big">Every rep, every month</div><div class="d">Click any month heading to rank the whole field force by that month alone. <span id="mxsub"></span></div></div>
+<div class="card"><div class="ch"><div><h3>Rep &times; month <span id="mxcnt" class="sub"></span></h3><div class="cs">Switch between Rx, visits and doctors met</div></div>
+  <div style="margin-left:auto"><select id="mxmetric" style="width:auto">
+    <option value="rx">Rx</option><option value="vis">Visits</option><option value="dr">Doctor visits</option><option value="sm">Samples</option>
+  </select></div></div>
+  <div class="tablewrap"><table><thead><tr id="mxh"></tr></thead><tbody id="mxb"></tbody></table></div></div>
+</section>
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
@@ -609,6 +683,10 @@ window.addEventListener('error',function(e){
 });
 async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
  try{D=JSON.parse(await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))).text());}catch(err){$('load').innerHTML='<div style="text-align:center;padding:24px"><b>Could not read the report data.</b><div style="margin-top:8px;font-weight:400;font-size:12.5px;color:var(--muted)">'+String(err&&err.message||err)+'</div></div>';return;}
+ BASE=D;
+ ALLDATES=[...new Set(D.daily.map(x=>x[1]))].sort();
+ PMONTHS=[...new Set(ALLDATES.map(x=>x.slice(0,7)))].sort();
+ RBYC={};D.reps.forEach(r=>{RBYC[r.c]=r;});
  $('load').style.display='none';init();loadNotesBg();
  try{const m=/^#rep=(.+)$/.exec(location.hash||''); if(m)openProfile(decodeURIComponent(m[1]),{});}catch(_){}}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
@@ -812,7 +890,7 @@ function guide(){const G=[['Prescriptions (core)',[['Rx',GL.rx],['Rx / call',GL.
 function callsView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const rows=fr().filter(r=>r.vis>0);$('clcnt').textContent='('+rows.length+' reps)';
  const L=$('cllist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.vis)+' visits &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b></span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';
  L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=callTable(el.dataset.c);el.dataset.l='1';stickyCols(el);}};});}
-function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';stickyCols(el);}};});}function rosterTable(code){const cs=(D.calls&&D.calls[code])||[];const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=(D.calls&&D.calls[code])||[];
+function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catch(_){}const rows=fr().filter(r=>r.vis>0&&r.dv>0);$('rocnt').textContent='('+rows.length+' reps)';const L=$('rolist');L.innerHTML=rows.length?rows.map(r=>'<div class="erow" data-c="'+r.c+'"><div class="eh2"><span class="chev2">&#9654;</span><b>'+pl(r)+'</b> <span class="cc">'+r.c+'</span> <span class="rl2">'+r.r+'</span><span class="m2">'+r.st+' &middot; '+r.hq+' &middot; '+fmt(r.ud)+' doctors &middot; <b>'+fmt(r.rx)+' Rx</b> &middot; '+r.rxConv+'% conv</span></div><div class="eb2"></div></div>').join(''):'<div class="sub" style="padding:20px">No reps match.</div>';L.querySelectorAll('.erow').forEach(el=>{el.querySelector('.eh2').onclick=()=>{const op=el.classList.toggle('op');if(op&&!el.dataset.l){el.querySelector('.eb2').innerHTML=rosterTable(el.dataset.c);el.dataset.l='1';stickyCols(el);}};});}function rosterTable(code){const cs=CALLS(code);const dm={};for(const v of cs){if(!v[2])continue;const dc=v[4]||('_'+v[3]);const o=dm[dc]||(dm[dc]={name:v[3],code:v[4],spec:v[5],cat:v[6],presc:0,vis:0,rx:0,last:'',react:''});o.vis++;o.rx+=(+v[8]||0);if(v[9])o.presc=1;if(v[0]>o.last){o.last=v[0];o.react=v[10]||o.react;}}let arr=Object.values(dm);if(F.sp)arr=arr.filter(o=>o.spec===F.sp);arr.sort((a,b)=>b.rx-a.rx||b.vis-a.vis);if(!arr.length)return '<div class="sub" style="padding:14px">No doctors'+(F.sp?' in '+F.sp:'')+'.</div>';const tot=arr.length,pn=arr.filter(o=>o.presc).length,rxd=arr.filter(o=>o.rx>0).length;return '<div style="padding:8px 12px;font-size:11px;color:var(--muted)"><b>'+tot+'</b> doctors &middot; <b>'+pn+'</b> prescribers &middot; <b>'+rxd+'</b> produced Rx</div><div class="tablewrap" style="margin:0"><table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th><th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th><th>Last reaction</th><th>Last seen</th></tr></thead><tbody>'+arr.map(o=>'<tr><td><b>'+o.name+'</b></td><td>'+(o.code||'')+'</td><td>'+(o.spec||'')+'</td><td>'+(o.cat||'')+'</td><td>'+(o.presc?'<span class="pill yes">YES</span>':'<span class="pill no">no</span>')+'</td><td class=n>'+o.vis+'</td><td class=n><b>'+fmt(o.rx)+'</b></td><td>'+(o.react||'')+'</td><td>'+o.last+'</td></tr>').join('')+'</tbody></table></div>';}function callTable(code){const cs=CALLS(code);
  const rows=cs.map(v=>{const pr=(v[11]||'').split('|').map(p=>{const m=p.split('~');return m[0]+(m[1]?' <b style="color:#C8102E">Rx'+m[1]+'</b>':'');}).join('<br>');
   const gps=(v[13]&&v[14])?'<a href="https://maps.google.com/?q='+v[13]+','+v[14]+'">map</a>':'';
   const pres=v[2]?'<span class="pill '+(v[9]?'yes':'no')+'">'+(v[9]?'Y':'N')+'</span>':'';
@@ -820,7 +898,7 @@ function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catc
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
 function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
 function render(){fcount();const rows=fr();
- if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='notes')notesView();else guide();
+ if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{stickyCols();}catch(_){}}
@@ -834,11 +912,23 @@ function init(){
  const S=(n,f)=>{try{f();}catch(e){PROB.push(n+': '+((e&&e.message)||e));console.error('init['+n+']',e);}};
   S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
-  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
+  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
-  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';render();};});
+  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';
+   PR.mode='all';PR.wd='';PR.from='';PR.to='';if($('fpr'))$('fpr').value='all';if($('fwd'))$('fwd').value='';
+   applyPeriod();};});
+  S('period control',()=>{
+   periodOptions();periodNote();
+   $('fpr').onchange=e=>{PR.mode=e.target.value;
+    if(PR.mode==='custom'){const[f,t]=[BASE.dataStart,BASE.dataEnd];
+     if(!PR.from)PR.from=f;if(!PR.to)PR.to=t;$('pfrom').value=PR.from;$('pto').value=PR.to;}
+    applyPeriod();};
+   $('pfrom').min=$('pto').min=BASE.dataStart;$('pfrom').max=$('pto').max=BASE.dataEnd;
+   $('pfrom').onchange=e=>{PR.from=e.target.value;PR.mode='custom';applyPeriod();};
+   $('pto').onchange=e=>{PR.to=e.target.value;PR.mode='custom';applyPeriod();};
+   $('fwd').onchange=e=>{PR.wd=e.target.value;applyPeriod();};});
   S('theme toggle',()=>{$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};});
   S('modal handlers',()=>{$('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});});
   S('footer',()=>{$('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;});
@@ -961,7 +1051,7 @@ function openProfile(code,opts){
  if(CURP&&CURP.c!==code&&opts.push)PSTACK.push(CURP);
  if(!opts.push&&!opts.back)PSTACK=[];
  CURP=r;
- const th=rth(r.r), mgr=isMgr(r.r), hr=hrOf(code), calls=(D.calls&&D.calls[code])||[];
+ const th=rth(r.r), mgr=isMgr(r.r), hr=hrOf(code), calls=CALLS(code);
 
  /* --- derive from this rep's own visits --- */
  const dm={},pm={},byDay={};
@@ -1230,6 +1320,455 @@ function navBadge(){
  if(!s){ s=document.createElement('span'); s.className='badge'; b.appendChild(s); }
  s.textContent=n>999?'999+':n;
 }
+/* ==================================================================== PERIOD
+   The period is a property of the data, not of a view: selecting one rebuilds D
+   from BASE and re-renders. Everything downstream keeps working because the
+   rebuilt records carry exactly the same field names as the ETL's.
+   BASE is never mutated, so "All time" is always an exact restore rather than a
+   recomputation that might drift from the ETL's own figures.                  */
+const PR={mode:'all',from:'',to:'',wd:''};
+let BASE=null,PCACHE={},ALLDATES=[],PMONTHS=[];
+const WDN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DOWC={};
+function dow(s){let v=DOWC[s];if(v===undefined)v=DOWC[s]=new Date(s+'T00:00:00').getDay();return v;}
+function mlabel(m){return MN[+m.slice(5,7)-1]+' '+m.slice(0,4);}
+function dlabel(s){return s?(+s.slice(8,10))+' '+MN[+s.slice(5,7)-1]+' '+s.slice(0,4):'';}
+function perActive(){return PR.mode!=='all'||!!PR.wd;}
+function pKey(){return PR.mode+'|'+PR.from+'|'+PR.to+'|'+PR.wd;}
+function addDays(s,n){const t=new Date(s+'T00:00:00');t.setDate(t.getDate()+n);
+ return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+
+/* Resolve the chosen mode into a concrete from/to. Rolling windows are anchored to
+   the last day data exists, not to today: anchoring to today would quietly shrink
+   every window by however long the ETL has been stale. */
+function perRange(){
+ const end=BASE.dataEnd,start=BASE.dataStart,m=PR.mode;
+ /* Always clamped to the range data actually exists in. Picking "March" when
+    capture began on 31 March must not divide attendance by 27 working days that
+    were never observed — that understates everyone and fires false flags. Same
+    reasoning as the ETL's data_start fix. */
+ const cl=(a,b)=>[a<start?start:a,b>end?end:b];
+ if(m==='all')return[start,end];
+ if(m==='custom')return cl(PR.from||start,PR.to||end);
+ if(m[0]==='r'){const n=+m.slice(1);return cl(addDays(end,-(n-1)),end);}
+ if(m[0]==='m'){const k=m.slice(1),y=+k.slice(0,4),mo=+k.slice(5,7);
+  return cl(k+'-01',k+'-'+String(new Date(y,mo,0).getDate()).padStart(2,'0'));}
+ if(m[0]==='q'){const y=+m.slice(1,5),q=+m.slice(6),s=(q-1)*3+1;
+  return cl(y+'-'+String(s).padStart(2,'0')+'-01',
+            y+'-'+String(s+2).padStart(2,'0')+'-'+String(new Date(y,s+2,0).getDate()).padStart(2,'0'));}
+ return[start,end];}
+
+function wdSet(){return PR.wd?new Set(PR.wd.split(',').map(Number)):null;}
+
+/* One lookup table per period, so the hot loop over ~200k visits does a plain
+   property read instead of constructing a Date for every row. Memoised on the
+   period key because CALLS() asks for it once per expanded rep. */
+let _dokKey='',_dok=null;
+function dayOK(){
+ const k=pKey();if(k===_dokKey&&_dok)return _dok;
+ const[f,t]=perRange(),w=wdSet(),m=Object.create(null);
+ for(let i=0;i<ALLDATES.length;i++){const dt=ALLDATES[i];
+  m[dt]=dt>=f&&dt<=t&&(!w||w.has(dow(dt)));}
+ _dokKey=k;_dok=m;return m;}
+
+/* Working days in the window, matching the ETL's rule (every day except Sunday),
+   narrowed to the selected weekdays. Attendance is days-active / this. */
+function workDays(){
+ const[f,t]=perRange(),w=wdSet();let n=0,c=f;
+ while(c<=t){const g=dow(c);if(g!==0&&(!w||w.has(g)))n++;c=addDays(c,1);}
+ return Math.max(1,n);}
+
+const _r1=x=>Math.round(x*10)/10,_r2=x=>Math.round(x*100)/100;
+
+function buildPeriod(){
+ const key=pKey();if(PCACHE[key])return PCACHE[key];
+ const OK=dayOK(),wd=workDays(),[pf,pt]=perRange();
+ const A=Object.create(null),docm=Object.create(null),SPEC={},CAT={},PROD={};
+ const L7=addDays(pt,-6);
+ for(const code in BASE.calls){
+  const vs=BASE.calls[code];let a=null;
+  for(let i=0;i<vs.length;i++){
+   const v=vs[i],dt=v[0];if(!OK[dt])continue;
+   if(!a){a=A[code]={v:0,dv:0,cv:0,rx:0,sm:0,rxL7:0,last:'',days:Object.create(null),
+     uniq:Object.create(null),nu:0,rxd:Object.create(null),nrx:0,dc:Object.create(null),
+     dcRx:Object.create(null),tm:Object.create(null)};}
+   a.v++;if(!a.days[dt])a.days[dt]=1;if(dt>a.last)a.last=dt;
+   const rx=+v[8]||0,sm=+v[12]||0;a.rx+=rx;a.sm+=sm;if(dt>=L7)a.rxL7+=rx;
+   const ts=v[1];
+   if(ts&&ts.length>=5){const mi=(+ts.slice(0,2))*60+(+ts.slice(3,5));
+    if(mi===mi){(a.tm[dt]||(a.tm[dt]=[])).push(mi);}}
+   if(v[2]){
+    a.dv++;const dk=v[4]||('__'+v[3]);
+    if(!a.uniq[dk]){a.uniq[dk]=1;a.nu++;}
+    a.dc[dk]=(a.dc[dk]||0)+1;a.dcRx[dk]=(a.dcRx[dk]||0)+rx;
+    if(rx>0){if(!a.rxd[dk]){a.rxd[dk]=1;a.nrx++;}
+     const sp=v[5]||'?',ct=v[6]||'?';SPEC[sp]=(SPEC[sp]||0)+rx;CAT[ct]=(CAT[ct]||0)+rx;}
+    let o=docm[dk];
+    if(!o)o=docm[dk]={n:v[3],c:v[4],sp:v[5],ca:v[6],cl:v[7],rx:0,vis:0,sm:0,presc:0,
+      first:dt,last:dt,react:'',reps:Object.create(null),nrep:0};
+    o.rx+=rx;o.vis++;o.sm+=sm;
+    if(!o.reps[code]){o.reps[code]=0;o.nrep++;}
+    o.reps[code]++;
+    if(v[9])o.presc=1;
+    if(dt<o.first)o.first=dt;
+    if(dt>=o.last){o.last=dt;o.react=v[10]||o.react;}
+   }else a.cv++;
+   const ps=v[11];
+   if(ps){const parts=ps.split('|');
+    for(let j=0;j<parts.length;j++){const t2=parts[j];if(!t2)continue;
+     const k2=t2.indexOf('~');const nm=k2<0?t2:t2.slice(0,k2);
+     PROD[nm]=(PROD[nm]||0)+(k2<0?0:(+t2.slice(k2+1)||0));}}
+  }
+ }
+ const out=rebuildReps(A,wd,pt);
+ const nd=Object.keys(docm);
+ const docs=nd.map(k=>{const o=docm[k];let best='',bn=-1;
+  for(const rc in o.reps)if(o.reps[rc]>bn){bn=o.reps[rc];best=rc;}
+  const rr=RBYC[best]||{};
+  return[o.c,o.n,o.sp,o.rx,o.vis,o.presc,o.cl,o.ca,rr.hq||'',rr.st||'',o.last,o.first,
+         best||'',rr.n||'',o.nrep,o.sm,o.react];});
+ const totRx=out.reduce((s,r)=>s+r.rx,0);
+ const abo=out.filter(x=>x.r==='BO'&&x.vis>0).sort((a2,b2)=>b2.rx-a2.rx);
+ const n20=Math.max(1,Math.round(abo.length*0.2));
+ const t20=abo.slice(0,n20).reduce((s,r)=>s+r.rx,0),boRx=abo.reduce((s,r)=>s+r.rx,0);
+ const topDocs=docs.map(x=>[x[1],x[0],x[2],x[7],x[6],x[3],x[4],x[12],'',x[9]])
+   .sort((a2,b2)=>b2[5]-a2[5]).slice(0,600);
+ const dsb={};docs.forEach(x=>{if(x[9])dsb[x[9]]=(dsb[x[9]]||0)+1;});
+ const wl=PR.wd?' · '+PR.wd.split(',').map(i=>WDN[+i]).join('/')+' only':'';
+ const nx=Object.assign({},BASE,{
+  reps:out,
+  docs:docs,
+  daily:BASE.daily.filter(x=>OK[x[1]]),
+  docsByState:Object.entries(dsb).sort((a2,b2)=>b2[1]-a2[1]),
+  mgrScore:mgrRoll(out),zoneScore:zoneRoll(out),
+  workDays:wd,dataStart:pf,dataEnd:pt,
+  label:dlabel(pf)+' → '+dlabel(pt)+wl+' · '+out.length+'-rep roster',
+  rx:{totRx:totRx,metDoctors:out.reduce((s,r)=>s+r.ud,0),rxDoctors:out.reduce((s,r)=>s+r.rxD,0),
+      pareto:boRx?Math.round(100*t20/boRx):0,paretoN:n20,
+      bySpec:Object.entries(SPEC).sort((a2,b2)=>b2[1]-a2[1]),
+      byCat:Object.entries(CAT).sort((a2,b2)=>b2[1]-a2[1]),
+      prod:Object.entries(PROD).map(x=>[x[0],0,x[1]]).sort((a2,b2)=>b2[2]-a2[2]),
+      topDocs:topDocs}});
+ const keys=Object.keys(PCACHE);if(keys.length>2)delete PCACHE[keys[0]];
+ PCACHE[key]=nx;return nx;}
+
+let RBYC={};
+function rebuildReps(A,wd,pend){
+ const out=[];
+ for(let i=0;i<BASE.reps.length;i++){
+  const b=BASE.reps[i],a=A[b.c],o=Object.assign({},b);
+  o.rk={};o.fl=[];                       /* fresh — never share BASE's objects */
+  if(!a){
+   Object.assign(o,{vis:0,dv:0,cv:0,ud:0,cov:0,cpd:0,rx:0,rpc:0,rxPerDoc:0,rxPerDay:0,
+    rxConv:0,rxD:0,s2r:0,sm:0,att:0,repc:0,rec:'',zeroRx:0,chsh:0,tdc:0,pi:'',mom:'',
+    cl:0,days:0,ob:0});
+   out.push(o);continue;}
+  const days=Object.keys(a.days).length,uniq=a.nu,rxd=a.nrx;
+  let repeat=0;for(const k in a.dc)if(a.dc[k]>=2)repeat++;
+  let mx=0;for(const k in a.dcRx)if(a.dcRx[k]>mx)mx=a.dcRx[k];
+  let cl=0;
+  for(const dt in a.tm){const t=a.tm[dt];if(t.length<4)continue;t.sort((x,y)=>x-y);
+   for(let p=0;p<t.length;p++){let c=1,q=p+1;while(q<t.length&&t[q]-t[p]<=30){c++;q++;}
+    if(c>cl)cl=c;}}
+  const spanDays=Math.max(1,Math.round((new Date(pend+'T00:00:00')-new Date(perRange()[0]+'T00:00:00'))/864e5)+1);
+  o.vis=a.v;o.dv=a.dv;o.cv=a.cv;o.rx=a.rx;o.sm=a.sm;o.ud=uniq;o.rxD=rxd;o.days=days;o.cl=cl;
+  o.cov=b.du?_r1(100*uniq/b.du):0;
+  o.cpd=days?_r1(a.v/days):0;
+  o.rpc=a.v?_r2(a.rx/a.v):0;
+  o.rxPerDoc=uniq?_r2(a.rx/uniq):0;
+  o.rxPerDay=days?_r2(a.rx/days):0;
+  o.rxConv=uniq?_r1(100*rxd/uniq):0;
+  o.s2r=a.rx?_r2(a.sm/a.rx):(a.sm>0?99:0);
+  o.att=_r1(100*days/wd);
+  o.repc=uniq?_r1(100*repeat/uniq):0;
+  o.chsh=(a.dv+a.cv)?_r1(100*a.cv/(a.dv+a.cv)):0;
+  o.tdc=a.rx?_r1(100*mx/a.rx):0;
+  o.rec=a.last?Math.round((new Date(pend+'T00:00:00')-new Date(a.last+'T00:00:00'))/864e5):'';
+  o.mom=a.rx>0?Math.round(a.rxL7/(a.rx*7/spanDays)*100):'';
+  o.zeroRx=(b.r==='BO'&&a.v>0&&a.rx===0)?1:0;
+  o.ob=days>0?1:0;
+  out.push(o);
+ }
+ /* productivity index — percentiles against the peers who were active in THIS
+    window, so a rep is never scored against a population they weren't part of */
+ const bo=out.filter(x=>x.r==='BO'&&x.vis>0);
+ const mk=k=>{const s=bo.map(x=>+x[k]||0).sort((p,q)=>p-q);
+  return v=>{let lo=0,hi=s.length;while(lo<hi){const m=(lo+hi)>>1;if(s[m]<v)lo=m+1;else hi=m;}
+   return s.length>1?Math.round(100*lo/(s.length-1)):0;};};
+ const pC=mk('cpd'),pR=mk('rpc'),pV=mk('cov'),pA=mk('att');
+ out.forEach(x=>{x.pi=(x.r==='BO'&&x.vis>0)
+  ?Math.round(.30*pC(x.cpd)+.25*pR(x.rpc)+.30*pV(x.cov)+.15*pA(x.att)):'';});
+ /* peer ranks within designation — ties share the better rank, as in the ETL */
+ const RANKED=['rx','vis','ud','rxConv','cov','pi','cpd','rpc','rxPerDoc','att'];
+ const byRole={};out.forEach(x=>(byRole[x.r]||(byRole[x.r]=[])).push(x));
+ for(const role in byRole){const g=byRole[role],n=g.length;
+  for(let m=0;m<RANKED.length;m++){const f=RANKED[m];
+   const vals=g.map(x=>+x[f]||0).sort((p,q)=>q-p),pos={};
+   for(let i=0;i<vals.length;i++)if(!(vals[i] in pos))pos[vals[i]]=i+1;
+   g.forEach(x=>{x.rk[f]=[pos[+x[f]||0],n];});}}
+ /* flags, recomputed so Exceptions answers "in this window", not "ever" */
+ out.forEach(x=>{const f=[];
+  if(x.r==='BO'){
+   if(x.vis===0)f.push('Silent (no activity)');
+   else{
+    if(x.rx===0)f.push('Zero Rx despite visits');
+    if(x.rec!==''&&x.rec>=3)f.push('Silent 3+ days');
+    if(x.att<50)f.push('Low attendance <50%');
+    if(x.du>0&&x.cov<25)f.push('Low coverage <25%');
+    if((x.rx>0&&x.s2r>4)||(x.sm>0&&x.rx===0))f.push('Sample-heavy / low Rx');
+    if(x.cl>=10)f.push('Clustered entries (audit)');
+    if(x.ud>=10&&x.repc<10)f.push('Weak repeat coverage');
+    if(x.mom!==''&&x.mom<50)f.push('Rx declining');
+    if(x.tdc>=60&&x.rx>=10)f.push('Single-doctor dependent');
+   }}
+  x.fl=f;});
+ return out;}
+
+function mgrRoll(reps){const mg={};
+ reps.forEach(r=>{if(r.r!=='BO')return;const k=r.mg||'—';
+  const m=mg[k]||(mg[k]={name:k,team:0,active:0,vis:0,rx:0,zeroRx:0,_c:[],_p:[]});
+  m.team++;if(r.vis>0)m.active++;m.vis+=r.vis;m.rx+=r.rx;m.zeroRx+=r.zeroRx;
+  if(r.du>0)m._c.push(r.cov);if(r.pi!=='')m._p.push(r.pi);});
+ return Object.values(mg).map(m=>({name:m.name,team:m.team,active:m.active,
+  actPct:Math.round(100*m.active/m.team),vis:m.vis,rx:m.rx,zeroRx:m.zeroRx,
+  cov:m._c.length?_r1(m._c.reduce((a,b)=>a+b,0)/m._c.length):0,
+  pi:m._p.length?Math.round(m._p.reduce((a,b)=>a+b,0)/m._p.length):0})).sort((a,b)=>b.rx-a.rx);}
+
+function zoneRoll(reps){const zn={};
+ reps.forEach(r=>{const k=r.zn||'—';
+  const z=zn[k]||(zn[k]={name:k,reps:0,active:0,vis:0,rx:0,zeroRx:0,_c:[]});
+  z.reps++;if(r.vis>0)z.active++;z.vis+=r.vis;z.rx+=r.rx;z.zeroRx+=r.zeroRx;
+  if(r.r==='BO'&&r.du>0)z._c.push(r.cov);});
+ return Object.values(zn).map(z=>({name:z.name,reps:z.reps,active:z.active,
+  actPct:Math.round(100*z.active/z.reps),vis:z.vis,rx:z.rx,zeroRx:z.zeroRx,
+  cov:z._c.length?_r1(z._c.reduce((a,b)=>a+b,0)/z._c.length):0})).sort((a,b)=>b.rx-a.rx);}
+
+/* Call rows are never copied per period — 200k rows duplicated per selection is
+   how you run a phone out of memory. The two consumers filter on read instead. */
+function CALLS(code){const cs=(BASE&&BASE.calls&&BASE.calls[code])||[];
+ if(!perActive())return cs;
+ const OK=dayOK();return cs.filter(v=>OK[v[0]]);}
+
+/* A cold recompute is a few hundred milliseconds of straight-line JS, which would
+   otherwise be a silent freeze. Paint the "recomputing" state first, yield two
+   frames so it actually reaches the screen, then do the work. */
+let PBUSY=false;
+function periodBusy(){return PBUSY;}
+function applyPeriod(){
+ const box=$('perbox');if(box)box.classList.toggle('on',perActive());
+ const pr=$('prange');if(pr)pr.style.display=PR.mode==='custom'?'flex':'none';
+ const nt=$('pnote'),cold=perActive()&&!PCACHE[pKey()];
+ const finish=()=>{
+  try{D=perActive()?buildPeriod():BASE;}
+  catch(e){console.error('period',e);bootWarn(['period: '+((e&&e.message)||e)]);D=BASE;}
+  periodNote();periodBar();render();PBUSY=false;};
+ if(cold&&nt&&typeof requestAnimationFrame==='function'){
+  PBUSY=true;
+  nt.innerHTML='Recomputing every metric for this window&hellip;';
+  requestAnimationFrame(()=>requestAnimationFrame(finish));
+ }else finish();}
+
+function periodNote(){
+ const el=$('pnote');if(!el)return;
+ if(!perActive()){el.innerHTML='Every figure covers the full captured history, '+
+   dlabel(BASE.dataStart)+' to '+dlabel(BASE.dataEnd)+'.';return;}
+ const[f,t]=perRange();
+ el.innerHTML='<b>'+workDays()+'</b> working days in range. Every metric &mdash; '+
+  'coverage, conversion, attendance, ranks and flags &mdash; is recomputed for '+
+  dlabel(f)+'&nbsp;&ndash;&nbsp;'+dlabel(t)+'.';}
+
+function periodBar(){
+ const w=$('pbarw');if(!w)return;
+ if(!perActive()){w.innerHTML='';return;}
+ const[f,t]=perRange(),n=D.reps.filter(r=>r.vis>0).length;
+ const wl=PR.wd?PR.wd.split(',').map(i=>WDN[+i]).join(', ')+' only':'';
+ w.innerHTML='<div class="pbar"><span>Showing <b>'+dlabel(f)+'</b> to <b>'+dlabel(t)+
+  '</b>'+(wl?' &middot; '+wl:'')+'</span><span style="color:var(--muted)">'+
+  fmt(D.rx.totRx)+' Rx &middot; '+n+' reps active &middot; '+D.workDays+' working days</span>'+
+  '<button class="px" id="pclear">Clear period</button></div>';
+ const b=$('pclear');if(b)b.onclick=()=>{PR.mode='all';PR.wd='';PR.from='';PR.to='';
+  if($('fpr'))$('fpr').value='all';if($('fwd'))$('fwd').value='';applyPeriod();};}
+
+/* Build the period menu from the months the data actually contains, so it can
+   never offer a window that holds nothing. */
+function periodOptions(){
+ const sel=$('fpr');if(!sel)return;
+ const qs={};PMONTHS.forEach(m=>{qs[m.slice(0,4)+'-Q'+(Math.floor((+m.slice(5,7)-1)/3)+1)]=1;});
+ sel.innerHTML='<option value="all">All time ('+dlabel(BASE.dataStart)+' &ndash; '+dlabel(BASE.dataEnd)+')</option>'+
+  '<optgroup label="Rolling">'+[7,14,30,60,90].map(n=>'<option value="r'+n+'">Last '+n+' days</option>').join('')+'</optgroup>'+
+  '<optgroup label="Month">'+PMONTHS.slice().reverse().map(m=>'<option value="m'+m+'">'+mlabel(m)+'</option>').join('')+'</optgroup>'+
+  '<optgroup label="Quarter">'+Object.keys(qs).sort().reverse().map(q=>'<option value="q'+q.replace('-Q','-')+'">Q'+q.slice(6)+' '+q.slice(0,4)+'</option>').join('')+'</optgroup>'+
+  '<option value="custom">Custom range&hellip;</option>';}
+
+/* ==================================================================== TRENDS */
+let mnS='m',mnA=false,wkS='ord',wkA=true,mvS='dlt',mvA=false;
+function monthAgg(codes){
+ const m={};
+ BASE.daily.forEach(x=>{if(!codes.has(x[0]))return;const k=x[1].slice(0,7);
+  const o=m[k]||(m[k]={m:k,vis:0,dr:0,ch:0,rx:0,sm:0,days:{},reps:{}});
+  o.vis+=x[2];o.dr+=x[3];o.ch+=x[4];o.rx+=x[5];o.sm+=x[6];o.days[x[1]]=1;o.reps[x[0]]=1;});
+ return Object.keys(m).sort().map(k=>{const o=m[k];
+  o.nrep=Object.keys(o.reps).length;o.nday=Object.keys(o.days).length;
+  o.rpc=o.vis?_r2(o.rx/o.vis):0;o.rxr=o.nrep?Math.round(o.rx/o.nrep):0;
+  o.vpr=o.nrep?_r1(o.vis/o.nrep):0;delete o.days;delete o.reps;return o;});}
+
+/* ord puts Monday first: getDay() is Sunday-first, which is not how anyone reads a
+   working week. i stays the getDay() index so lookups by dow() still work. */
+function weekAgg(codes){
+ const w=[];for(let i=0;i<7;i++)w.push({i:i,ord:(i+6)%7,n:WDN[i],vis:0,rx:0,sm:0,dr:0,days:{},reps:{}});
+ BASE.daily.forEach(x=>{if(!codes.has(x[0]))return;const o=w[dow(x[1])];
+  o.vis+=x[2];o.dr+=x[3];o.rx+=x[5];o.sm+=x[6];o.days[x[1]]=1;o.reps[x[0]+x[1]]=1;});
+ w.forEach(o=>{o.nday=Object.keys(o.days).length;o.slots=Object.keys(o.reps).length;
+  o.rpc=o.vis?_r2(o.rx/o.vis):0;o.vpd=o.nday?Math.round(o.vis/o.nday):0;
+  o.rxd=o.nday?Math.round(o.rx/o.nday):0;delete o.days;delete o.reps;});
+ return w;}
+
+function trendView(rows){
+ const codes=new Set(rows.map(r=>r.c));
+ const M=monthAgg(codes),W=weekAgg(codes);
+ const tot=M.reduce((a,x)=>a+x.rx,0),tv=M.reduce((a,x)=>a+x.vis,0);
+ const best=M.slice().sort((a,b)=>b.rx-a.rx)[0],lastM=M[M.length-1],prevM=M[M.length-2];
+ const gr=(prevM&&prevM.rx)?Math.round(100*(lastM.rx-prevM.rx)/prevM.rx):null;
+ const bw=W.filter(x=>x.vis>0).sort((a,b)=>b.rpc-a.rpc)[0];
+ $('trkpis').innerHTML=[
+  kpi('#0A7C4A',fmt(tot),'Rx across '+M.length+' months','Total prescriptions in the full captured history for the reps in view.',''),
+  kpi('#1B2A6B',best?fmt(best.rx):'—','Best month','Highest-Rx month for the reps in view.',best?mlabel(best.m):''),
+  kpi(gr===null?'#7C3AED':(gr>=0?'#0A7C4A':'#C8102E'),(gr===null?'—':(gr>0?'+':'')+gr+'%'),'Latest month vs prior','Change in Rx between the last two months present in the data.',lastM?mlabel(lastM.m):''),
+  kpi('#E8911A',bw?bw.n:'—','Best weekday','Weekday with the highest Rx per call.',bw?bw.rpc+' Rx/call':''),
+  kpi('#2563EB',fmt(tv),'Visits','Total visits across the full history for the reps in view.','')].join('');
+
+ /* month chart */
+ chart('ch_mom',{type:'bar',data:{labels:M.map(x=>mlabel(x.m)),datasets:[
+   {type:'bar',label:'Visits',data:M.map(x=>x.vis),backgroundColor:'#1B2A6B',borderRadius:4,order:2},
+   {type:'line',label:'Rx',data:M.map(x=>x.rx),borderColor:'#0A7C4A',backgroundColor:'#0A7C4A',
+    borderWidth:2.5,tension:.3,pointRadius:3,yAxisID:'y1',order:1}]},
+  options:{responsive:true,maintainAspectRatio:false,
+   plugins:{legend:{display:true,position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}},
+   scales:{x:{ticks:{color:muted(),font:{size:9}},grid:{display:false}},
+    y:{ticks:{color:muted(),font:{size:9}},grid:{color:line()}},
+    y1:{position:'right',ticks:{color:muted(),font:{size:9}},grid:{display:false}}}}},
+  {title:'Rx and visits by month',def:'Monthly totals for the reps currently in view.',
+   type:'bar',labels:M.map(x=>mlabel(x.m)),values:M.map(x=>x.rx)});
+
+ /* weekday bars */
+ const mxr=Math.max(...W.map(x=>x.rpc),0.0001);
+ const activeW=W.filter(x=>x.vis>0);
+ const pk=activeW.length?activeW.slice().sort((a,b)=>b.rpc-a.rpc)[0].i:-1;
+ const lo=activeW.length?activeW.slice().sort((a,b)=>a.rpc-b.rpc)[0].i:-1;
+ $('wdbar').innerHTML=W.slice().sort((a2,b2)=>a2.ord-b2.ord).map(x=>'<div class="'+(x.i===pk?'pk':x.i===lo?'lo':'')+'">'+
+  '<span class="wv">'+(x.vis?x.rpc:'')+'</span>'+
+  '<i style="height:'+Math.round(100*x.rpc/mxr)+'%"></i>'+
+  '<span class="wl">'+x.n+'</span></div>').join('');
+ const sun=W[0];
+ $('wdnote').innerHTML=activeW.length
+  ?'Best: <b>'+WDN[pk]+'</b> at '+W[pk].rpc+' Rx per call. Weakest: <b>'+WDN[lo]+'</b> at '+
+   W[lo].rpc+'. '+(sun.vis?'Sunday activity is logged on '+fmt(sun.vis)+' visits — Sundays are excluded from the attendance denominator, so this is genuine extra effort (or a data-entry artefact worth checking).':'No Sunday activity, as expected.')
+  :'No activity for the reps in view.';
+
+ /* month table */
+ const MC=[['m','Month'],['nrep','Active reps'],['nday','Days'],['vis','Visits'],['dr','Doctor visits'],
+  ['ch','Chemist visits'],['rx','Rx'],['rpc','Rx / call'],['rxr','Rx / rep'],['vpr','Visits / rep'],
+  ['sm','Samples'],['dlt','Δ Rx vs prior']];
+ M.forEach((x,i)=>{x.dlt=i&&M[i-1].rx?Math.round(100*(x.rx-M[i-1].rx)/M[i-1].rx):'';
+  x.dabs=i?x.rx-M[i-1].rx:'';});
+ $('mnh').innerHTML=MC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('mnb').innerHTML=sortRows(M,mnS,mnA).map(x=>'<tr><td><b>'+mlabel(x.m)+'</b></td><td class=n>'+
+  x.nrep+'</td><td class=n>'+x.nday+'</td><td class=n>'+fmt(x.vis)+'</td><td class=n>'+fmt(x.dr)+
+  '</td><td class=n>'+fmt(x.ch)+'</td><td class=n><b>'+fmt(x.rx)+'</b></td><td class=n>'+x.rpc+
+  '</td><td class=n>'+fmt(x.rxr)+'</td><td class=n>'+x.vpr+'</td><td class=n>'+fmt(x.sm)+'</td><td class=n>'+
+  dlt(x.dlt,x.dabs)+'</td></tr>').join('');
+ $('mnh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+  if(k===mnS)mnA=!mnA;else{mnS=k;mnA=false;}trendView(rows);});
+
+ /* weekday table */
+ const WC=[['ord','Day'],['nday','Dates'],['slots','Rep-days'],['vis','Visits'],['dr','Doctor visits'],
+  ['rx','Rx'],['rpc','Rx / call'],['vpd','Visits / date'],['rxd','Rx / date'],['sm','Samples']];
+ $('wkh').innerHTML=WC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('wkb').innerHTML=sortRows(W,wkS,wkA).map(x=>'<tr'+(x.i===0?' style="opacity:.72"':'')+
+  '><td><b>'+x.n+'</b>'+(x.i===0?' <span class="sub">(not a working day)</span>':'')+
+  '</td><td class=n>'+x.nday+'</td><td class=n>'+fmt(x.slots)+'</td><td class=n>'+fmt(x.vis)+
+  '</td><td class=n>'+fmt(x.dr)+'</td><td class=n><b>'+fmt(x.rx)+'</b></td><td class=n>'+x.rpc+
+  '</td><td class=n>'+fmt(x.vpd)+'</td><td class=n>'+fmt(x.rxd)+'</td><td class=n>'+fmt(x.sm)+
+  '</td></tr>').join('');
+ $('wkh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+  if(k===wkS)wkA=!wkA;else{wkS=k;wkA=true;}trendView(rows);});
+
+ matrixView(rows,M.map(x=>x.m));
+
+ /* movers: last full month vs the one before */
+ if(M.length<2){$('movsub').textContent='Needs two months of data.';
+  $('mvh').innerHTML='';$('mvb').innerHTML='';return;}
+ const a=M[M.length-2].m,b=M[M.length-1].m;
+ const per={};BASE.daily.forEach(x=>{if(!codes.has(x[0]))return;const k=x[1].slice(0,7);
+  if(k!==a&&k!==b)return;const o=per[x[0]]||(per[x[0]]={a:0,b:0,av:0,bv:0});
+  if(k===a){o.a+=x[5];o.av+=x[2];}else{o.b+=x[5];o.bv+=x[2];}});
+ const rmap={};BASE.reps.forEach(r=>rmap[r.c]=r);
+ const MV=Object.keys(per).map(c=>{const o=per[c],r=rmap[c]||{};
+  return{c:c,n:r.n||c,st:r.st||'',hq:r.hq||'',mg:r.mg||'',prev:o.a,cur:o.b,
+   abs:o.b-o.a,dlt:o.a?Math.round(100*(o.b-o.a)/o.a):(o.b?999:0),
+   pv:o.av,cv:o.bv,r:r};});
+ $('movsub').innerHTML='<b>'+mlabel(b)+'</b> against <b>'+mlabel(a)+'</b>, per rep. '+
+  'Sort by Δ% to see collapses, by Δ Rx to see the ones that matter in absolute terms. '+
+  'Reps who started mid-period will show as risers &mdash; check the visit columns before concluding.';
+ const VC=[['c','Code'],['n','Name'],['st','State'],['mg','Manager'],['pv','Visits '+mlabel(a)],
+  ['cv','Visits '+mlabel(b)],['prev','Rx '+mlabel(a)],['cur','Rx '+mlabel(b)],['abs','Δ Rx'],['dlt','Δ %']];
+ $('mvh').innerHTML=VC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('mvb').innerHTML=sortRows(MV,mvS,mvA).slice(0,1000).map(x=>'<tr><td>'+x.c+'</td><td>'+
+  (x.r&&x.r.c?pl(x.r):x.n)+'</td><td>'+x.st+'</td><td>'+x.mg+'</td><td class=n>'+fmt(x.pv)+
+  '</td><td class=n>'+fmt(x.cv)+'</td><td class=n>'+fmt(x.prev)+'</td><td class=n><b>'+fmt(x.cur)+
+  '</b></td><td class=n>'+dlt('',x.abs)+'</td><td class=n>'+
+  (x.dlt===999?'<span class="dlt up">new</span>':dlt(x.dlt,''))+'</td></tr>').join('');
+ $('mvh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+  if(k===mvS)mvA=!mvA;else{mvS=k;mvA=false;}trendView(rows);});}
+
+/* Rep x month. The one table where "sort by month" means literally that: each month
+   is a column, and clicking its heading ranks the whole field force by that month. */
+let mxS='',mxA=false,mxM='rx';
+const MXI={rx:5,vis:2,dr:3,sm:6};
+function matrixView(rows,months){
+ const codes=new Set(rows.map(r=>r.c)),col=MXI[mxM]||5;
+ const per={};
+ BASE.daily.forEach(x=>{if(!codes.has(x[0]))return;
+  const o=per[x[0]]||(per[x[0]]={}),m=x[1].slice(0,7);o[m]=(o[m]||0)+x[col];});
+ const rmap={};BASE.reps.forEach(r=>{rmap[r.c]=r;});
+ const MX=rows.filter(r=>per[r.c]).map(r=>{const o={c:r.c,n:r.n,st:r.st,mg:r.mg,r:rmap[r.c],tot:0};
+  months.forEach(m=>{o[m]=(per[r.c]||{})[m]||0;o.tot+=o[m];});
+  const lastTwo=months.slice(-2);
+  o.trend=lastTwo.length===2?(o[lastTwo[0]]?Math.round(100*(o[lastTwo[1]]-o[lastTwo[0]])/o[lastTwo[0]]):''):'';
+  return o;});
+ if(!mxS)mxS=months[months.length-1]||'tot';
+ const MC=[['c','Code'],['n','Name'],['st','State'],['mg','Manager']]
+  .concat(months.map(m=>[m,mlabel(m)])).concat([['tot','Total'],['trend','Δ %']]);
+ $('mxh').innerHTML=MC.map(c=>'<th data-k="'+c[0]+'"'+(c[0]===mxS?' style="color:var(--accent)"':'')+
+  '>'+c[1]+'</th>').join('');
+ /* shade each cell against the best month in the table, so the eye finds the
+    seasonality without having to read every number */
+ let peak=0;MX.forEach(o=>months.forEach(m=>{if(o[m]>peak)peak=o[m];}));
+ const MXCAP=1000,shown=sortRows(MX,mxS,mxA).slice(0,MXCAP);
+ $('mxb').innerHTML=shown.map(o=>'<tr><td>'+o.c+'</td><td>'+
+  (o.r?pl(o.r):o.n)+'</td><td>'+o.st+'</td><td>'+o.mg+'</td>'+
+  months.map(m=>'<td class=n'+(peak&&o[m]?' style="background:color-mix(in srgb,var(--accent) '+
+   Math.round(18*o[m]/peak)+'%,transparent)"':'')+'>'+(o[m]?fmt(o[m]):'')+'</td>').join('')+
+  '<td class=n><b>'+fmt(o.tot)+'</b></td><td class=n>'+
+  (o.trend===''?'<span class="dlt fl">—</span>':dlt(o.trend,''))+'</td></tr>').join('');
+ $('mxcnt').textContent='('+(MX.length>MXCAP?MXCAP+' of '+MX.length:MX.length)+' reps'+
+  (MX.length>MXCAP?', narrow the filters to see the rest':'')+')';
+ $('mxsub').textContent='Cells are shaded against the strongest rep-month in view. Currently showing '+
+  ({rx:'prescriptions',vis:'visits',dr:'doctor visits',sm:'samples'}[mxM])+'.';
+ $('mxh').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+  if(k===mxS)mxA=!mxA;else{mxS=k;mxA=false;}matrixView(rows,months);});
+ const sel=$('mxmetric');
+ if(sel){sel.value=mxM;sel.onchange=e=>{mxM=e.target.value;matrixView(rows,months);};}
+ try{stickyCols();}catch(_){}}
+
+function dlt(pc,abs){
+ const v=pc!==''&&pc!==undefined?pc:abs;
+ if(v===''||v===undefined||v===null)return '<span class="dlt fl">—</span>';
+ const c=v>0?'up':v<0?'dn':'fl';
+ const s=pc!==''&&pc!==undefined?((v>0?'+':'')+v+'%'):((v>0?'+':'')+fmt(v));
+ return '<span class="dlt '+c+'">'+s+'</span>';}
+
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;
