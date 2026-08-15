@@ -581,6 +581,19 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 .vacpill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);
   padding:1px 6px;border-radius:var(--r1)}
+
+.orgcrumb{position:absolute;left:12px;top:52px;display:flex;gap:4px;align-items:center;
+  z-index:5;flex-wrap:wrap;font-size:11px;max-width:calc(100% - 130px)}
+.orgcrumb button{border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  padding:3px 9px;border-radius:var(--r1);cursor:pointer;font:600 11px Inter,sans-serif}
+.orgcrumb button:hover{color:var(--ink);border-color:var(--accent)}
+.orgcrumb button.cur{color:var(--ink);border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 10%,var(--surface));cursor:default}
+.orgcrumb span.sep{color:var(--faint)}
+.orghint{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;z-index:5;
+  font-size:10.5px;color:var(--faint);background:color-mix(in srgb,var(--surface) 88%,transparent);
+  padding:5px 12px;border:1px solid var(--line);border-radius:var(--r1);white-space:nowrap}
+@media(max-width:900px){.orghint{display:none}}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -713,6 +726,7 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   <canvas id="orgcv"></canvas>
   <div class="orgbar">
     <input id="orgq" placeholder="find a person&hellip;" aria-label="Find a person in the tree">
+    <select id="orgdepth" style="width:auto" aria-label="How many levels to show"></select>
     <select id="orgcolor" style="width:auto" aria-label="Colour nodes by">
       <option value="health">Colour: health</option>
       <option value="role">Colour: role</option>
@@ -723,7 +737,11 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
     <button id="orgin" title="Zoom in">+</button>
     <button id="orgout" title="Zoom out">&minus;</button>
     <button id="orgfit" class="wide" title="Fit the whole tree">FIT</button>
+    <button id="orgexp" class="wide" title="Expand every branch">EXPAND</button>
+    <button id="orgcol" class="wide" title="Collapse back to the default depth">COLLAPSE</button>
   </div>
+  <div class="orgcrumb" id="orgcrumb"></div>
+  <div class="orghint" id="orghint"></div>
   <div class="orglegend" id="orglegend"></div>
   <div class="orgstat" id="orgstat"></div>
   <div class="orgtip" id="orgtip"></div>
@@ -1872,7 +1890,8 @@ function dlt(pc,abs){
    same roster must produce the same picture every time, or people stop trusting
    that they are looking at the same thing twice.                             */
 const ORG={k:1,tx:0,ty:0,hot:null,q:'',color:'health',nodes:[],roots:[],issues:[],
-           w:0,h:0,dpr:1,fit:null,drag:null};
+           w:0,h:0,dpr:1,fit:null,drag:null,
+           open:new Set(),closed:new Set(),depth:3,focus:'',autoDepth:3,drawnLabels:0};
 
 /* Build the forest. Returns roots plus every node, with children resolved and
    cycles broken. A cycle in an org chart is a data error, not a curiosity, so it
@@ -1949,38 +1968,90 @@ function orgBuild(rows){
   n.kids.sort((a,b)=>(b.r.rx||0)-(a.r.rx||0)||a.r.n.localeCompare(b.r.n));
   nodes.push(n);
   n.sub=n.r.__stub?0:1;n.subRx=n.r.rx||0;n.subVis=n.r.vis||0;n.leaves=0;
+  /* team health, rolled up: field people below who are silent or producing no Rx */
+  const _isField=!n.r.__stub&&!n.kids.length;
+  n.subTeam=_isField?1:0;
+  n.subBad=_isField?((!n.r.vis||!n.r.rx)?1:0):0;
+  n.subSilent=_isField?(!n.r.vis?1:0):0;
   n.kids.forEach(k=>{walk(k,depth+1);n.sub+=k.sub;n.subRx+=k.subRx;n.subVis+=k.subVis;
+   n.subTeam+=k.subTeam;n.subBad+=k.subBad;n.subSilent+=k.subSilent;
    n.leaves+=k.leaves;});
   if(!n.kids.length)n.leaves=1;
  };
  for(const c in byCode){const n=byCode[c];if(!n.p&&roots.indexOf(n)<0)roots.push(n);}
- const live=roots.filter(r=>r.keep);
+ ORG.FULL=byCode;
+ let live=roots.filter(r=>r.keep);
+ /* focus: treat the focused node as the only root */
+ if(ORG.focus&&byCode[ORG.focus]&&byCode[ORG.focus].keep)live=[byCode[ORG.focus]];
+ else ORG.focus='';
  live.sort((a,b)=>(b.leaves||0)-(a.leaves||0));
  live.forEach(r=>walk(r,1));
+ /* open at whatever depth keeps the first view readable — about 140 nodes is where
+    a 1200px canvas stops being a picture and starts being a texture */
+ const perDepth={};nodes.forEach(n=>{perDepth[n.depth]=(perDepth[n.depth]||0)+1;});
+ let cum=0,auto=1;
+ for(let dp=1;dp<=20;dp++){
+  if(!perDepth[dp])break;
+  cum+=perDepth[dp];
+  if(cum<=140)auto=dp;else break;
+ }
+ ORG.autoDepth=Math.max(1,auto);
+ if(ORG.depth===undefined||ORG.depth===null)ORG.depth=ORG.autoDepth;
  if(roots.length-live.length>0&&!rows.length)issues.push('No employees match the current filters.');
  return{roots:live,nodes:nodes,byCode:byCode,issues:issues};}
 
 /* Angular partition. Each root owns a slice of the circle proportional to how many
    leaves hang off it; each child owns a slice of its parent's. Radius is depth. */
+/* A node's children are drawn only if it is expanded. Wedge widths still come from
+   the FULL subtree, so a collapsed branch keeps the width its team size earns and the
+   ring does not reflow when you open it. */
+function orgExpanded(n){
+ if(!n.kids.length)return false;
+ if(ORG.open.has(n.c))return true;
+ if(ORG.closed.has(n.c))return false;
+ return n.depth<ORG.depth;}
+
 function orgLayout(T,R){
- const tot=T.roots.reduce((a,n)=>a+Math.max(1,n.leaves),0)||1;
- let maxDepth=1;T.nodes.forEach(n=>{if(n.depth>maxDepth)maxDepth=n.depth;});
+ /* weight with a floor: a one-person branch beside a 200-person one would otherwise
+    get an unclickable sliver */
+ const totLeaves=T.roots.reduce((a,n)=>a+Math.max(1,n.leaves),0)||1;
+ const floor=totLeaves*0.012;
+ const wt=n=>Math.max(Math.max(1,n.leaves),floor);
+
+ /* visible nodes only, but depth still measured on the real hierarchy */
+ const vis=[];
+ let maxDepth=1;
+ const collect=n=>{vis.push(n);if(n.depth>maxDepth)maxDepth=n.depth;
+  n.collapsed=n.kids.length>0&&!orgExpanded(n);
+  n.hidden=n.collapsed?(n.sub-(n.r&&n.r.__stub?0:1)):0;
+  if(!n.collapsed)n.kids.forEach(collect);};
+ T.roots.forEach(collect);
+
  const ring=R/Math.max(1,maxDepth);
- let a0=-Math.PI/2;                       /* start at 12 o'clock, like the reference */
  const place=(n,from,to)=>{
   const mid=(from+to)/2;
   n.a=mid;n.r0=n.depth*ring;
   n.x=Math.cos(mid)*n.r0;n.y=Math.sin(mid)*n.r0;
-  const kt=n.kids.reduce((a,k)=>a+Math.max(1,k.leaves),0)||1;
+  n.a0=from;n.a1=to;
+  if(n.collapsed)return;
+  const kt=n.kids.reduce((a,k)=>a+wt(k),0)||1;
+  /* pad between siblings so adjacent teams separate, capped so deep fan-outs
+     do not lose more arc to padding than to content */
+  const gap=Math.min((to-from)*0.06,(to-from)/Math.max(1,n.kids.length)*0.35);
+  const usable=(to-from)-gap*Math.max(0,n.kids.length-1);
   let c=from;
-  n.kids.forEach(k=>{const span=(to-from)*Math.max(1,k.leaves)/kt;place(k,c,c+span);c+=span;});
+  n.kids.forEach((k,i)=>{const span=usable*wt(k)/kt;place(k,c,c+span);c+=span+gap;});
  };
- /* a little air between the top-level wedges: without it the branches of adjacent
-    zones touch and the eye reads one blob instead of several teams */
- const PAD=T.roots.length>1?Math.min(.06,1.2/T.roots.length)*2*Math.PI/T.roots.length:0;
- T.roots.forEach(n=>{const span=2*Math.PI*Math.max(1,n.leaves)/tot;
-  place(n,a0+PAD/2,a0+span-PAD/2);a0+=span;});
- T.maxDepth=maxDepth;T.ring=ring;
+ const rootTot=T.roots.reduce((a,n)=>a+wt(n),0)||1;
+ const RPAD=T.roots.length>1?Math.min(0.05,0.6/T.roots.length)*2*Math.PI:0;
+ const usable=2*Math.PI-RPAD*T.roots.length;
+ let a0=-Math.PI/2;
+ T.roots.forEach(n=>{const span=usable*wt(n)/rootTot;
+  place(n,a0+RPAD/2,a0+span+RPAD/2);a0+=span+RPAD;});
+
+ T.visible=vis;T.maxDepth=maxDepth;T.ring=ring;
+ let full=1;T.nodes.forEach(n=>{if(n.depth>full)full=n.depth;});ORG.FULLDEPTH=full;
+ T.hiddenTotal=vis.reduce((a,n)=>a+(n.hidden||0),0);
  return T;}
 
 function orgPalette(){
@@ -1991,6 +2062,10 @@ function orgPalette(){
 function orgNodeColor(n,P){
  const r=n.r;
  if(n.vacant)return P.warn;
+ if(ORG.color==='health'&&n.kids.length&&n.subTeam){
+  /* a branch is as healthy as the field force under it */
+  const bad=n.subBad/n.subTeam;
+  return bad<0.15?P.ok:bad<0.35?P.warn:P.bad;}
  if(r.__stub)return P.faint;          /* a manager the org file lists but Frontline does not */
  if(ORG.color==='role')return rth(r.r).a;
  if(ORG.color==='pi'){
@@ -2038,8 +2113,9 @@ function orgDraw(){
  if(hot){let n=hot;while(n){path.add(n.c);n=n.p;}
   const down=n2=>{n2.kids.forEach(k=>{path.add(k.c);down(k);});};down(hot);}
 
+ const VIS=ORG.T.visible||ORG.T.nodes;
  /* links first, so nodes sit on top */
- ORG.T.nodes.forEach(n=>{
+ VIS.forEach(n=>{
   if(!n.p)return;
   const on=!hot||path.has(n.c);
   c.strokeStyle=on?P.line:P.line;
@@ -2049,7 +2125,7 @@ function orgDraw(){
  c.globalAlpha=1;
 
  /* nodes */
- ORG.T.nodes.forEach(n=>{
+ VIS.forEach(n=>{
   const rad=orgRadius(n),col=orgNodeColor(n,P);
   const match=q&&(n.r.n.toLowerCase().includes(q)||n.c.toLowerCase().includes(q));
   const dim=(hot&&!path.has(n.c))||(q&&!match);
@@ -2066,51 +2142,109 @@ function orgDraw(){
    c.strokeStyle=col;c.lineWidth=1.4/ORG.k;c.globalAlpha=dim?.14:.75;c.stroke();}
   if(match){c.beginPath();c.arc(n.x,n.y,rad+9,0,2*Math.PI);
    c.strokeStyle=P.accent;c.lineWidth=2/ORG.k;c.globalAlpha=1;c.stroke();}
+  /* a collapsed branch wears a second ring and, when there is room, its headcount */
+  if(n.collapsed&&n.hidden){
+   c.beginPath();c.arc(n.x,n.y,rad+3,0,2*Math.PI);
+   c.strokeStyle=col;c.lineWidth=1/ORG.k;c.globalAlpha=dim?.1:.45;c.stroke();
+   if(ORG.k>=0.55){
+    c.globalAlpha=dim?.12:.9;c.fillStyle=P.surface;
+    const rr=Math.max(6.5,(String(n.hidden).length*3.2+5))/1;
+    c.beginPath();c.arc(n.x,n.y-rad-8,rr,0,2*Math.PI);c.fill();
+    c.strokeStyle=col;c.lineWidth=1/ORG.k;c.stroke();
+    c.fillStyle=P.muted;c.font='700 '+(8.5/ORG.k)+'px Inter,sans-serif';
+    c.textAlign='center';c.textBaseline='middle';
+    c.fillText(n.hidden>999?'999+':String(n.hidden),n.x,n.y-rad-8);
+   }
+  }
   c.globalAlpha=1;});
 
- /* labels: managers always, everyone else once you have zoomed in far enough */
- c.textBaseline='middle';
- ORG.T.nodes.forEach(n=>{
-  const mgr=isMgr(n.r.r)||!n.p;
-  const show=mgr||ORG.k>=1.9||(hot&&path.has(n.c));
-  if(!show)return;
-  const dim=(hot&&!path.has(n.c))||(q&&!(n.r.n.toLowerCase().includes(q)||n.c.toLowerCase().includes(q)));
-  c.globalAlpha=dim?.12:(mgr?.95:.7);
-  c.fillStyle=mgr?P.ink:P.muted;
-  c.font=(mgr?'700 ':'500 ')+(mgr?11:9.5)/ORG.k+'px Inter,sans-serif';
-  const right=Math.cos(n.a)>=0;
-  c.textAlign=right?'left':'right';
-  const off=(orgRadius(n)+9)/1;
-  c.fillText(n.r.n,n.x+(right?off:-off),n.y);
-  c.globalAlpha=1;});
  c.restore();
 
- /* perimeter spoke labels, drawn in screen space so they never scale away */
- c.font='700 11px Inter,sans-serif';c.textBaseline='middle';
- orgSpokes().forEach(n=>{
-  const R=(ORG.T.maxDepth+0.55)*ORG.T.ring;
-  const x=Math.cos(n.a)*R*ORG.k+ORG.tx,y=Math.sin(n.a)*R*ORG.k+ORG.ty;
-  if(x<-60||x>W+60||y<-30||y>H+30)return;
+ /* ---- labels, in screen space, with collision rejection ----
+    Drawn in priority order (shallowest first, then biggest team) and any label whose
+    box would touch one already placed is dropped. An unreadable overprinted label is
+    worse than no label: it destroys the one underneath it too. */
+ const boxes=[],PADX=4,PADY=3;
+ const fits=(x,y,w,h)=>{
+  if(x<-20||x>W+20||y<0||y>H)return false;
+  for(let i=0;i<boxes.length;i++){const b=boxes[i];
+   if(x<b[2]+PADX&&x+w>b[0]-PADX&&y<b[3]+PADY&&y+h>b[1]-PADY)return false;}
+  return true;};
+ const cand=VIS.slice().sort((a2,b2)=>
+   (a2.depth-b2.depth)||((b2.subRx||0)-(a2.subRx||0)));
+ c.textBaseline='middle';
+ let drawn=0;
+ for(let i=0;i<cand.length;i++){
+  const n=cand[i];
+  const isHot=hot&&path.has(n.c);
+  const match=q&&(n.r.n.toLowerCase().includes(q)||n.c.toLowerCase().includes(q));
+  if(hot&&!isHot&&!match)continue;              /* hovering focuses the chain */
+  if(q&&!match&&!isHot)continue;
+  const mgr=n.kids.length>0||!n.p;
+  const size=mgr?11.5:10;
+  c.font=(mgr?'700 ':'500 ')+size+'px Inter,sans-serif';
+  const name=n.vacant?(n.terr||'Vacant'):n.r.n;
+  const txt=name.length>26?name.slice(0,25)+'…':name;
+  const w=c.measureText(txt).width,h=size+2;
+  const sx=n.x*ORG.k+ORG.tx,sy=n.y*ORG.k+ORG.ty;
   const right=Math.cos(n.a)>=0;
-  c.fillStyle=P.ink;c.textAlign='left';
-  spacedText(x,y,(n.r.n||'').toUpperCase(),1.6,right?'left':'right');
-  c.fillStyle=P.faint;c.font='500 9.5px Inter,sans-serif';
-  spacedText(x,y+14,(rth(n.r.r).n+' · '+(n.sub-1)+' below').toLowerCase(),.5,right?'left':'right');
-  c.font='700 11px Inter,sans-serif';});
+  const off=orgRadius(n)*ORG.k+8;
+  const x=right?sx+off:sx-off-w;
+  const y=sy-h/2;
+  if(!fits(x,y,w,h))continue;
+  boxes.push([x,y,x+w,y+h]);drawn++;
+  c.globalAlpha=match?1:(mgr?.95:.75);
+  c.fillStyle=n.vacant?P.warn:(mgr?P.ink:P.muted);
+  c.textAlign='left';
+  c.fillText(txt,x,sy);
+  c.globalAlpha=1;
+ }
+ ORG.drawnLabels=drawn;ORG.labelBoxes=boxes;   /* exposed so the tests can prove no overlaps */
+
+ /* ---- one quiet label per ring, instead of names fighting over the same arc ---- */
+ const LVL=(D.org&&D.org.meta&&D.org.meta.levelHierarchy)||{};
+ c.textAlign='center';c.font='700 9px Inter,sans-serif';c.fillStyle=P.faint;
+ for(let dp=1;dp<=ORG.T.maxDepth;dp++){
+  const any=VIS.find(n=>n.depth===dp);if(!any)continue;
+  const lab=(any.r&&(any.r.stf||any.r.r))||LVL[String(dp-1)]||('LEVEL '+dp);
+  const rr=dp*ORG.T.ring*ORG.k;
+  const y=ORG.ty-rr;
+  if(y<12||y>H-12)continue;
+  c.globalAlpha=.75;
+  spacedText(ORG.tx,y,String(lab).toUpperCase(),1.4,'center');
+  c.globalAlpha=1;
+ }
+
 }
 
-/* Which ring gets the perimeter labels. The reference had six neat spokes; a real
-   org might have one managing director at the top, which would label nothing useful.
-   So pick the shallowest ring holding a readable number of nodes. */
-function orgSpokes(){
- const T=ORG.T;if(!T)return[];
- const by={};T.nodes.forEach(n=>{(by[n.depth]||(by[n.depth]=[])).push(n);});
- let best=null,bestScore=1e9;
- for(const dp in by){const c=by[dp].length;
-  if(c<2||c>14)continue;
-  const sc=Math.abs(c-6)+ (+dp)*0.5;
-  if(sc<bestScore){bestScore=sc;best=by[dp];}}
- return best||T.roots;}
+/* Re-lay-out after an expand or collapse without rebuilding the tree or losing the
+   viewport — the picture should feel like it opened, not like it reloaded. */
+function orgRelayout(refit){
+ orgLayout(ORG.T,320);
+ if(refit)orgFit();else orgDraw();
+ orgHint();}
+
+function orgFocus(key){
+ ORG.focus=key||'';ORG.open.clear();ORG.closed.clear();
+ orgView(fr());}
+
+function orgCrumb(){
+ const el=$('orgcrumb');if(!el)return;
+ if(!ORG.focus){el.innerHTML='';return;}
+ const chain=[];let n=ORG.FULL&&ORG.FULL[ORG.focus];
+ while(n){chain.unshift(n);n=n.p;}
+ el.innerHTML='<button data-k="">Whole org</button>'+chain.map((x,i)=>
+  '<span class="sep">/</span><button class="'+(i===chain.length-1?'cur':'')+
+  '" data-k="'+x.c+'">'+((x.r&&x.r.n)||'—')+'</button>').join('');
+ el.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+  if(b.classList.contains('cur'))return;orgFocus(b.dataset.k);});}
+
+function orgHint(){
+ const el=$('orghint');if(!el||!ORG.T)return;
+ const v=(ORG.T.visible||[]).length,hid=ORG.T.hiddenTotal||0;
+ el.innerHTML=v+' shown'+(hid?' · <b>'+hid+'</b> hidden in collapsed branches':'')+
+  ' · click a branch to open it, a person to open their profile'+
+  (ORG.drawnLabels?' · '+ORG.drawnLabels+' names fit at this zoom':'');}
 
 function orgFit(){
  if(!ORG.T||!ORG.T.nodes.length)return;
@@ -2122,7 +2256,7 @@ function orgFit(){
 function orgHit(mx,my){
  const wx=(mx-ORG.tx)/ORG.k,wy=(my-ORG.ty)/ORG.k;
  let best=null,bd=1e9;
- ORG.T.nodes.forEach(n=>{const dx=n.x-wx,dy=n.y-wy,d2=dx*dx+dy*dy;
+ (ORG.T.visible||ORG.T.nodes).forEach(n=>{const dx=n.x-wx,dy=n.y-wy,d2=dx*dx+dy*dy;
   const rr=Math.max(orgRadius(n)+5,9/ORG.k);
   if(d2<rr*rr&&d2<bd){bd=d2;best=n;}});
  return best;}
@@ -2145,7 +2279,9 @@ function orgTip(n,mx,my){
   '<div class="kv"><span>Prescriptions</span><b>'+fmt(r.rx||0)+'</b></div>'+
   '<div class="kv"><span>Visits</span><b>'+fmt(r.vis||0)+'</b></div>'+
   (kids?'<div class="kv"><span>Team below</span><b>'+(n.sub-1)+'</b></div>'+
-        '<div class="kv"><span>Team Rx</span><b>'+fmt(n.subRx)+'</b></div>':
+        '<div class="kv"><span>Team Rx</span><b>'+fmt(n.subRx)+'</b></div>'+
+        (n.subTeam?'<div class="kv"><span>Field force idle</span><b>'+n.subBad+' of '+
+          n.subTeam+' ('+Math.round(100*n.subBad/n.subTeam)+'%)</b></div>':''):
         '<div class="kv"><span>Coverage</span><b>'+(r.cov||0)+'%</b></div>')+
   '<div class="kv"><span>'+(kids?'Direct reports':'Peer rank by Rx')+'</span><b>'+
     (kids?kids:(rk?rk.replace(' · ',''):'—'))+'</b></div>'+
@@ -2153,7 +2289,10 @@ function orgTip(n,mx,my){
     (r.attSrc&&r.attSrc!=='window'?'<div class="hint">Measured from '+dlabel(r.attFrom)+
       ' ('+r.attSrc+'), '+r.attWd+' working days &mdash; not the full window.</div>':''):'')+
   ((r.fl&&r.fl.length)?'<div class="hint" style="color:var(--bad)">'+r.fl.slice(0,3).join(' · ')+'</div>':'')+
-  '<div class="hint">Click to open the full profile</div>';
+  '<div class="hint">'+(n.kids.length
+    ?(orgExpanded(n)?'Click to collapse this branch':'Click to open '+(n.hidden||n.kids.length)+
+       ' below')+' &middot; double-click for the profile'
+    :'Click to open the full profile')+'</div>';
  t.classList.add('on');
  const W=ORG.w,x=mx+16>W-260?mx-266:mx+16;
  t.style.left=Math.max(4,x)+'px';t.style.top=Math.max(4,Math.min(my+14,ORG.h-150))+'px';}
@@ -2173,18 +2312,34 @@ let ORGWIRED=false;
 function orgWire(){
  if(ORGWIRED)return;const cv=$('orgcv');if(!cv)return;ORGWIRED=true;
  cv.addEventListener('mousedown',e=>{ORG.drag={x:e.offsetX,y:e.offsetY,tx:ORG.tx,ty:ORG.ty};
-  cv.classList.add('drag');});
+  ORG.moved=false;cv.classList.add('drag');});
  addEventListener('mouseup',()=>{ORG.drag=null;cv.classList.remove('drag');});
  cv.addEventListener('mousemove',e=>{
-  if(ORG.drag){ORG.tx=ORG.drag.tx+(e.offsetX-ORG.drag.x);ORG.ty=ORG.drag.ty+(e.offsetY-ORG.drag.y);
+  if(ORG.drag){const dx=e.offsetX-ORG.drag.x,dy=e.offsetY-ORG.drag.y;
+   if(Math.abs(dx)>3||Math.abs(dy)>3)ORG.moved=true;
+   ORG.tx=ORG.drag.tx+dx;ORG.ty=ORG.drag.ty+dy;
    orgDraw();orgTip(null);return;}
   const n=orgHit(e.offsetX,e.offsetY);
   if(n!==ORG.hot){ORG.hot=n;orgDraw();}
   orgTip(n,e.offsetX,e.offsetY);
   cv.style.cursor=n?'pointer':(ORG.drag?'grabbing':'grab');});
  cv.addEventListener('mouseleave',()=>{ORG.hot=null;orgTip(null);orgDraw();});
- cv.addEventListener('click',e=>{const n=orgHit(e.offsetX,e.offsetY);
-  if(n)openProfile(n.c,{});});
+ /* click a branch to open or close it, click a person to open their profile.
+    Double-click always opens the profile, so managers are reachable too. */
+ cv.addEventListener('click',e=>{
+  if(ORG.moved)return;
+  const n=orgHit(e.offsetX,e.offsetY);if(!n)return;
+  if(n.kids.length){
+   const isOpen=orgExpanded(n);
+   if(isOpen){ORG.open.delete(n.c);ORG.closed.add(n.c);}
+   else{ORG.closed.delete(n.c);ORG.open.add(n.c);}
+   orgRelayout();return;}
+  if(n.r&&!n.r.__stub&&n.r.c)openProfile(n.r.c,{});});
+ cv.addEventListener('dblclick',e=>{const n=orgHit(e.offsetX,e.offsetY);
+  if(n&&n.r&&!n.r.__stub&&n.r.c)openProfile(n.r.c,{});});
+ /* middle-click or alt-click focuses a subtree */
+ cv.addEventListener('auxclick',e=>{if(e.button!==1)return;e.preventDefault();
+  const n=orgHit(e.offsetX,e.offsetY);if(n&&n.kids.length)orgFocus(n.c);});
  cv.addEventListener('wheel',e=>{e.preventDefault();
   const f=e.deltaY<0?1.12:1/1.12,k2=Math.max(.15,Math.min(9,ORG.k*f));
   const mx=e.offsetX,my=e.offsetY;
@@ -2195,11 +2350,32 @@ function orgWire(){
  if($('orgin'))$('orgin').onclick=()=>zoom(1.25);
  if($('orgout'))$('orgout').onclick=()=>zoom(1/1.25);
  if($('orgfit'))$('orgfit').onclick=()=>orgFit();
+ if($('orgexp'))$('orgexp').onclick=()=>{ORG.closed.clear();
+  ORG.depth=99;if($('orgdepth'))$('orgdepth').value='99';orgRelayout(true);};
+ if($('orgcol'))$('orgcol').onclick=()=>{ORG.open.clear();ORG.closed.clear();
+  ORG.depth=ORG.autoDepth;if($('orgdepth'))$('orgdepth').value=String(ORG.autoDepth);
+  orgRelayout(true);};
+ if($('orgdepth'))$('orgdepth').onchange=e=>{ORG.depth=+e.target.value;
+  ORG.open.clear();ORG.closed.clear();orgRelayout(true);};
  if($('orgq'))$('orgq').oninput=e=>{ORG.q=e.target.value;orgDraw();};
  if($('orgcolor'))$('orgcolor').onchange=e=>{ORG.color=e.target.value;orgLegend();orgDraw();};
  if(typeof ResizeObserver==='function'){
   try{new ResizeObserver(()=>{if(TAB==='org')orgResize();}).observe($('orgwrap'));}catch(_){}}
 }
+
+function orgDepthOptions(){
+ const s=$('orgdepth');if(!s||!ORG.T)return;
+ const LVL=(D.org&&D.org.meta&&D.org.meta.levelHierarchy)||{};
+ const opts=[];
+ for(let dp=1;dp<=(ORG.FULLDEPTH||6);dp++){
+  const lab=LVL[String(dp-1)]||('Level '+dp);
+  opts.push('<option value="'+dp+'">To '+lab+(dp===ORG.autoDepth?' (default)':'')+'</option>');
+ }
+ opts.push('<option value="99">Everyone</option>');
+ s.innerHTML=opts.join('');
+ s.value=String(ORG.depth>=99?99:ORG.depth);
+ s.onchange=e=>{ORG.depth=+e.target.value;ORG.userDepth=true;
+  ORG.open.clear();ORG.closed.clear();orgRelayout(true);};}
 
 function orgLegend(){
  const L=$('orglegend');if(!L)return;
@@ -2208,7 +2384,9 @@ function orgLegend(){
   :ORG.color==='pi'
    ?[['var(--ok)','Index 75+'],['var(--accent)','50-74'],['var(--warn)','25-49'],
      ['var(--bad)','Under 25'],['var(--faint)','Not scored']]
-   :[['var(--warn)','Vacant position'],['var(--ok)','Producing, no flags'],['var(--warn)','Producing, flagged'],
+   :[['var(--ok)','Healthy (branch: under 15% idle)'],['var(--warn)','Vacant, or 15-35% idle'],
+     ['var(--bad)','Over a third idle, or zero Rx'],['var(--faint)','No activity'],
+     ['var(--accent)','—'],['var(--warn)','Vacant position'],['var(--ok)','Producing, no flags'],['var(--warn)','Producing, flagged'],
      ['var(--bad)','Visits but zero Rx'],['var(--faint)','No activity'],
      ['var(--accent)','Manager']];
  L.innerHTML=items.map(x=>'<span><i style="background:'+x[0]+'"></i>'+x[1]+'</span>').join('')+
@@ -2261,6 +2439,11 @@ let spS='team',spA=false;
 function orgView(rows){
  const T=orgLayout(orgBuild(rows),320);
  ORG.T=T;
+ /* first render of a given tree opens at the auto depth; later renders keep the
+    depth the user chose, so changing a filter does not silently reset their view */
+ if(!ORG.userDepth)ORG.depth=ORG.autoDepth;
+ orgLayout(T,320);
+ orgDepthOptions();orgCrumb();
  orgWire();orgLegend();orgCoverage();
  try{vacView();}catch(e){console.error('vacView',e);}
  /* the canvas has no size until its section is visible, so measure after paint */
@@ -2268,9 +2451,11 @@ function orgView(rows){
 
  const leaves=T.nodes.filter(n=>!n.kids.length).length;
  const s=$('orgstat');
- if(s)s.innerHTML=T.nodes.length+' people &middot; '+T.roots.length+
+ if(s)s.innerHTML=T.nodes.length+' in this view &middot; '+T.roots.length+
    ' top of house &middot; '+leaves+' individual contributors<br>'+
-   'depth '+T.maxDepth+' &middot; drag to pan, scroll to zoom';
+   'depth '+(ORG.FULLDEPTH||T.maxDepth)+' &middot; drag to pan, scroll to zoom'+
+   ' &middot; middle-click a manager to focus';
+ orgHint();
 
  const iss=$('orgissues');
  if(iss)iss.innerHTML=T.issues.length
