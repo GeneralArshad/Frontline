@@ -11,6 +11,12 @@ Run standalone (python etl.py) or import run_etl() from the web app.
 Safe to run concurrently-ish: uses a lock file so two refreshes don't overlap.
 """
 import os, json, gzip, base64, time, sqlite3, datetime, threading, sys, re, io, gc
+try:
+    from org import load_org, match_roster, norm as orgnorm
+except Exception as _e:            # a broken org.py must not take the ETL down
+    load_org = lambda p: ({}, ["org.py failed to import: %s" % _e])
+    match_roster = lambda o, c: dict(matched=0, rosterOnly=list(c), orgOnly=[], rate=0)
+    orgnorm = lambda c: re.sub(r"[^A-Z0-9]", "", str(c or "").upper())
 import requests
 from concurrent.futures import ThreadPoolExecutor
 
@@ -258,12 +264,21 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     if data_start < win_start: data_start = win_start
     if data_end   > win_end:   data_end   = win_end
 
-    a = datetime.date.fromisoformat(data_start); wd = 0
-    while a <= d0:
-        if a.weekday() != 6: wd += 1
-        a += datetime.timedelta(days=1)
-    wd = max(1, wd)
+    def workdays_between(a_iso, b_iso):
+        """Every day except Sunday, matching the report's own definition."""
+        a2 = datetime.date.fromisoformat(a_iso); b2 = datetime.date.fromisoformat(b_iso)
+        n = 0
+        while a2 <= b2:
+            if a2.weekday() != 6: n += 1
+            a2 += datetime.timedelta(days=1)
+        return max(1, n)
+
+    wd = workdays_between(data_start, win_end)
     span_days = max(1, (d0 - datetime.date.fromisoformat(data_start)).days + 1)
+
+    # ---- org & territory (optional enrichment) ----------------------------------
+    ORG, ORG_ISSUES = load_org(os.path.join(BASE_DIR, "bb_org.json"))
+    ORG_PEOPLE = ORG.get("people", {}) if ORG else {}
 
     AGG = {}; DAILY = {}; PROD = {}; SPEC = {}; CAT = {}; REACT = {}
     def A(i):
@@ -335,7 +350,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                     mg=mgr["name"] if mgr else "—", mgc=(mgr.get("code") or "") if mgr else "",
                     da=dc, du=dc)
         if not a_:
-            R.append({**base, "vis":0,"dv":0,"cv":0,"ud":0,"cov":0,"cpd":0,"rx":0,"rpc":0,"rxPerDoc":0,
+            R.append({**base, "attFrom":data_start,"attWd":wd,"attSrc":"window",
+                      "vis":0,"dv":0,"cv":0,"ud":0,"cov":0,"cpd":0,"rx":0,"rpc":0,"rxPerDoc":0,
                       "rxPerDay":0,"rxConv":0,"rxD":0,"s2r":0,"sm":0,"pq":0,"tp":"None","ob":0,"zeroRx":0,
                       "pi":"","att":0,"repc":0,"cl":0,"rec":"","newd":0,"mom":"","chsh":0,"fhrs":0,"tdc":0,
                       "rpct":"","ds":"","dsMin":99999,"scf":0,"mpc":"","ndc":"","newd7":0,
@@ -350,6 +366,21 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         maxDocRx = max(a_["dcRx"].values()) if a_["dcRx"] else 0
         rec = (d0 - datetime.date.fromisoformat(a_["last"])).days if a_["last"] else ""
         dsMin = a_["firstSum"]/a_["firstDays"] if a_["firstDays"] else 99999
+        # ---- this rep's own attendance denominator ----
+        # A rep who joined in July cannot be marked absent for April. Prefer the org
+        # file's date of joining; fall back to their first recorded activity, which
+        # is a lower bound on when they started. Both are clamped to the data window.
+        _op = ORG_PEOPLE.get(orgnorm(e.get("employeeCode"))) if ORG_PEOPLE else None
+        _doj = (_op or {}).get("doj") or ""
+        _first = min(a_["days"]) if a_["days"] else ""
+        _from = data_start
+        for _cand in (_doj, _first):
+            if _cand and _cand > _from: _from = _cand
+        if _from > data_end: _from = data_end
+        _wd = workdays_between(_from, win_end)
+        _att_src = "doj" if (_doj and _doj >= data_start and _doj == _from) else (
+                   "first activity" if (_first and _first == _from and _from > data_start)
+                   else "window")
         r1 = lambda x: round(x,1); r2 = lambda x: round(x,2)
         row = {**base, "vis":a_["v"],"dv":a_["dv"],"cv":a_["cv"],"ud":uniq,
                "cov":r1(100*uniq/dc) if dc else 0,"cpd":r1(a_["v"]/days) if days else 0,"rx":a_["rx"],
@@ -358,7 +389,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                "s2r":r2(a_["sm"]/a_["rx"]) if a_["rx"] else (99 if a_["sm"]>0 else 0),"sm":a_["sm"],"pq":a_["pq"],
                "tp":"None","ob":1 if days>0 else 0,
                "zeroRx":1 if (role_of(e)=="BO" and a_["v"]>0 and a_["rx"]==0) else 0,
-               "att":r1(100*days/wd),"repc":r1(100*repeat/uniq) if uniq else 0,"cl":a_["cluster"],"rec":rec,
+               "att":r1(min(100.0, 100*days/_wd)),"attFrom":_from,"attWd":_wd,"attSrc":_att_src,
+               "repc":r1(100*repeat/uniq) if uniq else 0,"cl":a_["cluster"],"rec":rec,
                "newd":newd,"mom":(round(a_["rxL7"]/(a_["rx"]*7/span_days)*100) if a_["rx"]>0 else ""),
                "chsh":r1(100*a_["cv"]/(a_["dv"]+a_["cv"])) if (a_["dv"]+a_["cv"]) else 0,
                "fhrs":r1(a_["spanSum"]/a_["spanDays"]/60) if a_["spanDays"] else 0,
@@ -528,12 +560,54 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             if rec: hr_used[x["c"]] = rec
             else:   hr_missing += 1
 
+    # ---- attach org & territory to each rep -------------------------------------
+    org_matched = 0
+    for x in R:
+        p = ORG_PEOPLE.get(orgnorm(x["c"])) if ORG_PEOPLE else None
+        if p and not p["vacant"]:
+            org_matched += 1
+            x["terr"] = p["terr"]; x["doj"] = p["doj"]; x["lvl"] = p["lvl"]
+            x["stf"] = p["stf"]; x["opk"] = p["key"]; x["opp"] = p["parent"]
+            x["opins"] = len(p["pins"])
+            if p["hq"] and (not x.get("hq") or x["hq"] == "—"): x["hq"] = p["hq"]
+            if p["st"] and (not x.get("st") or x["st"] == "—"): x["st"] = p["st"]
+        else:
+            x["terr"] = ""; x["doj"] = ""; x["lvl"] = -1; x["stf"] = ""
+            x["opk"] = ""; x["opp"] = ""; x["opins"] = 0
+
+    ORG_OUT = {}
+    if ORG_PEOPLE:
+        cov = match_roster(ORG, [x["c"] for x in R])
+        rx_by_key = {x["opk"]: x["c"] for x in R if x.get("opk")}
+        ORG_OUT = dict(
+            # [key, code, name, staffType, level, territory, hq, state, parentKey,
+            #  doj, vacant, pincodeCount, rosterCode]
+            people=[[p["key"], p["code"], p["name"], p["stf"], p["lvl"], p["terr"],
+                     p["hq"], p["st"], p["parent"], p["doj"], 1 if p["vacant"] else 0,
+                     len(p["pins"]), rx_by_key.get(p["key"], "")]
+                    for p in ORG_PEOPLE.values()],
+            vac=[[ORG_PEOPLE[k]["key"], ORG_PEOPLE[k]["terr"], ORG_PEOPLE[k]["hq"],
+                  ORG_PEOPLE[k]["st"], ORG_PEOPLE[k]["parent"],
+                  (ORG_PEOPLE.get(ORG_PEOPLE[k]["parent"]) or {}).get("name", ""),
+                  ORG_PEOPLE[k]["pins"]]
+                 for k in ORG.get("vacancies", [])],
+            cov=dict(matched=cov["matched"], rate=cov["rate"],
+                     rosterOnly=cov["rosterOnly"], orgOnly=cov["orgOnly"]),
+            meta=ORG.get("meta", {}), issues=ORG.get("issues", []),
+            notes=ORG.get("notes", []))
+        print("[org] %d of %d reps placed (%.1f%%), %d vacancies, %d issues"
+              % (cov["matched"], len(R), cov["rate"], len(ORG.get("vacancies", [])),
+                 len(ORG.get("issues", []))))
+    else:
+        print("[org] no org file — territory, DOJ and the org spine are unavailable")
+        for i in ORG_ISSUES[:3]: print("[org]  ", i)
+
     label = f"{data_start} → {data_end} · {len(R)}-rep roster"
     D = dict(label=label, gen=datetime.date.today().isoformat(),
              dataStart=data_start, dataEnd=data_end, workDays=wd,
              rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
-             hr=hr_used)
+             hr=hr_used, org=ORG_OUT)
     # ---- memory-frugal encode ----------------------------------------------
     # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
     # bytes, the final HTML string) which OOM-kills a small instance on lifetime data.

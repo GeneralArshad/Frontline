@@ -574,6 +574,13 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   text-align:right;line-height:1.6}
 .orgwarn{margin-top:12px;padding:9px 13px;border:1px solid var(--warn);border-left-width:3px;
   border-radius:var(--r2);background:color-mix(in srgb,var(--warn) 8%,var(--surface));font-size:11.5px}
+
+.orgcov{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;padding:10px 14px;
+  border:1px solid var(--line);border-radius:var(--r2);background:var(--surface2);font-size:11.5px}
+.orgcov b{font-variant-numeric:tabular-nums}
+.vacpill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);
+  padding:1px 6px;border-radius:var(--r1)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -613,6 +620,7 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <div class="fitem"><label>HQ</label><select id="fhq"></select></div>
 <div class="fitem"><label>Role</label><select id="frl"></select></div>
 <div class="fitem"><label>Manager</label><select id="fmg"></select></div>
+<div class="fitem"><label>Territory</label><select id="fte"></select></div>
 <div class="fitem"><label>Specialization</label><select id="fsp"></select></div>
 <div class="fitem"><label>Activity</label><select id="fac"><option value="">All activity</option><option value="act">Active &le;3d</option><option value="s37">Silent 3&ndash;7d</option><option value="s7">Silent 7d+</option><option value="s14">Silent 14d+</option></select></div>
 <div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
@@ -720,7 +728,10 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   <div class="orgstat" id="orgstat"></div>
   <div class="orgtip" id="orgtip"></div>
 </div>
+<div class="orgcov" id="orgcov"></div>
 <div id="orgissues"></div>
+<div class="card" id="vaccard" style="margin-top:18px;display:none"><div class="ch"><div><h3>Vacant territories <span id="vaccnt" class="sub"></span></h3><div class="cs">Positions with a territory and no one in them. Sortable &middot; pincode counts come from the org file.</div></div></div>
+  <div class="tablewrap"><table><thead><tr id="vch"></tr></thead><tbody id="vcb"></tbody></table></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Span of control</h3><div class="cs">Sortable &middot; every manager with at least one direct report, and what that team is producing</div></div></div>
   <div class="tablewrap"><table><thead><tr id="sph"></tr></thead><tbody id="spb"></tbody></table></div></div>
 </section>
@@ -731,7 +742,7 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><div class="mx" onclick="cm()">✕</div></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
-let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
+let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
 const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
@@ -756,6 +767,7 @@ function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includ
  if(F.di&&r.di!==F.di)return false;if(F.zn&&r.zn!==F.zn)return false;if(F.st&&r.st!==F.st)return false;if(F.hq&&r.hq!==F.hq)return false;if(F.rl&&r.r!==F.rl)return false;if(F.mg&&r.mg!==F.mg)return false;
  if(F.ob!==''&&r.ob!==+F.ob)return false;
  if(F.rx==='zero'&&!r.zeroRx)return false;if(F.rx==='has'&&!(r.rx>0))return false;
+ if(F.te&&(r.terr||'')!==F.te)return false;
  if(F.sp&&!(r.sp&&r.sp.includes(F.sp)))return false;
  if(F.ac){const rc=r.rec;if(F.ac==='act'&&!(rc!==''&&rc<=3))return false;if(F.ac==='s37'&&!(rc!==''&&rc>3&&rc<=7))return false;if(F.ac==='s7'&&!(rc!==''&&rc>7))return false;if(F.ac==='s14'&&!(rc!==''&&rc>14))return false;}
  if(F.pf){if(F.pf==='pi80'&&!(r.pi!==''&&r.pi>=80))return false;if(F.pf==='pi40'&&!(r.pi!==''&&r.pi<40))return false;if(F.pf==='cov60'&&!(r.cov>=60))return false;if(F.pf==='cov25'&&!(r.vis>0&&r.cov<25))return false;if(F.pf==='cv40'&&!(r.rxConv>=40))return false;if(F.pf==='cv15'&&!(r.vis>0&&r.rxConv<15))return false;}
@@ -971,13 +983,14 @@ function init(){
     handler is recoverable; a page with no data at all is not. */
  const PROB=[];
  const S=(n,f)=>{try{f();}catch(e){PROB.push(n+': '+((e&&e.message)||e));console.error('init['+n+']',e);}};
-  S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
+  S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
+   fill('fte',uniq('terr'),'All territories');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
   S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
-  S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
+  S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
-  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf'].forEach(id=>$(id).value='');$('q').value='';
+  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf','fte'].forEach(id=>{if($(id))$(id).value='';});$('q').value='';
    PR.mode='all';PR.wd='';PR.from='';PR.to='';if($('fpr'))$('fpr').value='all';if($('fwd'))$('fwd').value='';
    applyPeriod();};});
   S('period control',()=>{
@@ -1451,10 +1464,11 @@ function buildPeriod(){
   const vs=BASE.calls[code];let a=null;
   for(let i=0;i<vs.length;i++){
    const v=vs[i],dt=v[0];if(!OK[dt])continue;
-   if(!a){a=A[code]={v:0,dv:0,cv:0,rx:0,sm:0,rxL7:0,last:'',days:Object.create(null),
+   if(!a){a=A[code]={v:0,dv:0,cv:0,rx:0,sm:0,rxL7:0,last:'',first:'',days:Object.create(null),
      uniq:Object.create(null),nu:0,rxd:Object.create(null),nrx:0,dc:Object.create(null),
      dcRx:Object.create(null),tm:Object.create(null)};}
    a.v++;if(!a.days[dt])a.days[dt]=1;if(dt>a.last)a.last=dt;
+   if(!a.first||dt<a.first)a.first=dt;
    const rx=+v[8]||0,sm=+v[12]||0;a.rx+=rx;a.sm+=sm;if(dt>=L7)a.rxL7+=rx;
    const ts=v[1];
    if(ts&&ts.length>=5){const mi=(+ts.slice(0,2))*60+(+ts.slice(3,5));
@@ -1515,15 +1529,27 @@ function buildPeriod(){
  PCACHE[key]=nx;return nx;}
 
 let RBYC={};
+/* working days (every day but Sunday) between two dates, memoised — this is called
+   once per rep per rebuild and the ranges repeat heavily */
+const _WDC={};
+function wdFrom(a2,b2){
+ const k=a2+'|'+b2;if(_WDC[k]!==undefined)return _WDC[k];
+ let n=0,c=a2;while(c<=b2){if(dow(c)!==0)n++;c=addDays(c,1);}
+ return _WDC[k]=Math.max(1,n);}
+
 function rebuildReps(A,wd,pend){
  const out=[];
  for(let i=0;i<BASE.reps.length;i++){
   const b=BASE.reps[i],a=A[b.c],o=Object.assign({},b);
   o.rk={};o.fl=[];                       /* fresh — never share BASE's objects */
   if(!a){
+   let _f0=perRange()[0];const _dj0=b.doj||'';
+   if(_dj0&&_dj0>_f0)_f0=_dj0;
+   if(_f0>pend)_f0=pend;
    Object.assign(o,{vis:0,dv:0,cv:0,ud:0,cov:0,cpd:0,rx:0,rpc:0,rxPerDoc:0,rxPerDay:0,
     rxConv:0,rxD:0,s2r:0,sm:0,att:0,repc:0,rec:'',zeroRx:0,chsh:0,tdc:0,pi:'',mom:'',
-    cl:0,days:0,ob:0});
+    cl:0,days:0,ob:0,attFrom:_f0,attWd:wdFrom(_f0,pend),
+    attSrc:(_dj0&&_dj0===_f0&&_f0>perRange()[0])?'doj':'window'});
    out.push(o);continue;}
   const days=Object.keys(a.days).length,uniq=a.nu,rxd=a.nrx;
   let repeat=0;for(const k in a.dc)if(a.dc[k]>=2)repeat++;
@@ -1533,6 +1559,15 @@ function rebuildReps(A,wd,pend){
    for(let p=0;p<t.length;p++){let c=1,q=p+1;while(q<t.length&&t[q]-t[p]<=30){c++;q++;}
     if(c>cl)cl=c;}}
   const spanDays=Math.max(1,Math.round((new Date(pend+'T00:00:00')-new Date(perRange()[0]+'T00:00:00'))/864e5)+1);
+  /* This rep's own denominator, mirroring the ETL: the later of the window start,
+     their date of joining, and their first activity inside the window. A rep who
+     joined in July is not absent for April. */
+  let _from=perRange()[0];
+  const _doj=b.doj||'',_f1=a.first||'';
+  if(_doj&&_doj>_from)_from=_doj;
+  if(_f1&&_f1>_from)_from=_f1;
+  if(_from>pend)_from=pend;
+  const _wdr=wdFrom(_from,pend);
   o.vis=a.v;o.dv=a.dv;o.cv=a.cv;o.rx=a.rx;o.sm=a.sm;o.ud=uniq;o.rxD=rxd;o.days=days;o.cl=cl;
   o.cov=b.du?_r1(100*uniq/b.du):0;
   o.cpd=days?_r1(a.v/days):0;
@@ -1541,7 +1576,9 @@ function rebuildReps(A,wd,pend){
   o.rxPerDay=days?_r2(a.rx/days):0;
   o.rxConv=uniq?_r1(100*rxd/uniq):0;
   o.s2r=a.rx?_r2(a.sm/a.rx):(a.sm>0?99:0);
-  o.att=_r1(100*days/wd);
+  o.att=_r1(Math.min(100,100*days/_wdr));o.attFrom=_from;o.attWd=_wdr;
+  o.attSrc=(_doj&&_doj===_from&&_from>perRange()[0])?'doj':
+           ((_f1&&_f1===_from&&_from>perRange()[0])?'first activity':'window');
   o.repc=uniq?_r1(100*repeat/uniq):0;
   o.chsh=(a.dv+a.cv)?_r1(100*a.cv/(a.dv+a.cv)):0;
   o.tdc=a.rx?_r1(100*mx/a.rx):0;
@@ -1841,13 +1878,53 @@ const ORG={k:1,tx:0,ty:0,hot:null,q:'',color:'health',nodes:[],roots:[],issues:[
    cycles broken. A cycle in an org chart is a data error, not a curiosity, so it
    gets surfaced in the UI rather than silently rerouted. */
 function orgBuild(rows){
- const byCode={},vis=new Set(rows.map(r=>r.c));
- D.reps.forEach(r=>{byCode[r.c]={r:r,c:r.c,kids:[],p:null,depth:0,leaves:0,
-   sub:0,subRx:0,subVis:0,inView:vis.has(r.c),keep:false};});
+ const vis=new Set(rows.map(r=>r.c));
  const issues=[],roots=[];
- for(const c in byCode){
-  const n=byCode[c],pc=n.r.mgc;
-  if(pc&&byCode[pc]&&pc!==c)n.p=byCode[pc];
+ const O=D.org&&D.org.people&&D.org.people.length?D.org:null;
+ let byCode={};
+ if(O){
+  /* ---- the real spine, from the BB org & territory export ----
+     Node key is the org key, not the employee code, because vacancies have no code.
+     Every rep the file could not place is kept under a visible branch: a person
+     missing from a picture of the company is the one failure this view must not have. */
+  const repByCode={};D.reps.forEach(r=>{repByCode[r.c]=r;});
+  const placed=new Set();
+  O.people.forEach(p=>{
+   const[key,code,name,stf,lvl,terr,hq,st,par,doj,vac,pins,rc]=p;
+   const r=rc&&repByCode[rc];
+   if(r)placed.add(rc);
+   byCode[key]={c:key,kids:[],p:null,depth:0,leaves:0,sub:0,subRx:0,subVis:0,
+    keep:false,vacant:!!vac,terr:terr,pins:pins,orgOnly:!r,
+    inView:r?vis.has(rc):false,
+    r:r||{c:code,n:name||'Vacant position',r:stf||'BO',mg:'',st:st,hq:hq,terr:terr,
+          rx:0,vis:0,ud:0,cov:0,rxD:0,att:0,pi:'',fl:[],rk:{},du:0,doj:doj,
+          __stub:1,__vacant:!!vac}};
+  });
+  O.people.forEach(p=>{const n=byCode[p[0]],pk=p[8];
+   if(pk&&byCode[pk]&&pk!==p[0])n.p=byCode[pk];});
+  /* anyone in Frontline the org file does not know about */
+  const orphans=D.reps.filter(r=>!placed.has(r.c));
+  if(orphans.length){
+   const UK='__UNPLACED__';
+   byCode[UK]={c:UK,kids:[],p:null,depth:0,leaves:0,sub:0,subRx:0,subVis:0,keep:false,
+    vacant:false,terr:'',pins:0,orgOnly:false,inView:true,unplaced:true,
+    r:{c:'',n:'Not in the org file',r:'HO',mg:'',st:'',hq:'',rx:0,vis:0,ud:0,cov:0,
+       rxD:0,att:0,pi:'',fl:[],rk:{},du:0,__stub:1}};
+   orphans.forEach(r=>{byCode['U:'+r.c]={c:'U:'+r.c,kids:[],p:byCode[UK],depth:0,leaves:0,
+    sub:0,subRx:0,subVis:0,keep:false,vacant:false,terr:r.terr||'',pins:0,orgOnly:false,
+    inView:vis.has(r.c),r:r};});
+   issues.push(orphans.length+' employee'+(orphans.length===1?'':'s')+
+    ' in Frontline could not be placed in the org file — shown under "Not in the org file"');
+  }
+  (O.issues||[]).forEach(i=>issues.push('Org file: '+i));
+ }else{
+  /* ---- fallback: Frontline's own parent field ---- */
+  D.reps.forEach(r=>{byCode[r.c]={r:r,c:r.c,kids:[],p:null,depth:0,leaves:0,
+    sub:0,subRx:0,subVis:0,inView:vis.has(r.c),keep:false,vacant:false,terr:r.terr||'',pins:0};});
+  for(const c in byCode){
+   const n=byCode[c],pc=n.r.mgc;
+   if(pc&&byCode[pc]&&pc!==c)n.p=byCode[pc];
+  }
  }
  /* break cycles: walk up from every node, and if we meet ourselves, cut the link */
  for(const c in byCode){
@@ -1855,23 +1932,28 @@ function orgBuild(rows){
   while(n){ if(seen.has(n.c)){issues.push('Reporting loop involving '+n.r.n+' ('+n.c+') — link cut');
              n.p=null;break;} seen.add(n.c);n=n.p;}
  }
- for(const c in byCode){const n=byCode[c];
-  if(n.p)n.p.kids.push(n);else roots.push(n);}
+ for(const c in byCode){const n=byCode[c];if(n.p)n.p.kids.push(n);}
 
  /* keep any node that is in view, or that is an ancestor of one — so filtering to
     one state still shows the chain of command above it rather than a floating twig */
- rows.forEach(r=>{let n=byCode[r.c];while(n&&!n.keep){n.keep=true;n=n.p;}});
+ /* keep any node in view, plus its ancestors, plus vacancies (a vacant territory
+    is never "in view" by rep filters, but it is exactly what you want to see) */
+ const inv=new Set(rows.map(r=>r.c));
+ for(const k in byCode){const n=byCode[k];
+  if(n.vacant||(n.r&&!n.r.__stub&&inv.has(n.r.c))){let m=n;while(m&&!m.keep){m.keep=true;m=m.p;}}}
+ if(!rows.length)for(const k in byCode)byCode[k].keep=true;
 
  const nodes=[];
  const walk=(n,depth)=>{
   n.depth=depth;n.kids=n.kids.filter(k=>k.keep);
   n.kids.sort((a,b)=>(b.r.rx||0)-(a.r.rx||0)||a.r.n.localeCompare(b.r.n));
   nodes.push(n);
-  n.sub=1;n.subRx=n.r.rx||0;n.subVis=n.r.vis||0;n.leaves=0;
+  n.sub=n.r.__stub?0:1;n.subRx=n.r.rx||0;n.subVis=n.r.vis||0;n.leaves=0;
   n.kids.forEach(k=>{walk(k,depth+1);n.sub+=k.sub;n.subRx+=k.subRx;n.subVis+=k.subVis;
    n.leaves+=k.leaves;});
   if(!n.kids.length)n.leaves=1;
  };
+ for(const c in byCode){const n=byCode[c];if(!n.p&&roots.indexOf(n)<0)roots.push(n);}
  const live=roots.filter(r=>r.keep);
  live.sort((a,b)=>(b.leaves||0)-(a.leaves||0));
  live.forEach(r=>walk(r,1));
@@ -1908,6 +1990,8 @@ function orgPalette(){
 
 function orgNodeColor(n,P){
  const r=n.r;
+ if(n.vacant)return P.warn;
+ if(r.__stub)return P.faint;          /* a manager the org file lists but Frontline does not */
  if(ORG.color==='role')return rth(r.r).a;
  if(ORG.color==='pi'){
   if(r.pi==='')return P.faint;
@@ -1920,6 +2004,7 @@ function orgNodeColor(n,P){
 
 function orgRadius(n){
  const rx=n.r.rx||0;
+ if(n.vacant)return 5;
  if(isMgr(n.r.r))return 7+Math.min(6,Math.sqrt(n.subRx)/38);
  return 2.6+Math.min(9,Math.sqrt(rx)/4.2);}
 
@@ -1971,7 +2056,11 @@ function orgDraw(){
   c.globalAlpha=dim?.14:1;
   if(!n.inView)c.globalAlpha=Math.min(c.globalAlpha,.3);   /* filtered out: kept for context, visibly secondary */
   c.beginPath();c.arc(n.x,n.y,rad,0,2*Math.PI);
-  c.fillStyle=col;c.fill();
+  if(n.vacant){                       /* hollow + dashed: a hole, not a person */
+   c.strokeStyle=P.warn;c.lineWidth=1.6/ORG.k;
+   if(c.setLineDash)c.setLineDash([3/ORG.k,3/ORG.k]);
+   c.stroke();if(c.setLineDash)c.setLineDash([]);
+  }else{c.fillStyle=col;c.fill();}
   if(isMgr(n.r.r)||!n.p){                       /* managers wear a ring, as in the reference */
    c.beginPath();c.arc(n.x,n.y,rad+4.5,0,2*Math.PI);
    c.strokeStyle=col;c.lineWidth=1.4/ORG.k;c.globalAlpha=dim?.14:.75;c.stroke();}
@@ -2043,8 +2132,16 @@ function orgTip(n,mx,my){
  if(!n){t.classList.remove('on');return;}
  const r=n.r,kids=n.kids.length;
  const rk=(r.rk&&r.rk.rx)?(' · #'+r.rk.rx[0]+' of '+r.rk.rx[1]):'';
+ if(n.vacant){
+  t.innerHTML='<b>Vacant position</b><div class="rl">'+(n.terr||'territory')+'</div>'+
+   '<div class="kv"><span>Pincodes</span><b>'+(n.pins||0)+'</b></div>'+
+   '<div class="hint">Nobody is assigned here. See the vacant-territory table below.</div>';
+  t.classList.add('on');
+  const W0=ORG.w,x0=mx+16>W0-260?mx-266:mx+16;
+  t.style.left=Math.max(4,x0)+'px';t.style.top=Math.max(4,Math.min(my+14,ORG.h-150))+'px';
+  return;}
  t.innerHTML='<b>'+r.n+'</b> <span style="color:var(--faint)">'+r.c+'</span>'+
-  '<div class="rl">'+rth(r.r).n+'</div>'+
+  '<div class="rl">'+rth(r.r).n+(r.terr?' · '+r.terr:'')+'</div>'+
   '<div class="kv"><span>Prescriptions</span><b>'+fmt(r.rx||0)+'</b></div>'+
   '<div class="kv"><span>Visits</span><b>'+fmt(r.vis||0)+'</b></div>'+
   (kids?'<div class="kv"><span>Team below</span><b>'+(n.sub-1)+'</b></div>'+
@@ -2052,6 +2149,9 @@ function orgTip(n,mx,my){
         '<div class="kv"><span>Coverage</span><b>'+(r.cov||0)+'%</b></div>')+
   '<div class="kv"><span>'+(kids?'Direct reports':'Peer rank by Rx')+'</span><b>'+
     (kids?kids:(rk?rk.replace(' · ',''):'—'))+'</b></div>'+
+  (r.att!==undefined&&!r.__stub?'<div class="kv"><span>Attendance</span><b>'+r.att+'%</b></div>'+
+    (r.attSrc&&r.attSrc!=='window'?'<div class="hint">Measured from '+dlabel(r.attFrom)+
+      ' ('+r.attSrc+'), '+r.attWd+' working days &mdash; not the full window.</div>':''):'')+
   ((r.fl&&r.fl.length)?'<div class="hint" style="color:var(--bad)">'+r.fl.slice(0,3).join(' · ')+'</div>':'')+
   '<div class="hint">Click to open the full profile</div>';
  t.classList.add('on');
@@ -2108,17 +2208,61 @@ function orgLegend(){
   :ORG.color==='pi'
    ?[['var(--ok)','Index 75+'],['var(--accent)','50-74'],['var(--warn)','25-49'],
      ['var(--bad)','Under 25'],['var(--faint)','Not scored']]
-   :[['var(--ok)','Producing, no flags'],['var(--warn)','Producing, flagged'],
+   :[['var(--warn)','Vacant position'],['var(--ok)','Producing, no flags'],['var(--warn)','Producing, flagged'],
      ['var(--bad)','Visits but zero Rx'],['var(--faint)','No activity'],
      ['var(--accent)','Manager']];
  L.innerHTML=items.map(x=>'<span><i style="background:'+x[0]+'"></i>'+x[1]+'</span>').join('')+
    '<span style="color:var(--faint)">· node size = Rx · ring = depth</span>';}
 
+let vcS='pins',vcA=false;
+function vacView(){
+ const O=D.org,card=$('vaccard');if(!card)return;
+ const V=(O&&O.vac)||[];
+ if(!V.length){card.style.display='none';return;}
+ card.style.display='';
+ /* what the neighbours are producing tells you the size of the hole */
+ const byHq={};D.reps.forEach(r=>{if(!r.hq)return;
+  const o=byHq[r.hq]||(byHq[r.hq]={rx:0,n:0});o.rx+=r.rx||0;o.n++;});
+ const rowsV=V.map(v=>{const[key,terr,hq,st,pk,pname,pins]=v;
+  const nb=byHq[hq]||{rx:0,n:0};
+  return{terr:terr||'—',hq:hq||'—',st:st||'—',mgr:pname||'—',
+   pins:(pins||[]).length,nbRx:nb.n?Math.round(nb.rx/nb.n):0,nbN:nb.n,
+   pinList:(pins||[]).join(' ')};});
+ const VC=[['terr','Territory'],['hq','HQ'],['st','State'],['mgr','Reports to'],
+  ['pins','Pincodes'],['nbRx','Avg Rx per rep at this HQ'],['nbN','Reps at HQ'],['pinList','Pincode list']];
+ $('vch').innerHTML=VC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('vcb').innerHTML=sortRows(rowsV,vcS,vcA).map(v=>'<tr><td><b>'+v.terr+
+  '</b> <span class="vacpill">vacant</span></td><td>'+v.hq+'</td><td>'+v.st+'</td><td>'+
+  v.mgr+'</td><td class=n>'+(v.pins||'')+'</td><td class=n>'+(v.nbN?fmt(v.nbRx):'—')+
+  '</td><td class=n>'+(v.nbN||'')+'</td><td class="sub" style="font-size:10.5px">'+
+  (v.pinList||'<span style="color:var(--faint)">not mapped</span>')+'</td></tr>').join('');
+ const withPins=rowsV.filter(v=>v.pins).length,totPins=rowsV.reduce((a,v)=>a+v.pins,0);
+ $('vaccnt').textContent='('+rowsV.length+' open · '+withPins+' with mapped pincodes · '+
+  totPins+' pincodes uncovered)';
+ $('vch').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;
+  if(k===vcS)vcA=!vcA;else{vcS=k;vcA=false;}vacView();});}
+
+function orgCoverage(){
+ const el=$('orgcov');if(!el)return;
+ const O=D.org;
+ if(!O||!O.people||!O.people.length){
+  el.innerHTML='<span>No org file loaded &mdash; the tree is built from Frontline&rsquo;s own '+
+   'manager field, which has no territories, no vacancies and no joining dates.</span>';return;}
+ const m=O.meta||{},c=O.cov||{};
+ el.innerHTML='<span>Org file <b>'+(m.fileMtime||'?')+'</b></span>'+
+  '<span><b>'+c.matched+'</b> of '+D.reps.length+' employees placed ('+c.rate+'%)</span>'+
+  '<span><b>'+(c.rosterOnly||[]).length+'</b> in Frontline only</span>'+
+  '<span><b>'+(c.orgOnly||[]).length+'</b> in the org file only</span>'+
+  '<span><b>'+(m.vacancies||0)+'</b> vacancies</span>'+
+  '<span><b>'+fmt(m.pincodes||0)+'</b> pincodes</span>'+
+  '<span style="color:var(--faint)">'+(m.division||'')+' · '+(m.zone||'')+'</span>';}
+
 let spS='team',spA=false;
 function orgView(rows){
  const T=orgLayout(orgBuild(rows),320);
  ORG.T=T;
- orgWire();orgLegend();
+ orgWire();orgLegend();orgCoverage();
+ try{vacView();}catch(e){console.error('vacView',e);}
  /* the canvas has no size until its section is visible, so measure after paint */
  requestAnimationFrame(()=>{ORG.fit=null;orgResize();});
 
