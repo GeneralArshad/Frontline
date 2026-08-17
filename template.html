@@ -777,7 +777,9 @@ async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const 
  ALLDATES=[...new Set(D.daily.map(x=>x[1]))].sort();
  PMONTHS=[...new Set(ALLDATES.map(x=>x.slice(0,7)))].sort();
  RBYC={};D.reps.forEach(r=>{RBYC[r.c]=r;});
- $('load').style.display='none';init();loadNotesBg();
+ $('load').style.display='none';init();
+ try{restoreState();}catch(e){console.warn('restore',e);}
+ loadNotesBg();
  try{const m=/^#rep=(.+)$/.exec(location.hash||''); if(m)openProfile(decodeURIComponent(m[1]),{});}catch(_){}}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
 function fill(id,v,l){const e=$(id); if(!e){console.warn('fill: missing #'+id);return;}e.innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
@@ -2487,6 +2489,32 @@ function orgView(rows){
    if(k===spS)spA=!spA;else{spS=k;spA=false;}orgView(rows);});}
 }
 
+/* Restore the view a refresh interrupted. Written by the refresh panel just before
+   it reloads; consumed once and cleared, so a later manual reload starts clean. */
+function restoreState(){
+ let s=null;
+ try{s=JSON.parse(sessionStorage.getItem('__fl_state')||'null');}catch(_){}
+ try{sessionStorage.removeItem('__fl_state');}catch(_){}
+ if(!s)return;
+ if(s.filters&&typeof s.filters==='object'){
+  Object.keys(F).forEach(k=>{if(typeof s.filters[k]==='string')F[k]=s.filters[k];});
+  const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',
+             fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};
+  Object.keys(map).forEach(id=>{const e=$(id);if(e&&F[map[id]]!==undefined)e.value=F[map[id]];});
+  if($('q'))$('q').value=F.q||'';
+ }
+ if(s.period&&typeof s.period==='object'){
+  PR.mode=s.period.mode||'all';PR.from=s.period.from||'';PR.to=s.period.to||'';
+  PR.wd=s.period.wd||'';
+  if($('fpr'))$('fpr').value=PR.mode;
+  if($('fwd'))$('fwd').value=PR.wd;
+ }
+ if(s.tab&&$('sec_'+s.tab)){
+  const b=$('tabs')&&$('tabs').querySelector('button[data-t="'+s.tab+'"]');
+  if(b)b.click();
+ }
+ applyPeriod();
+}
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;

@@ -18,7 +18,7 @@ except Exception as _e:            # a broken org.py must not take the ETL down
     match_roster = lambda o, c: dict(matched=0, rosterOnly=list(c), orgOnly=[], rate=0)
     orgnorm = lambda c: re.sub(r"[^A-Z0-9]", "", str(c or "").upper())
 import requests
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 BASE      = os.environ.get("FRONTLINE_BASE", "https://hive-frontline-backend.com")
 ORG       = os.environ.get("FRONTLINE_ORG_ID", "")
@@ -32,6 +32,77 @@ DATA_DIR  = os.environ.get("DATA_DIR", "./data")
 DB_PATH   = os.path.join(DATA_DIR, "frontline.db")
 REPORT    = os.path.join(DATA_DIR, "report.html")
 META      = os.path.join(DATA_DIR, "meta.json")
+PROGRESS  = os.path.join(DATA_DIR, "progress.json")
+
+# ---- progress -----------------------------------------------------------------
+# Six phases, in the order run_etl() performs them. The UI names them, so changing
+# this list changes the UI; keep the keys stable.
+PHASES = [
+    ("signin",   "Signing in to Frontline"),
+    ("roster",   "Reading the employee roster"),
+    ("geo",      "Mapping geography"),
+    ("dayplans", "Listing day plans"),
+    ("detail",   "Fetching call detail"),
+    ("compute",  "Computing metrics and rendering"),
+]
+_PROG = {"running": False, "phase": "", "phaseIndex": 0, "label": "", "done": 0,
+         "total": 0, "note": "", "startedAt": "", "at": "",
+         "phases": [{"k": k, "label": l} for k, l in PHASES]}
+_PROG_LAST = [0.0]
+_PHASE_T0 = [0.0]
+
+
+def prog(phase=None, note=None, done=None, total=None, force=False):
+    """Update the progress file. Never raises: a refresh must not fail because it
+    could not describe itself."""
+    try:
+        if phase is not None:
+            keys = [k for k, _ in PHASES]
+            # bank the previous phase's duration: the browser paces its progress bar
+            # on the last run's timings, so the second refresh onwards is measured
+            # rather than guessed
+            if _PROG.get("phase") and _PHASE_T0[0]:
+                _PROG.setdefault("phaseMs", {})[_PROG["phase"]] = \
+                    int((time.time() - _PHASE_T0[0]) * 1000)
+            _PHASE_T0[0] = time.time()
+            _PROG["phase"] = phase
+            _PROG["phaseIndex"] = keys.index(phase) if phase in keys else 0
+            _PROG["label"] = dict(PHASES).get(phase, phase)
+            _PROG["done"] = 0
+            _PROG["total"] = 0
+            force = True
+        if note is not None:  _PROG["note"] = note
+        if done is not None:  _PROG["done"] = done
+        if total is not None: _PROG["total"] = total
+        now = time.time()
+        if not force and now - _PROG_LAST[0] < 0.25:
+            return                       # throttle: never a measurable share of the work
+        _PROG_LAST[0] = now
+        _PROG["at"] = datetime.datetime.utcnow().isoformat() + "Z"
+        os.makedirs(DATA_DIR, exist_ok=True)
+        tmp = PROGRESS + ".tmp"
+        with open(tmp, "w") as fh:
+            json.dump(_PROG, fh)
+        os.replace(tmp, PROGRESS)        # atomic: a poller never sees half a file
+    except Exception:
+        pass
+
+
+def prog_start():
+    _PROG["running"] = True
+    _PROG["startedAt"] = datetime.datetime.utcnow().isoformat() + "Z"
+    _PROG["note"] = ""
+    prog("signin", force=True)
+
+
+def prog_end(ok=True, error=""):
+    if _PROG.get("phase") and _PHASE_T0[0]:
+        _PROG.setdefault("phaseMs", {})[_PROG["phase"]] = \
+            int((time.time() - _PHASE_T0[0]) * 1000)
+    _PROG["running"] = False
+    _PROG["note"] = error or ""
+    _PROG["ok"] = bool(ok)
+    prog(force=True)
 TEMPLATE  = os.path.join(os.path.dirname(__file__), "template.html")
 _LOCK     = threading.Lock()
 
@@ -68,14 +139,23 @@ class Api:
         except Exception:
             return r.status_code, None
 
-def pool(items, fn, n=CONC):
+def pool(items, fn, n=CONC, report=False):
+    """as_completed rather than submission order: results land in the same slots
+    either way, but progress then reflects work actually finished instead of
+    waiting on whichever task happened to be submitted first."""
     out = [None] * len(items)
+    total = len(items)
+    if report: prog(done=0, total=total, force=True)
+    done = 0
     with ThreadPoolExecutor(max_workers=n) as ex:
         futs = {ex.submit(fn, it): i for i, it in enumerate(items)}
-        for f in futs:
+        for f in as_completed(futs):
             i = futs[f]
             try: out[i] = f.result()
             except Exception: out[i] = None
+            done += 1
+            if report: prog(done=done)
+    if report: prog(done=total, force=True)
     return out
 
 # ------------------------------------------------------------- roster + geo
@@ -84,7 +164,9 @@ def enumerate_roster(api):
     list endpoint silently skips."""
     by_id = {}
     terms = list("abcdefghijklmnopqrstuvwxyz0123456789 ")
-    for term in terms:
+    prog("roster", total=len(terms), done=0)
+    for _ti, term in enumerate(terms):
+        prog(done=_ti, note="%d employees found" % len(by_id))
         for p in range(1, 8):
             st, d = api.get(f"/admin/employees?page={p}&limit=100&search={requests.utils.quote(term)}")
             rows = (d or {}).get("data") or (d or {}).get("employees") or []
@@ -179,7 +261,7 @@ def phase_b(api, emps, flat):
                 rec["dayPlans"].append({"id": x.get("_id"), "date": (x.get("date") or "")[:10],
                                         "status": x.get("status"), "vc": x.get("visitCount") or 0})
         return (e["_id"], rec)
-    res = pool(emps, one)
+    res = pool(emps, one, report=True)
     s1 = {r[0]: r[1] for r in res if r}
     return s1, role_map
 
@@ -237,7 +319,8 @@ def phase_c(api, emps, s1, con, win_start, win_end):
         dd = (d or {}).get("data") or d or {}
         rows = parse_visits(dd.get("visits") or [])
         return (dp["id"], empId, code, dp["date"], dp["vc"], dp["status"], json.dumps(rows, separators=(",", ":")))
-    fetched = [r for r in pool(tasks, one) if r]
+    prog("detail", note="%d day plans need fetching" % len(tasks))
+    fetched = [r for r in pool(tasks, one, report=True) if r]
     cur = con.cursor()
     cur.executemany("INSERT OR REPLACE INTO dayplan(id,empId,empCode,date,vc,status,visits_json) VALUES(?,?,?,?,?,?,?)", fetched)
     con.commit()
@@ -675,10 +758,13 @@ def run_etl():
         return {"skipped": "already running"}
     t0 = time.time()
     try:
+        prog_start()
         api = Api()
         con = db()
         emps = enumerate_roster(api)
+        prog("geo", note="%d employees" % len(emps))
         flat = geo_flat(api)
+        prog("dayplans", note="%d employees" % len(emps))
         s1, role_map = phase_b(api, emps, flat)
         # persist roster/s1/rolemap for fast re-render if needed
         con.execute("INSERT OR REPLACE INTO kv(k,v) VALUES('roster', ?)", (json.dumps(emps),))
@@ -688,10 +774,14 @@ def run_etl():
         win_start = LIFE_START + "-01"
         win_end   = datetime.date.today().isoformat()
         seen, fetched = phase_c(api, emps, s1, con, win_start, win_end)
+        prog("compute", note="%d day plans in window, %d newly fetched" % (seen, fetched))
         stats = compute_and_render(con, emps, s1, role_map, win_start, win_end)
         meta = {"ok": True, "generatedAt": datetime.datetime.utcnow().isoformat() + "Z",
                 "durationSec": round(time.time() - t0, 1), "roster": len(emps),
-                "dayPlansInWindow": seen, "dayPlansFetchedThisRun": fetched, **stats}
+                "dayPlansInWindow": seen, "dayPlansFetchedThisRun": fetched,
+                "phaseMs": dict(_PROG.get("phaseMs") or {}), **stats}
+        prog_end(True)
+        meta["phaseMs"] = dict(_PROG.get("phaseMs") or {})
         with open(META, "w") as fh: json.dump(meta, fh)
         return meta
     except Exception as e:
@@ -699,6 +789,7 @@ def run_etl():
         try:
             with open(META, "w") as fh: json.dump(meta, fh)
         except Exception: pass
+        prog_end(False, str(e)[:200])
         return meta
     finally:
         _LOCK.release()

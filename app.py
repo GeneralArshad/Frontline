@@ -16,6 +16,7 @@ DATA_DIR = os.environ.get("DATA_DIR", "./data")
 REPORT   = os.path.join(DATA_DIR, "report.html")
 SERVED   = os.path.join(DATA_DIR, "report_served.html")   # report.html + toolbar, prebuilt
 META     = os.path.join(DATA_DIR, "meta.json")
+PROGRESS = os.path.join(DATA_DIR, "progress.json")
 DOMAIN   = os.environ.get("ALLOWED_EMAIL_DOMAIN", "").lower()
 MS_CID   = os.environ.get("MS_CLIENT_ID", "")
 MS_SEC   = os.environ.get("MS_CLIENT_SECRET", "")
@@ -281,20 +282,200 @@ def logout():
     session.clear(); return redirect(url_for("login"))
 
 # ------------------------------------------------------------------ report
-TOOLBAR = """<div id="__bar" style="position:fixed;bottom:14px;right:14px;z-index:99999;
-background:#0E1740;color:#fff;border-radius:12px;padding:8px 12px;font:600 12px Segoe UI,Arial;
-box-shadow:0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px">
-<span id="__upd" style="opacity:.8"></span>
-<button id="__rf" style="background:#1B2A6B;color:#fff;border:0;border-radius:8px;padding:6px 12px;
-font-weight:700;cursor:pointer">↻ Refresh now</button>
-<a href="/logout" style="color:#9FB0FF;text-decoration:none">Sign out</a></div>
-<script>(function(){var b=document.getElementById('__rf'),u=document.getElementById('__upd');
+TOOLBAR = """<div id="__bar" class="__idle">
+<span id="__upd"></span>
+<button id="__rf">&#8635; Refresh now</button>
+<a href="/logout" id="__so">Sign out</a>
+<div id="__panel">
+  <div class="__ph"><span class="__dot"></span><b id="__ptitle">Refreshing</b>
+    <span id="__pel">0:00</span></div>
+  <div class="__bar"><i id="__pfill"></i></div>
+  <div id="__pnow">Starting&hellip;</div>
+  <ol id="__psteps"></ol>
+  <div id="__pfoot">The report stays usable while this runs.</div>
+</div></div>
+<style>
+#__bar{position:fixed;bottom:14px;right:14px;z-index:99999;background:#0E1740;color:#fff;
+ border-radius:12px;padding:8px 12px;font:600 12px Inter,'Segoe UI',Arial;
+ box-shadow:0 10px 30px rgba(0,0,0,.34);display:flex;align-items:center;gap:12px;
+ transition:border-radius .2s}
+#__bar.__busy{flex-direction:column;align-items:stretch;gap:0;padding:0;width:288px;border-radius:14px}
+#__upd{opacity:.82}
+#__bar.__busy #__upd,#__bar.__busy #__rf,#__bar.__busy #__so{display:none}
+#__rf{background:#1B2A6B;color:#fff;border:0;border-radius:8px;padding:6px 12px;
+ font:700 12px Inter,'Segoe UI',Arial;cursor:pointer}
+#__rf:disabled{opacity:.6;cursor:default}
+#__so{color:#9FB0FF;text-decoration:none}
+#__panel{display:none;padding:13px 14px 12px}
+#__bar.__busy #__panel{display:block}
+.__ph{display:flex;align-items:center;gap:8px;margin-bottom:9px;font-size:12px}
+.__ph b{flex:1;font-weight:800;letter-spacing:.02em}
+#__pel{opacity:.6;font-variant-numeric:tabular-nums;font-weight:600}
+.__dot{width:8px;height:8px;border-radius:50%;background:#3ddc97;flex:0 0 auto;
+ animation:__pulse 1.4s ease-in-out infinite}
+@keyframes __pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.__bar{height:5px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden}
+.__bar i{display:block;height:100%;width:0%;border-radius:3px;
+ background:linear-gradient(90deg,#2E3790,#FF7A45 55%,#EB2227);
+ transition:width .5s cubic-bezier(.4,0,.2,1)}
+#__bar.__done .__bar i{background:#3ddc97}
+#__bar.__err .__bar i{background:#FF6B6B}
+#__bar.__err .__dot{background:#FF6B6B;animation:none}
+#__bar.__done .__dot{background:#3ddc97;animation:none}
+#__pnow{font-size:11.5px;opacity:.88;margin:9px 0 2px;font-weight:600}
+#__psteps{list-style:none;margin:8px 0 0;padding:0;font-size:11px;font-weight:500}
+#__psteps li{display:flex;align-items:center;gap:7px;padding:2.5px 0;opacity:.42;
+ transition:opacity .3s}
+#__psteps li.__on{opacity:1}
+#__psteps li.__ok{opacity:.72}
+#__psteps li em{font-style:normal;flex:1}
+#__psteps li s{text-decoration:none;opacity:.6;font-variant-numeric:tabular-nums}
+.__mk{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);
+ flex:0 0 auto;position:relative}
+li.__ok .__mk{border-color:#3ddc97;background:#3ddc97}
+li.__ok .__mk:after{content:'';position:absolute;left:3.6px;top:1.4px;width:3px;height:6px;
+ border:solid #0E1740;border-width:0 1.7px 1.7px 0;transform:rotate(45deg)}
+li.__on .__mk{border-color:#FF7A45;animation:__spin 1s linear infinite}
+li.__on .__mk:after{content:'';position:absolute;left:-1.5px;top:-1.5px;right:-1.5px;
+ bottom:-1.5px;border-radius:50%;border:1.5px solid transparent;border-top-color:#FF7A45}
+@keyframes __spin{to{transform:rotate(360deg)}}
+#__pfoot{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.13);
+ font-size:10.5px;opacity:.6;font-weight:500}
+#__pfoot button{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;
+ border-radius:6px;padding:3px 9px;font:700 10.5px Inter,Arial;cursor:pointer;margin-left:6px}
+@media(prefers-reduced-motion:reduce){
+ .__dot,li.__on .__mk{animation:none}
+ .__bar i{transition:none}}
+</style>
+<script>(function(){
+var bar=document.getElementById('__bar'),b=document.getElementById('__rf'),
+    u=document.getElementById('__upd'),panel=document.getElementById('__panel'),
+    title=document.getElementById('__ptitle'),el=document.getElementById('__pel'),
+    fill=document.getElementById('__pfill'),now=document.getElementById('__pnow'),
+    steps=document.getElementById('__psteps'),foot=document.getElementById('__pfoot');
+var t0=0,timer=null,poll=null,lastMs=null,built=false,cancelled=false;
 function fmt(iso){if(!iso)return'';var d=new Date(iso);return 'Updated '+d.toLocaleString();}
-fetch('/status').then(r=>r.json()).then(m=>{u.textContent=fmt(m.generatedAt)+(m.roster?(' · '+m.roster+' reps'):'');});
-b.onclick=function(){b.disabled=true;b.textContent='Refreshing…';
- fetch('/refresh',{method:'POST'}).then(r=>r.json()).then(function(){
-  var t=setInterval(function(){fetch('/status').then(r=>r.json()).then(function(m){
-    if(m.running){return;} clearInterval(t); location.reload();});},4000);});};})();</script>"""
+function nfmt(n){return (typeof n==='number'?n:0).toLocaleString('en-IN');}
+function mmss(s){var m=Math.floor(s/60);return m+':'+String(Math.floor(s%60)).padStart(2,'0');}
+
+/* Weight the bar by the LAST run's per-phase timings. Equal weights on the first
+   run, measured ones after that — a bar that lies about its pace is worse than no
+   bar, because people learn to distrust it. */
+function weights(phases){
+ var w=[],tot=0,i;
+ for(i=0;i<phases.length;i++){
+  var ms=(lastMs&&lastMs[phases[i].k])||0; w.push(ms); tot+=ms;
+ }
+ if(tot<=0){for(i=0;i<w.length;i++)w[i]=1;tot=w.length;}
+ for(i=0;i<w.length;i++)w[i]=w[i]/tot;
+ return w;
+}
+function overall(p){
+ var ph=p.phases||[],w=weights(ph),acc=0,i;
+ for(i=0;i<ph.length;i++){
+  if(i<p.phaseIndex)acc+=w[i];
+  else if(i===p.phaseIndex){
+   var frac=(p.total>0)?Math.min(1,p.done/p.total):0.35;
+   acc+=w[i]*frac;break;
+  }
+ }
+ return Math.max(0.02,Math.min(0.99,acc));
+}
+function buildSteps(p){
+ if(built)return;built=true;
+ steps.innerHTML=(p.phases||[]).map(function(x){
+  return '<li data-k="'+x.k+'"><span class="__mk"></span><em>'+x.label+'</em><s></s></li>';
+ }).join('');
+}
+function render(p){
+ buildSteps(p);
+ fill.style.width=Math.round(overall(p)*100)+'%';
+ var det=(p.total>0)?(nfmt(p.done)+' of '+nfmt(p.total)):'';
+ now.textContent=(p.label||'Working')+(det?' — '+det:'');
+ var li=steps.querySelectorAll('li');
+ for(var i=0;i<li.length;i++){
+  li[i].className=(i<p.phaseIndex)?'__ok':(i===p.phaseIndex?'__on':'');
+  var s=li[i].querySelector('s');
+  s.textContent=(i===p.phaseIndex&&p.total>0)?(nfmt(p.done)+'/'+nfmt(p.total)):'';
+ }
+ if(p.note)foot.textContent=p.note;
+}
+function tick(){el.textContent=mmss((Date.now()-t0)/1000);}
+function stop(){if(poll)clearInterval(poll);if(timer)clearInterval(timer);poll=timer=null;}
+
+/* Keep the reader's place: a refresh should not cost them their tab, period and
+   filters. Saved here, restored by the report on boot. */
+function save(){
+ try{
+  var s={};
+  if(typeof TAB!=='undefined')s.tab=TAB;
+  if(typeof PR!=='undefined')s.period={mode:PR.mode,from:PR.from,to:PR.to,wd:PR.wd};
+  if(typeof F!=='undefined')s.filters=JSON.parse(JSON.stringify(F));
+  sessionStorage.setItem('__fl_state',JSON.stringify(s));
+ }catch(e){}
+}
+function finish(ok,msg){
+ stop();
+ bar.classList.remove('__busy');bar.classList.add(ok?'__done':'__err');
+ if(!ok){
+  bar.classList.add('__busy');
+  title.textContent='Refresh failed';fill.style.width='100%';
+  now.textContent=msg||'The ETL did not complete.';
+  foot.innerHTML='The report still shows the last good data.'+
+   '<button id="__dismiss">Dismiss</button>';
+  var dz=document.getElementById('__dismiss');
+  if(dz)dz.onclick=function(){bar.className='__idle';b.disabled=false;
+   b.innerHTML='&#8635; Refresh now';built=false;};
+  return;
+ }
+ bar.classList.add('__busy');
+ title.textContent='New data ready';fill.style.width='100%';
+ var n=5;
+ now.textContent='Reloading in '+n+'s to show it';
+ foot.innerHTML='Your tab, period and filters are kept.'+
+  '<button id="__stay">Stay here</button>';
+ var st=document.getElementById('__stay');
+ var cd=setInterval(function(){
+  n--;
+  if(cancelled){clearInterval(cd);return;}
+  if(n<=0){clearInterval(cd);save();location.reload();return;}
+  now.textContent='Reloading in '+n+'s to show it';
+ },1000);
+ if(st)st.onclick=function(){
+  cancelled=true;clearInterval(cd);
+  now.textContent='Reload when you are ready.';
+  foot.innerHTML='<button id="__go">Reload now</button>';
+  var g=document.getElementById('__go');
+  if(g)g.onclick=function(){save();location.reload();};
+ };
+}
+function look(){
+ fetch('/status').then(function(r){return r.json();}).then(function(m){
+  if(m.lastPhaseMs)lastMs=m.lastPhaseMs;
+  if(m.progress)render(m.progress);
+  if(!m.running){
+   var okRun=(m.progress&&m.progress.ok!==false)&&m.ok!==false;
+   finish(okRun,(m.progress&&m.progress.note)||m.error||'');
+  }
+ }).catch(function(){});
+}
+fetch('/status').then(function(r){return r.json();}).then(function(m){
+ u.textContent=fmt(m.generatedAt)+(m.roster?(' · '+m.roster+' reps'):'');
+ if(m.lastPhaseMs)lastMs=m.lastPhaseMs;
+ if(m.running){start(true);}                 /* a refresh someone else began */
+}).catch(function(){});
+function start(already){
+ bar.className='__busy';b.disabled=true;t0=Date.now();cancelled=false;
+ title.textContent=already?'Refresh in progress':'Refreshing';
+ tick();timer=setInterval(tick,1000);
+ poll=setInterval(look,1200);look();
+}
+b.onclick=function(){
+ start(false);
+ fetch('/refresh',{method:'POST'}).then(function(r){return r.json();})
+  .catch(function(){finish(false,'Could not reach the server.');});
+};
+})();</script>"""
 
 @app.route("/")
 @require_auth
@@ -397,7 +578,26 @@ def status():
     if os.path.exists(META):
         try: m = json.load(open(META))
         except Exception: pass
-    m["running"] = _running["v"]
+    # progress.json is written by the ETL child process, so it is the only source
+    # that knows what is happening inside a run. It also survives a worker restart,
+    # which the in-memory _running flag does not.
+    p = {}
+    if os.path.exists(PROGRESS):
+        try: p = json.load(open(PROGRESS))
+        except Exception: p = {}
+    if p:
+        m["progress"] = p
+    stale = True
+    try:
+        at = p.get("at") or ""
+        if at:
+            t = datetime.datetime.strptime(at[:19], "%Y-%m-%dT%H:%M:%S")
+            stale = (datetime.datetime.utcnow() - t).total_seconds() > 120
+    except Exception:
+        stale = True
+    m["running"] = bool(_running["v"] or (p.get("running") and not stale))
+    if isinstance(m.get("phaseMs"), dict):
+        m["lastPhaseMs"] = m["phaseMs"]       # the bar paces itself on the last run
     return jsonify(m)
 
 @app.route("/healthz")
