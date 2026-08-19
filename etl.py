@@ -33,6 +33,9 @@ DB_PATH   = os.path.join(DATA_DIR, "frontline.db")
 REPORT    = os.path.join(DATA_DIR, "report.html")
 META      = os.path.join(DATA_DIR, "meta.json")
 PROGRESS  = os.path.join(DATA_DIR, "progress.json")
+# Directory of this file. Repo-relative inputs (bb_org.json, hr.json) live beside it,
+# NOT in DATA_DIR — that is the persistent disk and holds outputs only.
+BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 
 # ---- progress -----------------------------------------------------------------
 # Six phases, in the order run_etl() performs them. The UI names them, so changing

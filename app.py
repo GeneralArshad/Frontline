@@ -292,7 +292,7 @@ TOOLBAR = """<div id="__bar" class="__idle">
   <div class="__bar"><i id="__pfill"></i></div>
   <div id="__pnow">Starting&hellip;</div>
   <ol id="__psteps"></ol>
-  <div id="__pfoot">The report stays usable while this runs.</div>
+  <div id="__pfoot">The report below stays usable &mdash; this runs in the background.</div>
 </div></div>
 <style>
 #__bar{position:fixed;bottom:14px;right:14px;z-index:99999;background:#0E1740;color:#fff;
@@ -400,7 +400,24 @@ function render(p){
  }
  if(p.note)foot.textContent=p.note;
 }
-function tick(){el.textContent=mmss((Date.now()-t0)/1000);}
+/* Estimated remaining, from the LAST run's measured total. No estimate on the first
+   run — a made-up number is worse than none. Past the estimate it stops counting down
+   and says so, rather than sitting on 0:00 or going negative. */
+function estTotal(){
+ if(!lastMs)return 0;
+ var t=0;for(var k in lastMs)t+=lastMs[k];
+ return t/1000;
+}
+function tick(){
+ var el2=(Date.now()-t0)/1000, tot=estTotal();
+ var s=mmss(el2);
+ if(tot>0){
+  var left=Math.round(tot-el2);
+  s+=(left>2)?('  ·  ~'+mmss(left)+' left'):'  ·  almost there';
+  if(el2>tot+20)s=mmss(el2)+'  ·  longer than usual';
+ }
+ el.textContent=s;
+}
 function stop(){if(poll)clearInterval(poll);if(timer)clearInterval(timer);poll=timer=null;}
 
 /* Keep the reader's place: a refresh should not cost them their tab, period and
@@ -467,6 +484,8 @@ fetch('/status').then(function(r){return r.json();}).then(function(m){
 function start(already){
  bar.className='__busy';b.disabled=true;t0=Date.now();cancelled=false;
  title.textContent=already?'Refresh in progress':'Refreshing';
+ foot.textContent=lastMs?'The report below stays usable — this runs in the background.'
+   :'First run since deploy, so no timing baseline yet. Usually about 90 seconds.';
  tick();timer=setInterval(tick,1000);
  poll=setInterval(look,1200);look();
 }
@@ -499,19 +518,32 @@ def index():
 
 _served_lock = threading.Lock()
 
-def _ensure_served():
-    """Rebuild report_served.html only when report.html is newer. Once per ETL, not per request."""
+_SELF = os.path.abspath(__file__)
+
+def _served_is_current():
+    """The served page is a merge of report.html and the TOOLBAR defined in THIS file.
+    It is stale if either input is newer.
+
+    The original version compared against report.html only, which meant a change to the
+    toolbar never reached anyone until the next successful ETL — and if the ETL was
+    failing, never at all. Deploys must not depend on the data pipeline succeeding."""
     try:
-        if os.path.exists(SERVED) and os.path.getmtime(SERVED) >= os.path.getmtime(REPORT):
-            return
+        if not os.path.exists(SERVED):
+            return False
+        served = os.path.getmtime(SERVED)
+        newest = os.path.getmtime(REPORT) if os.path.exists(REPORT) else 0
+        newest = max(newest, os.path.getmtime(_SELF))
+        return served >= newest
     except OSError:
-        pass
+        return False
+
+def _ensure_served():
+    """Rebuild report_served.html when either report.html or app.py is newer."""
+    if _served_is_current():
+        return
     with _served_lock:
-        try:
-            if os.path.exists(SERVED) and os.path.getmtime(SERVED) >= os.path.getmtime(REPORT):
-                return
-        except OSError:
-            pass
+        if _served_is_current():
+            return
         tmp = SERVED + ".tmp"
         with open(REPORT, encoding="utf-8") as src:
             html = src.read()
@@ -595,7 +627,15 @@ def status():
             stale = (datetime.datetime.utcnow() - t).total_seconds() > 120
     except Exception:
         stale = True
-    m["running"] = bool(_running["v"] or (p.get("running") and not stale))
+    # The child process's own report beats the parent's bookkeeping. _running is an
+    # in-memory flag in the web worker; if it ever leaks true (a crash between the
+    # subprocess returning and the finally block, a restart mid-run) the UI spins
+    # forever. progress.json is written by the ETL itself, so when it is FRESH it is
+    # the authority. Only fall back to _running when there is no recent progress file.
+    if p and not stale:
+        m["running"] = bool(p.get("running"))
+    else:
+        m["running"] = bool(_running["v"])
     if isinstance(m.get("phaseMs"), dict):
         m["lastPhaseMs"] = m["phaseMs"]       # the bar paces itself on the last run
     return jsonify(m)
