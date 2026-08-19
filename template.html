@@ -1,4 +1,4 @@
-<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><style>
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — July Rx BI</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><style>
 /* =========================================================================
    Hive Frontline — design system v5
    Dark-first. Tokens → primitives → components. Every value is on a scale.
@@ -21,7 +21,7 @@
 }
 /* ---- light (default) — the redesign's warm paper palette ---- */
 [data-theme=light]{
-  --bg:#F2F0E9; --surface:#FBFAF7; --surface2:#ECEAE1; --surface3:#E4E1D6;
+  --bg:#F2F4F5; --surface:#FBFAF7; --surface2:#ECEAE1; --surface3:#E4E1D6;
   --ink:#191B20; --muted:#5F6470; --faint:#8A8D86; --line:#DBD7CA;
   --chip:#ECEAE1; --hover:rgba(25,27,32,.045); --hover-solid:#E9E7DE;
   --ok:#0E6E4A; --warn:#B26205; --bad:#C8102E; --info:#1B4FA0; --accent:#2E3790;
@@ -594,6 +594,16 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
   font-size:10.5px;color:var(--faint);background:color-mix(in srgb,var(--surface) 88%,transparent);
   padding:5px 12px;border:1px solid var(--line);border-radius:var(--r1);white-space:nowrap}
 @media(max-width:900px){.orghint{display:none}}
+
+.dlbtn{border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  border-radius:var(--r1);padding:3px 9px;font:700 10px Inter,sans-serif;letter-spacing:.08em;
+  cursor:pointer;transition:.14s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.dlbtn:hover{color:var(--ink);border-color:var(--accent)}
+.dlbtn svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.dlbtn.done{color:var(--ok);border-color:var(--ok)}
+.dlbar{display:flex;gap:6px;align-items:center;margin-left:auto}
+.secttl .dlbar{margin-top:10px;margin-left:0}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -994,6 +1004,7 @@ function render(){fcount();const rows=fr();
  if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
+ try{expWire();}catch(_){}
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
 addEventListener('resize',()=>{clearTimeout(window.__stkT);window.__stkT=setTimeout(()=>{try{stickyCols();}catch(_){}} ,180);});
@@ -2515,6 +2526,164 @@ function restoreState(){
  }
  applyPeriod();
 }
+/* ==================================================================== EXPORT
+   Everything here reads the rendered table, never the data model. What you see is
+   what you get — same rows, same order, same filters, same period. The alternative
+   (re-deriving each view's rows) means two implementations of every filter, and the
+   second one silently rots.                                                     */
+
+/* A description of the current view, so a file mailed onward still says what it is. */
+function expContext(){
+ const bits=[];
+ if(typeof PR!=='undefined'&&perActive()){
+  const[f,t]=perRange();bits.push(dlabel(f)+' to '+dlabel(t));
+  if(PR.wd)bits.push(PR.wd.split(',').map(i=>WDN[+i]).join('/')+' only');
+ }else if(D&&D.dataStart){bits.push(dlabel(D.dataStart)+' to '+dlabel(D.dataEnd));}
+ const FN={di:'Division',zn:'Zone',st:'State',hq:'HQ',rl:'Role',mg:'Manager',
+           te:'Territory',sp:'Specialization',ac:'Activity',pf:'Performance',
+           rx:'Rx',ob:'Onboarded',q:'Search'};
+ if(typeof F!=='undefined')Object.keys(FN).forEach(k=>{if(F[k])bits.push(FN[k]+': '+F[k]);});
+ return bits;
+}
+function expSlug(s){
+ return String(s||'table').trim().toLowerCase()
+  .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'table';
+}
+/* The heading a table sits under, for the filename and the sheet name. */
+function expTitle(tbl){
+ const card=tbl.closest('.card');
+ let h=card&&card.querySelector('.ch h3');
+ if(h)return h.childNodes[0].textContent.trim();
+ let s=tbl.closest('section');
+ let b=s&&s.querySelector('.secttl .big');
+ return (b?b.textContent.trim():'table');
+}
+
+/* Read a table into rows of strings. Header from thead, body from tbody. Nested
+   tables (the expandable rep rows) are skipped: they are a different grain and
+   would silently corrupt the sheet. */
+function expRead(tbl){
+ const out=[];
+ const head=tbl.querySelector('thead tr');
+ if(head)out.push([...head.children].map(th=>th.textContent.trim()));
+ const body=tbl.querySelector('tbody');
+ if(body)[...body.children].forEach(tr=>{
+  if(tr.querySelector('table'))return;
+  const cells=[...tr.children].map(td=>{
+   /* pills and badges carry meaning the raw text keeps; strip only whitespace */
+   return td.textContent.replace(/\s+/g,' ').trim();
+  });
+  if(cells.length)out.push(cells);
+ });
+ return out;
+}
+
+function expCSV(rows,ctx){
+ const esc=v=>{
+  const s=String(v===null||v===undefined?'':v);
+  return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+ };
+ const lines=[];
+ if(ctx&&ctx.length)lines.push(esc(ctx.join(' · ')));
+ rows.forEach(r=>lines.push(r.map(esc).join(',')));
+ return lines.join('\r\n');
+}
+
+function expDownload(name,text,mime){
+ /* BOM so Excel opens UTF-8 correctly — without it Indian names come out mangled */
+ /* '\uFEFF' as an escape, never a literal BOM in source: invisible characters in a
+    100 KB blob are a nightmare to find later. */
+ const blob=new Blob([mime.indexOf('csv')>=0?'\uFEFF'+text:text],{type:mime});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},400);
+}
+
+function expFlash(btn,label){
+ if(!btn)return;const t=btn.innerHTML;
+ btn.classList.add('done');btn.innerHTML=label||'SAVED';
+ setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=t;},1400);
+}
+
+function expTableCSV(tbl,btn){
+ const rows=expRead(tbl);
+ if(rows.length<2){alert('Nothing to export — this table is empty.');return;}
+ const title=expTitle(tbl),ctx=expContext();
+ const stamp=(D&&D.gen)||new Date().toISOString().slice(0,10);
+ expDownload('frontline-'+expSlug(title)+'-'+stamp+'.csv',
+             expCSV(rows,ctx),'text/csv;charset=utf-8');
+ expFlash(btn);
+}
+
+/* One workbook per tab: every table on the visible section becomes a sheet, with a
+   Context sheet recording what was in force. Sheet names must be unique and <=31
+   chars — Excel refuses the file otherwise, with no useful error. */
+function expTabXLSX(btn){
+ if(typeof XLSX==='undefined'){alert('The spreadsheet library did not load. CSV still works.');return;}
+ const sec=document.querySelector('.sec.on');if(!sec)return;
+ const tbls=[...sec.querySelectorAll('.tablewrap table')].filter(t=>!t.closest('tbody'));
+ if(!tbls.length){alert('No tables on this tab to export.');return;}
+ const wb=XLSX.utils.book_new(),used={};
+ const ctx=expContext();
+ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(
+   [['Hive Frontline export'],['Generated',(D&&D.gen)||''],['View',ctx.join(' · ')],
+    ['Tab',(sec.querySelector('.secttl .big')||{}).textContent||TAB],
+    [],['Every sheet below matches exactly what was on screen: same filters, same period, same sort order.']]),
+   'Context');
+ let n=0;
+ tbls.forEach(t=>{
+  const rows=expRead(t);if(rows.length<2)return;
+  let name=expTitle(t).replace(/[\\\/\?\*\[\]:]/g,' ').trim().slice(0,28)||('Sheet'+(n+1));
+  if(used[name]){used[name]++;name=(name+' '+used[name]).slice(0,31);}else used[name]=1;
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),name);n++;
+ });
+ if(!n){alert('No tables with data on this tab.');return;}
+ const stamp=(D&&D.gen)||new Date().toISOString().slice(0,10);
+ XLSX.writeFile(wb,'frontline-'+expSlug((sec.querySelector('.secttl .big')||{}).textContent||TAB)+
+   '-'+stamp+'.xlsx');
+ expFlash(btn,'SAVED');
+}
+
+const DLICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/>'+
+ '<path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>';
+
+/* Inject the buttons after every render. Idempotent — a table already wearing one
+   is skipped, so this can run as often as it likes. */
+function expWire(){
+ try{
+  document.querySelectorAll('.tablewrap table').forEach(tbl=>{
+   if(tbl.closest('tbody'))return;                 /* nested expandable table */
+   /* the chart drill-down modal has a table too, but it is a transient breakdown
+      inside a dialog, not a view worth a download button */
+   const card=tbl.closest('.card');if(!card)return;
+   let ch=card.querySelector('.ch');
+   if(!ch){ch=document.createElement('div');ch.className='ch';card.insertBefore(ch,card.firstChild);}
+   if(ch.querySelector('.dlbtn[data-x="csv"]'))return;
+   let bar=ch.querySelector('.dlbar');
+   if(!bar){bar=document.createElement('div');bar.className='dlbar';ch.appendChild(bar);}
+   const b=document.createElement('button');
+   b.className='dlbtn';b.dataset.x='csv';b.type='button';
+   b.innerHTML=DLICO+'CSV';
+   b.title='Download this table exactly as shown — same filters, period and sort order';
+   b.onclick=e=>{e.stopPropagation();expTableCSV(tbl,b);};
+   bar.appendChild(b);
+  });
+  /* one Excel button per section, next to its title */
+  document.querySelectorAll('section.sec').forEach(sec=>{
+   const has=sec.querySelector('.tablewrap table');
+   const ttl=sec.querySelector('.secttl');
+   if(!has||!ttl||ttl.querySelector('.dlbtn[data-x="xlsx"]'))return;
+   const bar=document.createElement('div');bar.className='dlbar';
+   const b=document.createElement('button');
+   b.className='dlbtn';b.dataset.x='xlsx';b.type='button';
+   b.innerHTML=DLICO+'EXCEL — THIS TAB';
+   b.title='Every table on this tab, one sheet each, with the current filters recorded';
+   b.onclick=()=>expTabXLSX(b);
+   bar.appendChild(b);ttl.appendChild(bar);
+  });
+ }catch(e){console.warn('export wiring',e);}
+}
+
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;
