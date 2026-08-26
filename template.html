@@ -604,6 +604,23 @@ table.stk .sk.edge{border-right:1px solid var(--line)}
 .dlbtn.done{color:var(--ok);border-color:var(--ok)}
 .dlbar{display:flex;gap:6px;align-items:center;margin-left:auto}
 .secttl .dlbar{margin-top:10px;margin-left:0}
+
+.dcrrow{cursor:pointer;transition:background .12s}
+.dcrrow:hover{background:var(--hover)}
+.dcrrow .cv{display:inline-block;width:9px;font-size:8px;color:var(--faint);
+  transition:transform .16s;margin-right:6px}
+.dcrrow.op .cv{transform:rotate(90deg)}
+.dcrrow.op{background:var(--hover-solid);font-weight:650}
+tr.dcrd{display:none}
+tr.dcrd.op{display:table-row}
+tr.dcrd>td{padding:0;background:var(--surface2)}
+.dcrhead{display:flex;gap:14px;flex-wrap:wrap;padding:8px 14px;font-size:10.5px;
+  color:var(--muted);border-bottom:1px solid var(--line)}
+.dcrhead b{color:var(--ink);font-variant-numeric:tabular-nums}
+.dcrd table{font-size:11px}
+.dcrd th{position:static !important;font-size:9px;letter-spacing:.08em}
+.dcrd td{padding:5px 10px}
+.dcrempty{padding:12px 14px;font-size:11px;color:var(--faint)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1281,12 +1298,20 @@ function openProfile(code,opts){
    '<table><thead><tr><th>Doctor</th><th>Code</th><th>Specialization</th><th>Category</th>'+
    '<th>Prescriber</th><th style="text-align:right">Visits</th><th style="text-align:right">Rx</th>'+
    '<th>Last seen</th></tr></thead><tbody>'+docRows+'</tbody></table></div></div>'):'';
- const dayRows=days.slice(-60).reverse().map(dt=>{ const cs=calls.filter(v=>v[0]===dt);
+ /* Each day carries its own calls, pre-rendered and hidden. 60 days of a busy rep
+    is a few hundred rows — cheap enough to build once, and it means expanding is
+    instant rather than a round trip through the call log. */
+ const dayRows=days.slice(-60).reverse().map((dt,di)=>{ const cs=calls.filter(v=>v[0]===dt);
    const rx=cs.reduce((s,v)=>s+(+v[8]||0),0), dr=cs.filter(v=>v[2]).length;
-   return '<tr><td>'+dt+'</td><td class=n>'+cs.length+'</td><td class=n>'+dr+'</td><td class=n>'+
-    (cs.length-dr)+'</td><td class=n><b>'+fmt(rx)+'</b></td></tr>'; }).join('');
+   const summary='<tr class="dcrrow" data-d="'+di+'"><td><span class="cv">&#9654;</span>'+dt+
+    '</td><td class=n>'+cs.length+'</td><td class=n>'+dr+'</td><td class=n>'+
+    (cs.length-dr)+'</td><td class=n><b>'+fmt(rx)+'</b></td></tr>';
+   return summary+'<tr class="dcrd" data-d="'+di+'"><td colspan="5">'+dcrDay(cs,dt)+'</td></tr>';
+  }).join('');
  const dayTable=days.length?('<div class="bx s12 flush"><div class="bxh">Recent activity'+
-   '<span class="c">last '+Math.min(days.length,60)+' active days</span></div>'+
+   '<span class="c">last '+Math.min(days.length,60)+' active days &middot; click a day for the calls</span>'+
+   '<button class="dlbtn" id="dcrcsv" data-c="'+esc(r.c)+'" title="Every call for this person, '+
+   'at call grain, for the current period">'+DLICO+'CSV</button></div>'+
    '<div class="tablewrap" style="max-height:280px;margin:0;border:0;border-radius:0">'+
    '<table><thead><tr><th>Date</th><th style="text-align:right">Calls</th>'+
    '<th style="text-align:right">Doctors</th><th style="text-align:right">Chemists</th>'+
@@ -1295,6 +1320,7 @@ function openProfile(code,opts){
  const notesBox='<div class="bx s12" id="pnotes"><div class="bxh">Team notes on '+esc(r.n)+
    '<span class="c" id="pnc"></span></div><div id="pnotesbody"></div></div>';
 
+ /* dcrWire runs after this assignment, at the end of openProfile */
  $('pcard').innerHTML=head+'<div class="pbody" id="pbody"><div class="bento">'+
    tiles+trend+side+repsBox+docBox+prodBox+idBox+hrBox+
    (mgr?'':kvBox('s4','Behaviour',[
@@ -1313,6 +1339,9 @@ function openProfile(code,opts){
     scales:Object.assign({},gopt().scales,{y1:{position:'right',grid:{display:false},
      ticks:{color:'#8A93A6',font:{size:10}}}})})});
  }catch(e){console.warn('trend chart',e);} }
+
+ /* daily call report: expandable days + the per-rep CSV */
+ try{ dcrWire(); }catch(e){ console.warn('dcr', e); }
 
  /* notes */
  try{ const nb=$('pnotesbody'); if(nb){ nb.innerHTML='';
@@ -2682,6 +2711,101 @@ function expWire(){
    bar.appendChild(b);ttl.appendChild(bar);
   });
  }catch(e){console.warn('export wiring',e);}
+}
+
+/* ============================================================ DAILY CALL REPORT
+   One day of a rep's field work, at call grain. This is the view a manager asks for
+   by name — "what did he actually do on the 22nd?" — and until now the report could
+   answer it only in aggregate.                                                    */
+
+function dcrMin(t){                       /* "09:12" -> minutes, or -1 */
+ if(!t||t.length<5)return -1;
+ const h=+t.slice(0,2),m=+t.slice(3,5);
+ return (h===h&&m===m)?h*60+m:-1;
+}
+function dcrSpan(mins){
+ if(mins<=0)return '';
+ const h=Math.floor(mins/60),m=mins%60;
+ return h?(h+'h '+(m?m+'m':'').trim()):(m+'m');
+}
+
+function dcrDay(cs,dt){
+ if(!cs||!cs.length)return '<div class="dcrempty">No calls recorded on this day.</div>';
+ const rows=cs.slice().sort((a,b)=>String(a[1]||'').localeCompare(String(b[1]||'')));
+ const times=rows.map(v=>dcrMin(v[1])).filter(x=>x>=0).sort((a,b)=>a-b);
+ const rx=rows.reduce((s,v)=>s+(+v[8]||0),0);
+ const sm=rows.reduce((s,v)=>s+(+v[12]||0),0);
+ const dr=rows.filter(v=>v[2]).length;
+ const uniq=new Set(rows.filter(v=>v[2]).map(v=>v[4]||('_'+v[3]))).size;
+ /* field span: first call to last. Not hours worked — it is what the timestamps
+    support, and calling it anything more would be inventing precision. */
+ const span=times.length>1?(times[times.length-1]-times[0]):0;
+ const head='<div class="dcrhead">'+
+  '<span><b>'+rows.length+'</b> calls</span>'+
+  '<span><b>'+dr+'</b> doctor'+(dr===1?'':'s')+(uniq!==dr?' ('+uniq+' distinct)':'')+'</span>'+
+  '<span><b>'+(rows.length-dr)+'</b> chemist'+((rows.length-dr)===1?'':'s')+'</span>'+
+  '<span><b>'+fmt(rx)+'</b> Rx</span>'+
+  (sm?'<span><b>'+fmt(sm)+'</b> samples</span>':'')+
+  (times.length?'<span>'+rows[0][1]+' to '+rows[rows.length-1][1]+
+    (span>0?' &middot; '+dcrSpan(span)+' in the field':'')+'</span>':'')+
+  '</div>';
+ const body=rows.map(v=>{
+  const isDoc=!!v[2];
+  const prods=(v[11]||'').split('|').filter(Boolean)
+    .map(p=>{const i=p.indexOf('~');return i<0?p:(p.slice(0,i)+' &times;'+p.slice(i+1));})
+    .join(', ');
+  return '<tr><td>'+(v[1]||'&mdash;')+'</td>'+
+   '<td>'+(isDoc?'<span class="pill yes">DR</span>':'<span class="pill no">CH</span>')+'</td>'+
+   '<td><b>'+esc(v[3]||'')+'</b></td>'+
+   '<td>'+esc(v[4]||'')+'</td>'+
+   '<td>'+esc(v[5]||'')+'</td>'+
+   '<td>'+esc(v[6]||'')+'</td>'+
+   '<td>'+(v[9]?'<span class="pill yes">YES</span>':'')+'</td>'+
+   '<td>'+esc(v[10]||'')+'</td>'+
+   '<td class=n>'+((+v[8]||0)?'<b>'+fmt(+v[8])+'</b>':'')+'</td>'+
+   '<td>'+prods+'</td>'+
+   '<td class=n>'+((+v[12]||0)||'')+'</td></tr>';
+ }).join('');
+ return head+'<div class="tablewrap" style="margin:0;border:0;border-radius:0;max-height:340px">'+
+  '<table><thead><tr><th>Time</th><th>Type</th><th>Doctor / entity</th><th>Code</th>'+
+  '<th>Specialization</th><th>Category</th><th>Presc</th><th>Reaction</th>'+
+  '<th style="text-align:right">Rx</th><th>Products</th>'+
+  '<th style="text-align:right">Samp</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+}
+
+/* One delegated listener on the table, so 60 rows cost one handler rather than 60,
+   and re-rendering the profile cannot leave orphans behind. */
+function dcrWire(){
+ const box=document.getElementById('pcard');if(!box)return;
+ box.querySelectorAll('.dcrrow').forEach(tr=>{
+  if(tr.dataset.w)return;tr.dataset.w='1';
+  tr.onclick=()=>{
+   const det=box.querySelector('tr.dcrd[data-d="'+tr.dataset.d+'"]');
+   const open=tr.classList.toggle('op');
+   if(det)det.classList.toggle('op',open);
+  };
+ });
+ const b=document.getElementById('dcrcsv');
+ if(b&&!b.dataset.w){b.dataset.w='1';b.onclick=e=>{e.stopPropagation();dcrCSV(b.dataset.c,b);};}
+}
+
+/* The rep's whole call log, at call grain. The profile lives outside the .card
+   markup the generic exporter walks, so it gets its own button. */
+function dcrCSV(code,btn){
+ const rows=(typeof CALLS==='function'?CALLS(code):((D.calls||{})[code]||[])).slice()
+   .sort((a,b)=>String(a[0]+a[1]).localeCompare(String(b[0]+b[1])));
+ if(!rows.length){alert('No calls recorded for this person in the current period.');return;}
+ const r=D.reps.find(x=>x.c===code)||{};
+ const out=[['Date','Time','Type','Doctor / entity','Code','Specialization','Category',
+             'Prescriber','Reaction','Rx','Products','Samples']];
+ rows.forEach(v=>out.push([v[0],v[1]||'',v[2]?'Doctor':'Chemist',v[3]||'',v[4]||'',
+   v[5]||'',v[6]||'',v[9]?'Yes':'',v[10]||'',(+v[8]||0),
+   (v[11]||'').split('|').filter(Boolean).map(p=>p.replace('~',' x')).join('; '),
+   (+v[12]||0)]));
+ const ctx=['Daily call report',(r.n||code)+' ('+code+')'].concat(expContext());
+ expDownload('frontline-dcr-'+expSlug(r.n||code)+'-'+((D&&D.gen)||'')+'.csv',
+             expCSV(out,ctx),'text/csv;charset=utf-8');
+ if(typeof expFlash==='function')expFlash(btn);
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
