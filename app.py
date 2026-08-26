@@ -288,7 +288,8 @@ TOOLBAR = """<div id="__bar" class="__idle">
 <a href="/logout" id="__so">Sign out</a>
 <div id="__panel">
   <div class="__ph"><span class="__dot"></span><b id="__ptitle">Refreshing</b>
-    <span id="__pel">0:00</span></div>
+    <span id="__pel">0:00</span>
+    <button id="__min" type="button" title="Minimise" aria-label="Minimise">&#8211;</button></div>
   <div class="__bar"><i id="__pfill"></i></div>
   <div id="__pnow">Starting&hellip;</div>
   <ol id="__psteps"></ol>
@@ -343,6 +344,19 @@ li.__on .__mk:after{content:'';position:absolute;left:-1.5px;top:-1.5px;right:-1
  font-size:10.5px;opacity:.6;font-weight:500}
 #__pfoot button{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;
  border-radius:6px;padding:3px 9px;font:700 10.5px Inter,Arial;cursor:pointer;margin-left:6px}
+#__min{background:transparent;border:0;color:#fff;opacity:.5;cursor:pointer;font:700 15px Inter,Arial;
+ line-height:1;padding:0 2px;margin-left:2px;transition:opacity .14s}
+#__min:hover{opacity:1}
+/* ---- minimised: a pill that still reports, and expands on click ---- */
+#__bar.__mini{width:auto;max-width:290px;cursor:pointer}
+#__bar.__mini #__panel{padding:9px 13px}
+#__bar.__mini #__psteps,#__bar.__mini #__pfoot{display:none}
+#__bar.__mini #__pnow{margin:7px 0 0;font-size:11px;opacity:.8;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;max-width:250px}
+#__bar.__mini .__ph{margin-bottom:7px}
+#__bar.__mini #__min{transform:rotate(180deg)}
+#__bar.__mini .__bar{height:3px}
+#__bar.__mini.__err{cursor:default}
 @media(prefers-reduced-motion:reduce){
  .__dot,li.__on .__mk{animation:none}
  .__bar i{transition:none}}
@@ -354,6 +368,16 @@ var bar=document.getElementById('__bar'),b=document.getElementById('__rf'),
     fill=document.getElementById('__pfill'),now=document.getElementById('__pnow'),
     steps=document.getElementById('__psteps'),foot=document.getElementById('__pfoot');
 var t0=0,timer=null,poll=null,lastMs=null,built=false,cancelled=false;
+/* Remembered across refreshes: someone who finds this intrusive should say so once. */
+var mini=false;
+try{mini=localStorage.getItem('__fl_minipanel')==='1';}catch(e){}
+function setMini(v){
+ mini=!!v;
+ bar.classList.toggle('__mini',mini);
+ try{localStorage.setItem('__fl_minipanel',mini?'1':'0');}catch(e){}
+ var m=document.getElementById('__min');
+ if(m)m.title=mini?'Expand':'Minimise';
+}
 function fmt(iso){if(!iso)return'';var d=new Date(iso);return 'Updated '+d.toLocaleString();}
 function nfmt(n){return (typeof n==='number'?n:0).toLocaleString('en-IN');}
 function mmss(s){var m=Math.floor(s/60);return m+':'+String(Math.floor(s%60)).padStart(2,'0');}
@@ -435,6 +459,8 @@ function finish(ok,msg){
  stop();
  bar.classList.remove('__busy');bar.classList.add(ok?'__done':'__err');
  if(!ok){
+  /* An error you cannot see is the failure mode this panel exists to prevent. */
+  setMini(false);
   bar.classList.add('__busy');
   title.textContent='Refresh failed';fill.style.width='100%';
   now.textContent=msg||'The ETL did not complete.';
@@ -447,6 +473,12 @@ function finish(ok,msg){
  }
  bar.classList.add('__busy');
  title.textContent='New data ready';fill.style.width='100%';
+ if(mini){
+  /* collapsed, the pill becomes the reload button — never a silent reload */
+  now.textContent='Click to reload with your view kept';
+  bar.onclick=function(){bar.onclick=null;save();location.reload();};
+  return;
+ }
  var n=5;
  now.textContent='Reloading in '+n+'s to show it';
  foot.innerHTML='Your tab, period and filters are kept.'+
@@ -483,12 +515,26 @@ fetch('/status').then(function(r){return r.json();}).then(function(m){
 }).catch(function(){});
 function start(already){
  bar.className='__busy';b.disabled=true;t0=Date.now();cancelled=false;
+ /* A completed-and-minimised panel leaves a reload handler on the whole bar. If a
+    new run starts without clearing it, the next click anywhere on the panel — the
+    Refresh button included — reloads the page instead. Clear it every time. */
+ bar.onclick=null;
+ try{mini=localStorage.getItem('__fl_minipanel')==='1';}catch(e){}
+ setMini(mini);
  title.textContent=already?'Refresh in progress':'Refreshing';
  foot.textContent=lastMs?'The report below stays usable — this runs in the background.'
    :'First run since deploy, so no timing baseline yet. Usually about 90 seconds.';
  tick();timer=setInterval(tick,1000);
  poll=setInterval(look,1200);look();
 }
+var mb=document.getElementById('__min');
+if(mb)mb.onclick=function(e){e.stopPropagation();setMini(!mini);};
+/* the whole pill is a click target once collapsed, which is the affordance people
+   reach for before they find a small button */
+bar.addEventListener('click',function(e){
+ if(mini&&bar.classList.contains('__busy')&&!bar.classList.contains('__err')&&
+    e.target.tagName!=='BUTTON'&&e.target.tagName!=='A')setMini(false);
+});
 b.onclick=function(){
  start(false);
  fetch('/refresh',{method:'POST'}).then(function(r){return r.json();})
