@@ -178,6 +178,151 @@ def enumerate_roster(api):
             if len(rows) < 100: break
     return list(by_id.values())
 
+# ------------------------------------------------------- roster completion
+ROSTER_GAP = os.path.join(DATA_DIR, "roster_gap.json")
+
+
+def known_codes():
+    """Every employee code we have independent evidence for, and where it came from.
+
+    These files are reference data, not a source of truth about the app: a code here
+    only tells us who to go and ask the API about. The API's answer is what counts —
+    if it does not know the person, they are genuinely not in Frontline, and that is
+    a finding rather than a failure.
+    """
+    out = {}
+
+    def add(code, src):
+        k = orgnorm(code)
+        if not k:
+            return
+        rec = out.setdefault(k, {"code": str(code).strip(), "src": src})
+        if src not in rec["src"]:
+            rec["src"] = rec["src"] + "+" + src
+
+    try:
+        _org, _ = load_org(os.path.join(BASE_DIR, "bb_org.json"))
+        for p in ((_org or {}).get("people") or {}).values():
+            # vacancies have synthetic keys and no person behind them
+            if not p.get("vacant") and p.get("code"):
+                add(p["code"], "org")
+    except Exception as e:
+        print("known_codes: org file unusable (%s)" % str(e)[:120])
+    try:
+        for c in (load_hr() or {}):
+            add(c, "hr")
+    except Exception as e:
+        print("known_codes: hr file unusable (%s)" % str(e)[:120])
+    return out
+
+
+def fetch_by_code(api, code):
+    """One person, by exact code. Pagination never enters into it.
+
+    Returns the row ONLY on an exact normalised code match. Substring search means
+    EC991 also matches EC9919; adopting the wrong neighbour would file one person's
+    calls under another person's name, silently and permanently.
+    """
+    try:
+        st, dd = api.get("/admin/employees?page=1&limit=25&search=%s"
+                         % requests.utils.quote(str(code)))
+        rows = (dd or {}).get("data") or (dd or {}).get("employees") or []
+        want = orgnorm(code)
+        for e in rows:
+            if orgnorm(e.get("employeeCode")) == want and e.get("_id"):
+                return e
+    except Exception:
+        pass
+    return None
+
+
+def complete_roster(api, emps):
+    """Fill the gap the search enumeration leaves. Returns (emps, stats).
+
+    Never raises: a roster short by 130 people still renders a report, and a refresh
+    that dies here would leave you with nothing at all.
+    """
+    stats = {"enumerated": len(emps), "known": 0, "asked": 0, "recovered": 0,
+             "unresolvedOrg": 0, "unresolvedHr": 0}
+    try:
+        have = {orgnorm(e.get("employeeCode")) for e in emps if e.get("employeeCode")}
+        want = known_codes()
+        stats["known"] = len(want)
+        missing = sorted((k for k in want if k not in have), key=lambda k: want[k]["code"])
+        stats["asked"] = len(missing)
+        if not missing:
+            _write_gap({"missing": [], "recovered": [], "unresolved": []})
+            return emps, stats
+
+        prog(note="%d not returned by search - asking for each by code" % len(missing))
+        found = pool([want[k]["code"] for k in missing],
+                     lambda c: fetch_by_code(api, c), report=True)
+
+        by_id = {e["_id"]: e for e in emps if e.get("_id")}
+        before = len(by_id)
+        rec, unres = [], []
+        for k, e in zip(missing, found):
+            if e:
+                e["_viaCode"] = True          # provenance: found only because we asked
+                by_id[e["_id"]] = e
+                rec.append(want[k]["code"])
+            else:
+                unres.append({"code": want[k]["code"], "src": want[k]["src"]})
+        out = list(by_id.values())
+        stats["recovered"] = len(by_id) - before
+        stats["unresolvedOrg"] = sum(1 for u in unres if "org" in u["src"])
+        stats["unresolvedHr"] = sum(1 for u in unres if u["src"] == "hr")
+        _write_gap({"at": datetime.datetime.utcnow().isoformat() + "Z",
+                    "recovered": rec, "unresolved": unres})
+        print("roster: %d by search, +%d recovered by code, %d still unknown to Frontline"
+              % (before, stats["recovered"], len(unres)))
+        return out, stats
+    except Exception as e:
+        # A completion pass that fails must cost nothing. Report the roster we had.
+        stats["error"] = str(e)[:200]
+        print("complete_roster failed (%s) - continuing with the search roster" % stats["error"])
+        return emps, stats
+
+
+def _write_gap(payload):
+    """Codes go to the data disk, not to meta.json: /status has no authentication."""
+    try:
+        os.makedirs(DATA_DIR, exist_ok=True)
+        tmp = ROSTER_GAP + ".tmp"
+        with open(tmp, "w") as fh:
+            json.dump(payload, fh, indent=1)
+        os.replace(tmp, ROSTER_GAP)
+    except Exception:
+        pass
+
+
+def pagination_probe(api, term="a"):
+    """Evidence, not a workaround.
+
+    Ask for page 1 and page 2 of the same search and compare the ids. A healthy
+    endpoint returns two disjoint pages; the bug returns the same page twice. Two
+    read-only requests, and the answer is a number the backend team can act on.
+    """
+    out = {"term": term}
+    try:
+        pages = []
+        for p in (1, 2):
+            st, dd = api.get("/admin/employees?page=%d&limit=100&search=%s"
+                             % (p, requests.utils.quote(term)))
+            rows = (dd or {}).get("data") or (dd or {}).get("employees") or []
+            pages.append([r.get("_id") for r in rows if r.get("_id")])
+            out["page%dCount" % p] = len(rows)
+            out["page%dStatus" % p] = st
+        a, b = set(pages[0]), set(pages[1])
+        out["overlap"] = len(a & b)
+        out["newOnPage2"] = len(b - a)
+        # only a claim when page 2 actually returned something to judge
+        out["repeatsPage1"] = bool(pages[1]) and not (b - a)
+    except Exception as e:
+        out["error"] = str(e)[:120]
+    return out
+
+
 def geo_flat(api):
     st, d = api.get("/admin/geo-hierarchy")
     flat = {}
@@ -765,6 +910,10 @@ def run_etl():
         api = Api()
         con = db()
         emps = enumerate_roster(api)
+        # The search enumeration is a workaround for a broken list endpoint and
+        # inherits its pagination bug. Ask directly for anyone it did not return.
+        emps, roster_fill = complete_roster(api, emps)
+        roster_fill["pagination"] = pagination_probe(api)
         prog("geo", note="%d employees" % len(emps))
         flat = geo_flat(api)
         prog("dayplans", note="%d employees" % len(emps))
@@ -782,6 +931,8 @@ def run_etl():
         meta = {"ok": True, "generatedAt": datetime.datetime.utcnow().isoformat() + "Z",
                 "durationSec": round(time.time() - t0, 1), "roster": len(emps),
                 "dayPlansInWindow": seen, "dayPlansFetchedThisRun": fetched,
+                # counts only: /status is unauthenticated, so no employee codes here.
+                "rosterFill": roster_fill,
                 "phaseMs": dict(_PROG.get("phaseMs") or {}), **stats}
         prog_end(True)
         meta["phaseMs"] = dict(_PROG.get("phaseMs") or {})

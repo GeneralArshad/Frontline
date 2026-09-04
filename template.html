@@ -621,6 +621,17 @@ tr.dcrd>td{padding:0;background:var(--surface2)}
 .dcrd th{position:static !important;font-size:9px;letter-spacing:.08em}
 .dcrd td{padding:5px 10px}
 .dcrempty{padding:12px 14px;font-size:11px;color:var(--faint)}
+
+.emptyc{padding:26px 16px !important;text-align:center;color:var(--muted);font-size:12px}
+.emptyc b{color:var(--ink);display:block;margin-bottom:5px;font-size:13px}
+.emptyc .why{font-size:11px;color:var(--faint);margin-top:4px}
+.emptyc button{margin-top:11px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink);border-radius:var(--r1);padding:5px 12px;font:700 10px Inter,sans-serif;
+  letter-spacing:.07em;cursor:pointer}
+.emptyc button:hover{border-color:var(--accent)}
+.fnote{font-size:10.5px;color:var(--warn,#96700A);margin:7px 0 0;line-height:1.45}
+.tm{font-variant-numeric:tabular-nums}
+td.own{color:var(--faint)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -630,6 +641,7 @@ tr.dcrd>td{padding:0;background:var(--surface2)}
     <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="org"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v4.8M12 11.5H5.6a.6.6 0 0 0-.6.6v5.2M12 11.5h6.4a.6.6 0 0 1 .6.6v5.2"/></svg>Org tree</button><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
     <div class="fpanel" id="fpanel">
 <div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
+<div class="fnote" id="fdropped"></div>
 <div class="fbody">
 <div class="perbox" id="perbox">
   <div class="plab"><span>Period</span><span id="perdot"></span></div>
@@ -702,6 +714,7 @@ tr.dcrd>td{padding:0;background:var(--surface2)}
 <div class="card"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="tdh"></tr></thead><tbody id="tdb"></tbody></table></div></div>
 <div class="secttl" style="margin-top:30px"><div class="eye">Action</div><div class="big">Rx performance by rep</div></div>
 <div class="card"><div class="ch"><div><h3>Rx performance <span id="rpcnt" class="sub"></span></h3><div class="cs">Sortable · hover headers for definitions · zero-Rx reps flagged</div></div></div><div class="tablewrap"><table><thead><tr id="rph"></tr></thead><tbody id="rpb"></tbody></table></div></div>
+<div class="card" id="mgrcard" style="margin-top:18px;display:none"><div class="ch"><div><h3>Team performance <span id="mgcnt" class="sub"></span></h3><div class="cs">Every field rep underneath each manager, rolled up &middot; own joint-work activity shown separately</div></div></div><div class="tablewrap"><table><thead><tr id="mgh2"></tr></thead><tbody id="mgb2"></tbody></table></div></div>
 </section>
 <section class="sec" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
 <div class="kpis" id="kpis"></div>
@@ -848,10 +861,19 @@ function wireExp(){document.querySelectorAll('.card.click[data-exp]').forEach(c=
 function kpi(kc,v,l,def,h,mk){kc=TC(kc);return '<div class="kpi"'+(mk?' data-m="'+mk+'"':'')+' style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')+'</div>';}
 function th(k,l){return '<th data-k="'+k+'"'+(TT[k]?' title="'+TT[k].replace(/"/g,'')+'"':'')+'>'+l+'</th>';}
 /* ---- RX ENGINE ---- */
-function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=>r.vis>0);const zero=bo.filter(r=>r.zeroRx);
- const totRx=rows.reduce((a,r)=>a+r.rx,0);const rxProd=act.filter(r=>r.rx>0);
+function rxView(rows){
+ /* Selecting a manager role is a selection of their teams. The intersection of
+    "role = ABM" and "role = BO" is empty by construction, which is why this table
+    used to go blank for every role above BO. */
+ const own=rows.filter(r=>r.r==='BO'),mgrs=rows.filter(r=>r.r!=='BO');
+ const via=own.length?[]:teamReps(mgrs);
+ const bo=own.length?own:via;
+ const base=own.length?rows:via;      /* the field population every number describes */
+ mgrTable(mgrs);
+ const act=bo.filter(r=>r.vis>0);const zero=bo.filter(r=>r.zeroRx);
+ const totRx=base.reduce((a,r)=>a+r.rx,0);const rxProd=act.filter(r=>r.rx>0);
  const avg=(a,f)=>a.length?Math.round(100*a.reduce((s,r)=>s+r[f],0)/a.length)/100:0;
- const _md=rows.reduce((a,r)=>a+(r.ud||0),0),_rd=rows.reduce((a,r)=>a+(r.rxD||0),0);
+ const _md=base.reduce((a,r)=>a+(r.ud||0),0),_rd=base.reduce((a,r)=>a+(r.rxD||0),0);
  const _cv=_md?Math.round(100*_rd/_md):0;
  $('rxkpis').innerHTML=[kpi('#0A7C4A',fmt(totRx),'Total Rx',GL.rx,'','rx'),
   kpi('#2563EB',fmt(_md),'Doctors met','Unique doctors met by the reps in view.','','ud'),
@@ -863,7 +885,7 @@ function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=
   kpi('#7C3AED',avg(rxProd,'rxPerDay'),'Rx / day',GL.rxPerDay,'','rxPerDay'),
   kpi('#E8911A',avg(rxProd,'s2r'),'Samples / Rx',GL.s2r,'lower is better','s2r')].join('');
  
- const _sorted=act.slice().sort((a,b)=>b.rx-a.rx);const _n20=Math.max(1,Math.round(_sorted.length*0.2));const _t20=_sorted.slice(0,_n20).reduce((s,r)=>s+r.rx,0);const _boRx=_sorted.reduce((s,r)=>s+r.rx,0);const _par=_boRx?Math.round(100*_t20/_boRx):0;buildInsights(rows,_md,_rd,act,zero,_par,_n20);
+ const _sorted=act.slice().sort((a,b)=>b.rx-a.rx);const _n20=Math.max(1,Math.round(_sorted.length*0.2));const _t20=_sorted.slice(0,_n20).reduce((s,r)=>s+r.rx,0);const _boRx=_sorted.reduce((s,r)=>s+r.rx,0);const _par=_boRx?Math.round(100*_t20/_boRx):0;buildInsights(base,_md,_rd,act,zero,_par,_n20);
  const noRx=D.rx.metDoctors-D.rx.rxDoctors;
  chart('ch_rxconv',{type:'doughnut',data:{labels:['Produced Rx','No Rx'],datasets:[{data:[D.rx.rxDoctors,noRx],backgroundColor:['#0A7C4A','#C8102E'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Rx conversion of doctors met',def:GL.rxConv,type:'doughnut',labels:['Produced Rx','No Rx'],values:[D.rx.rxDoctors,noRx],colors:['#0A7C4A','#C8102E']});
  const sp=D.rx.bySpec.slice(0,12);chart('ch_rxspec',{type:'bar',data:{labels:sp.map(x=>x[0]),datasets:[{data:sp.map(x=>x[1]),backgroundColor:'#1B2A6B',borderRadius:4}]},options:{...gopt(),indexAxis:'y'}},{title:'Rx by specialization',def:'Prescriptions grouped by the doctor\'s specialization.',type:'barh',labels:sp.map(x=>x[0]),values:sp.map(x=>x[1])});
@@ -873,7 +895,7 @@ function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=
  // top Rx doctors
  const TD=[['Doctor',0],['Code',1],['Specialization',2],['Category',3],['Clinic',4],['Rx',5],['Visits',6],['Rep',7],['Rep Name',8],['State',9]];
  $('tdh').innerHTML=TD.map(c=>'<th data-i="'+c[1]+'">'+c[0]+'</th>').join('');
- const codes=new Set(rows.map(r=>r.c));
+ const codes=new Set(base.map(r=>r.c));
  let td=D.rx.topDocs.filter(d=>codes.has(d[7]));
  td.sort((a,b)=>{let x=a[tS],y=b[tS];if(typeof x==='string'){x=(x||'').toLowerCase();y=(y||'').toLowerCase();}return(x<y?-1:x>y?1:0)*(tA?1:-1);});
  $('tdb').innerHTML=td.slice(0,200).map(d=>'<tr><td>'+d[0]+'</td><td>'+d[1]+'</td><td>'+(d[2]||'')+'</td><td>'+(d[3]||'')+'</td><td>'+(d[4]||'')+'</td><td class=n><b>'+fmt(d[5])+'</b></td><td class=n>'+d[6]+'</td><td>'+d[7]+'</td><td>'+d[8]+'</td><td>'+d[9]+'</td></tr>').join('');
@@ -882,7 +904,8 @@ function rxView(rows){const bo=rows.filter(r=>r.r==='BO');const act=bo.filter(r=
  const RP=[['c','Code'],['n','Name'],['st','State'],['hq','HQ'],['mg','Manager'],['vis','Visits'],['rx','Rx'],['rpc','Rx/Call'],['rxPerDoc','Rx/Doctor'],['rxPerDay','Rx/Day'],['ud','Drs Met'],['rxD','Rx Drs'],['rxConv','Rx Conv%'],['s2r','Samp/Rx'],['att','Attend%'],['repc','Repeat%'],['cl','Max/30m'],['rpct','React+%'],['ds','Day Start'],['scf','SC Focus%'],['mpc','Min/Call'],['ndc','NewDr Conv%'],['zeroRx','Zero Rx']];
  $('rph').innerHTML=RP.map(c=>th(c[0],c[1])).join('');
  $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">ZERO</span>':'')+'</td></tr>').join('');
- $('rpcnt').textContent='('+bo.length+' field reps)';
+ $('rpcnt').textContent='('+bo.length+' field rep'+(bo.length===1?'':'s')+
+   (via.length?' under the selected manager'+(mgrs.length===1?'':'s'):'')+')';
  $('rph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===rS)rA=!rA;else{rS=k;rA=false;}rxView(fr());});}
 /* ---- OVERVIEW ---- */
 function kpis(rows){const sum=f=>rows.reduce((a,r)=>a+r[f],0);const onb=rows.filter(r=>r.ob).length,active=rows.filter(r=>r.vis>0).length;
@@ -1017,11 +1040,16 @@ function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catc
   return '<tr><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+(v[2]?'DR':'CH')+'</td><td><b>'+(v[3]||'')+'</b><div class="sub">'+(v[4]||'')+'</div></td><td>'+(v[5]||'')+'</td><td>'+(v[6]||'')+'</td><td>'+(v[7]||'')+'</td><td>'+pres+'</td><td>'+(v[10]||'')+'</td><td class=n><b>'+(v[8]||'')+'</b></td><td>'+pr+'</td><td class=n>'+(v[12]||'')+'</td><td>'+gps+'</td></tr>';}).join('');
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
 function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
-function render(){fcount();const rows=fr();
+function render(){
+ /* refill BEFORE fr(): it may clear a selection that can no longer match anything,
+    and the rows must be filtered by the surviving set, not the stale one. */
+ try{refill();}catch(e){console.warn('refill',e);}
+ fcount();const rows=fr();
  if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{expWire();}catch(_){}
+ try{emptyStates();}catch(_){}
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
 addEventListener('resize',()=>{clearTimeout(window.__stkT);window.__stkT=setTimeout(()=>{try{stickyCols();}catch(_){}} ,180);});
@@ -1031,8 +1059,8 @@ function init(){
     handler is recoverable; a page with no data at all is not. */
  const PROB=[];
  const S=(n,f)=>{try{f();}catch(e){PROB.push(n+': '+((e&&e.message)||e));console.error('init['+n+']',e);}};
-  S('sidebar filters',()=>{fill('fdi',uniq('di'),'All divisions');fill('fzn',uniq('zn'),'All zones');fill('fst',uniq('st'),'All states');fill('fhq',uniq('hq'),'All HQs');fill('frl',uniq('r'),'All roles');fill('fmg',uniq('mg'),'All managers');fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');
-   fill('fte',uniq('terr'),'All territories');});
+  S('sidebar filters',()=>{refill();
+   fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
   S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
@@ -2598,6 +2626,7 @@ function expRead(tbl){
  const body=tbl.querySelector('tbody');
  if(body)[...body.children].forEach(tr=>{
   if(tr.querySelector('table'))return;
+  if(tr.querySelector('.emptyc'))return;      /* an explanation is not a data row */
   const cells=[...tr.children].map(td=>{
    /* pills and badges carry meaning the raw text keeps; strip only whitespace */
    return td.textContent.replace(/\s+/g,' ').trim();
@@ -2806,6 +2835,143 @@ function dcrCSV(code,btn){
  expDownload('frontline-dcr-'+expSlug(r.n||code)+'-'+((D&&D.gen)||'')+'.csv',
              expCSV(out,ctx),'text/csv;charset=utf-8');
  if(typeof expFlash==='function')expFlash(btn);
+}
+
+/* ==================================================== TEAMS, FACETS, EMPTY STATES */
+
+/* Children by manager code, rebuilt whenever D is rebuilt — the period filter swaps
+   D wholesale, and a cached tree from the previous period would be quietly wrong. */
+let _KIDS=null,_KIDSD=null;
+function kidsOf(){
+ if(_KIDS&&_KIDSD===D)return _KIDS;
+ _KIDS={};D.reps.forEach(r=>{if(r.mgc)(_KIDS[r.mgc]=_KIDS[r.mgc]||[]).push(r);});
+ _KIDSD=D;return _KIDS;
+}
+/* Everyone under a person, transitively. Cycle-safe on purpose: the org file is
+   maintained by hand, and one A-reports-to-B-reports-to-A would otherwise hang the
+   browser with no clue as to why. */
+function descend(code){
+ const K=kidsOf(),seen=new Set([code]),out=[];let q=[code];
+ while(q.length){
+  const next=[];
+  q.forEach(c=>(K[c]||[]).forEach(r=>{
+   if(seen.has(r.c))return;
+   seen.add(r.c);out.push(r);next.push(r.c);
+  }));
+  q=next;
+ }
+ return out;
+}
+/* The field reps under a set of managers, de-duplicated: two ABMs in view may share
+   nobody, but an ABM and their RBM certainly do. */
+function teamReps(mgrs){
+ const seen=new Set(),out=[];
+ mgrs.forEach(m=>descend(m.c).forEach(r=>{
+  if(r.r==='BO'&&!seen.has(r.c)){seen.add(r.c);out.push(r);}
+ }));
+ return out;
+}
+/* A manager's row: their team's numbers, plus their own activity kept visible and
+   separate so nobody mistakes one for the other. */
+function teamRow(m){
+ const t=descend(m.c),bo=t.filter(x=>x.r==='BO'),act=bo.filter(x=>x.vis>0);
+ const sum=f=>bo.reduce((a,x)=>a+(+x[f]||0),0);
+ const vis=sum('vis'),rx=sum('rx'),ud=sum('ud');
+ const covd=bo.filter(x=>x.du>0),attd=bo.filter(x=>x.att!==''&&x.att!=null);
+ const mean=(a,f)=>a.length?Math.round(10*a.reduce((s,x)=>s+(+x[f]||0),0)/a.length)/10:0;
+ return {...m,
+  tN:bo.length, tMgr:t.length-bo.length, tAct:act.length,
+  tVis:vis, tRx:rx, tUd:ud,
+  tRpc:vis?Math.round(100*rx/vis)/100:0,
+  tCov:mean(covd,'cov'), tAtt:mean(attd,'att'),
+  oVis:m.vis, oRx:m.rx};
+}
+const MGC=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],['mg','Reports to'],
+ ['tN','Team'],['tAct','Active'],['tVis','Team visits'],['tRx','Team Rx'],['tRpc','Rx/Call'],
+ ['tUd','Drs met'],['tCov','Cov%'],['tAtt','Attend%'],['oVis','Own visits'],['oRx','Own Rx']];
+let gS='tRx',gA=false;
+function mgrTable(mgrs){
+ const card=$('mgrcard');if(!card)return;
+ if(!mgrs.length){card.style.display='none';return;}
+ card.style.display='';
+ const rows=mgrs.map(teamRow);
+ $('mgh2').innerHTML=MGC.map(c=>'<th data-k="'+c[0]+'">'+c[1]+'</th>').join('');
+ $('mgb2').innerHTML=sortRows(rows,gS,gA).slice(0,400).map(r=>
+  '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td><td>'+r.hq+'</td>'+
+  '<td>'+r.mg+'</td><td class="n tm">'+fmt(r.tN)+'</td><td class="n tm">'+fmt(r.tAct)+'</td>'+
+  '<td class="n tm">'+fmt(r.tVis)+'</td><td class="n tm"><b>'+fmt(r.tRx)+'</b></td>'+
+  '<td class="n tm">'+r.tRpc+'</td><td class="n tm">'+fmt(r.tUd)+'</td>'+
+  '<td class="n tm">'+r.tCov+'</td><td class="n tm">'+r.tAtt+'</td>'+
+  '<td class="n tm own">'+fmt(r.oVis)+'</td><td class="n tm own">'+fmt(r.oRx)+'</td></tr>').join('');
+ const tot=rows.reduce((a,r)=>a+r.tN,0);
+ $('mgcnt').textContent='('+mgrs.length+' manager'+(mgrs.length===1?'':'s')+
+   ' · '+fmt(tot)+' field rep'+(tot===1?'':'s')+' between them)';
+ $('mgh2').querySelectorAll('th').forEach(t=>t.onclick=()=>{
+  const k=t.dataset.k;if(k===gS)gA=!gA;else{gS=k;gA=false;}mgrTable(mgrs);});
+}
+
+/* ---- faceted filters ----------------------------------------------------------
+   The options for a field are the values still reachable under every OTHER active
+   filter. That is what makes it order-independent: choose Kerala first and Zone
+   narrows to South; choose EAST first and Kerala disappears. The pair that matched
+   nobody can no longer be assembled. */
+const CASC=[['fdi','di','di','All divisions'],['fzn','zn','zn','All zones'],
+ ['fst','st','st','All states'],['fhq','hq','hq','All HQs'],['frl','rl','r','All roles'],
+ ['fmg','mg','mg','All managers'],['fte','te','terr','All territories']];
+function facet(key,fld){
+ const save=F[key];F[key]='';
+ const v=[...new Set(D.reps.filter(pass).map(r=>r[fld]).filter(x=>x&&x!=='—'))].sort();
+ F[key]=save;return v;
+}
+function refill(){
+ const dropped=[];
+ CASC.forEach(([id,key,fld,label])=>{
+  const el=$(id);if(!el)return;
+  const vals=facet(key,fld);
+  /* A selection that survived from a previous session but can no longer match
+     anything is cleared. Silently zeroing every table instead is how an afternoon
+     gets lost to a filter nobody remembers setting. */
+  if(F[key]&&vals.indexOf(F[key])<0){dropped.push(label.replace(/^All /,'')+': '+F[key]);F[key]='';}
+  el.innerHTML='<option value="">'+label+'</option>'+
+   vals.map(x=>'<option'+(x===F[key]?' selected':'')+'>'+x+'</option>').join('');
+  el.value=F[key]||'';
+ });
+ const n=$('fdropped');
+ if(n)n.innerHTML=dropped.length
+  ? 'Cleared '+dropped.join(' and ')+' &mdash; nothing matched it alongside your other filters.'
+  : '';
+ return dropped;
+}
+
+/* ---- empty states --------------------------------------------------------------
+   A blank table is indistinguishable from broken data, which is exactly the doubt
+   this report exists to remove. Applied generically after every render so no table
+   can be forgotten. */
+function activeFilterNames(){
+ const N={di:'Division',zn:'Zone',st:'State',hq:'HQ',rl:'Role',mg:'Manager',te:'Territory',
+  sp:'Specialization',ac:'Activity',pf:'Performance',rx:'Rx',ob:'Onboarded',q:'Search'};
+ const out=[];
+ for(const k in N)if(F[k]!==''&&F[k]!=null)out.push(N[k]+' = '+F[k]);
+ return out;
+}
+function emptyStates(){
+ try{
+  document.querySelectorAll('.sec.on .tablewrap table').forEach(tbl=>{
+   if(tbl.closest('tbody'))return;
+   if(tbl.offsetParent===null)return;      /* a hidden card is not an empty one */
+   const tb=tbl.querySelector('tbody');if(!tb||tb.children.length)return;
+   const cols=(tbl.querySelectorAll('thead th')||[]).length||1;
+   const act=activeFilterNames();
+   const why=act.length?'<div class="why">Active: '+act.join(' · ')+'</div>':'';
+   const msg=act.length
+    ? '<b>No rows match these filters</b>Nothing in the roster satisfies all of them at once.'
+    : '<b>Nothing to show here</b>There is no data for this view in the selected period.';
+   tb.innerHTML='<tr><td class="emptyc" colspan="'+cols+'">'+msg+why+
+    (act.length?'<button type="button" data-clear="1">CLEAR FILTERS</button>':'')+'</td></tr>';
+   const b=tb.querySelector('button[data-clear]');
+   if(b)b.onclick=()=>{const r=$('reset');if(r)r.click();};
+  });
+ }catch(e){console.warn('emptyStates',e);}
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
