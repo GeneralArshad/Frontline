@@ -842,6 +842,9 @@ tr.dcrd>td{padding:0;background:var(--surface2)}
 .dcrd td{padding:5px 10px}
 .dcrempty{padding:12px 14px;font-size:11px;color:var(--faint)}
 
+.fstate{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  letter-spacing:var(--cds-label-01-ls);padding:var(--cds-spacing-03) var(--cds-spacing-05) 0;
+  line-height:1.4}
 .emptyc{padding:26px 16px !important;text-align:center;color:var(--muted);font-size:12px}
 .emptyc b{color:var(--ink);display:block;margin-bottom:5px;font-size:13px}
 .emptyc .why{font-size:11px;color:var(--faint);margin-top:4px}
@@ -972,16 +975,54 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
 *,*::before,*::after{animation-timing-function:var(--cds-easing-standard-productive)}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 
+
+/* ============================================================ DRILL PANEL */
+.drillscrim{position:fixed;inset:0;background:var(--cds-overlay);z-index:80;opacity:0;
+  pointer-events:none;transition:opacity var(--cds-duration-moderate-02) var(--cds-easing-standard-productive)}
+.drillscrim.on{opacity:1;pointer-events:auto}
+.drill{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);z-index:81;
+  background:var(--cds-layer-01);box-shadow:0 2px 6px var(--cds-shadow);
+  display:flex;flex-direction:column;transform:translateX(100%);
+  transition:transform var(--cds-duration-moderate-02) var(--cds-easing-standard-productive);
+  visibility:hidden}
+.drill.on{transform:none;visibility:visible}
+/* A 600-row table in 520px is a worse answer than a wider panel. */
+.drill.wide{width:min(1040px,100vw)}
+.drillhead{flex:0 0 auto;display:flex;align-items:flex-start;gap:var(--cds-spacing-05);
+  padding:var(--cds-spacing-05);border-bottom:1px solid var(--cds-border-subtle-01)}
+.drillhead h2{margin:0;font-size:var(--cds-heading-03-size);line-height:var(--cds-heading-03-lh);
+  font-weight:var(--cds-heading-03-weight)}
+.drillhead .sub{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  margin-top:var(--cds-spacing-02);letter-spacing:var(--cds-label-01-ls)}
+.drillacts{margin-left:auto;display:flex;gap:var(--cds-spacing-03);flex:0 0 auto}
+.drillbody{flex:1 1 auto;overflow:auto;padding:var(--cds-spacing-05)}
+.drillbody .sec{display:none}
+.drillbody .sec.on{display:block}
+/* the hosted section drops its own page furniture — the panel header carries it */
+.drillbody .secttl{display:none}
+.drillx{width:40px;height:40px;border:0;background:transparent;cursor:pointer;
+  color:var(--cds-icon-primary);font:400 18px var(--cds-font-sans);line-height:1;flex:0 0 auto}
+.drillx:hover{background:var(--cds-layer-hover-01)}
+/* the affordance that opens it: names what opens, never "view" */
+.drillopen{border:0;background:transparent;color:var(--cds-link-primary);cursor:pointer;
+  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px;
+  height:32px;padding:0 var(--cds-spacing-05);display:inline-flex;align-items:center;
+  gap:var(--cds-spacing-03)}
+.drillopen:hover{background:var(--cds-layer-hover-01);color:var(--cds-link-primary-hover)}
+.drillopen svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7}
+.navhidden{display:none !important}
+body.drillon{overflow:hidden}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec" data-n="01"><span>CORE</span></div><div class="nav"><button data-t="rx" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx Engine</button><button data-t="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Overview</button><button data-t="prod"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Exceptions</button></div><div class="navsec" data-n="02"><span>DETAIL</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Daily Calls</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button><button data-t="calls"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call Detail</button><button data-t="roster"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors &times; Rep</button></div><div class="navsec" data-n="03"><span>TEAM</span></div><div class="nav"><button data-t="org"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v4.8M12 11.5H5.6a.6.6 0 0 0-.6.6v5.2M12 11.5h6.4a.6.6 0 0 1 .6.6v5.2"/></svg>Org tree</button><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="navsec" data-n="04"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button></div></div>
+    <div id="tabs"><div class="navsec" data-n="01"><span>PERFORMANCE</span></div><div class="nav"><button data-t="ov" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Pulse</button><button data-t="rx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx engine</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button></div><div class="navsec" data-n="02"><span>FIELD</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Field activity</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button></div><div class="navsec" data-n="03"><span>ACTION</span></div><div class="nav"><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Needs action</button></div><div class="navsec" data-n="04"><span>TEAM</span></div><div class="nav"><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="org"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v4.8M12 11.5H5.6a.6.6 0 0 0-.6.6v5.2M12 11.5h6.4a.6.6 0 0 1 .6.6v5.2"/></svg>Org tree</button></div><div class="navsec" data-n="05"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="nav" id="navhidden"><button data-t="prod" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="calls" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call detail</button><button data-t="roster" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors by rep</button></div></div>
     <div class="fpanel" id="fpanel">
 <div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
 <div class="fnote" id="fdropped"></div>
+<div class="fstate" id="fstate"></div>
 <div class="fbody">
 <div class="perbox" id="perbox">
   <div class="plab"><span>Period</span><span id="perdot"></span></div>
@@ -1028,7 +1069,7 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
       <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg></a>
   </div>
   <div class="sidefoot">
-    <button class="icbtn" id="reset">&#8634; Reset</button>
+    <button class="icbtn" id="reset">&#8634; Clear filters</button>
     <button class="icbtn" id="theme" title="Switch theme">&#127769;</button>
   </div>
 </aside>
@@ -1040,7 +1081,7 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
   </div>
 <div class="wrap">
 <div id="pbarw"></div>
-<section class="sec on" id="sec_rx">
+<section class="sec" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
 <div class="kpis" id="rxkpis"></div>
 <div class="ins" id="ins"><div class="insvp" id="insvp"></div><div class="insnav"><span class="inscnt" id="inscnt"></span><button class="insbtn" id="insprev" title="Previous insight" aria-label="Previous insight">&#10094;</button><span id="insdots" style="display:flex;gap:6px;align-items:center"></span><button class="insbtn" id="insnext" title="Next insight" aria-label="Next insight">&#10095;</button></div><div class="insprog" id="insprog"><i id="insbar"></i></div></div>
@@ -1056,7 +1097,7 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
 <div class="card"><div class="ch"><div><h3>Rx performance <span id="rpcnt" class="sub"></span></h3><div class="cs">Sortable · hover headers for definitions · zero-Rx reps flagged</div></div></div><div class="tablewrap"><table><thead><tr id="rph"></tr></thead><tbody id="rpb"></tbody></table></div></div>
 <div class="card" id="mgrcard" style="margin-top:18px;display:none"><div class="ch"><div><h3>Team performance <span id="mgcnt" class="sub"></span></h3><div class="cs">Every field rep underneath each manager, rolled up &middot; own joint-work activity shown separately</div></div></div><div class="tablewrap"><table><thead><tr id="mgh2"></tr></thead><tbody id="mgb2"></tbody></table></div></div>
 </section>
-<section class="sec" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
+<section class="sec on" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
 <div class="kpis" id="kpis"></div>
 <div class="grid" id="ovcharts" style="margin-top:18px"></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Employees <span id="cnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="eh"></tr></thead><tbody id="eb"></tbody></table></div></div></section>
@@ -1157,7 +1198,7 @@ function CDS(name){
  return (_CDSC[name]=v||'transparent');
 }
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
-let D,TAB='rx';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
+let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
 const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
@@ -1406,13 +1447,36 @@ function rosterView(){try{setTimeout(()=>{try{stickyCols();}catch(_){}},0);}catc
   const pres=v[2]?'<span class="pill '+(v[9]?'yes':'no')+'">'+(v[9]?'Y':'N')+'</span>':'';
   return '<tr><td>'+v[0]+'</td><td>'+v[1]+'</td><td>'+(v[2]?'DR':'CH')+'</td><td><b>'+(v[3]||'')+'</b><div class="sub">'+(v[4]||'')+'</div></td><td>'+(v[5]||'')+'</td><td>'+(v[6]||'')+'</td><td>'+(v[7]||'')+'</td><td>'+pres+'</td><td>'+(v[10]||'')+'</td><td class=n><b>'+(v[8]||'')+'</b></td><td>'+pr+'</td><td class=n>'+(v[12]||'')+'</td><td>'+gps+'</td></tr>';}).join('');
  return '<div class="tablewrap" style="margin:0"><table><thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Doctor / Entity</th><th>Spec</th><th>Cat</th><th>Clinic</th><th>Presc</th><th>Reaction</th><th>Rx</th><th>Products</th><th>Samp</th><th>GPS</th></tr></thead><tbody>'+rows+'</tbody></table></div>';}
-function fcount(){let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}const el=$('fcount');if(el){el.style.display=n?'':'none';el.textContent=n;}}
+function fcount(){
+ let n=0;for(const k in F){if(F[k]!=='' && F[k]!=null)n++;}
+ /* The period and the weekday filter live in PR, not F. Counting only F is what made
+    "Clear filters" go unavailable while a period was still narrowing every figure on
+    the page — the button would have refused to clear the one thing that was set. */
+ let per=0;
+ try{if(typeof perActive==='function'&&perActive())per++;
+     if(typeof PR!=='undefined'&&PR.wd)per++;}catch(_){}
+ const el=$('fcount');if(el){el.style.display=(n+per)?'':'none';el.textContent=n+per;}
+ n=n+per;
+ /* a button that does nothing should say so by being unavailable, not by doing
+    nothing when pressed */
+ const r=$('reset');if(r){r.disabled=!n;r.style.opacity=n?'':'.45';
+  r.style.cursor=n?'pointer':'default';}
+ const s=$('fstate');
+ if(s){
+  const names=(typeof activeFilterNames==='function')?activeFilterNames():[];
+  s.textContent=names.length
+   ? 'Filtered to '+names.join(', ')+'.'
+   : 'No filters applied \u2014 every figure covers the full captured history.';
+ }
+}
 function render(){
  /* refill BEFORE fr(): it may clear a selection that can no longer match anything,
     and the rows must be filtered by the surviving set, not the stale one. */
  try{refill();}catch(e){console.warn('refill',e);}
  fcount();const rows=fr();
- if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
+ /* the panel hosts one of these; repainting it from here would fight drillRender */
+ if(typeof drillKey!=='undefined'&&drillKey&&drillKey===TAB){}
+ else if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{expWire();}catch(_){}
@@ -1429,7 +1493,12 @@ function init(){
   S('sidebar filters',()=>{refill();
    fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
-  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
+  S('drill panel',()=>{drillWire();});
+  S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    /* a nav click always leaves the panel: the section it hosts may be the one we
+       are about to show, and it cannot be in two places at once */
+    if(typeof drillKey!=='undefined'&&drillKey)drillClose(true);
+    TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
@@ -3098,7 +3167,7 @@ function expWire(){
    if(!bar){bar=document.createElement('div');bar.className='dlbar';ch.appendChild(bar);}
    const b=document.createElement('button');
    b.className='dlbtn';b.dataset.x='csv';b.type='button';
-   b.innerHTML=DLICO+'CSV';
+   b.innerHTML=DLICO+'Export to CSV';
    b.title='Download this table exactly as shown — same filters, period and sort order';
    b.onclick=e=>{e.stopPropagation();expTableCSV(tbl,b);};
    bar.appendChild(b);
@@ -3111,7 +3180,7 @@ function expWire(){
    const bar=document.createElement('div');bar.className='dlbar';
    const b=document.createElement('button');
    b.className='dlbtn';b.dataset.x='xlsx';b.type='button';
-   b.innerHTML=DLICO+'EXCEL — THIS TAB';
+   b.innerHTML=DLICO+'Export to Excel';
    b.title='Every table on this tab, one sheet each, with the current filters recorded';
    b.onclick=()=>expTabXLSX(b);
    bar.appendChild(b);ttl.appendChild(bar);
@@ -3351,6 +3420,106 @@ function emptyStates(){
  }catch(e){console.warn('emptyStates',e);}
 }
 
+/* ==================================================================== DRILL PANEL
+   Hosts a whole section rather than a copy of one. The node is MOVED in and moved
+   back, so there is only ever one Productivity screen in the document: one set of
+   ids, one set of handlers, and no possibility of the panel and the page disagreeing
+   about what they show.                                                          */
+
+const DRILL={
+ prod  :{t:'Rep productivity index', s:'Every field rep scored against their peers on calls, Rx per call, coverage and attendance.', wide:true},
+ calls :{t:'Call detail',            s:'Every logged call, by rep, for the current period and filters.', wide:true},
+ roster:{t:'Doctors by rep',         s:'The doctor list behind each rep, with visits, Rx and last reaction.', wide:true}
+};
+let drillKey=null, drillHome=null, drillReturn=null;
+
+function drillOpen(key){
+ const meta=DRILL[key]; const sec=$('sec_'+key);
+ if(!meta||!sec)return;
+ if(drillKey)drillClose(true);
+ /* remember exactly where the node lived so it goes back to the same place */
+ drillHome=sec.nextSibling; drillReturn=document.activeElement;
+ drillKey=key;
+ $('drilltitle').textContent=meta.t;
+ $('drillsub').textContent=meta.s;
+ $('drill').classList.toggle('wide',!!meta.wide);
+ $('drillbody').appendChild(sec);
+ sec.classList.add('on');
+ $('drill').classList.add('on');$('drill').setAttribute('aria-hidden','false');
+ $('drillscrim').classList.add('on');
+ document.body.classList.add('drillon');
+ /* render the hosted view now that it is visible and has a width */
+ try{drillRender(key);}catch(e){console.warn('drill render',e);}
+ const f=$('drill').querySelector('button,a,select,input,[tabindex]');
+ if(f)f.focus();
+}
+
+/* Each hosted section has its own painter; calling render() would repaint the page
+   behind the panel instead, which is both wasteful and wrong. */
+function drillRender(key){
+ const rows=fr();
+ if(key==='prod')prodView(rows);
+ else if(key==='calls')callsView();
+ else if(key==='roster')rosterView();
+ try{expWire();}catch(_){}
+ try{stickyCols();}catch(_){}
+}
+
+function drillClose(quiet){
+ if(!drillKey)return;
+ const sec=$('sec_'+drillKey);
+ if(sec){
+  sec.classList.remove('on');
+  /* back to its original position in the main column, not appended at the end */
+  if(drillHome&&drillHome.parentNode)drillHome.parentNode.insertBefore(sec,drillHome);
+  else{const m=document.querySelector('.main');if(m)m.appendChild(sec);}
+ }
+ $('drill').classList.remove('on');$('drill').setAttribute('aria-hidden','true');
+ $('drillscrim').classList.remove('on');
+ document.body.classList.remove('drillon');
+ drillKey=null;drillHome=null;
+ if(!quiet&&drillReturn&&drillReturn.focus){try{drillReturn.focus();}catch(_){}}
+ drillReturn=null;
+}
+
+/* "Open full screen" is the escape hatch for when the panel is the wrong shape for
+   the question — a 600-row table usually is. */
+function drillFull(){
+ const key=drillKey; if(!key)return;
+ drillClose(true);
+ go(key);
+}
+
+function drillWire(){
+ const c=$('drillclose'); if(c)c.onclick=()=>drillClose();
+ const s=$('drillscrim'); if(s)s.onclick=()=>drillClose();
+ const f=$('drillfull'); if(f)f.onclick=drillFull;
+ document.addEventListener('keydown',e=>{
+  if(!drillKey)return;
+  if(e.key==='Escape'){e.preventDefault();drillClose();return;}
+  if(e.key!=='Tab')return;
+  /* keep tab inside the dialog: a keyboard user must not fall through the scrim */
+  const f=[...$('drill').querySelectorAll('button,a[href],select,input,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.disabled&&el.offsetParent!==null);
+  if(!f.length)return;
+  const first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+ });
+ /* the affordances, named for what they open */
+ const ICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+ [['sec_ov','prod','See the productivity index'],
+  ['sec_daily','calls','See the call detail'],
+  ['sec_docs','roster','See doctors by rep']].forEach(([host,key,label])=>{
+   const sec=$(host); if(!sec)return;
+   const ttl=sec.querySelector('.secttl'); if(!ttl||ttl.querySelector('.drillopen'))return;
+   const b=document.createElement('button');
+   b.type='button';b.className='drillopen';b.innerHTML=label+ICO;
+   b.onclick=()=>drillOpen(key);
+   ttl.appendChild(b);
+ });
+}
+
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
  const vp=$('insvp'); if(!vp)return;
@@ -3540,4 +3709,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeProfile();});
 
 $('pscrim').onclick=e=>{if(e.target===$('pscrim'))closeProfile();};
 boot();
-</script></body></html>
+</script><div class="drillscrim" id="drillscrim"></div>
+<aside class="drill" id="drill" role="dialog" aria-modal="true" aria-labelledby="drilltitle"
+       aria-hidden="true">
+  <div class="drillhead">
+    <div><h2 id="drilltitle"></h2><div class="sub" id="drillsub"></div></div>
+    <div class="drillacts">
+      <button class="drillopen" id="drillfull" type="button">Open full screen</button>
+      <button class="drillx" id="drillclose" type="button" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+  <div class="drillbody" id="drillbody"></div>
+</aside>
+</body></html>

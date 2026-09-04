@@ -40,7 +40,20 @@ It is generated. `./_build.sh` in the outputs folder rebuilds it from
 ```
 _period.py:v13  _orgtree.py:v14  _org_v15.py:v15  _org_v16.py:v16
 _restore_state.py:v17  _export.py:v18  _dcr.py:v19  _filters.py:v20  _carbon.py:v21
+_drill.py:v22
 ```
+
+## The drill panel hosts sections, it does not copy them
+
+`drillOpen(key)` **moves** `#sec_<key>` into the panel and moves it back on close. Never
+clone a section: this document looks elements up by id constantly, so a copy would give
+you two `#pb` tables and handlers wired to whichever one lost. One node, one set of ids,
+and the panel can never disagree with the page about what it shows.
+
+The three screens that left the sidebar — Productivity, Call detail, Doctors by rep —
+keep their nav buttons under `.navhidden`. That is what makes `go('prod')`, an old
+bookmark, a share link and `restoreState()` all still work, and what keeps predeploy's
+tab-equals-section check honest. Do not delete them.
 
 Each script asserts its anchor exists, so a silent no-op is impossible. A hand edit is
 lost on the next rebuild. `app.py` and `etl.py` patches (`_minimize.py`, `_roster.py`)
