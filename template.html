@@ -1012,15 +1012,111 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
 .drillopen svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7}
 .navhidden{display:none !important}
 body.drillon{overflow:hidden}
+
+/* ===================================================== CARBON UI SHELL
+   Header spans the full width; the rail sits beneath it. Same shape as Hive Channel
+   Health, so the two internal tools read as one suite rather than two products.   */
+.shell{position:fixed;top:0;left:0;right:0;height:48px;z-index:70;
+  background:var(--cds-gray-100);color:var(--cds-text-inverse);
+  display:flex;align-items:center;gap:var(--cds-spacing-05);
+  padding:0 var(--cds-spacing-05)}
+.shell .prod{font-size:var(--cds-body-compact-01-size);letter-spacing:0.16px;
+  display:flex;align-items:baseline;gap:var(--cds-spacing-03);min-width:0}
+.shell .prod b{font-weight:var(--cds-font-weight-semibold)}
+.shell .prod span{color:var(--cds-text-inverse);opacity:.65;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.shell .right{margin-left:auto;display:flex;align-items:center;gap:var(--cds-spacing-05);
+  font-size:var(--cds-body-compact-01-size)}
+.shell .who{opacity:.85;white-space:nowrap}
+.shell a,.shell button.link{color:var(--cds-link-inverse);background:none;border:0;
+  cursor:pointer;font:inherit;padding:0}
+.shell a:hover,.shell button.link:hover{text-decoration:underline}
+.shell .sbtn{width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  background:transparent;border:0;color:var(--cds-icon-inverse);cursor:pointer}
+.shell .sbtn:hover{background:var(--cds-background-inverse-hover)}
+.shell svg{fill:currentColor;stroke:none}
+
+/* the rail starts under the header and navigates only */
+.side{top:48px}
+.main{padding-top:48px}
+.brand{display:none}
+.sidescroll{padding-top:var(--cds-spacing-03)}
+
+/* nav items: Carbon SideNav geometry */
+.nav button svg{width:16px;height:16px;fill:currentColor;stroke:none;flex:0 0 auto}
+.nav button{height:32px;gap:var(--cds-spacing-05)}
+.navsec{padding:var(--cds-spacing-05) var(--cds-spacing-05) var(--cds-spacing-02)}
+.navsec::before,.navsec::after{display:none}
+
+/* collapsed rail: 48px, icons only — Carbon's own rail behaviour */
+.app.railed{--side:48px}
+.app.railed .nav button{justify-content:center;padding:0}
+.app.railed .nav button span.lbl,.app.railed .navsec,.app.railed .sidefoot .lbl{display:none}
+.app.railed .nav button .badge{position:absolute;top:2px;right:2px;padding:0 4px}
+.sidefoot{display:flex;flex-direction:column;gap:1px;padding:var(--cds-spacing-03)}
+.sidefoot .icbtn{display:flex;align-items:center;gap:var(--cds-spacing-05);
+  justify-content:flex-start;height:32px;width:100%;border:0;background:transparent;
+  color:var(--cds-text-secondary);cursor:pointer;padding:0 var(--cds-spacing-05);
+  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px}
+.sidefoot .icbtn:hover{background:var(--cds-layer-hover-01);color:var(--cds-text-primary)}
+.sidefoot .icbtn svg{width:16px;height:16px;fill:currentColor;stroke:none;flex:0 0 auto}
+
+/* ===================================================== STICKY FILTER BAR
+   The rail navigates; the bar owns data scope. No control lives in both.         */
+.fbar{position:sticky;top:48px;z-index:55;background:var(--cds-layer-01);
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.fbar .fhead{display:flex;align-items:center;gap:var(--cds-spacing-03);height:40px;
+  padding:0 var(--cds-spacing-05);cursor:pointer;
+  font-size:var(--cds-body-compact-01-size);font-weight:var(--cds-font-weight-regular);
+  color:var(--cds-text-secondary);border:0;letter-spacing:0.16px}
+.fbar .fhead svg{width:16px;height:16px;fill:currentColor;stroke:none}
+.fbar .fhead .chev{margin-left:auto;transition:transform var(--cds-duration-fast-02)}
+.fbar #fpanel.closed .fbody,.fbar #fpanel.closed .perbox{display:none}
+.fbar #fpanel.closed .fhead .chev{transform:rotate(-90deg)}
+.fbar .fbody{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:1px;background:var(--cds-border-subtle-00);border-top:1px solid var(--cds-border-subtle-00)}
+.fbar .fitem,.fbar .perbox{background:var(--cds-layer-01);padding:var(--cds-spacing-04)
+  var(--cds-spacing-05) var(--cds-spacing-05);margin:0;border:0}
+.fbar .fitem label,.fbar .plab{font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls);color:var(--cds-text-secondary);
+  text-transform:none;font-weight:var(--cds-font-weight-regular);
+  margin-bottom:var(--cds-spacing-03);display:block}
+.fbar select,.fbar input{width:100%}
+.fbar .fstate{display:flex;align-items:center;gap:var(--cds-spacing-04);
+  padding:var(--cds-spacing-03) var(--cds-spacing-05);
+  border-top:1px solid var(--cds-border-subtle-00);
+  font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+.fbar .fstate .acts{margin-left:auto;display:flex;gap:var(--cds-spacing-03)}
+.fbar .pnote{font-size:var(--cds-label-01-size);color:var(--cds-text-helper);
+  margin-top:var(--cds-spacing-03)}
+@media(max-width:1000px){.shell .prod span{display:none}}
+
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
+<header class="shell"><button class="sbtn" id="railtoggle" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg></button><div class="prod"><b>Hive &mdash; Frontline</b><span>British Biologicals</span></div><div class="right"><span class="who" id="shellwho"></span><button class="link" id="shellout" type="button">Sign out</button></div></header>
 <aside class="side" id="side">
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="navsec" data-n="01"><span>PERFORMANCE</span></div><div class="nav"><button data-t="ov" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6"/></svg>Pulse</button><button data-t="rx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8M9 3v4.5L5.2 15A2.5 2.5 0 0 0 7.4 19h9.2a2.5 2.5 0 0 0 2.2-3.5L15 7.5V3"/><path d="M7 13h10"/></svg>Rx engine</button><button data-t="trend"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V10M8.5 20V4M14 20v-7M19.5 20V7"/></svg>Trends</button></div><div class="navsec" data-n="02"><span>FIELD</span></div><div class="nav"><button data-t="daily"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.4"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Field activity</button><button data-t="docs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h4v5a5 5 0 0 0 10 0V4h4"/><path d="M12 14v2.5a4.5 4.5 0 0 0 9 0V13"/><circle cx="21" cy="11" r="1.8"/></svg>Doctors</button></div><div class="navsec" data-n="03"><span>ACTION</span></div><div class="nav"><button data-t="exc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 4.2 2.6 17.3A1.9 1.9 0 0 0 4.3 20h15.4a1.9 1.9 0 0 0 1.7-2.7L13.7 4.2a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><path d="M12 17h.01"/></svg>Needs action</button></div><div class="navsec" data-n="04"><span>TEAM</span></div><div class="nav"><button data-t="mgr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.2"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>Managers</button><button data-t="org"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2"/><circle cx="5" cy="19.5" r="2.2"/><circle cx="19" cy="19.5" r="2.2"/><path d="M12 6.7v4.8M12 11.5H5.6a.6.6 0 0 0-.6.6v5.2M12 11.5h6.4a.6.6 0 0 1 .6.6v5.2"/></svg>Org tree</button></div><div class="navsec" data-n="05"><span>REFERENCE</span></div><div class="nav"><button data-t="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v15H5.5A1.5 1.5 0 0 0 4 19.5Z"/><path d="M4 19.5A1.5 1.5 0 0 1 5.5 18H19v3H5.5A1.5 1.5 0 0 1 4 19.5Z"/><path d="M8 7.5h7M8 11h5"/></svg>Guide</button><button data-t="notes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h7.5Z"/><path d="M13.5 21v-4.5a2 2 0 0 1 2-2H20"/><path d="M8 8h8M8 12h5"/></svg>Notes</button></div><div class="nav" id="navhidden"><button data-t="prod" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5.5-5.5 3.5 3.5L21 6"/><path d="M15 6h6v6"/></svg>Productivity</button><button data-t="calls" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h11M8 12h11M8 19h11"/><circle cx="4" cy="5" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="19" r="1.3"/></svg>Call detail</button><button data-t="roster" class="navhidden"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><path d="M7.6 7.6 10.6 16M16.4 7.6 13.4 16M8.1 6h7.8"/></svg>Doctors by rep</button></div></div>
-    <div class="fpanel" id="fpanel">
-<div class="fhead" id="fhead" data-n="05">Filters <span class="fcount" id="fcount" style="display:none">0</span><span class="chev">&#9660;</span></div>
+    <div id="tabs"><div class="navsec" data-n="01"><span>PERFORMANCE</span></div><div class="nav"><button data-t="ov" class="on" title="Pulse"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg><span class="lbl">Pulse</span></button><button data-t="rx" title="Rx engine"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg><span class="lbl">Rx engine</span></button><button data-t="prod" title="Productivity"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4,2H2V28a2,2,0,0,0,2,2H30V28H4Z"/><path d="M30,9H23v2h3.59L19,18.59l-4.29-4.3a1,1,0,0,0-1.42,0L6,21.59,7.41,23,14,16.41l4.29,4.3a1,1,0,0,0,1.42,0L28,12.41V16h2Z"/></svg><span class="lbl">Productivity</span></button><button data-t="trend" title="Trends"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg><span class="lbl">Trends</span></button></div><div class="navsec" data-n="02"><span>FIELD</span></div><div class="nav"><button data-t="daily" title="Field activity"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span class="lbl">Field activity</span></button><button data-t="calls" title="Call detail"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M29,5a2,2,0,0,0-2-2H5A2,2,0,0,0,3,5V27a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2ZM27,5V9H5V5Zm0,22H5V23H27Zm0-6H5V17H27Zm0-6H5V11H27Z"/></svg><span class="lbl">Call detail</span></button><button data-t="docs" title="Doctors"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg><span class="lbl">Doctors</span></button><button data-t="roster" title="Doctors by rep"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span class="lbl">Doctors by rep</span></button></div><div class="navsec" data-n="03"><span>ACTION</span></div><div class="nav"><button data-t="exc" title="Needs action"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg><span class="lbl">Needs action</span></button></div><div class="navsec" data-n="04"><span>TEAM</span></div><div class="nav"><button data-t="mgr" title="Managers"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span class="lbl">Managers</span></button><button data-t="org" title="Org tree"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5,5,0,0,0-5-5H13a5,5,0,0,0-5,5v5H6V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg><span class="lbl">Org tree</span></button></div><div class="navsec" data-n="05"><span>REFERENCE</span></div><div class="nav"><button data-t="guide" title="Guide"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span class="lbl">Guide</span></button><button data-t="notes" title="Notes"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg><span class="lbl">Notes</span></button></div></div></div>
+    
+  </div>
+  <div class="userchip">
+    <div class="uavatar">AR</div>
+    <div class="uinfo"><div class="uname">Arshad</div><div class="urole">HQ &middot; ADMIN</div></div>
+    <a class="uout" href="/logout" id="signout" title="Sign out">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
+      <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg></a>
+  </div>
+  <div class="sidefoot">
+    <button class="icbtn" id="theme" type="button" title="Dark theme" aria-label="Dark theme"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg><span class="lbl" id="themelbl">Dark theme</span></button>
+    <button class="icbtn" id="rail2" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg><span class="lbl">Collapse navigation</span></button>
+  </div>
+</aside>
+<div class="main">
+  <div class="gradbar"></div>
+  <div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
+<div class="fhead" id="fhead"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/></svg>Filters<span class="fcount" id="fcount" style="display:none">0</span><span class="chev"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></span></div>
 <div class="fnote" id="fdropped"></div>
 <div class="fstate" id="fstate"></div>
 <div class="fbody">
@@ -1059,22 +1155,7 @@ body.drillon{overflow:hidden}
 <div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
 <div class="fitem"><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
-</div></div>
-  </div>
-  <div class="userchip">
-    <div class="uavatar">AR</div>
-    <div class="uinfo"><div class="uname">Arshad</div><div class="urole">HQ &middot; ADMIN</div></div>
-    <a class="uout" href="/logout" id="signout" title="Sign out">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
-      <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg></a>
-  </div>
-  <div class="sidefoot">
-    <button class="icbtn" id="reset">&#8634; Clear filters</button>
-    <button class="icbtn" id="theme" title="Switch theme">&#127769;</button>
-  </div>
-</aside>
-<div class="main">
-  <div class="gradbar"></div>
+</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear filters</button></span></div></div>
   <div class="topbar">
     <button class="burger" id="burger">&#9776;</button>
     <div style="display:flex;align-items:center;gap:14px"><span style="display:block;width:118px" title="Frontline"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg></span></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
@@ -1494,6 +1575,7 @@ function init(){
    fill('fsp',[...new Set(D.docs.map(d=>d[2]).filter(Boolean))].sort(),'All specializations');});
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
   S('drill panel',()=>{drillWire();});
+  S('ui shell',()=>{shellWire();});
   S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
     /* a nav click always leaves the panel: the section it hosts may be the one we
        are about to show, and it cannot be in two places at once */
@@ -1515,7 +1597,7 @@ function init(){
    $('pfrom').onchange=e=>{PR.from=e.target.value;PR.mode='custom';applyPeriod();};
    $('pto').onchange=e=>{PR.to=e.target.value;PR.mode='custom';applyPeriod();};
    $('fwd').onchange=e=>{PR.wd=e.target.value;applyPeriod();};});
-  S('theme toggle',()=>{$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};});
+  S('theme toggle',()=>{$('theme').addEventListener('click',()=>setTimeout(themeLabel,0));$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};});
   S('modal handlers',()=>{$('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});});
   S('footer',()=>{$('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;});
  try{render();}catch(e){PROB.push('render: '+((e&&e.message)||e));console.error('init[render]',e);}
@@ -3518,6 +3600,60 @@ function drillWire(){
    b.onclick=()=>drillOpen(key);
    ttl.appendChild(b);
  });
+}
+
+/* ------------------------------------------------------------------- UI SHELL */
+const RAILICO={close:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z\"/></svg>",open:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,26H12v-9h10.2 l-3.6,3.6L20,22l6-6l-6-6l-1.4,1.4l3.6,3.6H12V6h16V26z\"/></svg>"};
+const THEMEICO={dark:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z\"/></svg>",light:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M15 2H17V7H15z\"/><path d=\"M21.668 6.854H26.625999999999998V8.854H21.668z\" transform=\"rotate(-45 24.147 7.853)\"/><path d=\"M25 15H30V17H25z\"/><path d=\"M23.147 21.668H25.147V26.625999999999998H23.147z\" transform=\"rotate(-45 24.147 24.146)\"/><path d=\"M15 25H17V30H15z\"/><path d=\"M5.375 23.147H10.333V25.147H5.375z\" transform=\"rotate(-45 7.853 24.146)\"/><path d=\"M2 15H7V17H2z\"/><path d=\"M6.854 5.375H8.854V10.333H6.854z\" transform=\"rotate(-45 7.854 7.853)\"/><path d=\"M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z\"/></svg>"};
+
+function railSet(on){
+ document.querySelector('.app').classList.toggle('railed',!!on);
+ try{localStorage.setItem('__fl_rail',on?'1':'0');}catch(e){}
+ const lbl=on?'Expand navigation':'Collapse navigation';
+ [document.getElementById('railtoggle'),document.getElementById('rail2')].forEach(b=>{
+  if(!b)return;
+  b.title=lbl;b.setAttribute('aria-label',lbl);
+  const s=b.querySelector('svg');if(s)s.outerHTML=on?RAILICO.open:RAILICO.close;
+  const t=b.querySelector('.lbl');if(t)t.textContent=lbl;
+ });
+ /* the org tree paints to a canvas sized from its container */
+ try{if(TAB==='org')orgResize();}catch(e){}
+}
+function railToggle(){railSet(!document.querySelector('.app').classList.contains('railed'));}
+
+/* The theme control names the target, not the current state: in light mode it offers
+   "Dark theme". It lives in the rail footer only — never also in the filter bar. */
+function themeLabel(){
+ const dark=document.documentElement.getAttribute('data-theme')==='dark';
+ const b=document.getElementById('theme');if(!b)return;
+ const lbl=dark?'Light theme':'Dark theme';
+ b.title=lbl;b.setAttribute('aria-label',lbl);
+ const s=b.querySelector('svg');if(s)s.outerHTML=dark?THEMEICO.light:THEMEICO.dark;
+ const t=document.getElementById('themelbl');if(t)t.textContent=lbl;
+}
+
+function shellWire(){
+ const t=document.getElementById('railtoggle');if(t)t.onclick=railToggle;
+ const t2=document.getElementById('rail2');if(t2)t2.onclick=railToggle;
+ let on=false;try{on=localStorage.getItem('__fl_rail')==='1';}catch(e){}
+ railSet(on);
+ themeLabel();
+ /* Identity moves to the header, where Channel Health keeps it. It does NOT stay in
+    the rail as well: "no control appears in two places" is the consistency contract,
+    and two Sign out links is precisely the kind of drift it exists to stop. */
+ try{
+  const chip=document.querySelector('.userchip');
+  const who=document.getElementById('shellwho');
+  const out=document.getElementById('shellout');
+  if(chip){
+   const n=chip.querySelector('.uname'),r=chip.querySelector('.urole');
+   if(who)who.textContent=[n&&n.textContent.trim(),r&&r.textContent.trim()]
+     .filter(Boolean).join(' · ');
+   const a=chip.querySelector('#signout');
+   if(out&&a)out.onclick=()=>{location.href=a.getAttribute('href')||'/logout';};
+   chip.style.display='none';
+  }
+ }catch(e){}
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
