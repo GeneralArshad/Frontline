@@ -1073,8 +1073,12 @@ body.drillon{overflow:hidden}
 .fbar .fhead .chev{margin-left:auto;transition:transform var(--cds-duration-fast-02)}
 .fbar #fpanel.closed .fbody,.fbar #fpanel.closed .perbox{display:none}
 .fbar #fpanel.closed .fhead .chev{transform:rotate(-90deg)}
-.fbar .fbody{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+/* flex-wrap, never auto-fit: an auto-fit grid with a gap over a background paints its
+   leftover tracks as grey slabs, because an empty track still shows the gap colour.
+   v3 names this as pitfall 4 and it is what produced them in the filter strip. */
+.fbar .fbody{display:flex;flex-wrap:wrap;
   gap:1px;background:var(--cds-border-subtle-00);border-top:1px solid var(--cds-border-subtle-00)}
+.fbar .fbody>*{flex:1 1 200px;min-width:0}
 .fbar .fitem,.fbar .perbox{background:var(--cds-layer-01);padding:var(--cds-spacing-04)
   var(--cds-spacing-05) var(--cds-spacing-05);margin:0;border:0}
 .fbar .fitem label,.fbar .plab{font-size:var(--cds-label-01-size);
@@ -1138,7 +1142,6 @@ body.drillon{overflow:hidden}
 .kpi .v{font-size:var(--cds-scale-07)}
 
 /* ================================================== FILTER BAR, SLIMMED */
-.fbar .fbody{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
 .fbar .fbody .fitem.more{display:none}
 .fbar.moreon .fbody .fitem.more{display:block}
 .morebtn{border:0;background:transparent;color:var(--cds-link-primary);cursor:pointer;
@@ -1148,6 +1151,31 @@ body.drillon{overflow:hidden}
 /* one identity row, not two */
 .topbar{display:none}
 
+
+/* ---- chart card: question, sub-line, answer, graphic -------------------------- */
+.card .ans{font-size:var(--cds-body-01-size);line-height:var(--cds-body-01-lh);
+  font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary);
+  margin:var(--cds-spacing-05) 0 var(--cds-spacing-05)}
+/* ---- table footer + sorted column marker -------------------------------------- */
+.tfoot{display:flex;align-items:center;height:48px;padding:0 var(--cds-spacing-05);
+  border-top:1px solid var(--cds-border-subtle-01);
+  font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary)}
+.tfoot .more{margin-left:auto;border:0;background:transparent;cursor:pointer;
+  color:var(--cds-link-primary);font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);
+  height:32px;padding:0 var(--cds-spacing-05);display:inline-flex;align-items:center;
+  gap:var(--cds-spacing-03)}
+.tfoot .more:hover{background:var(--cds-layer-hover-01)}
+.tfoot .more[disabled]{color:var(--cds-text-disabled);cursor:default;background:none}
+thead th .sortmk{display:inline-flex;vertical-align:-3px;margin-left:var(--cds-spacing-03)}
+thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:none}
+/* ---- the grid, literally (CONFORMANCE #5) ------------------------------------- */
+.hero{display:grid;grid-template-columns:6fr 10fr;gap:1px;
+  background:var(--cds-border-subtle-00)}
+.kpis,.tilerow{display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:1px;
+  background:var(--cds-border-subtle-00)}
+.kpis>*,.tilerow>*{min-width:0}
+@media(max-width:1056px){.hero{grid-template-columns:1fr}
+  .kpis,.tilerow{grid-template-columns:repeat(2, minmax(0, 1fr))}}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1161,7 +1189,7 @@ body.drillon{overflow:hidden}
   <div class="userchip">
     <div class="uavatar">AR</div>
     <div class="uinfo"><div class="uname">Arshad</div><div class="urole">HQ &middot; ADMIN</div></div>
-    <a class="uout" href="/logout" id="signout" title="Sign out">
+    <a class="uout" href="/logout" id="signout" title="Sign out" aria-label="Sign out">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 17l5-5-5-5"/><path d="M20 12H9"/>
       <path d="M12 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/></svg></a>
   </div>
@@ -1214,7 +1242,7 @@ body.drillon{overflow:hidden}
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
 </div></div><div class="fstate"><span id="fstate"></span><span class="acts"><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear filters</button></span></div></div>
   <div class="topbar">
-    <button class="burger" id="burger">&#9776;</button>
+    <button class="burger" id="burger" title="Open menu" aria-label="Open menu">&#9776;</button>
     <div style="display:flex;align-items:center;gap:14px"><span style="display:block;width:118px" title="Frontline"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg></span></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
   </div>
 <div class="wrap">
@@ -1225,10 +1253,10 @@ body.drillon{overflow:hidden}
 <div class="kpis" id="rxkpis"></div>
 <div class="ins" id="ins"><div class="insvp" id="insvp"></div><div class="insnav"><span class="inscnt" id="inscnt"></span><button class="insbtn" id="insprev" title="Previous insight" aria-label="Previous insight">&#10094;</button><span id="insdots" style="display:flex;gap:6px;align-items:center"></span><button class="insbtn" id="insnext" title="Next insight" aria-label="Next insight">&#10095;</button></div><div class="insprog" id="insprog"><i id="insbar"></i></div></div>
 <div class="grid" style="margin-top:18px">
-<div class="card click c4" data-exp="ch_rxconv"><div class="ch"><div><h3>Rx conversion of doctors met</h3><div class="cs">Did the visit produce a prescription?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxconv"></canvas></div></div>
-<div class="card click c8" data-exp="ch_rxspec"><div class="ch"><div><h3>Rx by specialization</h3><div class="cs">Where prescriptions come from</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxspec"></canvas></div></div>
-<div class="card click c6" data-exp="ch_rxprod"><div class="ch"><div><h3>Rx by product</h3><div class="cs">Which products drive Rx</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxprod"></canvas></div></div>
-<div class="card click c6" data-exp="ch_rxcat"><div class="ch"><div><h3>Rx by doctor category</h3><div class="cs">Are premium doctors delivering?</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxcat"></canvas></div></div>
+<div class="card click c4" data-exp="ch_rxconv"><div class="ch"><div><h3>Did the visits produce prescriptions?</h3><div class="cs">Doctors met, split by whether they went on to prescribe</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxconv"></canvas></div></div>
+<div class="card click c8" data-exp="ch_rxspec"><div class="ch"><div><h3>Which specializations prescribe?</h3><div class="cs">Prescriptions by the doctor's specialization, top 12</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxspec"></canvas></div></div>
+<div class="card click c6" data-exp="ch_rxprod"><div class="ch"><div><h3>Which products are driving prescriptions?</h3><div class="cs">Prescriptions per product, top 10</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxprod"></canvas></div></div>
+<div class="card click c6" data-exp="ch_rxcat"><div class="ch"><div><h3>Are premium doctors delivering?</h3><div class="cs">Prescriptions by doctor category</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_rxcat"></canvas></div></div>
 </div>
 <div class="secttl" style="margin-top:30px"><div class="eye">Leaders</div><div class="big">Top Rx-generating doctors</div></div>
 <div class="card"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="tdh"></tr></thead><tbody id="tdb"></tbody></table></div></div>
@@ -1241,25 +1269,25 @@ body.drillon{overflow:hidden}
 <div class="grid" id="ovcharts" style="margin-top:18px"></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Employees <span id="cnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="eh"></tr></thead><tbody id="eb"></tbody></table></div></div></section>
 <section class="sec" id="sec_prod"><div class="secttl"><div class="eye">Performance</div><div class="big">Rep Productivity Index</div></div>
-<div class="grid"><div class="card click c5" data-exp="ch_pi"><div class="ch"><div><h3>Index distribution</h3><div class="cs">Active field reps</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_pi"></canvas></div></div>
+<div class="grid"><div class="card click c5" data-exp="ch_pi"><div class="ch"><div><h3>How is productivity distributed?</h3><div class="cs">Active field reps by productivity index band</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_pi"></canvas></div></div>
 <div class="card c7"><div class="ch"><div><h3>How it works</h3></div></div><p style="line-height:1.8;color:var(--muted);margin:4px 0 0"><b style="color:var(--ink)">30%</b> calls/active day · <b style="color:var(--ink)">25%</b> Rx per call · <b style="color:var(--ink)">30%</b> coverage · <b style="color:var(--ink)">15%</b> tour-plan — each a percentile vs peers.</p></div></div>
 <div class="card" style="margin-top:18px"><div class="tablewrap" style="margin-top:0"><table><thead><tr id="ph"></tr></thead><tbody id="pb"></tbody></table></div></div></section>
-<section class="sec" id="sec_mgr"><div class="secttl"><div class="eye">Leadership</div><div class="big">Manager &amp; zone accountability</div></div>
-<div class="card click" data-exp="ch_mgr"><div class="ch"><div><h3>Top ABM teams by Rx</h3><div class="cs">Team prescription output</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_mgr"></canvas></div></div>
+<section class="sec" id="sec_mgr"><div class="secttl"><div class="eye">Leadership</div><div class="big">Manager and zone accountability</div></div>
+<div class="card click" data-exp="ch_mgr"><div class="ch"><div><h3>Which teams are producing the most?</h3><div class="cs">Prescription output by manager team</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_mgr"></canvas></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Manager scorecard</h3></div></div><div class="tablewrap"><table><thead><tr id="mh"></tr></thead><tbody id="mb"></tbody></table></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Zone scorecard</h3></div></div><div class="tablewrap"><table><thead><tr id="zh"></tr></thead><tbody id="zb"></tbody></table></div></div></section>
 <section class="sec" id="sec_exc"><div class="secttl"><div class="eye">Risk</div><div class="big">Exceptions</div></div>
-<div class="grid"><div class="card click c5" data-exp="ch_flag"><div class="ch"><div><h3>Exceptions by type</h3></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_flag"></canvas></div></div>
+<div class="grid"><div class="card click c5" data-exp="ch_flag"><div class="ch"><div><h3>What is going wrong most often?</h3></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_flag"></canvas></div></div>
 <div class="card c7"><div class="ch"><div><h3>What these flags mean</h3></div></div><p style="line-height:1.85;color:var(--muted);margin:4px 0 0"><b style="color:var(--ink)">Zero Rx despite visits</b> · <b style="color:var(--ink)">Silent</b> · <b style="color:var(--ink)">New joiner not activated</b> · <b style="color:var(--ink)">Went silent mid-month</b> · <b style="color:var(--ink)">Tour plan not submitted</b> · <b style="color:var(--ink)">Low coverage</b> · <b style="color:var(--ink)">Sample-heavy / low Rx</b></p></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Flagged reps <span id="xcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="xh"></tr></thead><tbody id="xb"></tbody></table></div></div></section>
-<section class="sec" id="sec_daily"><div class="secttl"><div class="eye">Activity</div><div class="big">Daily calls &amp; Rx</div></div>
-<div class="card click" data-exp="ch_daily2"><div class="ch"><div><h3>Daily trend</h3><div class="cs">Calls per day</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_daily2"></canvas></div></div>
+<section class="sec" id="sec_daily"><div class="secttl"><div class="eye">Activity</div><div class="big">Daily calls and Rx</div></div>
+<div class="card click" data-exp="ch_daily2"><div class="ch"><div><h3>Is call volume holding up?</h3><div class="cs">Calls logged per day across the period</div></div><div class="exp">⤢</div></div><div class="cbox sm"><canvas id="ch_daily2"></canvas></div></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Daily Call Report <span id="dcnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="dh2"></tr></thead><tbody id="db2"></tbody></table></div></div></section>
 <section class="sec" id="sec_trend">
 <div class="secttl"><div class="eye">Time</div><div class="big">Trends over time</div><div class="d">Month-on-month movement and day-of-week productivity for the reps currently in view. This tab always shows the full history so the shape is visible &mdash; the sidebar period filter governs every other tab.</div></div>
 <div class="kpis" id="trkpis"></div>
 <div class="grid" style="margin-top:18px">
-  <div class="card click c7" data-exp="ch_mom"><div class="ch"><div><h3>Rx and visits by month</h3><div class="cs">Bars are visits, the line is Rx</div></div><div class="exp">&#10530;</div></div><div class="cbox"><canvas id="ch_mom"></canvas></div></div>
+  <div class="card click c7" data-exp="ch_mom"><div class="ch"><div><h3>Are calls and prescriptions moving together?</h3><div class="cs">Visits and prescriptions by month, on one zero-based scale</div></div><div class="exp">&#10530;</div></div><div class="cbox"><canvas id="ch_mom"></canvas></div></div>
   <div class="card c5"><div class="ch"><div><h3>Day-of-week productivity</h3><div class="cs" id="wdsub">Rx per call by weekday</div></div></div>
     <div class="wdbar" id="wdbar"></div>
     <div class="pnote" id="wdnote" style="margin-top:10px"></div></div>
@@ -1280,7 +1308,7 @@ body.drillon{overflow:hidden}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor &amp; chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_org">
+<section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor and chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_org">
 <div class="secttl"><div class="eye">Structure</div><div class="big">The org, as it actually reports</div><div class="d">Every branch is a real reporting line, drawn from each employee&rsquo;s manager. Size is prescriptions, colour is health. Click anyone to open their profile; the sidebar filters and the period both apply, so this re-colours itself when you change either.</div></div>
 <div class="orgwrap" id="orgwrap">
   <canvas id="orgcv"></canvas>
@@ -1297,8 +1325,8 @@ body.drillon{overflow:hidden}
     <button id="orgin" title="Zoom in">+</button>
     <button id="orgout" title="Zoom out">&minus;</button>
     <button id="orgfit" class="wide" title="Fit the whole tree">FIT</button>
-    <button id="orgexp" class="wide" title="Expand every branch">EXPAND</button>
-    <button id="orgcol" class="wide" title="Collapse back to the default depth">COLLAPSE</button>
+    <button id="orgexp" class="wide" title="Expand every branch">Expand</button>
+    <button id="orgcol" class="wide" title="Collapse back to the default depth">Collapse</button>
   </div>
   <div class="orgcrumb" id="orgcrumb"></div>
   <div class="orghint" id="orghint"></div>
@@ -1313,11 +1341,11 @@ body.drillon{overflow:hidden}
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Span of control</h3><div class="cs">Sortable &middot; every manager with at least one direct report, and what that team is producing</div></div></div>
   <div class="tablewrap"><table><thead><tr id="sph"></tr></thead><tbody id="spb"></tbody></table></div></div>
 </section>
-<section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes &amp; observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
+<section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
 <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
-<div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><div class="mx" onclick="cm()">✕</div></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
+<div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
 /* ------------------------------------------------------------------ CARBON
    Colours are read from the tokens at use time, so a theme change moves the charts
@@ -1392,7 +1420,10 @@ function chart(id,cfg,meta){try{(cfg.data&&cfg.data.datasets||[]).forEach(ds=>{
  if(ds.backgroundColor)ds.backgroundColor=mapCols(ds.backgroundColor);
  if(ds.borderColor)ds.borderColor=mapCols(ds.borderColor);});}catch(_){}
  if(CH[id])CH[id].destroy();CH[id]=new Chart($(id),cfg);if(meta)META[id]=meta;}
-const gopt=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:muted(),font:{size:9}},grid:{display:false}},y:{ticks:{color:muted(),font:{size:9}},grid:{color:line()}}}});
+const /* One zero-based scale for every chart. Per-series normalisation is the defect the
+   rules name: it makes a flat series look volatile and inverts the story the answer
+   line tells, so the y scale is anchored here, once, for everything. */
+gopt=()=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{ticks:{color:muted(),font:{size:9}},grid:{display:false}},y:{ticks:{color:muted(),font:{size:9}},grid:{color:line()}}}});
 function piColor(v){return TC(v>=75?CDS('--cds-support-success'):v>=50?CDS('--cds-interactive'):v>=25?CDS('--cds-support-warning'):CDS('--cds-support-error'));}
 function sortRows(rows,k,asc){return rows.slice().sort((a,b)=>{let x=a[k],y=b[k];if(x==='')x=-1;if(y==='')y=-1;if(typeof x==='string'){x=x.toLowerCase();y=y.toLowerCase();}return(x<y?-1:x>y?1:0)*(asc?1:-1);});}
 function dailyAgg(codes,idx){const m={};D.daily.forEach(x=>{if(codes&&!codes.has(x[0]))return;if(!x[1])return;m[x[1]]=(m[x[1]]||0)+x[idx];});return Object.keys(m).sort().map(d=>[d,m[d]]);}
@@ -1450,7 +1481,7 @@ function rxView(rows){
  // rx performance table
  const RP=[['c','Code'],['n','Name'],['st','State'],['hq','HQ'],['mg','Manager'],['vis','Visits'],['rx','Rx'],['rpc','Rx/Call'],['rxPerDoc','Rx/Doctor'],['rxPerDay','Rx/Day'],['ud','Drs Met'],['rxD','Rx Drs'],['rxConv','Rx Conv%'],['s2r','Samp/Rx'],['att','Attend%'],['repc','Repeat%'],['cl','Max/30m'],['rpct','React+%'],['ds','Day Start'],['scf','SC Focus%'],['mpc','Min/Call'],['ndc','NewDr Conv%'],['zeroRx','Zero Rx']];
  $('rph').innerHTML=RP.map(c=>th(c[0],c[1])).join('');
- $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">ZERO</span>':'')+'</td></tr>').join('');
+ $('rpb').innerHTML=sortRows(bo,rS,rA).slice(0,600).map(r=>'<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+fmt(r.vis)+'</td><td class=n><b>'+fmt(r.rx)+'</b></td><td class=n>'+r.rpc+'</td><td class=n>'+r.rxPerDoc+'</td><td class=n>'+r.rxPerDay+'</td><td class=n>'+fmt(r.ud)+'</td><td class=n>'+fmt(r.rxD)+'</td><td class=n>'+r.rxConv+'</td><td class=n>'+r.s2r+'</td><td class=n>'+r.att+'</td><td class=n>'+r.repc+'</td><td class=n>'+r.cl+'</td><td class=n>'+r.rpct+'</td><td>'+r.ds+'</td><td class=n>'+r.scf+'</td><td class=n>'+(r.mpc===''?'':r.mpc)+'</td><td class=n>'+(r.ndc===''?'':r.ndc)+'</td><td>'+(r.zeroRx?'<span class="pill no">Zero</span>':'')+'</td></tr>').join('');
  $('rpcnt').textContent='('+bo.length+' field rep'+(bo.length===1?'':'s')+
    (via.length?' under the selected manager'+(mgrs.length===1?'':'s'):'')+')';
  $('rph').querySelectorAll('th').forEach(t=>t.onclick=()=>{const k=t.dataset.k;if(k===rS)rA=!rA;else{rS=k;rA=false;}rxView(fr());});}
@@ -1462,10 +1493,10 @@ function kpis(rows){const sum=f=>rows.reduce((a,r)=>a+r[f],0);const onb=rows.fil
   kpi(CDS('--cds-interactive'),fmt(sum('vis')),'Visits',GL.vis,''),kpi(CDS('--cds-support-warning'),fmt(sum('sm')),'Samples','Sample units distributed.',''),
   kpi(CDS('--cds-interactive'),cov+'%','Coverage',GL.cov,''),kpi(CDS('--cds-chart-01'),avgpi,'Avg Prod Index',GL.pi,''),kpi(CDS('--cds-support-error'),fmt(rows.filter(r=>r.zeroRx).length),'Zero-Rx reps',GL.zeroRx,'')].join('');}
 function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
- $('ovcharts').innerHTML=['<div class="card click c8" data-exp="ch_daily"><div class="ch"><div><h3>Daily Rx trend</h3><div class="cs">Prescriptions per day</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_daily"></canvas></div></div>',
- '<div class="card click c4" data-exp="ch_onb"><div class="ch"><div><h3>Onboarding</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_onb"></canvas></div></div>',
- '<div class="card click c6" data-exp="ch_state"><div class="ch"><div><h3>Rx by state</h3><div class="cs">Top 12</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_state"></canvas></div></div>',
- '<div class="card click c6" data-exp="ch_role"><div class="ch"><div><h3>Visits by role</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_role"></canvas></div></div>'].join('');
+ $('ovcharts').innerHTML=['<div class="card click c8" data-exp="ch_daily"><div class="ch"><div><h3>How steady is daily output?</h3><div class="cs">Prescriptions per day across the period</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_daily"></canvas></div></div>',
+ '<div class="card click c4" data-exp="ch_onb"><div class="ch"><div><h3>Is the field onboarded?</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_onb"></canvas></div></div>',
+ '<div class="card click c6" data-exp="ch_state"><div class="ch"><div><h3>Where are prescriptions coming from?</h3><div class="cs">Prescriptions by state, top 12</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_state"></canvas></div></div>',
+ '<div class="card click c6" data-exp="ch_role"><div class="ch"><div><h3>Who is making the calls?</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_role"></canvas></div></div>'].join('');
  wireExp();
  const dl=dailyAgg(codes,5);chart('ch_daily',{type:'line',data:{labels:dl.map(d=>d[0].slice(5)),datasets:[{data:dl.map(d=>d[1]),borderColor:CDS('--cds-support-success'),backgroundColor:'rgba(10,124,74,.12)',fill:true,tension:.3,pointRadius:2}]},options:gopt()},{title:'Daily Rx trend',def:'Prescriptions generated per day.',type:'line',labels:dl.map(d=>d[0]),values:dl.map(d=>d[1])});
  const onb=rows.filter(r=>r.ob).length;chart('ch_onb',{type:'doughnut',data:{labels:['Onboarded','Not'],datasets:[{data:[onb,rows.length-onb],backgroundColor:[CDS('--cds-support-success'),CDS('--cds-support-error')],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}}}},{title:'Onboarding',def:GL.ob,type:'doughnut',labels:['Onboarded','Not'],values:[onb,rows.length-onb],colors:[CDS('--cds-support-success'),CDS('--cds-support-error')]});
@@ -1619,6 +1650,8 @@ function render(){
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{pageHead(rows);}catch(e){console.warn('pageHead',e);}
+ try{chartAnswers(rows);}catch(e){console.warn('chartAnswers',e);}
+ try{tableFurniture();}catch(e){console.warn('tableFurniture',e);}
  try{expWire();}catch(_){}
  try{tilesClickable();}catch(_){}
  try{emptyStates();}catch(_){}
@@ -1658,7 +1691,7 @@ function init(){
    $('pfrom').onchange=e=>{PR.from=e.target.value;PR.mode='custom';applyPeriod();};
    $('pto').onchange=e=>{PR.to=e.target.value;PR.mode='custom';applyPeriod();};
    $('fwd').onchange=e=>{PR.wd=e.target.value;applyPeriod();};});
-  S('theme toggle',()=>{$('theme').addEventListener('click',()=>setTimeout(themeLabel,0));$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');$('theme').textContent=d?'🌙':'☀️';render();};});
+  S('theme toggle',()=>{$('theme').addEventListener('click',()=>setTimeout(themeLabel,0));$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');if(typeof themeLabel==='function')themeLabel();render();};});
   S('modal handlers',()=>{$('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});});
   S('footer',()=>{$('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;});
  try{render();}catch(e){PROB.push('render: '+((e&&e.message)||e));console.error('init[render]',e);}
@@ -1830,7 +1863,7 @@ function openProfile(code,opts){
        (mgrTxt?' · reports to '+mgrTxt:'')+(reports.length?' · '+reports.length+' direct reports':'')+'</div>'+
    '</div>'+
    '<div class="phact"><button class="pnav" id="pshare">Copy link</button>'+
-   '<button class="pnav pclose" id="pclose" title="Close">&#10005;</button></div>'+
+   '<button class="pnav pclose" id="pclose" title="Close profile" aria-label="Close profile">&#10005;</button></div>'+
   '</div><div class="pchips">'+chips.join('')+'</div></div>';
 
  /* --- tiles: team-first for managers, personal for field roles --- */
@@ -1951,7 +1984,7 @@ function openProfile(code,opts){
   chart('pTrend',{type:'bar',data:{labels:ms.map(m=>m[0]),datasets:[
     {type:'bar',label:'Visits',data:ms.map(m=>m[1]),backgroundColor:CDS('--cds-interactive'),borderRadius:5,order:2},
     {type:'line',label:'Rx',data:ms.map(m=>m[2]),borderColor:CDS('--cds-support-success'),backgroundColor:CDS('--cds-support-success'),
-     tension:.32,borderWidth:2.4,pointRadius:3,yAxisID:'y1',order:1}]},
+     tension:.32,borderWidth:2.4,pointRadius:3,order:1}]},
    options:Object.assign(gopt(),{plugins:{legend:{display:true,labels:{boxWidth:10,font:{size:10}}}},
     scales:Object.assign({},gopt().scales,{y1:{position:'right',grid:{display:false},
      ticks:{color:CDS('--cds-text-helper'),font:{size:10}}}})})});
@@ -2417,7 +2450,7 @@ function trendView(rows){
  chart('ch_mom',{type:'bar',data:{labels:M.map(x=>mlabel(x.m)),datasets:[
    {type:'bar',label:'Visits',data:M.map(x=>x.vis),backgroundColor:CDS('--cds-interactive'),borderRadius:4,order:2},
    {type:'line',label:'Rx',data:M.map(x=>x.rx),borderColor:CDS('--cds-support-success'),backgroundColor:CDS('--cds-support-success'),
-    borderWidth:2.5,tension:.3,pointRadius:3,yAxisID:'y1',order:1}]},
+    borderWidth:2.5,tension:.3,pointRadius:3,order:1}]},
   options:{responsive:true,maintainAspectRatio:false,
    plugins:{legend:{display:true,position:'bottom',labels:{color:muted(),font:{size:10},boxWidth:10}}},
    scales:{x:{ticks:{color:muted(),font:{size:9}},grid:{display:false}},
@@ -3556,7 +3589,7 @@ function emptyStates(){
     ? '<b>No rows match these filters</b>Nothing in the roster satisfies all of them at once.'
     : '<b>Nothing to show here</b>There is no data for this view in the selected period.';
    tb.innerHTML='<tr><td class="emptyc" colspan="'+cols+'">'+msg+why+
-    (act.length?'<button type="button" data-clear="1">CLEAR FILTERS</button>':'')+'</td></tr>';
+    (act.length?'<button type="button" data-clear="1">Clear filters</button>':'')+'</td></tr>';
    const b=tb.querySelector('button[data-clear]');
    if(b)b.onclick=()=>{const r=$('reset');if(r)r.click();};
   });
@@ -3888,6 +3921,15 @@ function tilesClickable(){
   if(k.dataset.w)return;k.dataset.w='1';
   if(!k.getAttribute('tabindex'))k.setAttribute('tabindex','0');
   k.setAttribute('role','button');
+  /* A role and a tabindex are an appearance, not a behaviour. The first version of
+     this function stopped here: the tiles announced themselves as buttons and did
+     nothing when pressed. The metric key is already on the element for the existing
+     KPI drill-down, so use it. */
+  const m=k.dataset.m;
+  const open=()=>{ if(m&&typeof openMetric==='function')openMetric(m); };
+  k.onclick=open;
+  k.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} };
+  if(!k.title)k.title='Open the records behind this figure';
  });
 }
 
@@ -3910,6 +3952,182 @@ function filterSplit(){
  };
  const acts=bar.querySelector('.fstate .acts');
  if(acts)acts.insertBefore(b,acts.firstChild);
+}
+
+/* ======================================================== CHART CARD ANSWERS
+   An answer line is a claim, not a caption. It states the finding in words so the
+   report is readable by someone who does not read charts.
+
+   Every answer is computed from the same rows the chart draws and re-run on each
+   render. A hardcoded sentence under a filtered chart is worse than no sentence: the
+   graphic moves with the period and the words do not, and the words are what people
+   believe.                                                                        */
+
+function topOf(pairs){            /* [[label,value]...] -> {l,v,share} */
+ if(!pairs||!pairs.length)return null;
+ const s=pairs.slice().sort((a,b)=>(+b[1]||0)-(+a[1]||0));
+ const tot=s.reduce((a,x)=>a+(+x[1]||0),0);
+ return {l:s[0][0],v:+s[0][1]||0,share:tot?Math.round(100*(+s[0][1]||0)/tot):0,
+         tot:tot,n:s.length,second:s[1]?s[1][0]:''};
+}
+function pcOf(n,d){return d?Math.round(100*n/d):0;}
+
+/* One entry per card: the question, the sub-line, and a function returning the
+   answer. Keyed by canvas id so a card and its sentence cannot come apart. */
+const CHARTQ={
+ ch_rxconv:{q:'Did the visits produce prescriptions?',
+  s:'Doctors met, split by whether they went on to prescribe',
+  a:rows=>{const met=D.rx.metDoctors||0,rxd=D.rx.rxDoctors||0;
+   if(!met)return 'No doctors were met in this view.';
+   const miss=met-rxd, pc=pcOf(rxd,met);
+   /* "roughly one in N" only reads correctly when conversion is low; at 91% it
+      produced "one in 1", which is why the sentence states the share instead. */
+   return miss
+    ? ('For '+fmt(miss)+' of the '+fmt(met)+' doctors met, it did not — '+pc+
+       '% went on to prescribe.')
+    : ('Every one of the '+fmt(met)+' doctors met went on to prescribe.');}},
+
+ ch_rxspec:{q:'Which specializations prescribe?',
+  s:'Prescriptions by the doctor\'s specialization, top 12',
+  a:rows=>{const t=topOf((D.rx.bySpec||[]));
+   return t?(t.l+' accounts for '+t.share+'% of prescriptions'+
+    (t.second?(', ahead of '+t.second+'.'):'.')):'No prescriptions in this view.';}},
+
+ ch_rxprod:{q:'Which products are driving prescriptions?',
+  s:'Prescriptions per product, top 10',
+  a:rows=>{const t=topOf((D.rx.prod||[]).map(x=>[x[0],x[2]]));
+   return t?(t.l+' carries '+t.share+'% of Rx across '+t.n+' products.'):
+             'No product-level prescriptions in this view.';}},
+
+ ch_rxcat:{q:'Are premium doctors delivering?',
+  s:'Prescriptions by doctor category',
+  a:rows=>{const t=topOf((D.rx.byCat||[]));
+   if(!t)return 'No categorised prescriptions in this view.';
+   const sc=(D.rx.byCat||[]).find(x=>/supercore/i.test(x[0]));
+   return sc?('Supercore doctors produce '+pcOf(sc[1],t.tot)+'% of prescriptions.'):
+             (t.l+' leads with '+t.share+'% of prescriptions.');}},
+
+ ch_pi:{q:'How is productivity distributed?',
+  s:'Active field reps by productivity index band',
+  a:rows=>{const bo=rows.filter(r=>r.r==='BO'&&r.pi!=='');
+   if(!bo.length)return 'No scored reps in this view.';
+   const low=bo.filter(r=>r.pi<40).length, high=bo.filter(r=>r.pi>=80).length;
+   /* when both tails are empty the interesting finding is that they ARE empty */
+   return (low||high)
+    ? (low+' reps score under 40 and '+high+' score 80 or above, out of '+bo.length+'.')
+    : ('All '+bo.length+' scored reps sit in the middle bands — no clear tail either way.');}},
+
+ ch_mgr:{q:'Which teams are producing the most?',
+  s:'Prescription output by manager team',
+  a:rows=>{const t=topOf((D.mgrScore||[]).map(m=>[m.name,m.rx]));
+   return t?(t.l+'’s team leads with '+fmt(t.v)+' Rx, '+t.share+'% of the total shown.'):
+             'No manager teams in this view.';}},
+
+ ch_flag:{q:'What is going wrong most often?',
+  s:'Reps carrying each risk flag',
+  a:rows=>{const fc={};rows.forEach(r=>(r.fl||[]).forEach(f=>fc[f]=(fc[f]||0)+1));
+   const t=topOf(Object.entries(fc));
+   return t?('"'+t.l+'" is the most common, affecting '+t.v+' reps.'):
+             'Nothing is flagged in this view.';}},
+
+ ch_daily2:{q:'Is call volume holding up?',
+  s:'Calls logged per day across the period',
+  a:rows=>{const v=rows.reduce((a,r)=>a+r.vis,0), act=rows.filter(r=>r.vis>0).length;
+   return v?(fmt(v)+' calls from '+act+' reps.'):'No calls in this view.';}},
+
+ ch_mom:{q:'Are calls and prescriptions moving together?',
+  s:'Visits and prescriptions by month, on one zero-based scale',
+  a:rows=>{const m=D.months||[];
+   if(m.length<2)return 'One month of data — no movement to compare yet.';
+   const first=m[0],last=m[m.length-1];
+   let v0=0,v1=0,r0=0,r1=0;
+   rows.forEach(r=>{const mm=r.mo||{};v0+=(mm[first]||{}).v||0;v1+=(mm[last]||{}).v||0;
+                    r0+=(mm[first]||{}).r||0;r1+=(mm[last]||{}).r||0;});
+   if(!v0&&!r0)return 'Comparing '+first+' with '+last+'.';
+   const dv=pcOf(v1-v0,v0||1), dr=pcOf(r1-r0,r0||1);
+   /* the finding is the DIVERGENCE, which is the whole reason both series share
+      one axis — see CONFORMANCE #10 */
+   return (Math.abs(dv-dr)>=5)
+    ? ('Calls moved '+(dv>=0?'+':'')+dv+'% and prescriptions '+(dr>=0?'+':'')+dr+
+       '% from '+first+' to '+last+' — they are diverging.')
+    : ('Calls and prescriptions moved together, '+(dv>=0?'+':'')+dv+'% and '+
+       (dr>=0?'+':'')+dr+'%, from '+first+' to '+last+'.');}},
+
+ ch_daily:{q:'How steady is daily output?',
+  s:'Prescriptions per day across the period',
+  a:rows=>{const rx=rows.reduce((a,r)=>a+r.rx,0), days=(D.days||[]).length;
+   return days?('About '+fmt(Math.round(rx/days))+' prescriptions a day across '+days+
+    ' days with activity.'):'No daily activity in this view.';}},
+
+ ch_onb:{q:'Is the field onboarded?',
+  s:'Reps who have used the app, against those who have not',
+  a:rows=>{const on=rows.filter(r=>r.ob).length;
+   return rows.length?(on+' of '+rows.length+' reps have used the app'+
+    (rows.length-on?(' — '+(rows.length-on)+' never have.'):'.')):'No reps in this view.';}},
+
+ ch_state:{q:'Where are prescriptions coming from?',
+  s:'Prescriptions by state, top 12',
+  a:rows=>{const st={};rows.forEach(r=>{if(r.st&&r.st!=='—')st[r.st]=(st[r.st]||0)+r.rx;});
+   const t=topOf(Object.entries(st));
+   return t?(t.l+' contributes '+t.share+'% of prescriptions, across '+t.n+' states.'):
+             'No prescriptions by state in this view.';}},
+
+ ch_role:{q:'Who is making the calls?',
+  s:'Visits logged by role',
+  a:rows=>{const rl={};rows.forEach(r=>{rl[r.r]=(rl[r.r]||0)+r.vis;});
+   const t=topOf(Object.entries(rl));
+   return t?(t.l+' logs '+t.share+'% of all visits.'):'No visits in this view.';}}
+};
+
+/* Rewrite each card header in place after a render: question, sub-line, answer.
+   Idempotent — the question replaces the old title once, and the answer is refreshed
+   every time so it tracks the filters. */
+function chartAnswers(rows){
+ document.querySelectorAll('.sec.on .card[data-exp]').forEach(card=>{
+  const id=card.dataset.exp, spec=CHARTQ[id];
+  if(!spec)return;
+  const h=card.querySelector('.ch h3');
+  if(h&&h.textContent.trim()!==spec.q)h.textContent=spec.q;
+  let sub=card.querySelector('.ch .cs');
+  if(!sub&&h){sub=document.createElement('div');sub.className='cs';
+              h.parentNode.appendChild(sub);}
+  if(sub)sub.textContent=spec.s;
+  let ans=card.querySelector('.ans');
+  if(!ans){ans=document.createElement('div');ans.className='ans';
+   const box=card.querySelector('.cbox');
+   if(box)card.insertBefore(ans,box); else card.appendChild(ans);}
+  let text='';
+  /* An answer that throws must not take the chart with it. */
+  try{text=spec.a(rows)||'';}catch(e){console.warn('answer '+id,e);}
+  ans.textContent=text;
+  ans.style.display=text?'':'none';
+ });
+}
+
+/* ---- table footer and sorted-column marker (CONFORMANCE #11) ------------------ */
+const SORTMK='<span class="sortmk" data-icon="sort--descending"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="sort--descending"><path d="M18 22 19.414 20.586 23 24.172 23 4 25 4 25 24.172 28.586 20.586 30 22 24 28 18 22z"/><path d="M2 6H16V8H2z"/><path d="M6 12H16V14H6z"/><path d="M10 18H16V20H10z"/></svg></span>';
+function tableFurniture(){
+ document.querySelectorAll('.sec.on .card .tablewrap table').forEach(tbl=>{
+  if(tbl.closest('tbody'))return;
+  const wrap=tbl.closest('.tablewrap'), card=tbl.closest('.card');
+  if(!wrap||!card)return;
+  const body=tbl.querySelector('tbody');
+  const shown=body?[...body.children].filter(tr=>!tr.querySelector('.emptyc')).length:0;
+  /* the sorted column, marked where the data is actually sorted */
+  tbl.querySelectorAll('thead th .sortmk').forEach(s=>s.remove());
+  const key=(tbl.id==='rph'||wrap.querySelector('#rpb'))?rS:
+            (wrap.querySelector('#eb'))?eS:(wrap.querySelector('#pb'))?pS:null;
+  if(key){const th=tbl.querySelector('thead th[data-k="'+key+'"]');
+          if(th)th.insertAdjacentHTML('beforeend',SORTMK);}
+  /* the footer: how much of how many, and the one action that loads more */
+  let f=card.querySelector('.tfoot');
+  if(!f){f=document.createElement('div');f.className='tfoot';card.appendChild(f);}
+  const total=+card.dataset.total||shown;
+  f.innerHTML='<span>Showing 1 to '+fmt(shown)+' of '+fmt(total)+' rows</span>'+
+   (total>shown?'<button class="more" type="button">Show the next '+
+     Math.min(10,total-shown)+' rows</button>':
+     '<button class="more" type="button" disabled>All rows shown</button>');
+ });
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
