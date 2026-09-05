@@ -1176,11 +1176,183 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .kpis>*,.tilerow>*{min-width:0}
 @media(max-width:1056px){.hero{grid-template-columns:1fr}
   .kpis,.tilerow{grid-template-columns:repeat(2, minmax(0, 1fr))}}
+
+/* ===================================================== MASTHEAD + RAIL
+   The nav is the app's identity; there is no separate branding bar. */
+.shell{display:none}
+:root{--side:320px}
+.side{top:0}
+.main{padding-top:0}
+.masthead{display:block;padding:var(--cds-spacing-06) var(--cds-spacing-05);
+  border-bottom:1px solid var(--cds-border-subtle-01);background:var(--cds-layer-02)}
+.masthead .lock{display:block;width:100%;max-width:230px}
+.masthead .tag{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  letter-spacing:var(--cds-label-01-ls);margin-top:var(--cds-spacing-02)}
+/* nav item: icon, name, then the number and what it means */
+.nav button{height:auto;align-items:flex-start;padding:var(--cds-spacing-04) var(--cds-spacing-05);
+  gap:var(--cds-spacing-04);text-align:left}
+.nav button svg{margin-top:2px}
+.nav .lbl{display:block;font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-primary);letter-spacing:0.16px}
+.nav .navm{display:block;margin-top:2px;font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls);color:var(--cds-text-secondary);
+  white-space:normal;line-height:1.34}
+.nav .navm b{color:var(--cds-text-primary);font-weight:var(--cds-font-weight-semibold)}
+.nav .navm b.err{color:var(--cds-text-error)}
+.nav .navtag{float:right;background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text);
+  border-radius:var(--cds-border-radius-max);font-size:var(--cds-label-01-size);
+  padding:0 var(--cds-spacing-04);height:20px;line-height:20px;margin-left:var(--cds-spacing-03)}
+.app.railed .nav .navm{display:none}
+.userchip{display:flex !important;align-items:center;gap:var(--cds-spacing-04);
+  padding:var(--cds-spacing-05);border-top:1px solid var(--cds-border-subtle-01)}
+.userchip .uinfo{min-width:0}
+.userchip .uname{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-primary)}
+.userchip .urole{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  text-transform:none;letter-spacing:var(--cds-label-01-ls)}
+.orgfoot{display:flex;align-items:center;gap:var(--cds-spacing-04);
+  padding:var(--cds-spacing-04) var(--cds-spacing-05);
+  border-top:1px solid var(--cds-border-subtle-01);
+  font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+
+/* ===================================================== REPORTING PERIOD BAND */
+.pband{display:flex;flex-wrap:wrap;gap:1px;background:var(--cds-border-subtle-00);
+  border-bottom:1px solid var(--cds-border-subtle-00)}
+.pband>section{background:var(--cds-layer-02);padding:var(--cds-spacing-05);min-width:0}
+.pband .c1{flex:1 1 380px}.pband .c2{flex:1 1 420px}.pband .c3{flex:1 1 300px}
+.pband .cap{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  text-transform:uppercase;color:var(--cds-text-secondary);
+  margin-bottom:var(--cds-spacing-05)}
+.pband .cap svg{fill:var(--cds-icon-secondary);stroke:none;width:16px;height:16px}
+.pband .range{font-size:var(--cds-heading-04-size);line-height:var(--cds-heading-04-lh);
+  font-weight:var(--cds-heading-04-weight)}
+.pband .meta{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary);
+  margin-top:var(--cds-spacing-03)}
+.pband .tags{display:flex;gap:var(--cds-spacing-03);margin-top:var(--cds-spacing-05);
+  flex-wrap:wrap}
+.pband .tags .tag{background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text);
+  border-radius:var(--cds-border-radius-max);height:24px;line-height:24px;
+  padding:0 var(--cds-spacing-04);font-size:var(--cds-label-01-size)}
+.qgrid{display:flex;flex-wrap:wrap;gap:1px;background:var(--cds-border-subtle-00);
+  border:1px solid var(--cds-border-subtle-00)}
+.qgrid button{flex:1 1 30%;min-width:0;background:var(--cds-layer-02);border:0;
+  cursor:pointer;text-align:left;padding:var(--cds-spacing-04) var(--cds-spacing-05);
+  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px;
+  color:var(--cds-text-primary);box-shadow:inset 0 -3px 0 transparent}
+.qgrid button:hover{background:var(--cds-layer-hover-01)}
+.qgrid button.on{background:var(--cds-layer-01);
+  box-shadow:inset 0 -3px 0 var(--cds-interactive);
+  font-weight:var(--cds-font-weight-semibold)}
+.qgrid button small{display:block;color:var(--cds-text-secondary);
+  font-size:var(--cds-label-01-size);margin-top:2px;font-weight:400}
+.wbar{margin-top:var(--cds-spacing-05)}
+.wbar .lbls{display:flex;font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary);margin-bottom:var(--cds-spacing-03)}
+.wbar .lbls span:last-child{margin-left:auto}
+.wbar .track{height:8px;background:var(--cds-border-subtle-00);position:relative}
+.wbar .fill{position:absolute;top:0;bottom:0;background:var(--cds-interactive)}
+.wbar .ends{display:flex;font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary);margin-top:var(--cds-spacing-03)}
+.wbar .ends span:last-child{margin-left:auto}
+.cmp button{display:block;width:100%;text-align:left;border:0;background:transparent;
+  cursor:pointer;padding:var(--cds-spacing-04) var(--cds-spacing-05);
+  border-bottom:1px solid var(--cds-border-subtle-00);
+  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px;
+  color:var(--cds-text-primary)}
+.cmp button:hover{background:var(--cds-layer-hover-01)}
+.cmp button.on{background:var(--cds-layer-01);
+  box-shadow:inset 3px 0 0 var(--cds-interactive);
+  font-weight:var(--cds-font-weight-semibold)}
+.cmp button small{display:block;color:var(--cds-text-secondary);
+  font-size:var(--cds-label-01-size);margin-top:2px;font-weight:400}
+.cmp .note{display:flex;gap:var(--cds-spacing-03);align-items:flex-start;
+  margin-top:var(--cds-spacing-05);font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary)}
+.cmp .note svg{fill:var(--cds-icon-secondary);stroke:none;width:16px;height:16px;flex:0 0 auto}
+
+/* ===================================================== HERO + TILES */
+.hero>.core{background:var(--cds-blue-10);padding:var(--cds-spacing-07)}
+.hero>.side2{background:var(--cds-layer-02);padding:var(--cds-spacing-07)}
+[data-theme=dark] .hero>.core{background:var(--cds-layer-01)}
+.dtag{display:inline-block;vertical-align:middle;margin-left:var(--cds-spacing-05);
+  border-radius:var(--cds-border-radius-max);height:24px;line-height:24px;
+  padding:0 var(--cds-spacing-04);font-size:var(--cds-label-01-size)}
+.dtag.up{background:var(--cds-tag-green-bg);color:var(--cds-tag-green-text)}
+.dtag.dn{background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text)}
+.dtag.flat{background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text)}
+.secbar{display:flex;align-items:center;gap:var(--cds-spacing-05);
+  margin:var(--cds-spacing-08) 0 var(--cds-spacing-05);
+  font-size:var(--cds-heading-03-size);font-weight:var(--cds-heading-03-weight)}
+.secbar::after{content:"";flex:1 1 auto;height:1px;background:var(--cds-border-subtle-01)}
+.kpi{background:var(--cds-layer-02);padding:var(--cds-spacing-05);position:relative}
+.kpi.sev-err{box-shadow:inset 4px 0 0 var(--cds-support-error)}
+.kpi.sev-warn{box-shadow:inset 4px 0 0 var(--cds-support-warning)}
+.kpi .l{text-transform:uppercase}
+.kpi .drill{display:block;margin-top:var(--cds-spacing-05);
+  color:var(--cds-link-primary);font-size:var(--cds-body-compact-01-size)}
+
+/* ===================================================== LOADING (audit #12) */
+#pgbar{position:fixed;left:var(--side);right:0;height:4px;z-index:65;
+  background:var(--cds-border-subtle-00);overflow:hidden;display:none}
+#pgbar.on{display:block}
+#pgbar i{position:absolute;top:0;bottom:0;width:25%;background:var(--cds-interactive);
+  animation:cdsIndet 1.4s cubic-bezier(0.2,0,0.38,0.9) infinite}
+@keyframes cdsIndet{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+.skel{background:var(--cds-skeleton-element);color:transparent !important;
+  animation:cdsSkel 1500ms ease-in-out infinite;border-radius:0}
+.skel *{visibility:hidden}
+@keyframes cdsSkel{0%,100%{opacity:1}50%{opacity:.35}}
+.app.railed #pgbar{left:48px}
+
+
+/* ---- the decision band ---------------------------------------------------- */
+.decide{margin-top:var(--cds-spacing-08);border-top:1px solid var(--cds-border-subtle-01)}
+.decide .dh{display:flex;align-items:center;gap:var(--cds-spacing-04);
+  padding:var(--cds-spacing-05) 0}
+.decide .dh .sq{width:16px;height:16px;background:var(--cds-support-error);flex:0 0 auto}
+.decide .dh h2{margin:0;font-size:var(--cds-heading-03-size);
+  font-weight:var(--cds-heading-03-weight)}
+.decide .dh .cnt{background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);
+  border-radius:var(--cds-border-radius-max);height:24px;line-height:24px;
+  padding:0 var(--cds-spacing-04);font-size:var(--cds-label-01-size)}
+.decide .lead{font-size:var(--cds-body-01-size);color:var(--cds-text-secondary);
+  margin-bottom:var(--cds-spacing-05);max-width:720px}
+.decide .row{display:flex;align-items:center;gap:var(--cds-spacing-05);
+  padding:var(--cds-spacing-05);background:var(--cds-layer-02);
+  border-top:1px solid var(--cds-border-subtle-01);cursor:pointer;width:100%;
+  border-left:0;border-right:0;border-bottom:0;text-align:left;font:inherit}
+.decide .row:hover{background:var(--cds-layer-hover-01)}
+.decide .row .plate{width:40px;height:40px;display:flex;align-items:center;
+  justify-content:center;flex:0 0 auto;background:var(--cds-layer-accent-01)}
+.decide .row .plate svg{width:20px;height:20px;stroke:none}
+.decide .row.err{box-shadow:inset 4px 0 0 var(--cds-support-error)}
+.decide .row.warn{box-shadow:inset 4px 0 0 var(--cds-support-warning)}
+.decide .row.err .plate svg{fill:var(--cds-support-error)}
+.decide .row.warn .plate svg{fill:var(--cds-support-warning)}
+.decide .row .txt{min-width:0;flex:1 1 auto}
+.decide .row .txt b{display:block;font-size:var(--cds-body-compact-01-size);
+  font-weight:var(--cds-font-weight-semibold)}
+.decide .row .txt span{display:block;font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary);margin-top:2px}
+.decide .row .stake{flex:0 0 auto;text-align:right;min-width:120px}
+.decide .row .stake b{display:block;font-size:var(--cds-body-compact-01-size);
+  font-variant-numeric:tabular-nums}
+.decide .row .stake span{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+.decide .row .go{flex:0 0 auto;color:var(--cds-link-primary);
+  font-size:var(--cds-body-compact-01-size)}
+/* ---- tile sub-line ---------------------------------------------------------- */
+.kpi .h{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  margin-top:var(--cds-spacing-03)}
+/* ---- update stamp ----------------------------------------------------------- */
+.stamp{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);
+  color:var(--cds-link-primary);font-size:var(--cds-label-01-size)}
+.stamp .dot{width:8px;height:8px;background:var(--cds-interactive);flex:0 0 auto}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
 <header class="shell"><button class="sbtn" id="railtoggle" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg></button><div class="prod"><b>Hive &mdash; Frontline</b><span>British Biologicals</span></div><div class="right"><span class="who" id="shellwho"></span><button class="link" id="shellout" type="button">Sign out</button></div></header>
 <aside class="side" id="side">
+  <div class="masthead"><span class="lock" id="masthead"></span><div class="tag">Your super app</div></div>
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
     <div id="tabs"><div class="navsec" data-n="01"><span>PERFORMANCE</span></div><div class="nav"><button data-t="ov" class="on" title="Pulse"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg><span class="lbl">Pulse</span></button><button data-t="rx" title="Rx engine"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg><span class="lbl">Rx engine</span></button><button data-t="prod" title="Productivity"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4,2H2V28a2,2,0,0,0,2,2H30V28H4Z"/><path d="M30,9H23v2h3.59L19,18.59l-4.29-4.3a1,1,0,0,0-1.42,0L6,21.59,7.41,23,14,16.41l4.29,4.3a1,1,0,0,0,1.42,0L28,12.41V16h2Z"/></svg><span class="lbl">Productivity</span></button><button data-t="trend" title="Trends"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg><span class="lbl">Trends</span></button></div><div class="navsec" data-n="02"><span>FIELD</span></div><div class="nav"><button data-t="daily" title="Field activity"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span class="lbl">Field activity</span></button><button data-t="calls" title="Call detail"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M29,5a2,2,0,0,0-2-2H5A2,2,0,0,0,3,5V27a2,2,0,0,0,2,2H27a2,2,0,0,0,2-2ZM27,5V9H5V5Zm0,22H5V23H27Zm0-6H5V17H27Zm0-6H5V11H27Z"/></svg><span class="lbl">Call detail</span></button><button data-t="docs" title="Doctors"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg><span class="lbl">Doctors</span></button><button data-t="roster" title="Doctors by rep"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span class="lbl">Doctors by rep</span></button></div><div class="navsec" data-n="03"><span>ACTION</span></div><div class="nav"><button data-t="exc" title="Needs action"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg><span class="lbl">Needs action</span></button></div><div class="navsec" data-n="04"><span>TEAM</span></div><div class="nav"><button data-t="mgr" title="Managers"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span class="lbl">Managers</span></button><button data-t="org" title="Org tree"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5,5,0,0,0-5-5H13a5,5,0,0,0-5,5v5H6V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg><span class="lbl">Org tree</span></button></div><div class="navsec" data-n="05"><span>REFERENCE</span></div><div class="nav"><button data-t="guide" title="Guide"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span class="lbl">Guide</span></button><button data-t="notes" title="Notes"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg><span class="lbl">Notes</span></button></div></div>
@@ -1197,6 +1369,7 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
     <button class="icbtn" id="theme" type="button" title="Dark theme" aria-label="Dark theme"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg><span class="lbl" id="themelbl">Dark theme</span></button>
     <button class="icbtn" id="rail2" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg><span class="lbl">Collapse navigation</span></button>
   </div>
+  <div class="orgfoot"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></div>
 </aside>
 <div class="main">
   <div class="gradbar"></div>
@@ -1240,11 +1413,13 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 <div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
 <div class="fitem"><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
-</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear filters</button></span></div></div>
+</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><span class="stamp" id="stamp"></span><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear filters</button></span></div></div>
   <div class="topbar">
     <button class="burger" id="burger" title="Open menu" aria-label="Open menu">&#9776;</button>
     <div style="display:flex;align-items:center;gap:14px"><span style="display:block;width:118px" title="Frontline"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg></span></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
   </div>
+<div id="pgbar"><i></i></div>
+<div class="pband" id="pband"></div>
 <div class="wrap">
 <div class="pagehead" id="pagehead"></div>
 <div id="pbarw"></div>
@@ -1436,7 +1611,24 @@ window.expand=(id)=>{const m=META[id];if(!m)return;$('mtitle').textContent=m.tit
  $('mscrim').classList.add('open');};
 window.cm=()=>$('mscrim').classList.remove('open');
 function wireExp(){document.querySelectorAll('.card.click[data-exp]').forEach(c=>c.onclick=()=>expand(c.dataset.exp));}
-function kpi(kc,v,l,def,h,mk){kc=TC(kc);return '<div class="kpi"'+(mk?' data-m="'+mk+'"':'')+' style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')+'</div>';}
+/* Rule 3: colour carries meaning or it is absent. A tile is tinted only when it is
+   an error or a warning; the rest stay neutral. */
+function kpiSev(mk,v){
+ if(mk==='zeroRx'||mk==='rx')return (parseFloat(v)>0&&mk==='zeroRx')?' sev-err':'';
+ if(mk==='cov')return (parseFloat(v)<25)?' sev-warn':'';
+ return '';
+}
+function kpiDrillLabel(mk,v){
+ const n=String(v).replace(/[^0-9]/g,'');
+ if(mk==='zeroRx')return n?('See the '+n+' reps'):'';
+ if(mk==='cov')return 'See by region';
+ if(mk==='rx')return 'See top reps';
+ if(mk==='ud'||mk==='rxD')return 'See by rep';
+ return mk?'See the reps behind it':'';
+}
+function kpi(kc,v,l,def,h,mk){kc=TC(kc);return '<div class="kpi'+kpiSev(mk,v)+'"'+(mk?' data-m="'+mk+'"':'')+' style="--kc:'+kc+'" title="'+def+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(h?'<div class="h">'+h+'</div>':'')
+ +(mk&&kpiDrillLabel(mk,v)?'<span class="drill">'+kpiDrillLabel(mk,v)+'</span>':'')
+ +'</div>';}
 function th(k,l){return '<th data-k="'+k+'"'+(TT[k]?' title="'+TT[k].replace(/"/g,'')+'"':'')+'>'+l+'</th>';}
 /* ---- RX ENGINE ---- */
 function rxView(rows){
@@ -1489,9 +1681,34 @@ function rxView(rows){
 function kpis(rows){const sum=f=>rows.reduce((a,r)=>a+r[f],0);const onb=rows.filter(r=>r.ob).length,active=rows.filter(r=>r.vis>0).length;
  const bc=rows.filter(r=>r.r==='BO'&&r.du>0);const cov=bc.length?(bc.reduce((a,r)=>a+r.cov,0)/bc.length).toFixed(1):0;
  const pis=rows.filter(r=>r.r==='BO'&&r.pi!=='');const avgpi=pis.length?Math.round(pis.reduce((a,r)=>a+r.pi,0)/pis.length):0;
- $('kpis').innerHTML=[kpi(CDS('--cds-support-success'),fmt(sum('rx')),'Rx',GL.rx,''),kpi(CDS('--cds-support-error'),fmt(onb),'Onboarded',GL.ob,''),kpi(CDS('--cds-chart-01'),fmt(active),'Active reps','Logged ≥1 visit.',''),
-  kpi(CDS('--cds-interactive'),fmt(sum('vis')),'Visits',GL.vis,''),kpi(CDS('--cds-support-warning'),fmt(sum('sm')),'Samples','Sample units distributed.',''),
-  kpi(CDS('--cds-interactive'),cov+'%','Coverage',GL.cov,''),kpi(CDS('--cds-chart-01'),avgpi,'Avg Prod Index',GL.pi,''),kpi(CDS('--cds-support-error'),fmt(rows.filter(r=>r.zeroRx).length),'Zero-Rx reps',GL.zeroRx,'')].join('');}
+ /* r.ud is doctors met PER REP; summing it counts a doctor once per rep who saw them,
+    which is how "doctors met" came out larger than the doctor universe. D.rx.metDoctors
+    is the deduplicated count and is what the conversion figures already use. */
+ const _met=(D.rx&&D.rx.metDoctors)||0, _vis=sum('vis'), _rx=sum('rx');
+ const _zero=rows.filter(r=>r.zeroRx).length;
+ const _zeroAct=active?Math.round(100*_zero/active):0;
+ $('kpis').innerHTML=[
+  kpi(CDS('--cds-support-success'),fmt(_rx),'Total Rx',GL.rx,
+      (_met?(Math.round(100*_rx/_met)/100+' per doctor met'):''),'rx'),
+  kpi(CDS('--cds-interactive'),fmt(_met),'Doctors met',
+      'Unique doctors met at least once.',
+      /* only when it is a real share: a doctor universe smaller than the met count
+         means the two came from different places, and a tile must not print 10592%. */
+      (D.docs&&D.docs.length&&_met<=D.docs.length)
+        ?(Math.round(1000*_met/D.docs.length)/10+'% of '+fmt(D.docs.length)+' listed')
+        :(fmt(_met)+' met at least once'),'ud'),
+  kpi(CDS('--cds-support-error'),fmt(_zero),'Zero-Rx reps',GL.zeroRx,
+      _zeroAct+'% of active reps','zeroRx'),
+  kpi(CDS('--cds-interactive'),cov+'%','Doctor coverage',GL.cov,
+      'Of the doctors assigned to them','cov'),
+  kpi(CDS('--cds-interactive'),fmt(_vis),'Visits',GL.vis,
+      active?(Math.round(10*_vis/active)/10+' per active rep'):'','vis'),
+  kpi(CDS('--cds-support-error'),fmt(onb),'Onboarded',GL.ob,
+      rows.length?(Math.round(100*onb/rows.length)+'% of the roster'):'','ob'),
+  kpi(CDS('--cds-chart-01'),fmt(active),'Active reps','Logged at least one visit.',
+      rows.length?(Math.round(100*active/rows.length)+'% of the roster'):'','act'),
+  kpi(CDS('--cds-chart-01'),avgpi,'Avg productivity index',GL.pi,
+      'Percentile against peers','pi')].join('');}
 function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
  $('ovcharts').innerHTML=['<div class="card click c8" data-exp="ch_daily"><div class="ch"><div><h3>How steady is daily output?</h3><div class="cs">Prescriptions per day across the period</div></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_daily"></canvas></div></div>',
  '<div class="card click c4" data-exp="ch_onb"><div class="ch"><div><h3>Is the field onboarded?</h3></div><div class="exp">⤢</div></div><div class="cbox"><canvas id="ch_onb"></canvas></div></div>',
@@ -1649,11 +1866,16 @@ function render(){
  else if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
+ try{periodBand();}catch(e){console.warn('periodBand',e);}
+ try{navMetrics();}catch(e){console.warn('navMetrics',e);}
  try{pageHead(rows);}catch(e){console.warn('pageHead',e);}
  try{chartAnswers(rows);}catch(e){console.warn('chartAnswers',e);}
  try{tableFurniture();}catch(e){console.warn('tableFurniture',e);}
  try{expWire();}catch(_){}
  try{tilesClickable();}catch(_){}
+ try{if(TAB==='ov')decideBand(rows);}catch(e){console.warn('decideBand',e);}
+ try{headlineDelta(rows);}catch(e){console.warn('headlineDelta',e);}
+ try{updateStamp();}catch(_){}
  try{emptyStates();}catch(_){}
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
@@ -1669,6 +1891,7 @@ function init(){
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
   S('drill panel',()=>{drillWire();});
   S('ui shell',()=>{shellWire();});
+  S('masthead',()=>{mastheadWire();});
   S('filter split',()=>{filterSplit();});
   S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
     /* a nav click always leaves the panel: the section it hosts may be the one we
@@ -3912,6 +4135,23 @@ function pageHead(rows){
     (lead.cta?'<button class="cta" type="button" id="leadcta">'+esc(lead.cta.l)+'</button>':'')+
     '</div></div>'):'');
  if(lead&&lead.cta){const b=$('leadcta');if(b)b.onclick=lead.cta.f;}
+ /* 6fr/10fr: core metric left, the screen's lead chart right. Moving the card in
+    rather than duplicating it keeps one of everything, as the drill panel does. */
+ try{
+  const sec=document.querySelector('.sec.on');
+  const hl=el.querySelector('.headline');
+  if(sec&&hl&&lead){
+   let hero=el.querySelector('.hero');
+   if(!hero){hero=document.createElement('div');hero.className='hero';
+    const core=document.createElement('div');core.className='core';
+    const side=document.createElement('div');side.className='side2';
+    hero.appendChild(core);hero.appendChild(side);el.appendChild(hero);
+    core.appendChild(hl);}
+   const side=hero.querySelector('.side2');
+   const card=sec.querySelector('.card[data-exp]');
+   if(card&&side&&!side.contains(card))side.appendChild(card);
+  }
+ }catch(e){console.warn('hero',e);}
 }
 
 /* Every supporting tile opens the records behind it. A number you cannot get behind
@@ -4128,6 +4368,282 @@ function tableFurniture(){
      Math.min(10,total-shown)+' rows</button>':
      '<button class="more" type="button" disabled>All rows shown</button>');
  });
+}
+
+/* ==================================================== LOADING (CONFORMANCE #12)
+   One helper every refetch goes through. The report stays readable throughout: the
+   bar is 4px at the top of the content column and nothing is covered. */
+let _pgN=0;
+function load(fn,ms){
+ const bar=$('pgbar');
+ _pgN++; if(bar)bar.classList.add('on');
+ const done=()=>{ _pgN=Math.max(0,_pgN-1);
+   if(!_pgN&&bar)bar.classList.remove('on'); };
+ /* a minimum on screen: a bar that flashes on and off reads as a glitch */
+ const t0=Date.now();
+ try{ fn(); }catch(e){ console.warn('load',e); }
+ const wait=Math.max(0,(ms||300)-(Date.now()-t0));
+ setTimeout(done,wait);
+}
+function skeleton(el,on){ if(el)el.classList.toggle('skel',!!on); }
+
+/* ==================================================== PERIOD: presets + compare */
+PR.cmp='prev';                       /* prev | ly | none */
+function _addM(dt,n){const y=+dt.slice(0,4),m=+dt.slice(5,7)-1,da=+dt.slice(8,10);
+ const x=new Date(Date.UTC(y,m+n,da));return x.toISOString().slice(0,10);}
+function _days(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400000)+1;}
+
+/* Quarter- and year-to-date, clamped to captured history like every other mode. */
+const _perRangeBase=perRange;
+perRange=function(){
+ const end=BASE.dataEnd,start=BASE.dataStart,m=PR.mode;
+ const cl=(a,b)=>[a<start?start:a,b>end?end:b];
+ if(m==='qtd'){const y=+end.slice(0,4),mo=+end.slice(5,7),s=Math.floor((mo-1)/3)*3+1;
+  return cl(y+'-'+String(s).padStart(2,'0')+'-01',end);}
+ if(m==='ytd')return cl(end.slice(0,4)+'-01-01',end);
+ return _perRangeBase();
+};
+
+/* The comparison window. Same length, immediately before — or the same dates a year
+   earlier. Returned clamped, and null when there is no history to compare against,
+   because a delta computed against a partial window is a lie with a percent sign. */
+function perPrev(){
+ if(PR.cmp==='none')return null;
+ const[f,t]=perRange(), start=BASE.dataStart;
+ let pf,pt;
+ if(PR.cmp==='ly'){pf=_addM(f,-12);pt=_addM(t,-12);}
+ else{const n=_days(f,t);pt=addDays(f,-1);pf=addDays(pt,-(n-1));}
+ if(pt<start)return null;
+ return[pf<start?start:pf,pt];
+}
+/* Totals over an arbitrary window, computed the same way applyPeriod() does, so a
+   comparison is never a differently-derived number. */
+function windowTotals(from,to){
+ const w=wdSet(); let vis=0,rx=0;const reps=new Set();
+ (BASE.reps||[]).forEach(r=>{
+  const cs=(BASE.calls||{})[r.c]||[];
+  for(let i=0;i<cs.length;i++){const v=cs[i],dt=v[0];
+   if(dt<from||dt>to)continue; if(w&&!w.has(dow(dt)))continue;
+   vis++; rx+=(+v[8]||0); reps.add(r.c);}
+ });
+ return {vis:vis,rx:rx,reps:reps.size};
+}
+let _cmpCache={k:'',v:null};
+function cmpTotals(){
+ const p=perPrev(); if(!p)return null;
+ const k=p[0]+p[1]+(PR.wd||'');
+ if(_cmpCache.k===k)return _cmpCache.v;
+ const v=windowTotals(p[0],p[1]);
+ _cmpCache={k:k,v:v};return v;
+}
+function deltaTag(now,then,unit){
+ if(then===null||then===undefined||!then)return '';
+ const d=Math.round(1000*(now-then)/then)/10;
+ const cls=d>0.5?'up':d<-0.5?'dn':'flat';
+ const s=(d>0?'+':'')+d+(unit||'%');
+ return '<span class="dtag '+cls+'">'+s+'</span>';
+}
+
+const QUICK=[['r30','Last 30 days'],['r90','Last 90 days'],['qtd','Quarter to date'],
+             ['ytd','Year to date'],['all','All time'],['custom','Custom']];
+const CMPS=[['prev','Previous period'],['ly','Same period last year'],
+            ['none','No comparison']];
+
+function periodBand(){
+ const el=$('pband'); if(!el)return;
+ const[f,t]=perRange();
+ const days=_days(f,t), wk=Math.round(workDays(f,t)/6);
+ const full=(f===BASE.dataStart&&t===BASE.dataEnd);
+ const span=_days(BASE.dataStart,BASE.dataEnd);
+ const off=Math.round(100*_days(BASE.dataStart,f)/span);
+ const wid=Math.max(2,Math.round(100*days/span));
+ const p=perPrev();
+ const cmpSub={prev:p?('The '+_days(p[0],p[1])+' days before this range'):'No earlier history',
+               ly:p?(dlabel(p[0])+' to '+dlabel(p[1])):'No data a year back',
+               none:'Absolute figures only'};
+ el.innerHTML=
+  '<section class="c1"><div class="cap">'+ICO_CAL+'Reporting period</div>'+
+   '<div class="range">'+dlabel(f)+' &ndash; '+dlabel(t)+'</div>'+
+   '<div class="meta">'+days+' days &middot; '+wk+' working weeks &middot; '+
+     (full?'full captured history':'selected window')+'</div>'+
+   '<div class="tags"><span class="tag">'+
+     (QUICK.find(q=>q[0]===PR.mode)||['','Custom'])[1]+'</span>'+
+     (PR.cmp!=='none'?'<span class="tag">vs '+
+       (PR.cmp==='ly'?'same period last year':'previous period')+'</span>':'')+
+   '</div></section>'+
+  '<section class="c2"><div class="cap">'+ICO_CAL+'Quick range</div><div class="qgrid">'+
+   QUICK.map(([k,l])=>{
+    let sub='';
+    if(k==='all')sub=dlabel(BASE.dataStart)+' &ndash; '+dlabel(BASE.dataEnd);
+    else if(k==='custom')sub='Pick two dates';
+    else{const s=PR.mode;PR.mode=k;const[a,b]=perRange();PR.mode=s;
+         sub=dlabel(a)+' &ndash; '+dlabel(b);}
+    return '<button type="button" data-q="'+k+'"'+(PR.mode===k?' class="on"':'')+'>'+
+      l+'<small>'+sub+'</small></button>';}).join('')+
+   '</div>'+
+   '<div class="wbar"><div class="lbls"><span>Selected window within captured history</span>'+
+     '<span>'+Math.round(100*days/span)+'% of captured history</span></div>'+
+     '<div class="track"><div class="fill" style="left:'+off+'%;width:'+wid+'%"></div></div>'+
+     '<div class="ends"><span>'+dlabel(BASE.dataStart)+'</span><span>'+
+       dlabel(BASE.dataEnd)+'</span></div></div>'+
+  '</section>'+
+  '<section class="c3"><div class="cap">'+ICO_CMP+'Compare against</div><div class="cmp">'+
+   CMPS.map(([k,l])=>'<button type="button" data-c="'+k+'"'+(PR.cmp===k?' class="on"':'')+
+     '>'+l+'<small>'+cmpSub[k]+'</small></button>').join('')+
+   '<div class="note">'+ICO_INFO+'<span>Applies to every figure and drill-down below</span></div>'+
+  '</div></section>';
+
+ el.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{
+  const k=b.dataset.q;
+  if(k==='custom'){const s=$('fpr');if(s){s.value='custom';s.onchange&&s.onchange({target:s});}return;}
+  load(()=>{PR.mode=k;PR.from='';PR.to='';applyPeriod();render();});
+ });
+ el.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{
+  load(()=>{PR.cmp=b.dataset.c;_cmpCache={k:'',v:null};render();},200);
+ });
+}
+
+/* ==================================================== NAV AS A STATUS BOARD (#18)
+   Each item's number comes from SCREENS[].lead() — the same function that renders
+   that screen's headline. Wiring it to a second query is how a rail ends up
+   disagreeing with the page it links to. */
+const NAVSUB={ov:'Conversion, volume, exceptions',rx:'Prescriptions and rates',
+ prod:'Peer ranking and index',trend:'Week-by-week movement',
+ daily:'Calls, day plans, visit records',calls:'Every logged call',
+ docs:'Coverage and conversion by rep',roster:'The doctors behind each rep',
+ exc:'Grouped by what to do',mgr:'Teams rolled up to their manager',
+ org:'Reporting lines and territories',guide:'How each figure is calculated',
+ notes:'Data caveats and cut-offs'};
+
+function navMetrics(){
+ const all=fr();
+ document.querySelectorAll('#tabs button[data-t]').forEach(b=>{
+  const k=b.dataset.t, s=SCREENS[k];
+  let holder=b.querySelector('.navm');
+  if(!holder){holder=document.createElement('span');holder.className='navm';
+              b.appendChild(holder);}
+  let num='',tag='';
+  try{
+   if(s&&s.lead){const L=s.lead(all);num=L?L.v:'';}
+   if(k==='exc'){const n=all.filter(r=>(r.fl||[]).length).length;num=n+' open';}
+   if(k==='daily'){const bo=all.filter(r=>r.r==='BO'&&r.vis>0);
+    const c=bo.length?Math.round(100*bo.reduce((a,r)=>a+(+r.cpd||0),0)/bo.length)/100:0;
+    num=c+'/day'; if(c<10)tag='<span class="navtag">Below 10</span>';}
+   if(k==='org')num=fmt(D.reps.length);
+   if(k==='notes'||k==='guide')num='';
+  }catch(e){}
+  const err=(k==='ov'||k==='exc')?' class="err"':'';
+  /* number first, then the description, then the tag — reading order matters to a
+     screen reader, and "Below 107.48/day" is what putting the tag first sounds like */
+  holder.innerHTML=(num?('<b'+err+'>'+num+'</b> '):'')+(NAVSUB[k]||'')+tag;
+ });
+}
+
+const ICO_CAL="<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" data-icon=\"calendar\"><path d=\"M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20 V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z\"/></svg>", ICO_CMP="<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" data-icon=\"compare\"><path d=\"M28,6H18V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V24a2,2,0,0,0,2,2H14v2a2,2,0,0,0,2,2H28a2,2,0,0,0,2-2V8A2,2,0,0,0,28,6ZM4,15h6.17L7.59,17.59,9,19l5-5L9,9,7.59,10.41,10.17,13H4V4H16V24H4ZM16,28V26a2,2,0,0,0,2-2V8H28v9H21.83l2.58-2.59L23,13l-5,5,5,5,1.41-1.41L21.83,19H28v9Z\"/></svg>", ICO_INFO="<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" data-icon=\"information\"><path d=\"M17 22 17 14 13 14 13 16 15 16 15 22 12 22 12 24 20 24 20 22 17 22z\"/><path d=\"M16,8a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,16,8Z\"/><path d=\"M16,30A14,14,0,1,1,30,16,14,14,0,0,1,16,30ZM16,4A12,12,0,1,0,28,16,12,12,0,0,0,16,4Z\"/></svg>";
+
+/* the wordmark moves out of the old top bar and fills the masthead */
+function mastheadWire(){
+ const m=$('masthead'); if(!m||m.dataset.w)return;
+ const src=document.querySelector('.topbar span[title="Frontline"] svg');
+ if(src){m.innerHTML=src.outerHTML;
+  const s=m.querySelector('svg');if(s){s.removeAttribute('width');
+   s.setAttribute('style','width:100%;height:auto;display:block');}}
+ m.dataset.w='1';
+}
+
+/* ==================================================== THE DECISION BAND
+   The exceptions summary, ranked by what is AT STAKE rather than by count. Count puts
+   the common flag above the expensive one, which is the opposite of a work queue.
+
+   It reads from the same rows as the Needs action screen, so the two can never show
+   different groupings of the same week — UNDESIGNED_SECTIONS asks for exactly that. */
+
+const FLAGPLATE={err:"<svg viewBox=\"0 0 32 32\" width=\"20\" height=\"20\" aria-hidden=\"true\" data-icon=\"warning--alt--filled\"><path fill=\"none\" d=\"M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z\" data-icon-path=\"inner-path\"/><path d=\"M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z\"/><path d=\"M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z\"/></svg>",warn:"<svg viewBox=\"0 0 32 32\" width=\"20\" height=\"20\" aria-hidden=\"true\" data-icon=\"warning--filled\"><path d=\"M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14C30,8.3,23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25 c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22c0.8,0,1.5,0.7,1.5,1.5S16.8,25,16,25z\"/><path fill=\"none\" d=\"M17.5,23.5c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22 C16.8,22,17.5,22.7,17.5,23.5z M17.1,8h-2.2v11h2.2V8z\" data-icon-path=\"inner-path\" opacity=\"0\"/></svg>"};
+/* which flags are an error and which a warning; anything unlisted is a warning */
+const FLAGSEV={'Zero Rx despite visits':'err','Silent (no activity)':'err',
+ 'New joiner not activated':'err','Went silent mid-month':'err',
+ 'Rx declining':'warn','Low coverage <25%':'warn','Sample-heavy / low Rx':'warn',
+ 'Tour plan not submitted':'warn','Single-doctor dependent':'warn',
+ 'Rushed calls (audit)':'warn','New doctors not converting':'warn'};
+const FLAGACT={'Zero Rx despite visits':'Coach on conversion',
+ 'Silent (no activity)':'Check the device and the plan',
+ 'New joiner not activated':'Complete onboarding',
+ 'Went silent mid-month':'Find out what stopped',
+ 'Rx declining':'Review the doctor list',
+ 'Low coverage <25%':'Rebuild the call plan',
+ 'Sample-heavy / low Rx':'Audit sample use',
+ 'Tour plan not submitted':'Chase the plan',
+ 'Single-doctor dependent':'Widen the base',
+ 'Rushed calls (audit)':'Verify call quality',
+ 'New doctors not converting':'Coach the first call'};
+
+function decideGroups(rows){
+ const g={};
+ rows.forEach(r=>(r.fl||[]).forEach(f=>{
+  const o=g[f]||(g[f]={f:f,n:0,rx:0,mgrs:new Set()});
+  o.n++; o.rx+=(+r.rx||0); if(r.mg&&r.mg!=='—')o.mgrs.add(r.mg);
+ }));
+ /* at stake, not frequency: a flag on five reps carrying 4,000 Rx outranks one on
+    forty reps carrying none */
+ return Object.values(g).sort((a,b)=>(b.rx-a.rx)||(b.n-a.n));
+}
+
+function decideBand(rows){
+ const sec=$('sec_ov'); if(!sec)return;
+ let el=sec.querySelector('.decide');
+ const groups=decideGroups(rows), open=rows.filter(r=>(r.fl||[]).length).length;
+ if(!groups.length){ if(el)el.remove(); return; }
+ if(!el){el=document.createElement('div');el.className='decide';sec.appendChild(el);}
+ el.innerHTML=
+  '<div class="dh"><span class="sq"></span><h2>Needs a decision this week</h2>'+
+   '<span class="cnt">'+open+' open</span></div>'+
+  '<div class="lead">All '+open+' open exceptions, grouped by the action they imply and '+
+   'ranked by what is at stake rather than by count.</div>'+
+  groups.slice(0,4).map(o=>{
+   const sev=FLAGSEV[o.f]||'warn';
+   return '<button type="button" class="row '+sev+'" data-f="'+esc(o.f)+'">'+
+    '<span class="plate">'+FLAGPLATE[sev]+'</span>'+
+    '<span class="txt"><b>'+esc(FLAGACT[o.f]||o.f)+'</b><span>'+esc(o.f)+
+      ' &middot; '+o.n+' rep'+(o.n===1?'':'s')+
+      (o.mgrs.size?(' across '+o.mgrs.size+' manager'+(o.mgrs.size===1?'':'s')):'')+
+      '</span></span>'+
+    '<span class="stake"><b>'+fmt(o.rx)+'</b><span>Rx at stake</span></span>'+
+    '<span class="go">See the '+o.n+' rep'+(o.n===1?'':'s')+' &rarr;</span></button>';
+  }).join('');
+ el.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{
+  load(()=>{go('exc');},200);
+ });
+}
+
+/* ==================================================== THE HEADLINE DELTA
+   The comparison the period band offers has to land on the number it describes. */
+function headlineDelta(rows){
+ const hl=document.querySelector('.pagehead .headline .num');
+ if(!hl||hl.querySelector('.dtag'))return;
+ let tag='';
+ try{
+  const prev=cmpTotals();
+  if(TAB==='ov'&&prev){
+   const met=rows.reduce((a,r)=>a+(r.ud||0),0), rxd=rows.reduce((a,r)=>a+(r.rxD||0),0);
+   const now=met?(100*rxd/met):0;
+   /* the comparison window gives calls and Rx, not doctors met, so the honest
+      comparison here is Rx per call — say what is being compared, not "vs target" */
+   const nowR=rows.reduce((a,r)=>a+r.vis,0)?
+     (rows.reduce((a,r)=>a+r.rx,0)/rows.reduce((a,r)=>a+r.vis,0)):0;
+   const thenR=prev.vis?(prev.rx/prev.vis):0;
+   if(thenR)tag=deltaTag(nowR,thenR,'%');
+  }else if(prev){
+   const now=rows.reduce((a,r)=>a+r.rx,0);
+   if(prev.rx)tag=deltaTag(now,prev.rx,'%');
+  }
+ }catch(e){}
+ if(tag)hl.insertAdjacentHTML('beforeend',tag);
+}
+
+/* the stamp the filter strip carries, so "when was this" never needs asking */
+function updateStamp(){
+ const s=$('stamp'); if(!s)return;
+ s.innerHTML='<span class="dot"></span>Data updated '+((D&&D.gen)||'');
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
