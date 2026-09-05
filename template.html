@@ -1063,7 +1063,10 @@ body.drillon{overflow:hidden}
 
 /* ===================================================== STICKY FILTER BAR
    The rail navigates; the bar owns data scope. No control lives in both.         */
-.fbar{position:sticky;top:48px;z-index:55;background:var(--cds-layer-01);
+/* top:0, not 48px: the 48px was the height of the UI Shell header that v26
+   removed. An offset that measures something no longer on the page is how a sticky
+   bar ends up floating with a gap and the content sliding under it. */
+.fbar{position:sticky;top:0;z-index:55;background:var(--cds-layer-01);
   border-bottom:1px solid var(--cds-border-subtle-01)}
 .fbar .fhead{display:flex;align-items:center;gap:var(--cds-spacing-03);height:40px;
   padding:0 var(--cds-spacing-05);cursor:pointer;
@@ -1292,7 +1295,7 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
   color:var(--cds-link-primary);font-size:var(--cds-body-compact-01-size)}
 
 /* ===================================================== LOADING (audit #12) */
-#pgbar{position:fixed;left:var(--side);right:0;height:4px;z-index:65;
+#pgbar{position:sticky;top:0;left:0;right:0;height:4px;z-index:66;
   background:var(--cds-border-subtle-00);overflow:hidden;display:none}
 #pgbar.on{display:block}
 #pgbar i{position:absolute;top:0;bottom:0;width:25%;background:var(--cds-interactive);
@@ -1347,6 +1350,33 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .stamp{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);
   color:var(--cds-link-primary);font-size:var(--cds-label-01-size)}
 .stamp .dot{width:8px;height:8px;background:var(--cds-interactive);flex:0 0 auto}
+
+/* ============================================== COLLAPSED RAIL, PROPERLY
+   Every block in the rail needs to know it is 48px wide, not just the nav items. */
+.app.railed .masthead{display:none}
+.app.railed .userchip{flex-direction:column;gap:0;padding:var(--cds-spacing-03) 0;
+  justify-content:center}
+.app.railed .userchip .uinfo,.app.railed .orgfoot span{display:none}
+.app.railed .userchip .uout{margin:var(--cds-spacing-03) auto 0}
+.app.railed .orgfoot{justify-content:center;padding:var(--cds-spacing-04) 0}
+.app.railed .sidefoot .icbtn{justify-content:center;padding:0}
+.side{overflow:hidden}
+.sidescroll{overflow-y:auto;overflow-x:hidden}
+
+/* ============================================== HERO, AT REAL WIDTHS
+   6fr of 16 is ~310px on a 1157px window with the rail open — too narrow for a
+   sentence at 16px. Carbon's lg boundary is 1312px; below it, stack. */
+@media(max-width:1312px){.hero{grid-template-columns:1fr}}
+.hero>.core,.hero>.side2{min-width:0}
+.pagehead{padding-left:var(--s5);padding-right:var(--s5)}
+/* the hosted chart card must not keep the grid-column span it had in the old bento */
+.hero .card{grid-column:auto !important;width:auto;margin:0}
+
+/* ============================================== BUTTONS GROW
+   A fixed height with a wrapping label puts the second line outside the button. */
+.headline .cta{height:auto;min-height:40px;padding:var(--cds-spacing-04) 63px
+  var(--cds-spacing-04) 15px;white-space:normal;line-height:1.4;max-width:100%}
+.decide .row .go{white-space:nowrap}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2321,6 +2351,9 @@ function stickyCols(root){
    attention is visible without opening the tab. */
 function navBadge(){
  const b=$('tabs')&&$('tabs').querySelector('button[data-t="exc"]'); if(!b)return;
+ /* the nav sub-line already states the count; a badge beside it is the same fact
+    twice, and two places to disagree */
+ if(b.querySelector('.navm')){const old=b.querySelector('.badge');if(old)old.remove();return;}
  const n=fr().filter(r=>(r.fl||[]).length).length;
  let s=b.querySelector('.badge');
  if(!n){ if(s)s.remove(); return; }
