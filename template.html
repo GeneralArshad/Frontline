@@ -1091,6 +1091,63 @@ body.drillon{overflow:hidden}
   margin-top:var(--cds-spacing-03)}
 @media(max-width:1000px){.shell .prod span{display:none}}
 
+
+/* ================================================== PAGE HEADER + HEADLINE
+   The hierarchy Carbon expects: one number far larger and lighter than anything
+   else on the screen, then a sentence, then everything else at supporting size. */
+.pagehead{padding:var(--cds-spacing-07) var(--cds-spacing-05) var(--cds-spacing-06);
+  max-width:1584px}
+.pagehead .eyebrow{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);text-transform:uppercase;
+  margin-bottom:var(--cds-spacing-03)}
+.pagehead h1{margin:0;font-size:var(--cds-heading-05-size);line-height:var(--cds-heading-05-lh);
+  font-weight:var(--cds-heading-05-weight);letter-spacing:0}
+.pagehead .desc{margin-top:var(--cds-spacing-04);max-width:720px;
+  font-size:var(--cds-body-01-size);line-height:var(--cds-body-01-lh);
+  color:var(--cds-text-secondary)}
+.pagehead .tags{display:flex;flex-wrap:wrap;gap:var(--cds-spacing-03);
+  margin-top:var(--cds-spacing-05)}
+.pagehead .tag{background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text);
+  border-radius:var(--cds-border-radius-max);height:24px;line-height:24px;
+  padding:0 var(--cds-spacing-04);font-size:var(--cds-label-01-size)}
+.pagehead .tag.scope{background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text)}
+
+.headline{margin-top:var(--cds-spacing-07);display:flex;gap:var(--cds-spacing-09);
+  flex-wrap:wrap;align-items:flex-start}
+.headline .num{font-size:var(--cds-scale-12);line-height:1.07;
+  font-weight:var(--cds-font-weight-light);letter-spacing:0;
+  font-variant-numeric:tabular-nums;color:var(--cds-text-primary)}
+.headline .cap{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary);
+  margin-top:var(--cds-spacing-03);letter-spacing:0.16px}
+.headline .say{max-width:640px;font-size:var(--cds-body-02-size);
+  line-height:var(--cds-body-02-lh);color:var(--cds-text-primary);
+  font-weight:var(--cds-font-weight-semibold);margin-top:var(--cds-spacing-04)}
+.headline .sub{max-width:640px;font-size:var(--cds-body-01-size);
+  line-height:var(--cds-body-01-lh);color:var(--cds-text-secondary);
+  margin-top:var(--cds-spacing-04)}
+.headline .cta{margin-top:var(--cds-spacing-05);height:40px;border:0;
+  background:var(--cds-button-primary);color:var(--cds-text-on-color);
+  padding:0 63px 0 15px;font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);
+  letter-spacing:0.16px;cursor:pointer;text-align:left}
+.headline .cta:hover{background:var(--cds-button-primary-hover)}
+/* the section's own title block is replaced by the page header */
+.sec>.secttl:first-child{display:none}
+
+/* supporting tiles sit below the headline and read as supporting */
+.kpi{cursor:pointer}
+.kpi .v{font-size:var(--cds-scale-07)}
+
+/* ================================================== FILTER BAR, SLIMMED */
+.fbar .fbody{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.fbar .fbody .fitem.more{display:none}
+.fbar.moreon .fbody .fitem.more{display:block}
+.morebtn{border:0;background:transparent;color:var(--cds-link-primary);cursor:pointer;
+  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px;
+  height:32px;padding:0 var(--cds-spacing-05)}
+.morebtn:hover{background:var(--cds-layer-hover-01)}
+/* one identity row, not two */
+.topbar{display:none}
+
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1161,6 +1218,7 @@ body.drillon{overflow:hidden}
     <div style="display:flex;align-items:center;gap:14px"><span style="display:block;width:118px" title="Frontline"><svg viewBox="0 0 139 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 16.6002L2.28061 0.263147H13.4644L13.0477 3.22356H5.26296L4.6928 7.36814H11.3811L10.9645 10.3286H4.27615L3.39899 16.6002H0Z" fill="url(#fl_paint0_linear)"/><path d="M11.9933 16.6002L14.2739 0.263147H20.3044C21.3569 0.263147 22.278 0.453198 23.0674 0.833301C23.8569 1.19878 24.4709 1.74701 24.9094 2.47797C25.3626 3.20894 25.5892 4.11534 25.5892 5.19717C25.5892 5.97199 25.4504 6.68834 25.1726 7.34621C24.9094 8.00408 24.522 8.57423 24.0104 9.05667C23.5133 9.53911 22.9066 9.91921 22.1903 10.197L24.9314 16.6002H21.3131L18.265 9.31982L20.3044 10.6794H16.2256L15.3923 16.6002H11.9933ZM16.6422 7.719H19.5588C20.0704 7.719 20.5163 7.60936 20.8964 7.39007C21.2912 7.17078 21.5982 6.87108 21.8175 6.49098C22.0514 6.11088 22.1683 5.67961 22.1683 5.19717C22.1683 4.59778 21.971 4.12265 21.5762 3.77179C21.1961 3.4063 20.6771 3.22356 20.0193 3.22356H17.2562L16.6422 7.719Z" fill="url(#fl_paint1_linear)"/><path d="M34.8813 16.8634C33.6971 16.8634 32.6007 16.666 31.592 16.2713C30.5978 15.8766 29.728 15.3211 28.9824 14.6047C28.2514 13.8884 27.6813 13.0551 27.2719 12.1048C26.8626 11.1399 26.6579 10.0873 26.6579 8.94703C26.6579 7.67514 26.8918 6.49829 27.3597 5.41646C27.8275 4.33463 28.478 3.39168 29.3113 2.58762C30.1446 1.76894 31.1095 1.133 32.206 0.679799C33.317 0.2266 34.5158 0 35.8023 0C37.0011 0 38.0976 0.197361 39.0917 0.592083C40.1004 0.986805 40.9703 1.54234 41.7012 2.25869C42.4468 2.96041 43.017 3.79372 43.4117 4.75859C43.821 5.70885 44.0257 6.74682 44.0257 7.87251C44.0257 9.14439 43.7918 10.3286 43.324 11.425C42.8561 12.5068 42.1983 13.4571 41.3504 14.2758C40.5171 15.0945 39.5449 15.7304 38.4338 16.1836C37.3374 16.6368 36.1532 16.8634 34.8813 16.8634ZM34.8813 13.7933C35.6707 13.7933 36.409 13.6471 37.0961 13.3548C37.7979 13.0624 38.4119 12.653 38.9382 12.1267C39.4645 11.6004 39.8738 10.9791 40.1662 10.2628C40.4732 9.5318 40.6267 8.74236 40.6267 7.89443C40.6267 6.92956 40.4147 6.08895 39.9908 5.3726C39.5814 4.64164 39.0113 4.07879 38.2803 3.68407C37.564 3.27473 36.738 3.07006 35.8023 3.07006C35.0129 3.07006 34.2673 3.21625 33.5656 3.50864C32.8785 3.80102 32.2718 4.21037 31.7455 4.73666C31.2192 5.24834 30.8025 5.86235 30.4955 6.5787C30.2031 7.29504 30.0569 8.08449 30.0569 8.94703C30.0569 9.89728 30.2616 10.7379 30.6709 11.4689C31.0949 12.1998 31.6651 12.77 32.3814 13.1793C33.1124 13.5887 33.9457 13.7933 34.8813 13.7933Z" fill="url(#fl_paint2_linear)"/><path d="M44.4387 16.6002L46.7194 0.263147H49.3289L56.2804 11.8197L55.0304 12.1487L56.6971 0.263147H60.096L57.8154 16.6002H55.184L48.386 4.95595L49.5043 4.62702L47.8377 16.6002H44.4387Z" fill="url(#fl_paint3_linear)"/><path d="M62.7755 16.6002L64.6395 3.22356H60.4949L60.9115 0.263147H72.5339L72.1172 3.22356H68.0384L66.1745 16.6002H62.7755Z" fill="url(#fl_paint4_linear)"/><path d="M71.0593 16.6002L73.34 0.263147H76.7389L74.875 13.6398H81.7826L81.366 16.6002H71.0593Z" fill="url(#fl_paint5_linear)"/><path d="M82.1746 16.6002L84.4552 0.263147H87.8542L85.5736 16.6002H82.1746Z" fill="url(#fl_paint6_linear)"/><path d="M87.5934 16.6002L89.8741 0.263147H92.4836L99.4351 11.8197L98.1851 12.1487L99.8517 0.263147H103.251L100.97 16.6002H98.3386L91.5407 4.95595L92.659 4.62702L90.9924 16.6002H87.5934Z" fill="url(#fl_paint7_linear)"/><path d="M102.992 16.6002L105.272 0.263147H116.259L115.842 3.22356H108.255L107.75 6.92956H114.899L114.482 9.88997H107.334L106.807 13.6398H114.395L113.978 16.6002H102.992Z" fill="url(#fl_paint8_linear)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M120.389 15.0977L125.464 15.0977L130.919 7.74416L125.464 0.390624L120.389 0.390624L125.844 7.74416L120.389 15.0977ZM127.959 15.0977L133.414 7.74416L127.959 0.390625L133.034 0.390625L138.49 7.74416L133.034 15.0977L127.959 15.0977Z" fill="url(#fl_paint9_linear)"/><defs><linearGradient id="fl_paint0_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint1_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint2_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint3_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint4_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint5_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint6_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint7_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint8_linear" x1="60.7839" y1="-17.2166" x2="39.5834" y2="13.2742" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fl_paint9_linear" x1="138.49" y1="7.74416" x2="120.389" y2="7.74416" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient></defs></svg></span></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
   </div>
 <div class="wrap">
+<div class="pagehead" id="pagehead"></div>
 <div id="pbarw"></div>
 <section class="sec" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
@@ -1560,7 +1618,9 @@ function render(){
  else if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
+ try{pageHead(rows);}catch(e){console.warn('pageHead',e);}
  try{expWire();}catch(_){}
+ try{tilesClickable();}catch(_){}
  try{emptyStates();}catch(_){}
  try{stickyCols();}catch(_){}}
 /* re-measure pinned column widths when the layout changes */
@@ -1576,6 +1636,7 @@ function init(){
   S('doctor filters',()=>{fill('dfst',D.docsByState.map(x=>x[0]),'All states');const sp={},ca={};D.docs.forEach(d=>{if(d[2])sp[d[2]]=1;if(d[7])ca[d[7]]=1;});fill('dfsp',Object.keys(sp).sort(),'All specializations');fill('dfca',Object.keys(ca).sort(),'All categories');});
   S('drill panel',()=>{drillWire();});
   S('ui shell',()=>{shellWire();});
+  S('filter split',()=>{filterSplit();});
   S('navigation',()=>{$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{
     /* a nav click always leaves the panel: the section it hosts may be the one we
        are about to show, and it cannot be in two places at once */
@@ -3654,6 +3715,201 @@ function shellWire(){
    chip.style.display='none';
   }
  }catch(e){}
+}
+
+/* ============================================================ PAGE COMPOSITION
+   One registry, one renderer. Thirteen screens cannot drift apart if none of them
+   writes its own header — this is the same reason the tables all go through th().
+
+   Each entry: eyebrow, title, description, and optionally lead(rows) returning the
+   headline. lead() is computed from the SAME rows the screen renders, so a headline
+   can never contradict the table under it.                                        */
+
+function pct(n,d){return d?Math.round(1000*n/d)/10:0;}
+function nOf(n){return fmt(Math.round(n||0));}
+
+const SCREENS={
+ ov:{eye:'Core metric',t:'Pulse',
+  d:'The health of the field in one view: who is active, what they are producing, and where the gap between activity and prescriptions is widest.',
+  lead:rows=>{
+   const met=rows.reduce((a,r)=>a+(r.ud||0),0), rxd=rows.reduce((a,r)=>a+(r.rxD||0),0);
+   const conv=pct(rxd,met), zero=rows.filter(r=>r.zeroRx).length;
+   const miss=Math.max(0,10-Math.round(conv/10));
+   return {v:conv+'%',cap:'of doctors met produced a prescription',
+    say:met?('For about '+miss+' doctor'+(miss===1?'':'s')+' in 10, the visit did not '+
+             'produce a prescription.'):
+            'No doctors were met in this view.',
+    sub:zero?(zero+' active reps logged visits and generated no Rx at all.'):'',
+    cta:zero?{l:'See the '+zero+' zero-Rx reps',f:()=>{F.rx='zero';go('exc');}}:null};}},
+
+ rx:{eye:'Core metric',t:'Rx engine',
+  d:'Prescriptions are what the field exists to generate. Everything here answers one question: are visits turning into prescriptions?',
+  lead:rows=>{
+   const bo=rows.filter(r=>r.r==='BO'), act=bo.filter(r=>r.vis>0);
+   const tot=rows.reduce((a,r)=>a+r.rx,0), vis=rows.reduce((a,r)=>a+r.vis,0);
+   const per=vis?Math.round(100*tot/vis)/100:0;
+   return {v:fmt(tot),cap:'prescriptions in this view',
+    say:vis?('Every call produced '+per+' prescriptions on average, across '+nOf(vis)+' calls.'):'No calls in this view.',
+    sub:act.length?(act.length+' reps were active; '+bo.filter(r=>r.zeroRx).length+' of them produced none.'):'',
+    cta:{l:'See the rep ranking',f:()=>go('prod')}};}},
+
+ prod:{eye:'Core metric',t:'Productivity',
+  d:'Each rep scored against their peers on calls per day, Rx per call, coverage and attendance. The index is a percentile, not a target.',
+  lead:rows=>{
+   const bo=rows.filter(r=>r.r==='BO'&&r.pi!=='');
+   const s=bo.map(r=>r.rx).sort((a,b)=>b-a), tot=s.reduce((a,b)=>a+b,0);
+   let run=0,n=0; for(const v of s){run+=v;n++;if(run>=tot*0.8)break;}
+   const share=bo.length?n/bo.length:0;
+   /* The finding is whichever is true. A headline that says "concentrated" whatever
+      the number is not an answer, it is a template with a number dropped into it. */
+   const say=!bo.length?'No scored reps in this view.'
+    :share<=0.35?('Output is concentrated: '+n+' of '+bo.length+' scored reps produce four fifths of it. Protect them, and find what the rest are missing.')
+    :share<=0.6 ?(n+' of '+bo.length+' scored reps produce four fifths of the Rx — a broad middle rather than a few stars.')
+    :('Output is spread evenly: it takes '+n+' of '+bo.length+' reps to reach four fifths, so there is no small group carrying this.');
+   return {v:bo.length?(pct(n,bo.length)+'%'):'—',cap:'of reps generate 80% of the Rx',
+    say:say,sub:'',cta:null};}},
+
+ trend:{eye:'Core metric',t:'Trends',
+  d:'How calls, prescriptions and conversion moved week by week across the captured period.',
+  lead:rows=>{
+   const tot=rows.reduce((a,r)=>a+r.rx,0), vis=rows.reduce((a,r)=>a+r.vis,0);
+   const from=(D&&D.dataStart)?dlabel(D.dataStart):'', to=(D&&D.dataEnd)?dlabel(D.dataEnd):'';
+   const n=(D.months||[]).length;
+   return {v:fmt(tot),cap:'prescriptions'+(n?(' across '+n+' month'+(n===1?'':'s')):''),
+    say:(from&&to)?('Captured from '+from+' to '+to+', against '+nOf(vis)+' calls.')
+                  :(nOf(vis)+' calls in this view.'),
+    sub:'The month-on-month table below shows who moved, and by how much.',cta:null};}},
+
+ daily:{eye:'Core metric',t:'Field activity',
+  d:'Calls logged, day-plan adherence and the visit record. Volume without conversion is the pattern to watch for.',
+  lead:rows=>{
+   const bo=rows.filter(r=>r.r==='BO'&&r.vis>0);
+   const cpd=bo.length?Math.round(100*bo.reduce((a,r)=>a+(+r.cpd||0),0)/bo.length)/100:0;
+   const low=bo.filter(r=>(+r.cpd||0)<5).length;
+   return {v:cpd,cap:'calls per rep per working day',
+    say:cpd?('Against a standard of 10. '+nOf(rows.reduce((a,r)=>a+r.vis,0))+' calls logged in this view.'):'No calls in this view.',
+    sub:low?(low+' reps averaged under five calls a day.'):'',
+    cta:low?{l:'See the '+low+' reps under five a day',f:()=>{F.pf='';go('prod');}}:null};}},
+
+ calls:{eye:'Core metric',t:'Call detail',
+  d:'Every logged call, by rep, for the current period and filters. Expand a rep to see the call-by-call record.',
+  lead:rows=>{
+   const act=rows.filter(r=>r.vis>0);
+   return {v:fmt(rows.reduce((a,r)=>a+r.vis,0)),cap:'calls logged in this view',
+    say:act.length?('Logged by '+act.length+' reps.'):'No calls in this view.',sub:'',cta:null};}},
+
+ docs:{eye:'Core metric',t:'Doctors',
+  d:'The doctor universe: who was met, who prescribes, and how much of the assigned list the field is actually reaching.',
+  lead:rows=>{
+   const bo=rows.filter(r=>r.r==='BO'&&r.du>0);
+   const cov=bo.length?Math.round(10*bo.reduce((a,r)=>a+r.cov,0)/bo.length)/10:0;
+   const met=rows.reduce((a,r)=>a+(r.ud||0),0);
+   return {v:cov+'%',cap:'of assigned doctors were met',
+    say:met?(nOf(met)+' doctors were met at least once in this view.'):'No doctors met in this view.',
+    sub:'',cta:{l:'See doctors by rep',f:()=>go('roster')}};}},
+
+ roster:{eye:'Core metric',t:'Doctors by rep',
+  d:'The doctor list behind each rep, with visits, prescriptions and the last recorded reaction.',
+  lead:rows=>{
+   const bo=rows.filter(r=>r.r==='BO'&&r.vis>0);
+   const per=bo.length?Math.round(10*bo.reduce((a,r)=>a+(r.ud||0),0)/bo.length)/10:0;
+   return {v:per,cap:'doctors met per active rep',
+    say:bo.length?('Across '+bo.length+' active reps.'):'No active reps in this view.',sub:'',cta:null};}},
+
+ exc:{eye:'Core metric',t:'Needs action',
+  d:'Reps carrying a risk flag. Each one is a coaching conversation waiting to happen, ranked by what is at stake.',
+  lead:rows=>{
+   const f=rows.filter(r=>(r.fl||[]).length);
+   const zero=rows.filter(r=>r.zeroRx).length;
+   return {v:fmt(f.length),cap:'reps carrying at least one flag',
+    say:f.length?('Out of '+rows.length+' in this view.'):'Nothing is flagged in this view.',
+    sub:zero?(zero+' of them logged visits but produced no prescriptions.'):'',cta:null};}},
+
+ mgr:{eye:'Core metric',t:'Managers',
+  d:'Teams rolled up to the person accountable for them. A manager’s numbers are their team’s numbers.',
+  lead:rows=>{
+   const m=rows.filter(r=>r.r!=='BO');
+   const team=(typeof teamReps==='function')?teamReps(m):[];
+   return {v:fmt(m.length),cap:'managers in this view',
+    say:team.length?(m.length+' managers cover '+team.length+' field reps between them.'):
+                    'No managers match the current filters.',sub:'',cta:null};}},
+
+ /* Tools and reference. No headline: a lead number here would be invented, and an
+    invented number is worse than an empty space. */
+ org:{eye:'Team',t:'Org tree',
+  d:'The reporting structure as the org file describes it, with vacancies and unmatched people called out.'},
+ guide:{eye:'Reference',t:'Guide',
+  d:'What every metric on this report means, how it is calculated, and what counts as good.'},
+ notes:{eye:'Reference',t:'Notes',
+  d:'Notes on the report and on individual reps. Report notes cover the period; rep notes stay attached to that person.'}
+};
+
+/* The active scope, as tags. The filter bar owns the controls; the header states the
+   result, so you can read what you are looking at without inspecting six dropdowns. */
+function scopeTags(){
+ const t=[];
+ try{
+  if(typeof perActive==='function'&&perActive()){
+   const[f,to]=perRange();t.push(['scope',dlabel(f)+' – '+dlabel(to)]);
+  }else if(D&&D.dataStart){t.push(['scope',dlabel(D.dataStart)+' – '+dlabel(D.dataEnd)]);}
+  if(typeof PR!=='undefined'&&PR.wd)t.push(['','Weekdays: '+PR.wd.split(',').map(i=>WDN[+i]).join(', ')]);
+  (typeof activeFilterNames==='function'?activeFilterNames():[])
+    .filter(s=>!/^Search/.test(s)).forEach(s=>t.push(['',s]));
+ }catch(e){}
+ return t;
+}
+
+function pageHead(rows){
+ const el=$('pagehead'); if(!el)return;
+ const s=SCREENS[TAB];
+ if(!s){el.innerHTML='';return;}
+ let lead=null;
+ /* A headline that throws must not take the screen with it. */
+ try{ if(s.lead)lead=s.lead(rows); }catch(e){ console.warn('headline '+TAB,e); }
+ const tags=scopeTags().map(([c,x])=>'<span class="tag'+(c?' '+c:'')+'">'+esc(x)+'</span>').join('');
+ el.innerHTML=
+  '<div class="eyebrow">'+esc(s.eye)+'</div>'+
+  '<h1>'+esc(s.t)+'</h1>'+
+  (s.d?'<div class="desc">'+esc(s.d)+'</div>':'')+
+  (tags?'<div class="tags">'+tags+'</div>':'')+
+  (lead?('<div class="headline"><div><div class="num">'+lead.v+'</div>'+
+    '<div class="cap">'+esc(lead.cap)+'</div></div><div>'+
+    (lead.say?'<div class="say">'+esc(lead.say)+'</div>':'')+
+    (lead.sub?'<div class="sub">'+esc(lead.sub)+'</div>':'')+
+    (lead.cta?'<button class="cta" type="button" id="leadcta">'+esc(lead.cta.l)+'</button>':'')+
+    '</div></div>'):'');
+ if(lead&&lead.cta){const b=$('leadcta');if(b)b.onclick=lead.cta.f;}
+}
+
+/* Every supporting tile opens the records behind it. A number you cannot get behind
+   is the complaint this report was built to answer. */
+function tilesClickable(){
+ document.querySelectorAll('.sec.on .kpi').forEach(k=>{
+  if(k.dataset.w)return;k.dataset.w='1';
+  if(!k.getAttribute('tabindex'))k.setAttribute('tabindex','0');
+  k.setAttribute('role','button');
+ });
+}
+
+/* ---- filter bar: four fields visible, the rest behind "More filters" ---------- */
+const FMAIN=['fpr','fwd','q','fzn'];
+function filterSplit(){
+ const bar=$('fbar'); if(!bar||bar.dataset.split)return;
+ bar.dataset.split='1';
+ bar.querySelectorAll('.fitem').forEach(it=>{
+  const f=it.querySelector('select,input');
+  if(!f||FMAIN.indexOf(f.id)<0)it.classList.add('more');
+ });
+ const n=bar.querySelectorAll('.fitem.more').length;
+ const b=document.createElement('button');
+ b.type='button';b.className='morebtn';b.id='fmore';
+ b.textContent='More filters ('+n+')';
+ b.onclick=()=>{
+  const on=bar.classList.toggle('moreon');
+  b.textContent=on?'Fewer filters':('More filters ('+n+')');
+ };
+ const acts=bar.querySelector('.fstate .acts');
+ if(acts)acts.insertBefore(b,acts.firstChild);
 }
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
