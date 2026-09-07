@@ -1495,6 +1495,24 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
   font-weight:var(--cds-font-weight-semibold);
   box-shadow:inset 0 -3px 0 var(--cds-interactive)}
 
+
+/* ---- incentive eligibility ------------------------------------------------- */
+.inc-caveat{display:flex;gap:var(--cds-spacing-04);align-items:flex-start;
+  background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);
+  padding:var(--cds-spacing-05);margin-bottom:var(--cds-spacing-06);
+  font-size:var(--cds-body-01-size);line-height:var(--cds-body-01-lh)}
+.inc-caveat svg{fill:currentColor;stroke:none;flex:0 0 auto;margin-top:2px}
+.inc-caveat b{display:block;font-weight:var(--cds-font-weight-semibold)}
+.tier{display:inline-block;border-radius:var(--cds-border-radius-max);height:24px;
+  line-height:24px;padding:0 var(--cds-spacing-04);font-size:var(--cds-label-01-size);
+  white-space:nowrap}
+.tier.gold{background:var(--cds-tag-warm-gray-bg);color:var(--cds-tag-warm-gray-text);
+  box-shadow:inset 0 0 0 1px var(--cds-support-warning)}
+.tier.silver{background:var(--cds-tag-cool-gray-bg);color:var(--cds-tag-cool-gray-text)}
+.tier.bronze{background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text)}
+.tier.none{background:transparent;color:var(--cds-text-helper)}
+.tier.gate{background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text)}
+td.whycell{white-space:normal;min-width:280px;color:var(--cds-text-secondary)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1503,7 +1521,7 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
   <div class="masthead"><svg class="fl-lockup" preserveAspectRatio="xMinYMid meet" viewBox="0 0 480 58" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M0 56.6936L7.78882 0.898708H45.984L44.5611 11.0092H17.9742L16.027 25.1639H38.8692L37.4463 35.2744H14.604L11.6083 56.6936H0Z" fill="url(#fl_paint0_linear_3043_79)"/> <path d="M40.9598 56.6936L48.7486 0.898708H69.344C72.9389 0.898708 76.0844 1.54778 78.7805 2.84591C81.4766 4.09413 83.5736 5.96644 85.0715 8.46285C86.6192 10.9593 87.3931 14.0548 87.3931 17.7495C87.3931 20.3957 86.9188 22.8422 85.9702 25.089C85.0715 27.3358 83.7484 29.283 82.0009 30.9306C80.3033 32.5782 78.2313 33.8764 75.7848 34.825L85.1464 56.6936H72.7891L62.379 31.8293L69.344 36.4727H55.414L52.5681 56.6936H40.9598ZM56.837 26.3622H66.7977C68.5452 26.3622 70.068 25.9877 71.3661 25.2388C72.7142 24.4899 73.7627 23.4663 74.5116 22.1682C75.3105 20.87 75.7099 19.3972 75.7099 17.7495C75.7099 15.7025 75.0359 14.0798 73.6878 12.8815C72.3897 11.6333 70.6172 11.0092 68.3704 11.0092H58.934L56.837 26.3622Z" fill="url(#fl_paint1_linear_3043_79)"/> <path d="M119.128 57.5923C115.083 57.5923 111.339 56.9183 107.894 55.5703C104.499 54.2222 101.528 52.3249 98.9816 49.8784C96.4852 47.4319 94.538 44.586 93.14 41.3407C91.742 38.0454 91.043 34.4506 91.043 30.5561C91.043 26.2124 91.8418 22.1931 93.4395 18.4984C95.0372 14.8038 97.259 11.5834 100.105 8.83731C102.951 6.04133 106.246 3.86945 109.991 2.32167C113.785 0.77389 117.879 0 122.273 0C126.367 0 130.112 0.674033 133.507 2.0221C136.952 3.37016 139.923 5.26744 142.419 7.71393C144.966 10.1105 146.913 12.9564 148.261 16.2517C149.659 19.497 150.358 23.0419 150.358 26.8864C150.358 31.2302 149.559 35.2744 147.961 39.019C146.364 42.7137 144.117 45.959 141.221 48.755C138.375 51.551 135.055 53.7229 131.26 55.2707C127.516 56.8185 123.471 57.5923 119.128 57.5923ZM119.128 47.1074C121.824 47.1074 124.345 46.6081 126.692 45.6095C129.088 44.611 131.185 43.213 132.983 41.4156C134.78 39.6181 136.178 37.4962 137.177 35.0497C138.225 32.5533 138.75 29.8572 138.75 26.9613C138.75 23.666 138.026 20.7952 136.578 18.3487C135.18 15.8522 133.232 13.93 130.736 12.5819C128.29 11.1839 125.469 10.485 122.273 10.485C119.577 10.485 117.031 10.9842 114.634 11.9828C112.287 12.9814 110.215 14.3794 108.418 16.1768C106.621 17.9243 105.198 20.0213 104.149 22.4678C103.151 24.9142 102.651 27.6104 102.651 30.5561C102.651 33.8015 103.35 36.6724 104.748 39.1688C106.196 41.6652 108.143 43.6124 110.59 45.0104C113.086 46.4084 115.932 47.1074 119.128 47.1074Z" fill="url(#fl_paint2_linear_3043_79)"/> <path d="M151.769 56.6936L159.557 0.898708H168.47L192.21 40.3671L187.942 41.4905L193.633 0.898708H205.242L197.453 56.6936H188.466L165.249 16.9257L169.069 15.8023L163.377 56.6936H151.769Z" fill="url(#fl_paint3_linear_3043_79)"/> <path d="M214.393 56.6936L220.759 11.0092H206.604L208.027 0.898708H247.72L246.297 11.0092H232.367L226.001 56.6936H214.393Z" fill="url(#fl_paint4_linear_3043_79)"/> <path d="M242.684 56.6936L250.473 0.898708H262.081L255.715 46.5831H279.306L277.883 56.6936H242.684Z" fill="url(#fl_paint5_linear_3043_79)"/> <path d="M280.645 56.6936L288.434 0.898708H300.042L292.253 56.6936H280.645Z" fill="url(#fl_paint6_linear_3043_79)"/> <path d="M299.152 56.6936L306.941 0.898708H315.853L339.594 40.3671L335.325 41.4905L341.017 0.898708H352.625L344.836 56.6936H335.849L312.632 16.9257L316.452 15.8023L310.76 56.6936H299.152Z" fill="url(#fl_paint7_linear_3043_79)"/> <path d="M351.74 56.6936L359.529 0.898708H397.05L395.627 11.0092H369.715L367.992 23.666H392.407L390.984 33.7765H366.569L364.772 46.5831H390.684L389.261 56.6936H351.74Z" fill="url(#fl_paint8_linear_3043_79)"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M411.239 56.6953H430.494L451.19 28.7969L430.494 0.898438L411.239 0.898438L431.935 28.7969L411.239 56.6953ZM439.96 56.6953L460.656 28.7969L439.96 0.898439L459.215 0.89844L479.912 28.7969L459.215 56.6953H439.96Z" fill="url(#fl_paint9_linear_3043_79)"/> <defs> <linearGradient id="fl_paint0_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint1_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint2_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint3_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint4_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint5_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint6_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint7_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint8_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint9_linear_3043_79" x1="473.058" y1="27.0007" x2="411.238" y2="27.0007" gradientUnits="userSpaceOnUse"> <stop stop-color="#344FA9"/> <stop offset="1" stop-color="#353FA7"/> </linearGradient> </defs> </svg><div class="nav-report-name">Rx intelligence</div></div>
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="analytics"><path d="M4,2H2V28a2,2,0,0,0,2,2H30V28H4Z"/><path d="M30,9H23v2h3.59L19,18.59l-4.29-4.3a1,1,0,0,0-1.42,0L6,21.59,7.41,23,14,16.41l4.29,4.3a1,1,0,0,0,1.42,0L28,12.41V16h2Z"/></svg><span>Performance</span></div><button class="nav-item" type="button" data-t="ov" aria-current="page" title="Pulse"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="dashboard"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Pulse</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="rx" aria-current="false" title="Rx engine"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="pills"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Rx engine</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="trend" aria-current="false" title="Trends"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="chart--line"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Trends</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span>Field</span></div><button class="nav-item" type="button" data-t="daily" aria-current="false" title="Field activity"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Field activity</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="docs" aria-current="false" title="Doctors"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="stethoscope"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Doctors</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg><span>Action</span></div><button class="nav-item" type="button" data-t="exc" aria-current="false" title="Needs action"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Needs action</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span>Team</span></div><button class="nav-item" type="button" data-t="mgr" aria-current="false" title="Managers"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Managers</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="org" aria-current="false" title="Org tree"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5,5,0,0,0-5-5H13a5,5,0,0,0-5,5v5H6V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Org tree</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span>Reference</span></div><button class="nav-item" type="button" data-t="guide" aria-current="false" title="Guide"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Guide</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="notes" aria-current="false" title="Notes"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="document"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Notes</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div id="navhidden" class="navhidden"><button data-t="prod">Productivity</button><button data-t="calls">Call detail</button><button data-t="roster">Doctors by rep</button></div></div>
+    <div id="tabs"><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="analytics"><path d="M4,2H2V28a2,2,0,0,0,2,2H30V28H4Z"/><path d="M30,9H23v2h3.59L19,18.59l-4.29-4.3a1,1,0,0,0-1.42,0L6,21.59,7.41,23,14,16.41l4.29,4.3a1,1,0,0,0,1.42,0L28,12.41V16h2Z"/></svg><span>Performance</span></div><button class="nav-item" type="button" data-t="ov" aria-current="page" title="Pulse"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="dashboard"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Pulse</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="rx" aria-current="false" title="Rx engine"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="pills"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Rx engine</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="trend" aria-current="false" title="Trends"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="chart--line"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Trends</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span>Field</span></div><button class="nav-item" type="button" data-t="daily" aria-current="false" title="Field activity"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Field activity</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="docs" aria-current="false" title="Doctors"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="stethoscope"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Doctors</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg><span>Action</span></div><button class="nav-item" type="button" data-t="exc" aria-current="false" title="Needs action"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Needs action</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span>Team</span></div><button class="nav-item" type="button" data-t="mgr" aria-current="false" title="Managers"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Managers</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="org" aria-current="false" title="Org tree"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5,5,0,0,0-5-5H13a5,5,0,0,0-5,5v5H6V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Org tree</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span>Reference</span></div><button class="nav-item" type="button" data-t="guide" aria-current="false" title="Guide"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Guide</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="notes" aria-current="false" title="Notes"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="document"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Notes</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div id="navhidden" class="navhidden"><button data-t="inc">Incentive eligibility</button><button data-t="prod">Productivity</button><button data-t="calls">Call detail</button><button data-t="roster">Doctors by rep</button></div></div>
     
   </div>
   <div class="userchip">
@@ -1634,6 +1652,7 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
+<section class="sec" id="sec_inc"><div class="secttl"><div class="eye">Adoption</div><div class="big">Incentive eligibility</div></div><div id="incbody"></div></section>
 <section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor and chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_org">
 <div class="secttl"><div class="eye">Structure</div><div class="big">The org, as it actually reports</div><div class="d">Every branch is a real reporting line, drawn from each employee&rsquo;s manager. Size is prescriptions, colour is health. Click anyone to open their profile; the sidebar filters and the period both apply, so this re-colours itself when you change either.</div></div>
 <div class="orgwrap" id="orgwrap">
@@ -2014,6 +2033,7 @@ function render(){
  fcount();const rows=fr();
  /* the panel hosts one of these; repainting it from here would fight drillRender */
  if(typeof drillKey!=='undefined'&&drillKey&&drillKey===TAB){}
+ else if(TAB==='inc')incView(rows);
  else if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
@@ -2057,7 +2077,7 @@ function init(){
     /* a nav click always leaves the panel: the section it hosts may be the one we
        are about to show, and it cannot be in two places at once */
     if(typeof drillKey!=='undefined'&&drillKey)drillClose(true);
-    TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
+    TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide','inc'].forEach(s=>$('sec_'+s).classList.toggle('on',s===TAB));render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
@@ -4255,6 +4275,20 @@ const SCREENS={
 
  /* Tools and reference. No headline: a lead number here would be invented, and an
     invented number is worse than an empty space. */
+ inc:{eye:'Adoption',t:'Incentive eligibility',
+  d:'Who qualifies for the app-adoption incentive, on reporting discipline rather '+
+    'than on prescriptions. Every assessment states its reason.',
+  lead:rows=>{
+   const R=INCENTIVE_RULES, s=incScore(rows);
+   const scope=rows.filter(r=>R.fieldRoles.indexOf(r.r)>=0||R.mgrRoles.indexOf(r.r)>=0);
+   const q=scope.filter(r=>s[r.c]&&s[r.c].tier).length;
+   if(!scope.length)return {v:'0',cap:'in scope',say:'No one in scope in this view.'};
+   return {v:pct(q,scope.length)+'%',cap:'of those in scope qualify',
+    say:q+' of '+scope.length+' field reps and managers met at least the lowest tier '+
+        'in this period.',
+    sub:'Approved leave is not yet in the data — check it before paying anyone.',
+    cta:null};}},
+
  org:{eye:'Team',t:'Org tree',
   d:'The reporting structure as the org file describes it, with vacancies and unmatched people called out.'},
  guide:{eye:'Reference',t:'Guide',
@@ -4890,30 +4924,181 @@ function navRender(){
 /* ---- the three screens that absorbed a nav item ------------------------------ */
 const SCREENTABS={
  ov   :[['ov','Pulse'],['prod','Productivity']],
- daily:[['daily','Field activity'],['calls','Call detail']],
+ daily:[['daily','Field activity'],['calls','Call detail'],
+        ['inc','Incentive eligibility']],
  docs :[['docs','Doctors'],['roster','Doctors by rep']]
 };
 let screenTab={ov:'ov',daily:'daily',docs:'docs'};
+/* The bar belongs to the whole family, not just the parent: arriving at a child —
+   by tab, by deep link, or by restored state — must still show where you are. */
+function screenHost(tab){
+ if(SCREENTABS[tab])return tab;
+ for(const k in SCREENTABS)
+  if(SCREENTABS[k].some(([kk])=>kk===tab))return k;
+ return null;
+}
 function screenTabs(){
- const host=SCREENTABS[TAB]; const el=$('pagehead');
+ const hostKey=screenHost(TAB);
+ const host=hostKey?SCREENTABS[hostKey]:null; const el=$('pagehead');
  let bar=document.querySelector('.screentabs');
  if(!host){ if(bar)bar.remove(); return; }
  if(!bar){bar=document.createElement('div');bar.className='screentabs';
           el.parentNode.insertBefore(bar,el);}
- const cur=screenTab[TAB]||TAB;
+ const cur=TAB;
  bar.innerHTML=host.map(([k,l])=>'<button type="button" data-s="'+k+'"'+
    (k===cur?' class="on"':'')+'>'+l+'</button>').join('');
  bar.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{
-  const k=b.dataset.s;
-  screenTab[TAB]=k;
-  /* show the sibling section in place, without moving the nav off this item */
-  host.forEach(([kk])=>{const s=$('sec_'+kk); if(s)s.classList.toggle('on',kk===k);});
-  const keep=TAB;
-  try{ if(k==='prod')prodView(fr()); else if(k==='calls')callsView();
-       else if(k==='roster')rosterView(); else render(); }catch(e){console.warn(e);}
-  TAB=keep; screenTabs();
+  /* go() through the real tab machinery so TAB, the section, restoreState and the
+     page header all move together — a tab bar that swaps sections behind TAB's back
+     leaves the header describing a screen you are no longer on. */
+  load(()=>go(b.dataset.s),200);
  });
 }
+
+/* ============================================== INCENTIVE ELIGIBILITY
+   THE RULE LIVES HERE AND NOWHERE ELSE. incentive.py parses these constants back out
+   of the built template so the workbook and the screen cannot disagree. If you change
+   a threshold, change it here.                                                     */
+
+const INCENTIVE_RULES={
+ field:[  /* tier, share of available working days, coverage %, distinct doctors/day */
+  ['Gold',   0.90, 60, 6],
+  ['Silver', 0.75, 45, 5],
+  ['Bronze', 0.60, 30, 4]],
+ manager:[ /* tier, own field days %, share of team qualified */
+  ['Gold',   0.60, 0.80],
+  ['Silver', 0.45, 0.65],
+  ['Bronze', 0.30, 0.50]],
+ gates:{maxBurst:12, minMinPerCall:3, minActiveDays:5},
+ fieldRoles:['BO','SBO'],
+ mgrRoles:['ABM','RBM','ZBM']
+};
+
+/* Days come from the attendance pair, not from a visit count: attWd is the working-day
+   denominator the ETL already clamps to each person's joining date. */
+function incDays(r){const wd=+r.attWd||0;return wd?Math.round((+r.att||0)/100*wd):0;}
+function incAvail(r){return +r.attWd||0;}
+function incCov(r){return r.da?Math.round(1000*(r.ud||0)/r.da)/10:0;}
+function incDpd(r){const d=incDays(r);return d?((r.ud||0)/d):0;}
+
+function incAssessField(r){
+ const R=INCENTIVE_RULES, days=incDays(r), avail=incAvail(r);
+ if(!avail)return {tier:null,gate:false,why:'Not assessed — no working days in this period'};
+ const share=days/avail, cov=incCov(r), dpd=incDpd(r);
+ if(days<R.gates.minActiveDays)
+  return {tier:null,gate:false,why:'Only '+days+' active day'+(days===1?'':'s')+
+    ' — too few to assess'};
+ if((+r.cl||0)>R.gates.maxBurst)
+  return {tier:null,gate:true,why:'Quality gate: '+r.cl+
+    ' calls stamped within 30 minutes'};
+ if(r.mpc!==''&&r.mpc!=null&&+r.mpc>0&&+r.mpc<R.gates.minMinPerCall)
+  return {tier:null,gate:true,why:'Quality gate: median '+r.mpc+
+    ' minutes between calls'};
+ for(const[t,dmin,cmin,dmin2] of R.field){
+  if(share>=dmin&&cov>=cmin&&dpd>=dmin2)
+   return {tier:t,gate:false,why:'Reported '+days+' of '+avail+' working days ('+
+     Math.round(100*share)+'%), '+cov+'% coverage, '+
+     (Math.round(10*dpd)/10)+' doctors a day'};
+ }
+ const lo=R.field[R.field.length-1], miss=[];
+ if(share<lo[1])miss.push('reported '+days+' of '+avail+' days ('+
+   Math.round(100*share)+'%), below '+Math.round(100*lo[1])+'%');
+ if(cov<lo[2])miss.push('coverage '+cov+'%, below '+lo[2]+'%');
+ if(dpd<lo[3])miss.push((Math.round(10*dpd)/10)+' doctors a day, below '+lo[3]);
+ return {tier:null,gate:false,why:miss.join('; ')};
+}
+
+/* A manager's team is every field rep underneath, transitively — an RBM's team is the
+   BOs under their ABMs. Reuses descend() so the screen and the manager rollup agree. */
+function incAssessMgr(r,scored){
+ const R=INCENTIVE_RULES, days=incDays(r), avail=incAvail(r);
+ const team=(typeof descend==='function'?descend(r.c):[])
+   .filter(x=>R.fieldRoles.indexOf(x.r)>=0);
+ if(!team.length)return {tier:null,gate:false,why:'Not assessed — no reps matched'};
+ const assessed=team.filter(x=>scored[x.c]&&!/^Not assessed/.test(scored[x.c].why));
+ const qual=assessed.filter(x=>scored[x.c].tier);
+ const share=avail?days/avail:0;
+ const tshare=assessed.length?qual.length/assessed.length:0;
+ let tier=null;
+ for(const[t,dmin,tmin] of R.manager){ if(share>=dmin&&tshare>=tmin){tier=t;break;} }
+ const why='Own field days '+days+' of '+avail+' ('+Math.round(100*share)+'%), '+
+   'team qualified '+qual.length+' of '+assessed.length+' ('+
+   Math.round(100*tshare)+'%)';
+ return {tier:tier,gate:false,why:why,team:assessed.length,qual:qual.length};
+}
+
+function incScore(rows){
+ const R=INCENTIVE_RULES, out={};
+ rows.forEach(r=>{ if(R.fieldRoles.indexOf(r.r)>=0)out[r.c]=incAssessField(r); });
+ rows.forEach(r=>{ if(R.mgrRoles.indexOf(r.r)>=0)out[r.c]=incAssessMgr(r,out); });
+ return out;
+}
+
+const INCC=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
+ ['mg','Reports to'],['days','Days'],['avail','Available'],['sharep','Days %'],
+ ['cov','Cov%'],['dpd','Drs/day'],['tier','Tier'],['why','Assessment']];
+let incS='tier',incA=false;
+
+function incView(rows){
+ const el=$('incbody'); if(!el)return;
+ const R=INCENTIVE_RULES;
+ const scored=incScore(rows);
+ const scope=rows.filter(r=>R.fieldRoles.indexOf(r.r)>=0||R.mgrRoles.indexOf(r.r)>=0);
+ const order={Gold:0,Silver:1,Bronze:2};
+ const enriched=scope.map(r=>{
+  const s=scored[r.c]||{tier:null,why:''};
+  return {...r, days:incDays(r), avail:incAvail(r),
+          sharep:incAvail(r)?Math.round(1000*incDays(r)/incAvail(r))/10:0,
+          cov:incCov(r), dpd:Math.round(10*incDpd(r))/10,
+          tier:s.tier||'', why:s.why||'', gate:!!s.gate,
+          rank:s.tier?order[s.tier]:9};
+ });
+ const n=t=>enriched.filter(x=>x.tier===t).length;
+ const gates=enriched.filter(x=>x.gate).length;
+
+ el.innerHTML=
+  '<div class="inc-caveat">'+ICO_WARN+
+   '<div><b>Approved leave is not yet in this data.</b>'+
+   'Someone on sanctioned leave and someone who did not report look identical here. '+
+   'Check leave before treating any row as a payment decision. Thresholds are also '+
+   'still calibrated against a six-day sample, not a full month.</div></div>'+
+  '<div class="kpis" id="inckpis"></div>'+
+  '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+   '<h3>Who qualifies, and why</h3><div class="cs">Every field rep and manager in '+
+   'the current view, ranked by tier. The assessment column states the reason in '+
+   'full, including quality-gate failures.</div></div></div>'+
+   '<div class="tablewrap"><table><thead><tr id="inch"></tr></thead>'+
+   '<tbody id="incb"></tbody></table></div></div>';
+
+ $('inckpis').innerHTML=[
+  kpi(CDS('--cds-support-warning'),fmt(n('Gold')),'Gold',
+      'Reported '+Math.round(100*R.field[0][1])+'% of working days.',
+      scope.length?Math.round(100*n('Gold')/scope.length)+'% of those in scope':'','incg'),
+  kpi(CDS('--cds-interactive'),fmt(n('Silver')),'Silver','',
+      '',''),
+  kpi(CDS('--cds-interactive'),fmt(n('Bronze')),'Bronze','',
+      '',''),
+  kpi(CDS('--cds-support-error'),fmt(enriched.filter(x=>!x.tier).length),
+      'Not eligible','Did not meet the lowest tier.',
+      gates?(gates+' of them failed a quality gate'):'','')].join('');
+
+ $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
+ const sorted=sortRows(enriched,incS==='tier'?'rank':incS,incA);
+ $('incb').innerHTML=sorted.slice(0,700).map(r=>{
+  const cls=r.tier?r.tier.toLowerCase():(r.gate?'gate':'none');
+  const label=r.tier||(r.gate?'Gate failed':'Not eligible');
+  return '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
+   '<td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+r.days+'</td>'+
+   '<td class=n>'+r.avail+'</td><td class=n>'+r.sharep+'</td>'+
+   '<td class=n>'+r.cov+'</td><td class=n>'+r.dpd+'</td>'+
+   '<td><span class="tier '+cls+'">'+label+'</span></td>'+
+   '<td class="whycell">'+esc(r.why)+'</td></tr>';
+ }).join('');
+ $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
+  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=false;}
+  incView(fr());});
+}
+const ICO_WARN="<svg viewBox=\"0 0 32 32\" width=\"20\" height=\"20\" aria-hidden=\"true\" data-icon=\"warning--alt--filled\"><path fill=\"none\" d=\"M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z\" data-icon-path=\"inner-path\"/><path d=\"M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z\"/><path d=\"M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z\"/></svg>";
 
 function go(tab){const b=$('tabs').querySelector('button[data-t="'+tab+'"]'); if(b)b.click();}
 function drawIns(){
