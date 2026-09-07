@@ -1590,6 +1590,36 @@ td.whycell{white-space:normal;min-width:280px;color:var(--cds-text-secondary)}
 .callg i.r3{background:var(--cal-3)}
 .callg i.pre{border:1px dashed var(--cds-border-subtle-01)}
 .callg i.swk{border:1px solid var(--cal-2)}
+
+/* ---- month-by-month matrix -------------------------------------------------- */
+/* Carbon content switcher: two exclusive views of one dataset, not navigation. */
+.csw{display:inline-flex;border:1px solid var(--cds-border-inverse);
+  margin:var(--cds-spacing-05) 0 0}
+.csw button{appearance:none;border:0;cursor:pointer;font-family:inherit;
+  height:40px;padding:0 var(--cds-spacing-05);background:var(--cds-layer-01);
+  color:var(--cds-text-secondary);font-size:var(--cds-body-compact-01-size);
+  border-right:1px solid var(--cds-border-inverse)}
+.csw button:last-child{border-right:0}
+.csw button:hover{background:var(--cds-layer-hover-01)}
+.csw button[aria-selected=true]{background:var(--cds-background-inverse);
+  color:var(--cds-text-inverse)}
+/* One cell per person per month. Tight, because there can be a dozen columns and the
+   point is to read a row as a shape rather than as twelve separate numbers. */
+td.mcell{text-align:center;white-space:nowrap;padding:4px 6px;font-size:11px}
+td.mcell .mv{display:block;font-weight:var(--cds-font-weight-semibold);
+  color:var(--cds-text-primary)}
+td.mcell .mw{display:block;color:var(--cds-text-helper);font-size:9.5px}
+td.mcell.g{background:var(--cds-tag-warm-gray-bg)}
+td.mcell.s{background:var(--cds-tag-cool-gray-bg)}
+td.mcell.b{background:var(--cds-tag-gray-bg)}
+td.mcell.n{background:transparent}
+td.mcell.z{background:transparent;color:var(--cds-text-disabled)}
+td.mcell.short{background:transparent;color:var(--cds-text-disabled)}
+.mrank{font-variant-numeric:tabular-nums;color:var(--cds-text-secondary)}
+.mnote{padding:var(--cds-spacing-04) var(--cds-spacing-05);
+  font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);background:var(--cds-layer-01);
+  border-top:1px solid var(--cds-border-subtle-01)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2629,9 +2659,11 @@ function stickyCols(root){
   const hr=t.tHead&&t.tHead.rows[0], tb=t.tBodies&&t.tBodies[0];
   if(!hr||!tb||!tb.rows.length)return;
   const H=i=>(hr.cells[i]?hr.cells[i].textContent.trim().toUpperCase():'');
+  /* a leading rank column belongs with the identity columns, not with the data */
+  const o=(H(0)==='#'||H(0)==='RANK')?1:0;
   let n=0;
-  if(H(0)==='CODE'&&/^(NAME|REP|DOCTOR|EMPLOYEE)/.test(H(1)))n=2;
-  else if(/^(NAME|REP|DOCTOR|EMPLOYEE)$/.test(H(0)))n=1;
+  if(H(o)==='CODE'&&/^(NAME|REP|DOCTOR|EMPLOYEE)/.test(H(o+1)))n=o+2;
+  else if(/^(NAME|REP|DOCTOR|EMPLOYEE)$/.test(H(o)))n=o+1;
   if(!n)return;
   t.classList.add('stk');
   let off=0;
@@ -5239,9 +5271,10 @@ function incScore(rows){
  return out;
 }
 
-const INCC=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
+const INCC_P=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
  ['mg','Reports to'],['days','Days'],['avail','Available'],['sharep','Days %'],
  ['cov','Cov%'],['dpd','Drs/day'],['tier','Tier'],['why','Assessment']];
+let INCC=INCC_P;
 let incS='tier',incA=false;
 let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
 
@@ -5250,7 +5283,10 @@ let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
    the three tiers, so filtering on r.tier alone could never express it. */
 function incStatus(r){return r.tier||(r.gate?'Gate failed':'Not eligible');}
 function incPass(r){
- if(incF.tier&&incStatus(r)!==incF.tier)return false;
+ if(incF.tier){
+  if(incMode==='months'){ if((r.best||'none')!==incF.tier)return false; }
+  else if(incStatus(r)!==incF.tier)return false;
+ }
  if(incF.role&&r.r!==incF.role)return false;
  if(incF.mgr&&r.mg!==incF.mgr)return false;
  if(incF.q){const q=incF.q.trim().toLowerCase();
@@ -5259,6 +5295,7 @@ function incPass(r){
 }
 function incAny(){return !!(incF.q.trim()||incF.role||incF.mgr||incF.tier);}
 function incTiles(){
+ if(incMode==='months')return;   /* the monthly tiles are counts, not tier filters */
  const T=['Gold','Silver','Bronze','Not eligible'],box=$('inckpis'); if(!box)return;
  box.querySelectorAll('.kpi').forEach((el,i)=>{
   const t=T[i]; if(!t)return;
@@ -5267,8 +5304,111 @@ function incTiles(){
  });
 }
 
+/* ---- month by month --------------------------------------------------------- */
+/* Working days ignoring the weekday filter. The monthly matrix is the whole history
+   cut into calendar months; a "Mondays only" selection must not silently redefine what
+   a month is worth in a grid that still prints every month's name. */
+function calWdPlain(a,b){
+ if(!a||!b||a>b)return 0;
+ let n=0; const t=new Date(a+'T00:00:00'), e=new Date(b+'T00:00:00');
+ while(t<=e){if(t.getDay()!==0)n++; t.setDate(t.getDate()+1);}
+ return n;
+}
+function incMonthKeys(){
+ return calMonths(BASE.dataStart,BASE.dataEnd);
+}
+function monthEnd(mk){
+ const y=+mk.slice(0,4),m=+mk.slice(5,7);
+ return mk+'-'+String(new Date(y,m,0).getDate()).padStart(2,'0');
+}
+/* One person, one month, from the call log. Returns null when the month is not one they
+   can be judged on at all — before they joined, or a stub of a month at either end of
+   the captured range that is shorter than the minimum window. */
+const _MSTAT={};
+function incMonthStat(r,mk){
+ const key=r.c+'|'+mk; if(_MSTAT[key]!==undefined)return _MSTAT[key];
+ const R=INCENTIVE_RULES;
+ let from=mk+'-01', to=monthEnd(mk);
+ if(from<BASE.dataStart)from=BASE.dataStart;
+ if(to>BASE.dataEnd)to=BASE.dataEnd;
+ if(r.doj&&r.doj>from)from=r.doj;
+ if(from>to)return (_MSTAT[key]={state:'pre'});
+ const wd=calWdPlain(from,to);
+ if(wd<R.gates.minWindow)return (_MSTAT[key]={state:'short',wd:wd});
+ const raw=(BASE&&BASE.calls&&BASE.calls[r.c])||[];
+ const seen={},docs={}; let days=0;
+ for(let i=0;i<raw.length;i++){
+  const v=raw[i], dt=v[0];
+  if(dt<from||dt>to)continue;
+  if(dow(dt)===0)continue;                      /* same universe as the denominator */
+  if(!seen[dt]){seen[dt]=1;days++;}
+  if(v[2]){const k=v[4]||('_'+v[3]); docs[k]=1;}
+ }
+ const ud=Object.keys(docs).length;
+ const share=days/wd, cov=r.da?(100*ud/r.da):0, dpd=days?(ud/days):0;
+ let tier=null;
+ if(days>=R.gates.minActiveDays)
+  for(let i=0;i<R.field.length;i++){
+   const t=R.field[i];
+   if(share>=t[1]&&cov>=t[2]&&dpd>=t[3]){tier=t[0];break;}
+  }
+ return (_MSTAT[key]={state:'ok',days:days,wd:wd,share:share,cov:cov,dpd:dpd,tier:tier,ud:ud});
+}
+/* A manager's month is their own reporting AND how much of their team cleared that
+   month — the same two-part rule the summary tab applies, evaluated month by month. */
+function incMonthMgr(r,mk,fieldBy){
+ const R=INCENTIVE_RULES;
+ const own=incMonthStat(r,mk);
+ if(own.state!=='ok')return own;
+ const team=(typeof descend==='function'?descend(r.c):[])
+   .filter(x=>R.fieldRoles.indexOf(x.r)>=0);
+ const assessed=team.filter(x=>fieldBy[x.c+'|'+mk]&&fieldBy[x.c+'|'+mk].state==='ok');
+ const qual=assessed.filter(x=>fieldBy[x.c+'|'+mk].tier);
+ const tshare=assessed.length?qual.length/assessed.length:0;
+ let tier=null;
+ for(let i=0;i<R.manager.length;i++){
+  const t=R.manager[i];
+  if(own.share>=t[1]&&tshare>=t[2]){tier=t[0];break;}
+ }
+ return {state:'ok',days:own.days,wd:own.wd,share:own.share,tier:tier,
+         team:assessed.length,qual:qual.length,tshare:tshare};
+}
+/* Rank on months cleared first, then on average share. Someone who cleared Bronze in
+   four months out-ranks someone who cleared Gold once: the scheme is paying for the
+   habit, and one good month is not a habit. */
+function incRankRows(rows){
+ const R=INCENTIVE_RULES, MK=incMonthKeys();
+ const scope=rows.filter(r=>R.fieldRoles.indexOf(r.r)>=0||R.mgrRoles.indexOf(r.r)>=0);
+ const fieldBy={};
+ scope.forEach(r=>{ if(R.fieldRoles.indexOf(r.r)>=0)
+   MK.forEach(mk=>{fieldBy[r.c+'|'+mk]=incMonthStat(r,mk);}); });
+ const ORD={Gold:0,Silver:1,Bronze:2};
+ const out=scope.map(r=>{
+  const mgr=R.mgrRoles.indexOf(r.r)>=0;
+  const cells=MK.map(mk=>mgr?incMonthMgr(r,mk,fieldBy):incMonthStat(r,mk));
+  const judged=cells.filter(c=>c.state==='ok');
+  const won=judged.filter(c=>c.tier);
+  const best=won.length?won.map(c=>c.tier).sort((a,b)=>ORD[a]-ORD[b])[0]:'';
+  const avg=judged.length?judged.reduce((s,c)=>s+c.share,0)/judged.length:0;
+  return {...r, cells:cells, months:judged.length, won:won.length,
+          best:best, bestRank:best?ORD[best]:9,
+          avg:Math.round(1000*avg)/10, avgRaw:avg};
+ });
+ /* Compare on the fields, not on a packed integer. The first version scored
+    won*1000 + round(share*100), which quietly collapses every share into the same
+    hundred-point bucket: two people on 73.2% and 73.3% both scored 73 and fell back
+    to alphabetical order, and the rounding made the tie-break look arbitrary rather
+    than absent. A comparator that reads like the sentence in the header cannot drift
+    from it. */
+ out.sort((a,b)=>b.won-a.won||b.avgRaw-a.avgRaw||a.n.localeCompare(b.n));
+ out.forEach((r,i)=>{r.rank=i+1;});
+ return out;
+}
+
 function incView(rows){
  const el=$('incbody'); if(!el)return;
+ if(incMode==='months'){incMonthView(rows);incSwitchWire();incWireControls();return;}
+ INCC=INCC_P;
  const R=INCENTIVE_RULES;
  const scored=incScore(rows);
  const scope=rows.filter(r=>R.fieldRoles.indexOf(r.r)>=0||R.mgrRoles.indexOf(r.r)>=0);
@@ -5294,7 +5434,8 @@ function incView(rows){
    'the selected period, against every non-Sunday since each person joined. Change the '+
    'period in the filter bar to assess a single month. Open anyone to see which days.'+
    '</div>'+
-  '<div class="kpis" id="inckpis"></div>'+
+  incSwitch()+
+  '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Who qualifies, and why</h3><div class="cs">Every field rep and manager in '+
    'the current view, ranked by tier. The assessment column states the reason in '+
@@ -5335,32 +5476,15 @@ function incView(rows){
      already-wired flag, so claiming it here is the supported way to opt out. */
   el.dataset.w='1';
   el.classList.add('clik'); el.setAttribute('role','button'); el.tabIndex=0;
-  const hit=()=>{incF.tier=(incF.tier===t?'':t); syncF(); incTiles(); incFill();};
+  const hit=()=>{incF.tier=(incF.tier===t?'':t); incSyncF(); incTiles(); incFill();};
   el.onclick=hit;
   el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit();}};
  });
  incTiles();
 
  INCE=enriched;
- const uniq=k=>Array.from(new Set(enriched.map(r=>r[k]).filter(Boolean))).sort();
- const opts=(a,cur,all)=>['<option value="">'+all+'</option>'].concat(a.map(v=>
-   '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>')).join('');
- const syncF=()=>{
-  $('incq').value=incF.q;
-  $('incrole').innerHTML=opts(uniq('r'),incF.role,'All roles');
-  $('incmgr').innerHTML=opts(uniq('mg'),incF.mgr,'All managers');
-  $('inctier').innerHTML=opts(['Gold','Silver','Bronze','Not eligible','Gate failed'],
-                              incF.tier,'All statuses');
- };
- syncF();
- /* oninput, never a rebuild: rewriting the shell on every keystroke would take the
-    focus out of the box the user is typing into. incFill touches tbody only. */
- $('incq').oninput=e=>{incF.q=e.target.value; incFill();};
- $('incrole').onchange=e=>{incF.role=e.target.value; incFill();};
- $('incmgr').onchange=e=>{incF.mgr=e.target.value; incFill();};
- $('inctier').onchange=e=>{incF.tier=e.target.value; incTiles(); incFill();};
- $('incclr').onclick=()=>{incF={q:'',role:'',mgr:'',tier:''}; syncF(); incTiles(); incFill();};
-
+ incWireControls();
+ incSwitchWire();
  $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
  $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
   const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=false;}
@@ -5368,13 +5492,144 @@ function incView(rows){
  incFill();
 }
 
+/* Both views carry the same four controls over the same INCE array, so they are wired
+   in one place. Two copies of this drifted apart within one build the first time. */
+function incWireControls(){
+ if(!$('incq'))return;
+ const uniq=k=>Array.from(new Set(INCE.map(r=>r[k]).filter(Boolean))).sort();
+ const opts=(a,cur,all)=>['<option value="">'+all+'</option>'].concat(a.map(v=>
+   '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>')).join('');
+ incSyncF=function(){
+  $('incq').value=incF.q;
+  $('incrole').innerHTML=opts(uniq('r'),incF.role,'All roles');
+  $('incmgr').innerHTML=opts(uniq('mg'),incF.mgr,'All managers');
+  $('inctier').innerHTML=opts(
+   incMode==='months'?['Gold','Silver','Bronze','none']
+                     :['Gold','Silver','Bronze','Not eligible','Gate failed'],
+   incF.tier,incMode==='months'?'Any tier':'All statuses');
+ };
+ incSyncF();
+ /* oninput, never a rebuild: rewriting the shell on every keystroke would take the
+    focus out of the box the user is typing into. incFill touches tbody only. */
+ $('incq').oninput=e=>{incF.q=e.target.value; incFill();};
+ $('incrole').onchange=e=>{incF.role=e.target.value; incFill();};
+ $('incmgr').onchange=e=>{incF.mgr=e.target.value; incFill();};
+ $('inctier').onchange=e=>{incF.tier=e.target.value; incTiles(); incFill();};
+ $('incclr').onclick=()=>{incF={q:'',role:'',mgr:'',tier:''}; incSyncF(); incTiles(); incFill();};
+}
+
 /* Body only. Called on every sort, every keystroke and every filter change. */
+let incMode='period';
+/* syncF used to be a local of incView, and the tile handlers closed over it. Lifting
+   the controls into incWireControls put it out of their reach — the tiles kept their
+   onclick and threw a ReferenceError into the void on every press, which looks exactly
+   like a tile that is not wired at all. It is a shared function now, declared once. */
+let incSyncF=function(){};
+function incSwitch(){
+ return '<div class="csw" role="tablist" aria-label="Assessment view">'+
+  '<button role="tab" id="cswp" aria-selected="'+(incMode==='period')+'">This period</button>'+
+  '<button role="tab" id="cswm" aria-selected="'+(incMode==='months')+'">Month by month</button>'+
+  '</div>';
+}
+function incSwitchWire(){
+ const p=$('cswp'), m=$('cswm');
+ if(p)p.onclick=()=>{if(incMode!=='period'){incMode='period';incView(fr());}};
+ if(m)m.onclick=()=>{if(incMode!=='months'){incMode='months';incView(fr());}};
+}
+function incMonthView(rows){
+ const el=$('incbody'); if(!el)return;
+ const R=INCENTIVE_RULES, MK=incMonthKeys(), ranked=incRankRows(rows);
+ const anyMonth=ranked.filter(r=>r.won>0);
+ const consistent=ranked.filter(r=>r.won>=3);
+ const never=ranked.filter(r=>r.months>0&&r.won===0);
+ const last=MK[MK.length-1];
+ const lastWon=ranked.filter(r=>{const c=r.cells[MK.length-1];return c&&c.state==='ok'&&c.tier;});
+
+ el.innerHTML=
+  '<div class="inc-caveat">'+ICO_WARN+
+   '<div><b>Approved leave is not yet in this data.</b>'+
+   'Someone on sanctioned leave and someone who did not report look identical here. '+
+   'Check leave before treating any row as a payment decision.</div></div>'+
+  incSwitch()+
+  '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
+  '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+   '<h3>Every month, and the tier earned in it</h3><div class="cs">'+
+   'A month is the unit you pay against. Over the whole captured range nobody clears '+
+   '60% of 138 working days, and that says more about the length of the window than '+
+   'about the field. Each cell is days reported over working days in that month.'+
+   '</div></div></div>'+
+   '<div class="locf">'+
+    '<div class="lf wide"><label for="incq">Search</label>'+
+     '<input id="incq" type="search" placeholder="Code or name" '+
+      'aria-label="Search by code or name"></div>'+
+    '<div class="lf"><label for="incrole">Role</label><select id="incrole"></select></div>'+
+    '<div class="lf wide"><label for="incmgr">Reports to</label>'+
+     '<select id="incmgr"></select></div>'+
+    '<div class="lf"><label for="inctier">Best tier</label><select id="inctier"></select></div>'+
+    '<button class="lfclr" id="incclr" type="button">Clear filters</button></div>'+
+   '<div class="inccount" id="inccount"></div>'+
+   '<div class="tablewrap"><table><thead><tr id="inch"></tr></thead>'+
+   '<tbody id="incb"></tbody></table></div>'+
+   '<div class="mnote">The monthly tier is reporting and coverage only. The two quality '+
+   'gates &mdash; call bursts and median minutes per call &mdash; are computed once over '+
+   'the whole period by the pipeline, not per month, so they are applied on the '+
+   '&ldquo;This period&rdquo; view and not in this grid.</div></div>';
+
+ $('inckpis').innerHTML=[
+  kpi(CDS('--cds-support-success'),fmt(lastWon.length),'Qualified in '+mlabel(last+'-01'),
+      'Cleared at least Bronze in the most recent month.',
+      ranked.length?Math.round(100*lastWon.length/ranked.length)+'% of those in scope':'',''),
+  kpi(CDS('--cds-interactive'),fmt(consistent.length),'Qualified 3+ months',
+      'The habit the scheme is meant to buy.','',''),
+  kpi(CDS('--cds-interactive'),fmt(anyMonth.length),'Qualified at least once','','',''),
+  kpi(CDS('--cds-support-error'),fmt(never.length),'Never qualified',
+      'Assessed in at least one month and cleared none of them.','','')].join('');
+
+ INCE=ranked;
+ incMonthTable(MK);
+}
+/* Columns are data, so the header is built from the month list rather than a literal.
+   A hard-coded six months would silently stop growing the day capture passes December. */
+function incMonthTable(MK){
+ const base=[['rank','#'],['c','Code'],['n','Name'],['r','Role'],['st','State']];
+ const tail=[['won','Months won'],['months','Months judged'],['best','Best tier'],
+             ['avg','Avg %']];
+ INCC=base.concat(MK.map(mk=>['m:'+mk,mlabel(mk+'-01')])).concat(tail);
+ $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
+ $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
+  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=(k==='rank');}
+  incFill();});
+ incFill();
+}
+const MCLS={Gold:'g',Silver:'s',Bronze:'b'};
+function mcell(c){
+ if(!c||c.state==='pre')return '<td class="mcell z" title="Before joining">&mdash;</td>';
+ if(c.state==='short')return '<td class="mcell short" title="Only '+(c.wd||0)+
+   ' working days captured in this month — too short to judge">&middot;</td>';
+ const cl=c.tier?MCLS[c.tier]:'n';
+ const tip=c.days+' of '+c.wd+' working days'+
+   (c.tier?(' — '+c.tier):' — did not clear a tier')+
+   (c.team!==undefined?(', team '+c.qual+' of '+c.team):'');
+ return '<td class="mcell '+cl+'" title="'+esc(tip)+'">'+
+   '<span class="mv">'+c.days+'</span><span class="mw">of '+c.wd+'</span></td>';
+}
+
 function incFill(){
  const tb=$('incb'); if(!tb)return;
  const kept=INCE.filter(incPass);
- const sorted=sortRows(kept,incS==='tier'?'rank':incS,incA);
+ const key=incMode==='months'
+   ? (incS==='best'?'bestRank':(incS==='tier'?'rank':incS))
+   : (incS==='tier'?'rank':incS);
+ const sorted=sortRows(kept,key,incA);
  const shown=sorted.slice(0,700);
  tb.innerHTML=shown.length?shown.map(r=>{
+  if(incMode==='months')return '<tr><td class="mrank">'+r.rank+'</td><td>'+r.c+'</td>'+
+   '<td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
+   r.cells.map(mcell).join('')+
+   '<td class=n><b>'+r.won+'</b></td><td class=n>'+r.months+'</td>'+
+   '<td>'+(r.best?('<span class="tier '+r.best.toLowerCase()+'">'+r.best+'</span>')
+                :'<span class="tier none">none</span>')+'</td>'+
+   '<td class=n>'+r.avg+'</td></tr>';
   const cls=r.tier?r.tier.toLowerCase():(r.gate?'gate':'none');
   const label=incStatus(r);
   return '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
