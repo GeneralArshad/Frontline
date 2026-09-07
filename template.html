@@ -1513,6 +1513,83 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .tier.none{background:transparent;color:var(--cds-text-helper)}
 .tier.gate{background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text)}
 td.whycell{white-space:normal;min-width:280px;color:var(--cds-text-secondary)}
+
+/* ---- on-screen filters for a single table --------------------------------- */
+.locf{display:flex;flex-wrap:wrap;gap:var(--cds-spacing-05);align-items:flex-end;
+  padding:var(--cds-spacing-05);
+  border-top:1px solid var(--cds-border-subtle-01);
+  background:var(--cds-layer-01)}
+.locf .lf{display:flex;flex-direction:column;gap:var(--cds-spacing-02);
+  flex:1 1 160px;min-width:0}
+.locf .lf.wide{flex:2 1 240px}
+.locf label{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary)}
+.locf select,.locf input{width:100%;box-sizing:border-box;font-family:inherit;
+  font-size:var(--cds-body-compact-01-size);height:40px;
+  padding:0 var(--cds-spacing-05);border:0;
+  border-bottom:1px solid var(--cds-border-strong-01);
+  background:var(--cds-field-01);color:var(--cds-text-primary)}
+.locf select{cursor:pointer;padding-right:var(--cds-spacing-07)}
+.locf select:hover,.locf input:hover{background:var(--cds-field-hover-01)}
+.locf .lfclr{height:40px;padding:0 var(--cds-spacing-05);border:0;cursor:pointer;
+  background:transparent;color:var(--cds-link-primary);font-family:inherit;
+  font-size:var(--cds-body-compact-01-size);flex:0 0 auto;align-self:flex-end}
+.locf .lfclr:hover{background:var(--cds-layer-hover-01)}
+.locf .lfclr[disabled]{color:var(--cds-text-disabled);cursor:default;background:transparent}
+.inccount{padding:var(--cds-spacing-03) var(--cds-spacing-05);
+  font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);background:var(--cds-layer-01);
+  border-top:1px solid var(--cds-border-subtle-01)}
+.inccount b{color:var(--cds-text-primary)}
+/* a tile that is also a filter has to look pressable and read as pressed */
+.kpi.clik{cursor:pointer}
+.kpi.clik:hover{background:var(--cds-layer-hover-01)}
+.kpi.picked{outline:2px solid var(--cds-focus);outline-offset:-2px}
+
+/* ---- attendance calendar --------------------------------------------------- */
+:root{--cal-1:var(--cds-green-20);--cal-2:var(--cds-green-40);--cal-3:var(--cds-green-60);
+  --cal-ink:var(--cds-green-100);--cal-ink3:var(--cds-green-10)}
+[data-carbon-theme="g100"],[data-theme=dark]{
+  --cal-1:var(--cds-green-80);--cal-2:var(--cds-green-60);--cal-3:var(--cds-green-40);
+  --cal-ink:var(--cds-green-10);--cal-ink3:var(--cds-green-100)}
+.calwrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));
+  gap:var(--cds-spacing-05);padding:var(--cds-spacing-05) 0 0}
+.calm{min-width:0}
+.calm .cmh{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);margin-bottom:var(--cds-spacing-03);
+  display:flex;justify-content:space-between;gap:var(--cds-spacing-03)}
+.calm .cmh b{color:var(--cds-text-primary);font-weight:var(--cds-font-weight-semibold)}
+.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.calg .dw{font-size:9px;text-align:center;color:var(--cds-text-helper);
+  padding-bottom:2px;letter-spacing:.04em}
+.calg .dc{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-size:10px;line-height:1;color:var(--cds-text-helper);
+  background:var(--cds-layer-02);border:1px solid transparent}
+/* absent working day: present, empty, and clearly a slot that could have been filled */
+.calg .dc.abs{background:var(--cds-layer-02);color:var(--cds-text-helper)}
+.calg .dc.sun{background:transparent;color:var(--cds-text-disabled)}
+/* work that happened but does not count toward the working-day share: a Sunday, or a
+   day logged before the recorded joining date. Hollowed out rather than filled, so it
+   reads as "yes, but not in the total" at a glance. */
+.calg .dc.nc{background:transparent;border:1px solid var(--cal-2);
+  color:var(--cds-text-secondary)}
+.calg .dc.out,.calg .dc.pre{background:transparent;color:var(--cds-text-disabled)}
+.calg .dc.pre{border:1px dashed var(--cds-border-subtle-01)}
+.calg .dc.r1{background:var(--cal-1);color:var(--cal-ink)}
+.calg .dc.r2{background:var(--cal-2);color:var(--cal-ink)}
+.calg .dc.r3{background:var(--cal-3);color:var(--cal-ink3)}
+.calg .dc.today{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.callg{display:flex;flex-wrap:wrap;gap:var(--cds-spacing-05);align-items:center;
+  padding-top:var(--cds-spacing-05);font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls);color:var(--cds-text-secondary)}
+.callg span{display:inline-flex;align-items:center;gap:var(--cds-spacing-02)}
+.callg i{width:12px;height:12px;display:inline-block;border:1px solid transparent}
+.callg i.abs{background:var(--cds-layer-02)}
+.callg i.r1{background:var(--cal-1)}
+.callg i.r2{background:var(--cal-2)}
+.callg i.r3{background:var(--cal-3)}
+.callg i.pre{border:1px dashed var(--cds-border-subtle-01)}
+.callg i.swk{border:1px solid var(--cal-2)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2220,6 +2297,85 @@ function persChip(x){
   av(x.n,x.c)+'<span class="nm">'+esc(x.n)+'</span><span class="mt">'+fmt(x.rx)+' Rx</span></span>'; }
 
 /* ==================== the profile ==================== */
+/* ---- attendance calendar ---------------------------------------------------- */
+/* Deliberately reads BASE.calls, not CALLS(): the calendar is the whole history by
+   definition. Dimming or dropping the months outside the current period would leave a
+   grid that still draws them while telling the truth about none of them. */
+const CALDW=['M','T','W','T','F','S','S'];
+function calMonths(a,b){
+ const out=[]; let y=+a.slice(0,4), m=+a.slice(5,7);
+ const ey=+b.slice(0,4), em=+b.slice(5,7);
+ while(y<ey||(y===ey&&m<=em)){out.push(y+'-'+String(m).padStart(2,'0'));
+  m++; if(m>12){m=1;y++;}}
+ return out;
+}
+/* Monday-first column index, because the week the field works starts on Monday and
+   Sunday is the day that is meant to be empty — putting it first would open every
+   month with a blank column. */
+function calCol(js){return (js+6)%7;}
+function attCal(r){
+ const raw=(BASE&&BASE.calls&&BASE.calls[r.c])||[];
+ const per={};                                    /* date -> calls that day */
+ for(let i=0;i<raw.length;i++)per[raw[i][0]]=(per[raw[i][0]]||0)+1;
+ const start=BASE.dataStart, end=BASE.dataEnd;
+ const join=(r.doj&&r.doj>start)?r.doj:start;
+ let rep_=0, absent=0;
+ const months=calMonths(start,end).map(mk=>{
+  const y=+mk.slice(0,4), mo=+mk.slice(5,7);
+  const dim=new Date(y,mo,0).getDate();
+  const lead=calCol(new Date(mk+'-01T00:00:00').getDay());
+  let cells='', mrep=0, mwd=0;
+  for(let i=0;i<lead;i++)cells+='<div class="dc out"></div>';
+  for(let dd=1;dd<=dim;dd++){
+   const iso=mk+'-'+String(dd).padStart(2,'0');
+   const g=new Date(iso+'T00:00:00').getDay();
+   const n=per[iso]||0;
+   let cls,tip;
+   /* WORK THAT HAPPENED IS ALWAYS DRAWN. An earlier version tested "before joining"
+      and "Sunday" before testing "has calls", which meant a day with real recorded
+      visits could render as an empty cell — on one fixture rep, twenty-one of them,
+      because bb_org.json gives a joining date later than their first logged call.
+      The calendar agreed with the incentive count, but they agreed on something the
+      reader could not see, which is the worst of both. Calls now always colour the
+      cell; the ones that do not count toward the working-day share are marked .nc
+      and say so on hover. */
+   const late=iso<join, sun=(g===0);
+   if(iso<start||iso>end){cls='out';tip=dlabel(iso)+' — outside the captured range';}
+   else if(n){
+    cls=(n>=10?'r3':(n>=4?'r2':'r1'));
+    tip=dlabel(iso)+' — '+n+' call'+(n===1?'':'s');
+    if(late||sun){
+     cls+=' nc';
+     tip+=late?(', logged before the recorded joining date ('+dlabel(join)+
+                ') — not counted')
+              :' on a Sunday — not counted as a working day';
+    }else{mrep++;mwd++;rep_++;}
+   }
+   else if(late){cls='pre';tip=dlabel(iso)+' — before joining';}
+   else if(sun){cls='sun';tip=dlabel(iso)+' — Sunday';}
+   else {cls='abs';tip=dlabel(iso)+' — nothing recorded';mwd++;absent++;}
+   if(iso===end)cls+=' today';
+   cells+='<div class="dc '+cls+'" title="'+esc(tip)+'">'+dd+'</div>';
+  }
+  return '<div class="calm"><div class="cmh"><span>'+mlabel(mk+'-01')+'</span>'+
+   (mwd?('<span><b>'+mrep+'</b>/'+mwd+'</span>'):'')+'</div><div class="calg">'+
+   CALDW.map(x=>'<div class="dw">'+x+'</div>').join('')+cells+'</div></div>';
+ }).join('');
+ const tot=rep_+absent;
+ return '<div class="bx s12"><div class="bxh">Attendance calendar'+
+  '<span class="c">'+rep_+' of '+tot+' working days reported'+
+  (tot?(' &middot; '+Math.round(1000*rep_/tot)/10+'%'):'')+
+  (r.doj?(' &middot; joined '+dlabel(r.doj)):'')+'</span></div>'+
+  '<div class="calwrap">'+months+'</div>'+
+  '<div class="callg"><span><i class="r1"></i>1&ndash;3 calls</span>'+
+  '<span><i class="r2"></i>4&ndash;9</span><span><i class="r3"></i>10+</span>'+
+  '<span><i class="abs"></i>nothing recorded</span>'+
+  '<span><i class="pre"></i>before joining</span>'+
+  '<span><i class="swk"></i>worked, not counted</span>'+
+  '<span>Sundays are blank. Approved leave is not in this data, so a grey day means '+
+  '&ldquo;no call recorded&rdquo;, not &ldquo;absent&rdquo;.</span></div></div>';
+}
+
 function openProfile(code,opts){
  const r=D.reps.find(x=>x.c===code); if(!r)return;
  opts=opts||{};
@@ -2380,7 +2536,7 @@ function openProfile(code,opts){
      ['Field hrs / day',r.fhrs],['Day start',r.ds||'—'],['Mins / call',r.mpc===''?'—':r.mpc],
      ['Samples / Rx',r.s2r],['Supercore focus',r.scf+'%'],['Chemist share',r.chsh+'%'],
      ['Top-doctor concentration',r.tdc+'%'],['New doctors (7d)',r.newd]]))+
-   notesBox+docTable+dayTable+'</div></div>';
+   attCal(r)+notesBox+docTable+dayTable+'</div></div>';
 
  /* trend chart */
  if(ms.length){ try{
@@ -2484,7 +2640,7 @@ function stickyCols(root){
    const th=hr.cells[i];
    th.classList.add('sk'); th.style.left=L; th.classList.toggle('edge',last);
    for(let r=0;r<tb.rows.length;r++){
-    const c=tb.rows[r].cells[i]; if(!c)continue;
+    const c=tb.rows[r].cells[i]; if(!c||c.colSpan>1)continue;
     c.classList.add('sk'); c.style.left=L; c.classList.toggle('edge',last);
    }
    off+=th.getBoundingClientRect().width;
@@ -4969,21 +5125,70 @@ const INCENTIVE_RULES={
   ['Gold',   0.60, 0.80],
   ['Silver', 0.45, 0.65],
   ['Bronze', 0.30, 0.50]],
- gates:{maxBurst:12, minMinPerCall:3, minActiveDays:5},
+ gates:{maxBurst:12, minMinPerCall:3, minActiveDays:5, minWindow:10},
  fieldRoles:['BO','SBO'],
  mgrRoles:['ABM','RBM','ZBM']
 };
 
 /* Days come from the attendance pair, not from a visit count: attWd is the working-day
    denominator the ETL already clamps to each person's joining date. */
-function incDays(r){const wd=+r.attWd||0;return wd?Math.round((+r.att||0)/100*wd):0;}
-function incAvail(r){return +r.attWd||0;}
+/* ---- attendance, measured rather than reconstructed ------------------------- */
+/* Working days in [a,b] inclusive: every day except Sunday, narrowed by the weekday
+   filter if one is set, so the denominator matches the days the period actually
+   admits. Same rule as the ETL and as wdInWindow(). */
+function calWd(a,b){
+ if(!a||!b||a>b)return 0;
+ const w=wdSet(); let n=0;
+ const t=new Date(a+'T00:00:00'), e=new Date(b+'T00:00:00');
+ while(t<=e){const g=t.getDay(); if(g!==0&&(!w||w.has(g)))n++; t.setDate(t.getDate()+1);}
+ return n;
+}
+/* The window this person is answerable for: the selected period, clipped forward to
+   their date of joining. Never clipped to their first activity — that is the clamp
+   that let nine days of use score 100%. A missing DOJ falls back to the window start,
+   which can only understate someone, and understating is the safe way to be wrong
+   when the number decides a payment. */
+function incWin(r){
+ const p=perRange(); let from=p[0];
+ if(r.doj&&r.doj>from)from=r.doj;
+ if(from>p[1])return null;               /* joined after this period closed */
+ return [from,p[1]];
+}
+/* NUMERATOR AND DENOMINATOR MUST DESCRIBE THE SAME UNIVERSE. calWd counts non-Sundays,
+   so incDays counts distinct non-Sunday dates. Reps do occasionally log calls on a
+   Sunday, and counting those while excluding Sundays from the denominator produced a
+   share above 100% — a percentage of a set the numerator was not drawn from. The
+   Sunday work is not thrown away silently: the calendar marks it, and says it is not
+   counted toward the working-day share. */
+let _icKey='',_icDays={};
+function incDays(r){
+ const k=pKey();
+ if(k!==_icKey){_icKey=k;_icDays={};}
+ if(_icDays[r.c]!==undefined)return _icDays[r.c];
+ const w=incWin(r), cs=CALLS(r.c), wk=wdSet(), s={};
+ let n=0;
+ for(let i=0;i<cs.length;i++){
+  const dt=cs[i][0];
+  if(w&&(dt<w[0]||dt>w[1]))continue;
+  const g=dow(dt);
+  if(g===0||(wk&&!wk.has(g)))continue;
+  if(s[dt])continue; s[dt]=1; n++;
+ }
+ return (_icDays[r.c]=n);
+}
+function incAvail(r){const w=incWin(r);return w?calWd(w[0],w[1]):0;}
 function incCov(r){return r.da?Math.round(1000*(r.ud||0)/r.da)/10:0;}
 function incDpd(r){const d=incDays(r);return d?((r.ud||0)/d):0;}
 
 function incAssessField(r){
  const R=INCENTIVE_RULES, days=incDays(r), avail=incAvail(r);
- if(!avail)return {tier:null,gate:false,why:'Not assessed — no working days in this period'};
+ if(!avail)return {tier:null,gate:false,why:
+  r.doj?('Not assessed — joined '+dlabel(r.doj)+', after this period closed')
+       :'Not assessed — no working days in this period'};
+ if(avail<R.gates.minWindow)
+  return {tier:null,gate:false,why:'Not assessed — only '+avail+' working day'+
+   (avail===1?'':'s')+' in this period'+(r.doj?(', joined '+dlabel(r.doj)):'')+
+   '. Too short a window to judge; carry them to the next cycle.'};
  const share=days/avail, cov=incCov(r), dpd=incDpd(r);
  if(days<R.gates.minActiveDays)
   return {tier:null,gate:false,why:'Only '+days+' active day'+(days===1?'':'s')+
@@ -5038,6 +5243,29 @@ const INCC=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
  ['mg','Reports to'],['days','Days'],['avail','Available'],['sharep','Days %'],
  ['cov','Cov%'],['dpd','Drs/day'],['tier','Tier'],['why','Assessment']];
 let incS='tier',incA=false;
+let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
+
+/* Status, not tier. "Gate failed" is the cut a manager actually works — someone who
+   reported enough days but whose calls were three-second taps — and it is not one of
+   the three tiers, so filtering on r.tier alone could never express it. */
+function incStatus(r){return r.tier||(r.gate?'Gate failed':'Not eligible');}
+function incPass(r){
+ if(incF.tier&&incStatus(r)!==incF.tier)return false;
+ if(incF.role&&r.r!==incF.role)return false;
+ if(incF.mgr&&r.mg!==incF.mgr)return false;
+ if(incF.q){const q=incF.q.trim().toLowerCase();
+  if(q&&((r.c||'')+' '+(r.n||'')).toLowerCase().indexOf(q)<0)return false;}
+ return true;
+}
+function incAny(){return !!(incF.q.trim()||incF.role||incF.mgr||incF.tier);}
+function incTiles(){
+ const T=['Gold','Silver','Bronze','Not eligible'],box=$('inckpis'); if(!box)return;
+ box.querySelectorAll('.kpi').forEach((el,i)=>{
+  const t=T[i]; if(!t)return;
+  el.classList.toggle('picked',incF.tier===t);
+  el.setAttribute('aria-pressed',incF.tier===t?'true':'false');
+ });
+}
 
 function incView(rows){
  const el=$('incbody'); if(!el)return;
@@ -5062,11 +5290,25 @@ function incView(rows){
    'Someone on sanctioned leave and someone who did not report look identical here. '+
    'Check leave before treating any row as a payment decision. Thresholds are also '+
    'still calibrated against a six-day sample, not a full month.</div></div>'+
+  '<div class="cs" style="margin:-6px 0 14px">Days are counted from the call log over '+
+   'the selected period, against every non-Sunday since each person joined. Change the '+
+   'period in the filter bar to assess a single month. Open anyone to see which days.'+
+   '</div>'+
   '<div class="kpis" id="inckpis"></div>'+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Who qualifies, and why</h3><div class="cs">Every field rep and manager in '+
    'the current view, ranked by tier. The assessment column states the reason in '+
    'full, including quality-gate failures.</div></div></div>'+
+   '<div class="locf">'+
+    '<div class="lf wide"><label for="incq">Search</label>'+
+     '<input id="incq" type="search" placeholder="Code or name" '+
+      'aria-label="Search incentive list by code or name"></div>'+
+    '<div class="lf"><label for="incrole">Role</label><select id="incrole"></select></div>'+
+    '<div class="lf wide"><label for="incmgr">Reports to</label>'+
+     '<select id="incmgr"></select></div>'+
+    '<div class="lf"><label for="inctier">Status</label><select id="inctier"></select></div>'+
+    '<button class="lfclr" id="incclr" type="button">Clear filters</button></div>'+
+   '<div class="inccount" id="inccount"></div>'+
    '<div class="tablewrap"><table><thead><tr id="inch"></tr></thead>'+
    '<tbody id="incb"></tbody></table></div></div>';
 
@@ -5082,21 +5324,78 @@ function incView(rows){
       'Not eligible','Did not meet the lowest tier.',
       gates?(gates+' of them failed a quality gate'):'','')].join('');
 
+ /* the four tiles are the fastest cut on this screen, so the tile IS the filter.
+    Their counts stay whole-scope: a tile that shrank when you clicked it would be
+    a tile reading its own number back at you. */
+ const TILE=['Gold','Silver','Bronze','Not eligible'];
+ $('inckpis').querySelectorAll('.kpi').forEach((el,i)=>{
+  const t=TILE[i]; if(!t)return;
+  /* tilesClickable() rebinds onclick on every .kpi in the visible section to
+     openMetric(data-m), and it would silently eat these four. dataset.w is its own
+     already-wired flag, so claiming it here is the supported way to opt out. */
+  el.dataset.w='1';
+  el.classList.add('clik'); el.setAttribute('role','button'); el.tabIndex=0;
+  const hit=()=>{incF.tier=(incF.tier===t?'':t); syncF(); incTiles(); incFill();};
+  el.onclick=hit;
+  el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();hit();}};
+ });
+ incTiles();
+
+ INCE=enriched;
+ const uniq=k=>Array.from(new Set(enriched.map(r=>r[k]).filter(Boolean))).sort();
+ const opts=(a,cur,all)=>['<option value="">'+all+'</option>'].concat(a.map(v=>
+   '<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>')).join('');
+ const syncF=()=>{
+  $('incq').value=incF.q;
+  $('incrole').innerHTML=opts(uniq('r'),incF.role,'All roles');
+  $('incmgr').innerHTML=opts(uniq('mg'),incF.mgr,'All managers');
+  $('inctier').innerHTML=opts(['Gold','Silver','Bronze','Not eligible','Gate failed'],
+                              incF.tier,'All statuses');
+ };
+ syncF();
+ /* oninput, never a rebuild: rewriting the shell on every keystroke would take the
+    focus out of the box the user is typing into. incFill touches tbody only. */
+ $('incq').oninput=e=>{incF.q=e.target.value; incFill();};
+ $('incrole').onchange=e=>{incF.role=e.target.value; incFill();};
+ $('incmgr').onchange=e=>{incF.mgr=e.target.value; incFill();};
+ $('inctier').onchange=e=>{incF.tier=e.target.value; incTiles(); incFill();};
+ $('incclr').onclick=()=>{incF={q:'',role:'',mgr:'',tier:''}; syncF(); incTiles(); incFill();};
+
  $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
- const sorted=sortRows(enriched,incS==='tier'?'rank':incS,incA);
- $('incb').innerHTML=sorted.slice(0,700).map(r=>{
+ $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
+  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=false;}
+  incFill();});
+ incFill();
+}
+
+/* Body only. Called on every sort, every keystroke and every filter change. */
+function incFill(){
+ const tb=$('incb'); if(!tb)return;
+ const kept=INCE.filter(incPass);
+ const sorted=sortRows(kept,incS==='tier'?'rank':incS,incA);
+ const shown=sorted.slice(0,700);
+ tb.innerHTML=shown.length?shown.map(r=>{
   const cls=r.tier?r.tier.toLowerCase():(r.gate?'gate':'none');
-  const label=r.tier||(r.gate?'Gate failed':'Not eligible');
+  const label=incStatus(r);
   return '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
    '<td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+r.days+'</td>'+
    '<td class=n>'+r.avail+'</td><td class=n>'+r.sharep+'</td>'+
    '<td class=n>'+r.cov+'</td><td class=n>'+r.dpd+'</td>'+
    '<td><span class="tier '+cls+'">'+label+'</span></td>'+
    '<td class="whycell">'+esc(r.why)+'</td></tr>';
- }).join('');
- $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
-  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=false;}
-  incView(fr());});
+ }).join('')
+ :'<tr><td colspan="'+INCC.length+'" style="padding:24px;color:var(--cds-text-secondary)">'+
+  'No one in this view matches those filters. Clear them to see all '+INCE.length+'.</td></tr>';
+ const cl=$('incclr'); if(cl)cl.disabled=!incAny();
+ const ct=$('inccount');
+ if(ct)ct.innerHTML=incAny()
+   ?'Showing <b>'+fmt(kept.length)+'</b> of '+fmt(INCE.length)+' in scope'+
+    (sorted.length>700?' &middot; first 700 listed':'')
+   :'<b>'+fmt(INCE.length)+'</b> field reps and managers in scope'+
+    (sorted.length>700?' &middot; first 700 listed':'');
+ /* Pinned offsets are measured from laid-out widths, so this has to run after the
+    new rows are in the document — hence the timeout, as everywhere else. */
+ setTimeout(()=>{try{stickyCols($('sec_inc'));}catch(_){}},0);
 }
 const ICO_WARN="<svg viewBox=\"0 0 32 32\" width=\"20\" height=\"20\" aria-hidden=\"true\" data-icon=\"warning--alt--filled\"><path fill=\"none\" d=\"M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z\" data-icon-path=\"inner-path\"/><path d=\"M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z\"/><path d=\"M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z\"/></svg>";
 

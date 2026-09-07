@@ -581,7 +581,14 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                     mg=mgr["name"] if mgr else "—", mgc=(mgr.get("code") or "") if mgr else "",
                     da=dc, du=dc)
         if not a_:
+            _op0 = ORG_PEOPLE.get(orgnorm(e.get("employeeCode"))) if ORG_PEOPLE else None
+            _doj0 = (_op0 or {}).get("doj") or ""
+            _fa0 = data_start
+            if _doj0 and _doj0 > _fa0: _fa0 = _doj0
+            if _fa0 > data_end: _fa0 = data_end
             R.append({**base, "attFrom":data_start,"attWd":wd,"attSrc":"window",
+                      "doj":_doj0,"attWdAll":workdays_between(_fa0, win_end),
+                      "attFromAll":_fa0,"attDays":0,
                       "vis":0,"dv":0,"cv":0,"ud":0,"cov":0,"cpd":0,"rx":0,"rpc":0,"rxPerDoc":0,
                       "rxPerDay":0,"rxConv":0,"rxD":0,"s2r":0,"sm":0,"pq":0,"tp":"None","ob":0,"zeroRx":0,
                       "pi":"","att":0,"repc":0,"cl":0,"rec":"","newd":0,"mom":"","chsh":0,"fhrs":0,"tdc":0,
@@ -609,6 +616,13 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             if _cand and _cand > _from: _from = _cand
         if _from > data_end: _from = data_end
         _wd = workdays_between(_from, win_end)
+        # The denominator that does NOT move when someone underreports. DOJ still
+        # clamps it — a July joiner is not accountable for April — but first activity
+        # does not, because "I started using the app last week" is not a shorter month.
+        _from_all = data_start
+        if _doj and _doj > _from_all: _from_all = _doj
+        if _from_all > data_end: _from_all = data_end
+        _wd_all = workdays_between(_from_all, win_end)
         _att_src = "doj" if (_doj and _doj >= data_start and _doj == _from) else (
                    "first activity" if (_first and _first == _from and _from > data_start)
                    else "window")
@@ -621,6 +635,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                "tp":"None","ob":1 if days>0 else 0,
                "zeroRx":1 if (role_of(e)=="BO" and a_["v"]>0 and a_["rx"]==0) else 0,
                "att":r1(min(100.0, 100*days/_wd)),"attFrom":_from,"attWd":_wd,"attSrc":_att_src,
+               "doj":_doj,"attWdAll":_wd_all,"attFromAll":_from_all,"attDays":days,
                "repc":r1(100*repeat/uniq) if uniq else 0,"cl":a_["cluster"],"rec":rec,
                "newd":newd,"mom":(round(a_["rxL7"]/(a_["rx"]*7/span_days)*100) if a_["rx"]>0 else ""),
                "chsh":r1(100*a_["cv"]/(a_["dv"]+a_["cv"])) if (a_["dv"]+a_["cv"]) else 0,
