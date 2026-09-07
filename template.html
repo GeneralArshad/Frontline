@@ -1620,6 +1620,19 @@ td.mcell.short{background:transparent;color:var(--cds-text-disabled)}
   font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-secondary);background:var(--cds-layer-01);
   border-top:1px solid var(--cds-border-subtle-01)}
+
+/* ---- the rule card ---------------------------------------------------------- */
+/* flex-wrap, not auto-fit. An auto-fit grid with a gap over a background paints its
+   leftover tracks as grey slabs, because an empty track still shows the gap colour —
+   pitfall 4 in the v3 notes, the same one that produced slabs in the filter strip, and
+   the conformance audit caught me doing it again here. */
+.rulegrid{display:flex;flex-wrap:wrap;gap:1px;
+  background:var(--cds-border-subtle-00);
+  border-top:1px solid var(--cds-border-subtle-01)}
+.rulegrid>div{background:var(--cds-layer-01);min-width:0;flex:1 1 320px}
+.rulehd{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);padding:var(--cds-spacing-04) var(--cds-spacing-05) 0}
+.rulegrid .tablewrap{border:0}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1820,7 +1833,15 @@ const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).t
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
 const GL={rx:'Prescriptions generated — Rx recorded against products during visits.',rpc:'Rx per call — prescriptions ÷ visits (conversion efficiency).',rxPerDoc:'Rx per doctor met — yield per doctor relationship.',rxPerDay:'Rx per working day — daily prescription productivity.',rxConv:'Rx conversion % — share of doctors met who produced at least one Rx.',rxD:'Rx doctors — number of met doctors who prescribed.',zeroRx:'Zero Rx — the rep logged visits but generated no prescriptions.',s2r:'Samples per Rx — sample efficiency (lower is better).',vis:'Total doctor + chemist visits.',cov:'Coverage % — unique doctors met ÷ doctors assigned.',cpd:'Calls per active day.',pi:'Productivity Index (0–100): 30% calls/day + 25% Rx/call + 30% coverage + 15% tour-plan.',ud:'Unique doctors met.',da:'Doctors on the rep\'s list.',ob:'Onboarded — has used the app.',tp:'Tour-plan status.',freq:'Avg visits per doctor met.',att:'Attendance % — active days ÷ working days.',repc:'Repeat coverage — % of met doctors visited 2+ times.',cl:'Max calls inside any 30-min window (back-dated-entry audit).',rec:'Days since last recorded visit.',newd:'New doctors met in the last 7 days (base expansion).',mom:'Rx momentum — last-7-day Rx vs run-rate (100=on trend, >100 accelerating).',chsh:'Chemist-visit share — % of visits to chemists vs doctors.',fhrs:'Field hours/active day — first-to-last-call span.',tdc:'Top-doctor Rx concentration — % of Rx from the single biggest doctor.',rpct:'Reaction positivity — of doctor calls where a reaction was logged, % marked Positive or Committed.',ds:'Day start — average time of the first call each active day (IST).',scf:'Supercore focus — % of doctor visits to supercore (premium) doctors.',mpc:'Minutes per call — average gap between consecutive visits (very low = rushed/superficial).',ndc:'New-doctor conversion — of doctors first met in the last 7 days, % that produced an Rx.'};
-const TT={c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
+const TT={dpd:'Doctor calls per day actually reported. Not distinct doctors — that '+
+ 'number is capped by the size of the list and shrinks as the window lengthens, which '+
+ 'made it impossible to clear over a long period.',
+ days:'Distinct working days with at least one call recorded, in the selected period.',
+ avail:'Every non-Sunday in the selected period, from the date of joining onwards.',
+ sharep:'Days reported as a share of days available.',
+ tier:'The highest tier whose three tests are all met.',
+ why:'The reason in full — for a miss, every test that was failed.',
+ c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
 window.addEventListener('error',function(e){
  const el=document.getElementById('load');
  if(el&&el.style.display!=='none'){el.style.display='flex';
@@ -5210,7 +5231,13 @@ function incDays(r){
 }
 function incAvail(r){const w=incWin(r);return w?calWd(w[0],w[1]):0;}
 function incCov(r){return r.da?Math.round(1000*(r.ud||0)/r.da)/10:0;}
-function incDpd(r){const d=incDays(r);return d?((r.ud||0)/d):0;}
+/* Doctor CALLS per reporting day, not distinct doctors per reporting day.
+   r.ud is capped by the size of the doctor list while the day count grows without
+   bound, so ud/days shrinks as the window lengthens and no fixed threshold can survive
+   it: at 138 days a rep with 159 doctors cannot exceed 1.28 however well they work.
+   r.dv scales with the period at both ends, so the same number means the same thing in
+   a month and in a year. */
+function incDpd(r){const d=incDays(r);return d?((+r.dv||0)/d):0;}
 
 function incAssessField(r){
  const R=INCENTIVE_RULES, days=incDays(r), avail=incAvail(r);
@@ -5235,13 +5262,13 @@ function incAssessField(r){
   if(share>=dmin&&cov>=cmin&&dpd>=dmin2)
    return {tier:t,gate:false,why:'Reported '+days+' of '+avail+' working days ('+
      Math.round(100*share)+'%), '+cov+'% coverage, '+
-     (Math.round(10*dpd)/10)+' doctors a day'};
+     (Math.round(10*dpd)/10)+' doctor calls a day'};
  }
  const lo=R.field[R.field.length-1], miss=[];
  if(share<lo[1])miss.push('reported '+days+' of '+avail+' days ('+
    Math.round(100*share)+'%), below '+Math.round(100*lo[1])+'%');
  if(cov<lo[2])miss.push('coverage '+cov+'%, below '+lo[2]+'%');
- if(dpd<lo[3])miss.push((Math.round(10*dpd)/10)+' doctors a day, below '+lo[3]);
+ if(dpd<lo[3])miss.push((Math.round(10*dpd)/10)+' doctor calls a day, below '+lo[3]);
  return {tier:null,gate:false,why:miss.join('; ')};
 }
 
@@ -5273,7 +5300,7 @@ function incScore(rows){
 
 const INCC_P=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
  ['mg','Reports to'],['days','Days'],['avail','Available'],['sharep','Days %'],
- ['cov','Cov%'],['dpd','Drs/day'],['tier','Tier'],['why','Assessment']];
+ ['cov','Cov%'],['dpd','Dr calls/day'],['tier','Tier'],['why','Assessment']];
 let INCC=INCC_P;
 let incS='tier',incA=false;
 let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
@@ -5336,16 +5363,18 @@ function incMonthStat(r,mk){
  const wd=calWdPlain(from,to);
  if(wd<R.gates.minWindow)return (_MSTAT[key]={state:'short',wd:wd});
  const raw=(BASE&&BASE.calls&&BASE.calls[r.c])||[];
- const seen={},docs={}; let days=0;
+ const seen={},docs={}; let days=0,dv=0;
  for(let i=0;i<raw.length;i++){
   const v=raw[i], dt=v[0];
   if(dt<from||dt>to)continue;
   if(dow(dt)===0)continue;                      /* same universe as the denominator */
   if(!seen[dt]){seen[dt]=1;days++;}
-  if(v[2]){const k=v[4]||('_'+v[3]); docs[k]=1;}
+  /* distinct doctors feed COVERAGE; the count of doctor calls feeds calls-per-day.
+     Using the distinct set for both is the v33 bug, one window shorter. */
+  if(v[2]){const k=v[4]||('_'+v[3]); docs[k]=1; dv++;}
  }
  const ud=Object.keys(docs).length;
- const share=days/wd, cov=r.da?(100*ud/r.da):0, dpd=days?(ud/days):0;
+ const share=days/wd, cov=r.da?(100*ud/r.da):0, dpd=days?(dv/days):0;
  let tier=null;
  if(days>=R.gates.minActiveDays)
   for(let i=0;i<R.field.length;i++){
@@ -5405,6 +5434,45 @@ function incRankRows(rows){
  return out;
 }
 
+/* The rule card. Printed from INCENTIVE_RULES rather than written out, so it cannot
+   describe a threshold the scoring does not use — the same reason incentive.py parses
+   the rule instead of restating it. */
+function incRuleCard(){
+ const R=INCENTIVE_RULES;
+ const rows=R.field.map(t=>
+  '<tr><td><span class="tier '+t[0].toLowerCase()+'">'+t[0]+'</span></td>'+
+  '<td class=n>'+Math.round(100*t[1])+'%</td>'+
+  '<td class=n>'+t[2]+'%</td><td class=n>'+t[3]+'</td></tr>').join('');
+ const mrows=R.manager.map(t=>
+  '<tr><td><span class="tier '+t[0].toLowerCase()+'">'+t[0]+'</span></td>'+
+  '<td class=n>'+Math.round(100*t[1])+'%</td>'+
+  '<td class=n>'+Math.round(100*t[2])+'%</td></tr>').join('');
+ return '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+  '<h3>How a tier is decided</h3><div class="cs">All three tests must pass for a tier '+
+  'to be awarded, and the highest tier that passes is the one given. These numbers are '+
+  'read from the rule itself, so this card cannot disagree with the scoring.'+
+  '</div></div></div>'+
+  '<div class="rulegrid">'+
+   '<div><div class="rulehd">Field roles &mdash; '+R.fieldRoles.join(', ')+'</div>'+
+    '<div class="tablewrap" style="margin:0;max-height:none">'+
+    '<table><thead><tr><th>Tier</th><th>Days reported</th><th>Coverage</th>'+
+    '<th>Doctor calls / day</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
+   '<div><div class="rulehd">Managers &mdash; '+R.mgrRoles.join(', ')+'</div>'+
+    '<div class="tablewrap" style="margin:0;max-height:none">'+
+    '<table><thead><tr><th>Tier</th><th>Own days reported</th>'+
+    '<th>Team qualified</th></tr></thead><tbody>'+mrows+'</tbody></table></div></div>'+
+  '</div>'+
+  '<div class="mnote"><b>Days reported</b> is distinct working days with at least one '+
+  'call, over every non-Sunday since joining. <b>Coverage</b> is distinct doctors met '+
+  'as a share of the doctors on their list. <b>Doctor calls / day</b> is doctor calls '+
+  'divided by the days they reported &mdash; it asks whether a reported day was '+
+  'actually worked.<br>Two gates are checked before any tier: no more than '+
+  R.gates.maxBurst+' calls stamped within thirty minutes, and a median of at least '+
+  R.gates.minMinPerCall+' minutes between calls. Below '+R.gates.minActiveDays+
+  ' active days, or a window shorter than '+R.gates.minWindow+' working days, nobody '+
+  'is assessed at all.</div></div>';
+}
+
 function incView(rows){
  const el=$('incbody'); if(!el)return;
  if(incMode==='months'){incMonthView(rows);incSwitchWire();incWireControls();return;}
@@ -5436,6 +5504,7 @@ function incView(rows){
    '</div>'+
   incSwitch()+
   '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
+  incRuleCard()+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Who qualifies, and why</h3><div class="cs">Every field rep and manager in '+
    'the current view, ranked by tier. The assessment column states the reason in '+
@@ -5552,6 +5621,7 @@ function incMonthView(rows){
    'Check leave before treating any row as a payment decision.</div></div>'+
   incSwitch()+
   '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
+  incRuleCard()+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Every month, and the tier earned in it</h3><div class="cs">'+
    'A month is the unit you pay against. Over the whole captured range nobody clears '+
