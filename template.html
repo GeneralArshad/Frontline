@@ -1633,6 +1633,13 @@ td.mcell.short{background:transparent;color:var(--cds-text-disabled)}
 .rulehd{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-secondary);padding:var(--cds-spacing-04) var(--cds-spacing-05) 0}
 .rulegrid .tablewrap{border:0}
+
+/* ---- calibration block ------------------------------------------------------ */
+pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:var(--cds-code-01-size,12px);line-height:1.5;
+  background:var(--cds-layer-02);color:var(--cds-text-primary);
+  padding:var(--cds-spacing-05);margin:var(--cds-spacing-04) 0;
+  overflow-x:auto;white-space:pre}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -5179,6 +5186,11 @@ const INCENTIVE_RULES={
   ['Silver', 0.45, 0.65],
   ['Bronze', 0.30, 0.50]],
  gates:{maxBurst:12, minMinPerCall:3, minActiveDays:5, minWindow:10},
+ /* What the thresholds above are aiming at, as a share of the assessable field. The
+    calibration card recomputes the thresholds that hit these numbers on the live
+    population; it does not apply them, because a pay rule should change deliberately
+    and be announceable, not drift with every data refresh. */
+ targets:{Gold:0.10, Silver:0.25, Bronze:0.50},
  fieldRoles:['BO','SBO'],
  mgrRoles:['ABM','RBM','ZBM']
 };
@@ -5437,6 +5449,146 @@ function incRankRows(rows){
 /* The rule card. Printed from INCENTIVE_RULES rather than written out, so it cannot
    describe a threshold the scoring does not use — the same reason incentive.py parses
    the rule instead of restating it. */
+/* ---- calibration ------------------------------------------------------------ */
+function q(sorted,p){
+ if(!sorted.length)return 0;
+ const i=(sorted.length-1)*p, lo=Math.floor(i), hi=Math.ceil(i);
+ return lo===hi?sorted[lo]:sorted[lo]+(sorted[hi]-sorted[lo])*(i-lo);
+}
+/* The assessable population: field roles with a window long enough to judge. Managers
+   are scored on their team, so their numbers are not comparable and would skew every
+   percentile here. Anyone held out for a short window is excluded for the same reason —
+   including them would drag the distribution toward people the rule never judged. */
+function incAssessable(rows){
+ const R=INCENTIVE_RULES;
+ return rows.filter(r=>R.fieldRoles.indexOf(r.r)>=0)
+            .filter(r=>incAvail(r)>=R.gates.minWindow)
+            .filter(r=>incDays(r)>=R.gates.minActiveDays);
+}
+function incDist(rows){
+ const pop=incAssessable(rows);
+ const mk=f=>pop.map(f).sort((a,b)=>a-b);
+ return {n:pop.length,
+   share:mk(r=>100*incDays(r)/incAvail(r)),
+   cov:mk(r=>incCov(r)),
+   dpd:mk(r=>incDpd(r))};
+}
+/* Which test stopped each person. The point is to separate "the bar is high" from
+   "this test is broken": a test that everybody fails and no other test does is not a
+   stringent bar, it is a bug. */
+function incBinding(rows){
+ const R=INCENTIVE_RULES, lo=R.field[R.field.length-1], pop=incAssessable(rows);
+ const out={n:pop.length,won:0,gate:0,only:{share:0,cov:0,dpd:0},multi:0,
+            pass:{share:0,cov:0,dpd:0}};
+ pop.forEach(r=>{
+  const a=incAssessField(r);
+  if(a.gate){out.gate++;return;}
+  if(a.tier){out.won++;}
+  const s=100*incDays(r)/incAvail(r), c=incCov(r), p=incDpd(r);
+  if(s>=100*lo[1])out.pass.share++;
+  if(c>=lo[2])out.pass.cov++;
+  if(p>=lo[3])out.pass.dpd++;
+  if(a.tier)return;
+  const miss=[];
+  if(s<100*lo[1])miss.push('share');
+  if(c<lo[2])miss.push('cov');
+  if(p<lo[3])miss.push('dpd');
+  if(miss.length===1)out.only[miss[0]]++;
+  else if(miss.length>1)out.multi++;
+ });
+ return out;
+}
+/* Thresholds that would hit the declared target shares. Days reported carries the tier
+   boundaries because it is what the scheme is buying; the other two are set at the
+   tenth percentile, as floors. Three ANDed quantiles would multiply out to a fraction
+   of the intended share, which is the trap this avoids. */
+function incRecommend(rows){
+ const R=INCENTIVE_RULES, D_=incDist(rows);
+ if(D_.n<20)return null;
+ const r5=x=>Math.round(x/5)*5, r1=x=>Math.round(x);
+ const covFloor=Math.max(0,r5(q(D_.cov,0.10)));
+ const dpdFloor=Math.max(0,Math.floor(q(D_.dpd,0.10)));
+ const out=R.field.map(t=>{
+  const tgt=R.targets[t[0]];
+  return [t[0], Math.min(95,Math.max(5,r5(q(D_.share,1-tgt))))/100, covFloor, dpdFloor];
+ });
+ /* Monotonic by construction — a lower tier must never demand more than a higher one.
+    Quantiles guarantee it mathematically; rounding to fives does not. */
+ for(let i=1;i<out.length;i++)
+  if(out[i][1]>out[i-1][1])out[i][1]=out[i-1][1];
+ return {rows:out,cov:covFloor,dpd:dpdFloor,n:D_.n};
+}
+function incRuleBlock(rec){
+ if(!rec)return '';
+ const f=rec.rows.map(t=>"  ['"+t[0]+"', "+t[1].toFixed(2)+", "+t[2]+", "+t[3]+"]")
+   .join(',\n');
+ return 'field:[\n'+f+'],';
+}
+
+function incCalibCard(rows){
+ const R=INCENTIVE_RULES, D_=incDist(rows), B=incBinding(rows), rec=incRecommend(rows);
+ if(!D_.n)return '';
+ const lo=R.field[R.field.length-1];
+ const pc=(a,p)=>Math.round(10*q(a,p))/10;
+ const line=(label,arr,bar,unit)=>
+  '<tr><td>'+label+'</td>'+
+  [0.10,0.25,0.50,0.75,0.90].map(p=>'<td class=n>'+pc(arr,p)+unit+'</td>').join('')+
+  '<td class=n>'+bar+unit+'</td>'+
+  '<td class=n><b>'+arr.filter(x=>x>=bar).length+'</b> of '+arr.length+'</td></tr>';
+
+ /* The diagnosis sentence. When one test alone accounts for nearly every miss, say so
+    in words — that is the shape a broken metric makes, and it should not need reading
+    off a table. */
+ const worst=['share','cov','dpd'].sort((a,b)=>B.only[b]-B.only[a])[0];
+ const NAME={share:'days reported',cov:'coverage',dpd:'doctor calls a day'};
+ const missTotal=B.only.share+B.only.cov+B.only.dpd+B.multi;
+ let diag;
+ if(!missTotal)diag='Everyone assessed cleared at least the lowest tier.';
+ else{
+  /* Always print the full breakdown — an earlier version only spoke up when one test
+     accounted for 80% of misses, and said nothing at all below that, which is exactly
+     the range where you most need the numbers. The warning is an addition to the
+     breakdown, not a replacement for it. */
+  const parts=[];
+  ['share','cov','dpd'].forEach(k=>{
+   if(B.only[k])parts.push(B.only[k]+' on '+NAME[k]+' alone');});
+  if(B.multi)parts.push(B.multi+' on more than one');
+  diag='Of the '+missTotal+' who missed: '+(parts.length?parts.join(', '):'none singly')+'.';
+  if(B.only[worst]/missTotal>=0.6)
+   diag+=' <b>'+NAME[worst]+' accounts for most of the misses on its own.</b> When one '+
+    'test dominates like that, check that the test can be passed at all before lowering '+
+    'the other two — a bar everybody fails and no other bar does is usually a '+
+    'broken measure rather than a demanding one.';
+ }
+
+ return '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+  '<h3>Where the rule bites</h3><div class="cs">The distribution behind the result, '+
+  'for the '+D_.n+' field reps with a long enough window to judge. Percentiles are of '+
+  'this population in the current period; the last two columns are the lowest tier’s '+
+  'bar and how many clear it.</div></div></div>'+
+  '<div class="tablewrap" style="max-height:none">'+
+  '<table><thead><tr><th>Test</th><th>10th</th><th>25th</th><th>Median</th>'+
+  '<th>75th</th><th>90th</th><th>Bronze bar</th><th>Clear it</th></tr></thead><tbody>'+
+   line('Days reported',D_.share,Math.round(100*lo[1]),'%')+
+   line('Coverage',D_.cov,lo[2],'%')+
+   line('Doctor calls / day',D_.dpd,lo[3],'')+
+  '</tbody></table></div>'+
+  '<div class="mnote">'+diag+
+   (B.gate?(' A further '+B.gate+' failed a quality gate before any test was applied.'):'')+
+  '</div>'+
+  (rec?('<div class="mnote" style="border-top:1px solid var(--cds-border-subtle-01)">'+
+   '<b>To hit the declared targets</b> &mdash; Gold '+Math.round(100*R.targets.Gold)+
+   '%, Silver '+Math.round(100*R.targets.Silver)+'%, Bronze '+
+   Math.round(100*R.targets.Bronze)+'% of the assessable field &mdash; the thresholds '+
+   'on this population would be:'+
+   '<pre class="ruleblk">'+esc(incRuleBlock(rec))+'</pre>'+
+   'Days reported carries the tier; coverage and doctor calls a day are floors at the '+
+   'tenth percentile, because three separate thresholds multiply and would qualify far '+
+   'fewer than intended. Nothing here is applied &mdash; a pay rule should change on '+
+   'purpose and be announceable, not move with every refresh.</div>'):'')+
+  '</div>';
+}
+
 function incRuleCard(){
  const R=INCENTIVE_RULES;
  const rows=R.field.map(t=>
@@ -5496,8 +5648,9 @@ function incView(rows){
   '<div class="inc-caveat">'+ICO_WARN+
    '<div><b>Approved leave is not yet in this data.</b>'+
    'Someone on sanctioned leave and someone who did not report look identical here. '+
-   'Check leave before treating any row as a payment decision. Thresholds are also '+
-   'still calibrated against a six-day sample, not a full month.</div></div>'+
+   'Check leave before treating any row as a payment decision. The thresholds are '+
+   'still the ones set against a six-day sample \u2014 see <b>Where the rule bites</b> '+
+   'below for what this population would actually support.</div></div>'+
   '<div class="cs" style="margin:-6px 0 14px">Days are counted from the call log over '+
    'the selected period, against every non-Sunday since each person joined. Change the '+
    'period in the filter bar to assess a single month. Open anyone to see which days.'+
@@ -5505,6 +5658,7 @@ function incView(rows){
   incSwitch()+
   '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
   incRuleCard()+
+  incCalibCard(rows)+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Who qualifies, and why</h3><div class="cs">Every field rep and manager in '+
    'the current view, ranked by tier. The assessment column states the reason in '+
