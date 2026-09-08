@@ -229,3 +229,64 @@ getComputedStyle(document.querySelector('.headline-metric .value')).letterSpacin
 > **4. Typographic pass.** Apply all four changes in `## 4` across every screen, including the ones already built.
 >
 > Then run every console check in this file and paste the actual output of each, plus `python3 audit/_audit.py`. Do not report done until all pass at 1440px and at 1056px, in both themes.
+
+---
+
+## Implementation log — pass 3 (v46, `_repmodal.py`)
+
+Seven of the eight defects are taken as written. The eighth is refused, and one that was
+listed as already-fixed turned out not to be.
+
+### Defect 8 — kept the month grids, refused the seven strips
+
+The spec replaces the attendance calendar with seven day-of-week strips. We kept the
+grids and gave them a tab instead. Strips answer "how often on a Tuesday"; grids answer
+"which days". A manager acting on this needs to say *"you have nothing on the 14th, 15th
+and 16th — where were you"*, and a strip cannot say that. The day numbers, per-day
+tooltips and `.nc` markers ("worked, not counted") all survive, and the legend that
+explains them travels with them. Arshad's call, recorded so it gets re-decided rather
+than eroded: `_repmodal_test.js` asserts the grids are still there.
+
+### Defect 4 — worse than the spec described, and the audit was passing it
+
+The spec says the Rx series sat flat on a 0–1.0 right axis. It was stranger than that:
+**no dataset ever carried `yAxisID: 'y1'`**, in either month chart. Chart.js built the
+scale anyway, found nothing plotted on it, and drew a right-hand axis ticked 0.0 to 1.0
+next to a series counting visits in the hundreds. An axis describing no series at all.
+
+CARBON_RULES item 10 — "multi-series charts share one zero-anchored scale" — had reported
+`ok  0 per-series axes` for six builds, because `_audit.py` counts `yAxisID` occurrences
+and there were none to count. The rule was satisfied on paper and violated on screen.
+**Item 10 needs to check for declared-but-unused scales, not just dataset bindings.**
+Carried into pass 4 with the other audit work.
+
+Both `y1` blocks are gone. The Trends chart's `y` is now explicitly `beginAtZero`.
+
+### Two things placed differently from the spec
+
+- **`docBox` / `prodBox` sit on Performance, not Team.** They are the person's *own*
+  doctors and products. A field rep has no Team tab at all, so following the spec here
+  would have deleted both blocks for everyone without direct reports.
+- **The calibration-style behaviour list stays field-only**, and `hrBox` is empty when no
+  HR file is loaded — so the Profile tab is `Identity + notes` for a manager and
+  `Identity + Behaviour + notes` for a rep. Asserted per role rather than globally.
+
+### Two failure modes the tests exist to catch
+
+- **Panels are hidden, never destroyed.** `dcrWire()`, the notes block and the trend
+  chart all run after the card renders and address elements by id. A tab that rebuilt its
+  panel on switch would leave those wires pointing at detached nodes: the CSV button goes
+  dead, the chart draws into nothing, and neither failure is visible until someone clicks
+  the tab. The test switches to another tab and then asserts `#dcrcsv` and `#pnotesbody`
+  still resolve.
+- **Tabs and panels must be the same set in both directions.** The Team panel was first
+  emitted unconditionally, so a field rep had three tabs and four panels — the fourth
+  hidden, empty and unreachable. Harmless, until the day someone makes it reachable.
+
+### The zero-row mark follows the bar, not `zeroRx`
+
+`r.zeroRx` means "no Rx **despite** visits" and deliberately excludes a rep who never went
+out. Marking rows on it split three identical empty bars into one red row and two plain
+ones. The bar states Rx, so the colour states Rx; *why* a rep is at zero is in the Visits
+column immediately to its left, and the header now says so ("4 at zero Rx, 2 of them with
+no visits either").
