@@ -351,3 +351,261 @@ Checks 2, 3 and 7 are the ones the current build fails hardest; check 2 is the f
 > Fix two wired metrics: Trends must show the period delta, not a call count; Doctors must show doctors met, not coverage percent. Each nav metric must come from the same query that feeds its screen — the exceptions count in the nav, on the Pulse band and on the Needs action screen must be one number from one query.
 >
 > Then run all ten checks in `## Acceptance checks` and paste the actual output of each. Do not report the nav done until every one matches, on a 540px-tall viewport as well as a tall one, expanded and railed.
+
+---
+
+## Deviations (v36)
+
+Logged rather than silently applied. Both were made because the rail did not fit on a
+laptop screen: ten items at a 60px minimum plus five section labels carrying 24px of air
+each came to roughly 1060px of nav in a 900px viewport, so it scrolled — and a rail that
+scrolls always reads as crowded, because you can never see the whole thing at once.
+
+| Spec says | Shipped | Why |
+|---|---|---|
+| 36px icon chip | **32px** | Four pixels per item, ten items. The 20px glyph steps to 18px so the chip does not look cramped. |
+| 24px of air above each group | **16px** | Five groups, so 40px recovered. The label still reads as a separator; 24px read as a gap. |
+| 52px logo | **180px wide, height auto** | Not a deviation so much as a correction. The real lockup is 480x58 — an 8.3:1 wordmark. Sized by height at 52px it demands 430px of width; `max-width:100%` then clamps the box while `preserveAspectRatio` letterboxes the art to fill it, so it rendered 288px wide inside a 320px rail. A wordmark this wide has to be sized by width. 180px is 56% of the rail and ~22px tall. |
+
+Item minimum height also went 60px to 46px, which the spec does not fix. The two text
+lines need 38px; the other 22 were air.
+
+Nothing was removed. Both the live metric and the description stay on every item —
+conformance item 18 requires them, and they are what earns the rail its 320px.
+
+Estimated nav height after: ~820px, which fits without scrolling.
+
+## Deviations (v37) — hierarchy
+
+Feedback: *"everything in the nav looks the same and flat, the hierarchy is missing."*
+That is a checkable claim, and it was correct. Three things sat at the same weight:
+a 32px bordered chip on every item, a semibold text-primary metric beside a
+text-primary name, and a full description on every row at all times.
+
+| Spec says | Shipped | Why |
+|---|---|---|
+| 36px bordered icon chip on every item | **24px bare icon; the filled plate is active-only** | Ten identical outlined boxes distinguish nothing from nothing. The border only carries meaning on the active item, where it is a filled blue plate — so "where am I" is answered by fill rather than by hunting for the one box that is shaded differently. |
+| Description always visible under the name | **On hover and on keyboard focus** | It answers a question nobody asks ten times at once. Still in the DOM, still wired to `SCREENS[].lead()`, and now bound with `aria-describedby` — so it is *more* available to a screen reader than it was as a loose line of text. |
+
+Also, not spec deviations but part of the same fix:
+
+- Name and metric moved onto **one row, two columns** — name left in `text-primary`,
+  metric right-aligned in `text-secondary`. Two equally loud things on one row is a tie,
+  not a hierarchy. Severity metrics keep red and semibold, because that is a signal.
+- Section labels dropped to `text-helper` at 11px. They are signposts, and they were
+  competing with the items they label.
+- Item minimum 46px → 40px. Nav is now ~750px.
+- `title="<the item's own name>"` removed. It produced a slow native tooltip repeating
+  the label already on screen, and would have fought the real one.
+
+Three levels of text now exist by construction, and `_navcalm_test.js` asserts it:
+name, metric and section label must resolve to three different sizes AND three
+different colours. A future change that flattens them again fails the suite.
+
+## Spacing (v38)
+
+Two ragged left edges, and the air in the wrong place.
+
+**One left edge.** Section labels and items were indented differently — icons 4px apart,
+text 18px apart:
+
+| | icon starts | text starts |
+|---|---|---|
+| section label (before) | 16px | 38px |
+| nav item | 20px | 56px |
+
+The item reserves a 4px transparent left border, so the row does not shift sideways when
+it becomes current and the blue edge appears. The label reserved nothing. Two near-misses
+read worse than an honest outdent, because the eye keeps trying to resolve them into one
+column. The label now takes the same 4px border, the same left-padding token, the same
+gap token, and a 24px icon box matching the item's chip — so icons share one edge at 20px
+and text shares one at 56px.
+
+Section icons stay: spec item 6 added them on purpose, and `_drill_test.js` asserts every
+label has one. Aligning them was the fix, not deleting them because alignment was awkward.
+
+**Air redistributed.** v36 squeezed the rail to fit a laptop; v37's single-line rows then
+handed back 200px that went straight into dead space at the bottom, leaving it cramped at
+the top of a mostly empty column.
+
+| | v37 | v38 |
+|---|---|---|
+| item minimum | 40px | **44px** |
+| air above a group | 16px | **24px** — back to what item 6 asked for |
+| masthead padding | 12px | **16px** |
+| "Below 10" tag | 12px on solid grey | **11px on layer-02** |
+
+~870px against a 900px viewport. The space below the last item is now a margin rather
+than a void.
+
+`_navtidy_test.js` asserts the alignment as an invariant — same border width, same
+padding token, same gap token, same icon-box width — so it survives a change to the
+token values themselves.
+
+## Deviations (v39) — icons, the collapse control, motion
+
+**Section icons removed**, at Arshad's explicit request: *"don't need icons for the
+section headers."* This reverses spec item 6, which added them — so it is a signed-off
+decision being un-signed, not a tidy-up. `_drill_test.js` now asserts their **absence**,
+so they cannot drift back in unnoticed. With no icon to align, the label indents its
+text to where the item names start (reserved border + left padding + chip width + gap),
+built from the same tokens the item row uses rather than a hard-coded 56px.
+
+**Where the icons come from.** IBM Carbon v11 — 37 glyphs inlined into
+`_carbon_icons.json` at build time. No CDN, no runtime dependency. They are already
+geometric: a 32×32 grid with 2px strokes drawn as filled paths. Three CHOICES were
+wrong, and those are what changed:
+
+| Item | Was | Now | Why |
+|---|---|---|---|
+| Org tree | `user` — one person | `hierarchy` | An org tree is not a person. Parent box, bus, two children, drawn as filled bars the way `enterprise` is. |
+| Field activity | `events` — three people | `calendar--task` | The screen is day plans, calls and visit records. The people language belonged to Managers. |
+| Needs action | `warning--alt--filled` | `warning--alt` | Everything else in the rail is an outline; a solid triangle read as an alert rather than a nav item. Composed from the filled icon's own outline triangle, bar and dot — Carbon's geometry, not a redrawing. |
+
+`_navicons_test.js` checks the hand-drawn paths sit inside the 32-unit grid, and checks
+the borrowed ones appear verbatim in the bundle. Provenance where it can be proved,
+measurement where it cannot.
+
+**Collapse control moved to the masthead.** It was in the footer, ~400px below the thing
+it collapses. Same button, same id, same handler — moved, not rebuilt. The masthead now
+survives the collapsed state, because it holds the only way back out. The theme toggle
+stays in the footer: it is a preference and belongs with the user.
+
+This also surfaced a real bug: `railSet()` updated the labels on `railtoggle` and
+`rail2` but never on `rail3`. In the footer that was cosmetic. As the primary control, a
+button whose label never changes is a button that lies about what it does.
+
+**Motion.** The rail transitions its width and the main column its margin, both on
+`--cds-duration-moderate-02` with `--cds-easing-standard-productive`. Reduced motion
+cancels it via the existing global rule.
+
+**It opens on every load**, as asked — including over a stored collapsed preference. The
+shell starts collapsed with a `.boot` class suppressing transitions, then releases both
+on the second animation frame. Two frames, not one: the first is when the browser applies
+the collapsed state, and removing `.boot` in that same frame would cancel the transition
+before it had anything to animate from. The preference is still written, so the toggle
+behaves normally within a session.
+
+## Correction (v40) — the label goes back to the outer edge
+
+v39 was wrong and this reverses it.
+
+When the section icons came out, I indented the label to line its text up with the item
+**names**. That inverts the hierarchy: the label is what marks where a group *begins*, so
+putting it at 112px while its own items' icons sit at 48px places the parent sixty pixels
+inside its children, and the icons hang outside the group entirely. Arshad's phrasing was
+exact — *"the icons are out of the nesting"*.
+
+```
+PERFORMANCE            <- label text at 20px, flush with the icon column
+[icon] Pulse    91.4%  <- icon box at 20px, name at 56px
+```
+
+The label opens the group; everything under it is contained by it. `_navtidy_test.js`
+now asserts label text and item icons share one left edge, and that the label carries far
+more air above (24px) than below (4px) — a six-to-one ratio, so it binds downward to the
+group it opens instead of floating between two.
+
+**The tooltip moved out of the rail.** Hovering Field activity put its description
+straight over Doctors. That was a constraint I accepted in v37 rather than a decision:
+`.sidescroll` clips `overflow-x`, so a tooltip anchored inside it cannot escape right and
+has to open downward over the list. It is now one shared `position:fixed` element outside
+the scroll container, placed from the hovered item's bounding rect, sitting beside the
+rail where it covers nothing. It works collapsed too, where a tooltip is worth more than
+it is expanded.
+
+The per-item `.nav-desc` stays in the DOM as the `aria-describedby` target, visually
+hidden — the spoken description and the drawn one read the same string and cannot drift.
+Handlers are delegated from `#tabs` and wired once, because `navRender()` re-runs on every
+filter change and per-item binding would stack a listener each time.
+
+## Brand and the collapsed rail (v41)
+
+**Two assets now, not one.** The wordmark (`brand/frontline-intelligence.svg`) for the
+expanded rail; the mark alone (`brand/frontline-mark.svg`) for the collapsed one, which
+is all 72px can hold — the previous build clipped the wordmark mid-letter. Both are in
+the DOM and CSS chooses between them, so the logo cannot desynchronise from the rail
+state the way a JS swap could.
+
+Three things were stripped before inlining, by `_brand.py`'s builder rather than by hand:
+
+| | why |
+|---|---|
+| the white plate | The lockup ships with `<rect width="563" height="119" fill="white"/>` behind the art. Invisible on the light theme, a white slab around the logo on Gray 100. |
+| the filters | Both files carry drop and inner shadows. At 38px and 28px those render as mud, and they cost a filter pass on every repaint of a rail that now animates. |
+| colliding ids | Both files number their gradients `paint0..paintN`. Two assets on one page means two `#paint0_linear` and the second silently wins for both. Namespaced `fi_` and `fm_`; the builder asserts every `url(#…)` still resolves afterwards. |
+
+The lockup carries "Intelligence" in its own gradient pill, so the separate
+"Rx intelligence" line under it is gone — the masthead was about to say intelligence
+twice, in two type treatments, using two different words.
+
+`_audit.py` and `_carbon_test.js` now exempt **both** assets from the no-colour-literals
+rule and pin the count at two. A third would mean a copy had crept in, which is what
+that check was really guarding.
+
+### The collapsed rail showed nine alerts that did not exist
+
+```css
+.app.railed .nav-dot{display:block; ...}
+```
+
+`navRender()` sets `dot.hidden` on every item that is not alerting, but `hidden` is only
+a UA-stylesheet `display:none` and an author rule with `display:block` beats it. So the
+collapsed rail lit a red dot on all ten items — the single signal that state has, firing
+on everything. Scoped to `:not([hidden])`.
+
+Also: the icon column still reserved 36px for a chip that has been 24px since v37; groups
+lost all separation once their labels were hidden (air only — NAV_SPEC allows three
+hairlines in the whole rail and they are spent); and the footer brand icon is decoration
+that 72px cannot afford.
+
+**Open question, not changed here.** `NAVMETA.ov` carries `sev:'error'`, so Pulse's
+metric is red unconditionally — it was red at 35.7% and it is red at 91.4%. A signal that
+is always on carries no information, and collapsed it means Pulse always shows an alert
+dot. Worth a threshold or removing the severity, but that is a product decision.
+
+## The one-axis rule (v42)
+
+**Collapsing the rail changes its width. Nothing else may move.**
+
+Every element that swaps between the expanded and collapsed states keeps the same
+vertical box. Text may go, a wordmark may become a mark, but no row may change height —
+the width transition takes 240ms and a height change happens in a single frame, which is
+the jump.
+
+What was moving:
+
+| | expanded | collapsed | fix |
+|---|---|---|---|
+| brand | 180 × **38** | 28 × **23** | both sized by height from `--brand-h: 32px` → 151×32 and 39×32 |
+| masthead | padding `spacing-05` | padding `spacing-04` | same vertical padding in both |
+| items | min-height 44px | 40px | 44px in both |
+| section labels | visible | `display:none` | `visibility:hidden` — the box stays |
+| footer rows | text | no text | `min-height: 44px` in both |
+
+**Sizing brand assets by height is the whole trick.** A 4.73:1 wordmark and a 1.22:1 mark
+sized by *width* cannot land on the same height — the arithmetic forbids it. By height
+they agree by construction and the widths differ, which is fine, because width is the
+axis the rail is already animating.
+
+The section-label change is the one you feel: the label keeps its box and loses only its
+text, so every icon holds its exact y-position and collapsing becomes a pure horizontal
+move. It also makes the group separation automatic, which is why the railed section
+margin v41 added could be removed.
+
+A dead rule went too — `.app.railed .masthead .fl-lockup{height:24px}` survived from v36,
+when the lockup was the only asset. It sized nothing (the lockup is `display:none` when
+collapsed) but it still stated a number.
+
+### Enforced, not remembered
+
+`_navstable_test.js` diffs every `.app.railed X` rule against the base rule for `X` and
+fails on any difference in a vertical-size property. Adding one later is a test failure
+rather than something spotted in a screenshot three weeks on.
+
+The lint runs **against the DOM**, not just the stylesheet. The sheet still carries rules
+from three superseded nav layers — `.nav button` matches nothing, `.userchip` is present
+but never rendered — and a lint that flags those teaches people to ignore it. A rule is
+only checked if its selector matches something that actually renders, and skipped if the
+element is `display:none` in either state, because an element with no box cannot shift
+anything. Current run: 8 live rules checked, 21 skipped, 0 offenders.

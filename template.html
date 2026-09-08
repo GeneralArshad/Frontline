@@ -307,7 +307,10 @@ svg{flex:0 0 auto}
 .nav button.on svg{opacity:1;stroke:var(--accent)}
 .nav button.on::before{content:"";position:absolute;left:-var(--s2);left:0;top:7px;bottom:7px;width:2.5px;
   border-radius:0 3px 3px 0;background:var(--accent)}
-.main{flex:1 1 auto;margin-left:var(--side);min-width:0;display:flex;flex-direction:column}
+.main{flex:1 1 auto;margin-left:var(--side);min-width:0;display:flex;
+  flex-direction:column;
+  transition:margin-left var(--cds-duration-moderate-02)
+             var(--cds-easing-standard-productive)}
 .topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);
   backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line);
   display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s5)}
@@ -974,6 +977,8 @@ a:hover{color:var(--cds-link-primary-hover);text-decoration:underline}
 /* --- 12. motion: 70-240ms, standard productive, fades and slides only ---------- */
 *,*::before,*::after{animation-timing-function:var(--cds-easing-standard-productive)}
 @media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+/* nothing animates until the shell has decided its starting state */
+.boot .side,.boot .main{transition:none !important}
 
 
 /* ============================================================ DRILL PANEL */
@@ -1353,7 +1358,13 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 
 /* ============================================== COLLAPSED RAIL, PROPERLY
    Every block in the rail needs to know it is 48px wide, not just the nav items. */
-.app.railed .masthead{display:none}
+/* Keep the masthead when railed — it now holds the control that expands the rail,
+   and hiding it would leave no way back out except the keyboard. */
+/* Horizontal padding goes; vertical padding must not, or the masthead is a
+   different height in each state and every row below it jumps. */
+.app.railed .masthead{padding:calc(var(--cds-spacing-05)*var(--brand-air)) 0;
+  text-align:center}
+.app.railed .masthead .nav-report-name{display:none}
 .app.railed .userchip{flex-direction:column;gap:0;padding:var(--cds-spacing-03) 0;
   justify-content:center}
 .app.railed .userchip .uinfo,.app.railed .orgfoot span{display:none}
@@ -1380,59 +1391,153 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 
 /* ============================================================ SIDE NAV
    NAV_SPEC.md is normative; these are its rules, not an interpretation of them. */
-:root{--side:320px}
+/* --brand-h  the shared height BOTH brand assets render at, so the slot never
+                changes between states (v42's one-axis rule).
+   --brand-air a factor on the masthead's vertical whitespace. Written as a factor so
+               the rules keep saying which token they came from: calc(spacing-05*0.8)
+               reads as "spacing-05, less twenty percent", where 12.8px reads as
+               nothing at all. */
+:root{--side:320px;--brand-h:40px;--brand-air:0.8}
 .app.railed{--side:72px}
-.side{width:var(--side);flex:0 0 var(--side);top:0;
+/* Carbon's moderate-02 with the productive curve: long enough to read as a panel
+   moving, short enough not to be in the way. .boot suppresses it for the first two
+   frames so the opening animation starts from a collapsed rail rather than from
+   whatever width the browser happened to paint first. */
+.side{transition:width var(--cds-duration-moderate-02)
+      var(--cds-easing-standard-productive),
+      flex-basis var(--cds-duration-moderate-02)
+      var(--cds-easing-standard-productive);
+  width:var(--side);flex:0 0 var(--side);top:0;
   background:var(--cds-layer-01);border-right:1px solid var(--cds-border-subtle-01);
   display:flex;flex-direction:column;overflow:hidden}
 .main{margin-left:var(--side);padding-top:0}
 
+/* The lockup carries "Intelligence" itself now, so the row below it holds only the
+   collapse control — right-aligned expanded, centred when there is no room to be
+   anything else. */
+.mh-row{display:flex;align-items:center;justify-content:flex-end;
+  gap:var(--cds-spacing-04);
+  margin-top:calc(var(--cds-spacing-03)*var(--brand-air));height:32px}
+.app.railed .mh-row{justify-content:center}
+
 /* masthead — white, and the only place the lockup appears */
-.masthead{background:var(--cds-layer-02);padding:var(--cds-spacing-05);
+.masthead{background:var(--cds-layer-02);
+  padding:calc(var(--cds-spacing-05)*var(--brand-air)) var(--cds-spacing-05);
   border-bottom:1px solid var(--cds-border-subtle-01);flex:0 0 auto}
-.masthead .fl-lockup{display:block;height:52px;width:auto;max-width:100%}
+/* Sized by WIDTH. This wordmark is 480x58; giving it a height makes it demand 430px
+   of width, and max-width then letterboxes it to fill the rail edge to edge. */
+/* Expanded: the wordmark. Collapsed: the mark. Both are in the DOM and CSS picks —
+   a JS swap would be one more thing that can disagree with the rail's state.
+
+   BOTH ARE SIZED BY HEIGHT, from one token. Sized by width, a 4.73:1 wordmark and a
+   1.22:1 mark cannot possibly agree on height, and the masthead grew and shrank by
+   15px every time the rail moved. By height they agree by construction: 151x32 and
+   39x32, and the slot never changes. */
+.masthead .brandbox{height:var(--brand-h);display:flex;align-items:center}
+.app.railed .masthead .brandbox{justify-content:center}
+.masthead .fl-lockup{display:block;height:var(--brand-h);width:auto;max-width:100%}
+.masthead .fl-mark{display:none}
+.app.railed .masthead .fl-lockup{display:none}
+.app.railed .masthead .fl-mark{display:block;height:var(--brand-h);width:auto}
 .nav-report-name{font-size:var(--cds-body-compact-01-size);
   font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary);
-  margin-top:var(--cds-spacing-04)}
-.app.railed .masthead{padding:var(--cds-spacing-04) 0;text-align:center}
-.app.railed .masthead .fl-lockup{height:24px;margin:0 auto}
+  margin-top:var(--cds-spacing-03)}
+/* Horizontal padding goes; vertical padding must not, or the masthead is a
+   different height in each state and every row below it jumps. */
+.app.railed .masthead{padding:calc(var(--cds-spacing-05)*var(--brand-air)) 0;
+  text-align:center}
+
+/* Collapsed, the section labels are gone, so the groups they separated run together
+   into one undifferentiated column of ten icons. Air is the only separator left —
+   there are no hairlines to spend here, NAV_SPEC allows three in the whole rail. */
+/* The label keeps its BOX when collapsed and loses only its text, so every icon
+   holds its exact y-position through the transition and collapsing becomes a pure
+   horizontal move. That also makes the group separation automatic — the reason the
+   railed section margin this replaces existed at all. */
+.app.railed .nav-section-label{visibility:hidden}
+/* the brand mark in the footer is decoration; at 72px the space is worth more */
+/* Both footer rows lose text when collapsed. Pinning their height means they lose
+   the text and nothing else. */
+.nav-footer-row{min-height:44px}
+.app.railed .nav-brand{display:none}
+.app.railed .nav-footer-row{padding:6px 0;justify-content:center}
 
 /* body scrolls; the footer never does */
 .sidescroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding-bottom:var(--cds-spacing-05)}
 
 /* section label: icon + 12px/600 uppercase, 24px of air above the group */
-.nav-section-label{display:flex;align-items:center;gap:var(--cds-spacing-03);
-  padding:var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-03);
-  font-size:0.75rem;font-weight:var(--cds-font-weight-semibold);
-  letter-spacing:0.32px;text-transform:uppercase;color:var(--cds-text-secondary)}
-.nav-section-label svg{fill:var(--cds-icon-secondary);stroke:none;flex:0 0 auto}
+/* Signposts, not headings. They were at the same weight and colour as the items,
+   which is a third voice competing on a rail that only has two things to say. */
+/* Flush with the icon column, not with the names. The label marks where the group
+   STARTS; indenting it past its own items puts the parent inside the children, which
+   is what made the icons look detached. 24px above and 4px below binds it downward to
+   the group it opens rather than floating it between two. */
+.nav-section-label{display:flex;align-items:center;gap:var(--cds-spacing-04);
+  border-left:4px solid transparent;
+  padding:var(--cds-spacing-06) var(--cds-spacing-05) var(--cds-spacing-02)
+          var(--cds-spacing-05);
+  font-size:0.6875rem;font-weight:var(--cds-font-weight-semibold);
+  letter-spacing:0.4px;text-transform:uppercase;color:var(--cds-text-helper)}
+/* A 24px BOX holding a 16px glyph, so the icon column is the same width as the item's
+   chip column and both left edges resolve to one line. The SVG letterboxes its square
+   artwork inside the wider box by default, so the glyph stays 16px and centred. */
+.nav-section-label svg{fill:var(--cds-icon-disabled);stroke:none;flex:0 0 auto;
+  width:24px;height:16px}
 
 /* THE ITEM. The grid plus min-width:0 is the whole fix for the wrapping. */
-.nav-item{display:grid;grid-template-columns:36px minmax(0, 1fr);
+.nav-item{display:grid;grid-template-columns:24px minmax(0, 1fr);
   align-items:center;gap:var(--cds-spacing-04);
-  width:100%;min-height:60px;padding:var(--cds-spacing-03) var(--cds-spacing-05);
+  width:100%;min-height:44px;padding:var(--cds-spacing-02) var(--cds-spacing-05);
   border:0;border-left:4px solid transparent;background:transparent;
   cursor:pointer;text-align:left;font:inherit;position:relative}
 .nav-item:hover{background:var(--cds-layer-hover-01)}
-.nav-chip{width:36px;height:36px;flex:0 0 auto;display:inline-flex;align-items:center;
-  justify-content:center;border:1px solid var(--cds-border-subtle-01);
-  background:var(--cds-layer-02)}
-.nav-chip svg{fill:var(--cds-icon-primary);stroke:none}
-.nav-body{min-width:0;display:block}
+/* Plain at rest. Ten bordered boxes down the left edge distinguish nothing from
+   nothing; the plate is reserved for the active item, where it is the answer to
+   "where am I". */
+.nav-chip{width:24px;height:24px;flex:0 0 auto;display:inline-flex;align-items:center;
+  justify-content:center;border:0;background:transparent}
+.nav-chip svg{fill:var(--cds-icon-secondary);stroke:none;width:18px;height:18px}
+.nav-item:hover .nav-chip svg{fill:var(--cds-icon-primary)}
+/* The whole row is one line: name in column one, metric right-aligned in column two.
+   Before this they sat on separate lines at identical weight, which is why the rail
+   read as a wall rather than as a list. */
+.nav-body{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;
+  align-items:baseline;gap:var(--cds-spacing-04)}
 .nav-line1{display:flex;align-items:center;gap:var(--cds-spacing-03);min-width:0}
 .nav-name{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-primary);
   letter-spacing:0.16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-line2{display:flex;align-items:baseline;gap:var(--cds-spacing-03);min-width:0;
-  margin-top:2px}
-.nav-metric{font-size:0.75rem;font-weight:var(--cds-font-weight-semibold);
-  color:var(--cds-text-primary);letter-spacing:0.32px;flex:0 0 auto;
-  font-variant-numeric:tabular-nums}
-.nav-metric[data-severity="error"]{color:var(--cds-text-error)}
-.nav-desc{font-size:0.75rem;letter-spacing:0.32px;color:var(--cds-text-secondary);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.nav-item .tag{flex:0 0 auto;background:var(--cds-tag-gray-bg);
-  color:var(--cds-tag-gray-text);border-radius:var(--cds-border-radius-max);
-  height:20px;line-height:20px;padding:0 var(--cds-spacing-03);font-size:0.75rem}
+.nav-line2{display:flex;align-items:baseline;gap:var(--cds-spacing-03);
+  margin-top:0;justify-self:end}
+/* Secondary, not primary. The name is what you are looking for; the number is what
+   you check once you have found it. Severity still overrides to red below, because
+   that is a signal and not decoration. */
+.nav-metric{font-size:0.75rem;font-weight:var(--cds-font-weight-regular);
+  color:var(--cds-text-secondary);letter-spacing:0.32px;flex:0 0 auto;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.nav-metric[data-severity="error"]{color:var(--cds-text-error);
+  font-weight:var(--cds-font-weight-semibold)}
+/* The description text still lives on the item — it is the aria-describedby target,
+   so the screen reader and the visible tooltip read one string and cannot drift. It is
+   only hidden from sight. */
+.nav-desc{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+/* ...and the visible tooltip is a single element OUTSIDE .sidescroll, which clips
+   overflow-x. Anchored inside the rail it could not escape to the right and had to
+   open downward over the next item; fixed to the viewport it sits beside the rail and
+   covers nothing. */
+#navtip{position:fixed;z-index:9000;max-width:260px;
+  font-size:0.75rem;line-height:1.34;letter-spacing:0.32px;
+  background:var(--cds-background-inverse);color:var(--cds-text-inverse);
+  padding:var(--cds-spacing-03) var(--cds-spacing-04);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity var(--cds-duration-fast-02) var(--cds-easing-entrance-productive)}
+#navtip.on{opacity:1;visibility:visible}
+/* A footnote on one row, not a headline. On a solid grey pill at 12px it was the
+   loudest thing in the Field group — louder than the name it was annotating. */
+.nav-item .tag{flex:0 0 auto;background:var(--cds-layer-02);
+  color:var(--cds-text-secondary);border-radius:var(--cds-border-radius-max);
+  height:18px;line-height:18px;padding:0 var(--cds-spacing-03);
+  font-size:0.6875rem;letter-spacing:0.32px}
 .nav-dot{display:none}
 
 /* active — plate and left edge only */
@@ -1441,7 +1546,8 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .nav-item[aria-current="page"] .nav-name{color:var(--cds-text-primary);
   font-weight:var(--cds-font-weight-semibold)}
 .nav-item[aria-current="page"] .nav-chip{background:var(--cds-interactive);
-  border-color:var(--cds-interactive)}
+  border:0}
+.nav-item[aria-current="page"] .nav-metric{color:var(--cds-text-primary)}
 .nav-item[aria-current="page"] .nav-chip svg{fill:var(--cds-text-on-color)}
 
 /* footer — user row, brand row, two icon buttons */
@@ -1471,12 +1577,15 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .icon-btn:hover{background:var(--cds-layer-hover-01)}
 
 /* rail */
-.app.railed .nav-body,.app.railed .nav-section-label,.app.railed .nav-report-name,
+.app.railed .nav-body,.app.railed .nav-report-name,
 .app.railed .nav-user-text,.app.railed .nav-brand span{display:none}
-.app.railed .nav-item{grid-template-columns:36px;justify-content:center;
+.app.railed .nav-item{grid-template-columns:24px;justify-content:center;
   padding-left:var(--cds-spacing-03);padding-right:var(--cds-spacing-03)}
-.app.railed .nav-footer-row,.app.railed .nav-user{justify-content:center}
-.app.railed .nav-dot{display:block;position:absolute;top:8px;right:8px;
+.app.railed .nav-user{justify-content:center}
+/* [hidden] is a UA-stylesheet display:none, and an author display:block beats it —
+   so this rule lit the dot on all ten items while navRender was carefully hiding nine
+   of them. The collapsed rail has exactly one signal and it was firing on everything. */
+.app.railed .nav-dot:not([hidden]){display:block;position:absolute;top:8px;right:8px;
   width:6px;height:6px;background:var(--cds-support-error)}
 
 /* the old nav furniture, retired */
@@ -1645,10 +1754,10 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
 <div class="app">
 <header class="shell"><button class="sbtn" id="railtoggle" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg></button><div class="prod"><b>Hive &mdash; Frontline</b><span>British Biologicals</span></div><div class="right"><span class="who" id="shellwho"></span><button class="link" id="shellout" type="button">Sign out</button></div></header>
 <aside class="side" id="side">
-  <div class="masthead"><svg class="fl-lockup" preserveAspectRatio="xMinYMid meet" viewBox="0 0 480 58" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M0 56.6936L7.78882 0.898708H45.984L44.5611 11.0092H17.9742L16.027 25.1639H38.8692L37.4463 35.2744H14.604L11.6083 56.6936H0Z" fill="url(#fl_paint0_linear_3043_79)"/> <path d="M40.9598 56.6936L48.7486 0.898708H69.344C72.9389 0.898708 76.0844 1.54778 78.7805 2.84591C81.4766 4.09413 83.5736 5.96644 85.0715 8.46285C86.6192 10.9593 87.3931 14.0548 87.3931 17.7495C87.3931 20.3957 86.9188 22.8422 85.9702 25.089C85.0715 27.3358 83.7484 29.283 82.0009 30.9306C80.3033 32.5782 78.2313 33.8764 75.7848 34.825L85.1464 56.6936H72.7891L62.379 31.8293L69.344 36.4727H55.414L52.5681 56.6936H40.9598ZM56.837 26.3622H66.7977C68.5452 26.3622 70.068 25.9877 71.3661 25.2388C72.7142 24.4899 73.7627 23.4663 74.5116 22.1682C75.3105 20.87 75.7099 19.3972 75.7099 17.7495C75.7099 15.7025 75.0359 14.0798 73.6878 12.8815C72.3897 11.6333 70.6172 11.0092 68.3704 11.0092H58.934L56.837 26.3622Z" fill="url(#fl_paint1_linear_3043_79)"/> <path d="M119.128 57.5923C115.083 57.5923 111.339 56.9183 107.894 55.5703C104.499 54.2222 101.528 52.3249 98.9816 49.8784C96.4852 47.4319 94.538 44.586 93.14 41.3407C91.742 38.0454 91.043 34.4506 91.043 30.5561C91.043 26.2124 91.8418 22.1931 93.4395 18.4984C95.0372 14.8038 97.259 11.5834 100.105 8.83731C102.951 6.04133 106.246 3.86945 109.991 2.32167C113.785 0.77389 117.879 0 122.273 0C126.367 0 130.112 0.674033 133.507 2.0221C136.952 3.37016 139.923 5.26744 142.419 7.71393C144.966 10.1105 146.913 12.9564 148.261 16.2517C149.659 19.497 150.358 23.0419 150.358 26.8864C150.358 31.2302 149.559 35.2744 147.961 39.019C146.364 42.7137 144.117 45.959 141.221 48.755C138.375 51.551 135.055 53.7229 131.26 55.2707C127.516 56.8185 123.471 57.5923 119.128 57.5923ZM119.128 47.1074C121.824 47.1074 124.345 46.6081 126.692 45.6095C129.088 44.611 131.185 43.213 132.983 41.4156C134.78 39.6181 136.178 37.4962 137.177 35.0497C138.225 32.5533 138.75 29.8572 138.75 26.9613C138.75 23.666 138.026 20.7952 136.578 18.3487C135.18 15.8522 133.232 13.93 130.736 12.5819C128.29 11.1839 125.469 10.485 122.273 10.485C119.577 10.485 117.031 10.9842 114.634 11.9828C112.287 12.9814 110.215 14.3794 108.418 16.1768C106.621 17.9243 105.198 20.0213 104.149 22.4678C103.151 24.9142 102.651 27.6104 102.651 30.5561C102.651 33.8015 103.35 36.6724 104.748 39.1688C106.196 41.6652 108.143 43.6124 110.59 45.0104C113.086 46.4084 115.932 47.1074 119.128 47.1074Z" fill="url(#fl_paint2_linear_3043_79)"/> <path d="M151.769 56.6936L159.557 0.898708H168.47L192.21 40.3671L187.942 41.4905L193.633 0.898708H205.242L197.453 56.6936H188.466L165.249 16.9257L169.069 15.8023L163.377 56.6936H151.769Z" fill="url(#fl_paint3_linear_3043_79)"/> <path d="M214.393 56.6936L220.759 11.0092H206.604L208.027 0.898708H247.72L246.297 11.0092H232.367L226.001 56.6936H214.393Z" fill="url(#fl_paint4_linear_3043_79)"/> <path d="M242.684 56.6936L250.473 0.898708H262.081L255.715 46.5831H279.306L277.883 56.6936H242.684Z" fill="url(#fl_paint5_linear_3043_79)"/> <path d="M280.645 56.6936L288.434 0.898708H300.042L292.253 56.6936H280.645Z" fill="url(#fl_paint6_linear_3043_79)"/> <path d="M299.152 56.6936L306.941 0.898708H315.853L339.594 40.3671L335.325 41.4905L341.017 0.898708H352.625L344.836 56.6936H335.849L312.632 16.9257L316.452 15.8023L310.76 56.6936H299.152Z" fill="url(#fl_paint7_linear_3043_79)"/> <path d="M351.74 56.6936L359.529 0.898708H397.05L395.627 11.0092H369.715L367.992 23.666H392.407L390.984 33.7765H366.569L364.772 46.5831H390.684L389.261 56.6936H351.74Z" fill="url(#fl_paint8_linear_3043_79)"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M411.239 56.6953H430.494L451.19 28.7969L430.494 0.898438L411.239 0.898438L431.935 28.7969L411.239 56.6953ZM439.96 56.6953L460.656 28.7969L439.96 0.898439L459.215 0.89844L479.912 28.7969L459.215 56.6953H439.96Z" fill="url(#fl_paint9_linear_3043_79)"/> <defs> <linearGradient id="fl_paint0_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint1_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint2_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint3_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint4_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint5_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint6_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint7_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint8_linear_3043_79" x1="210.594" y1="-57.6229" x2="140.218" y2="46.7923" gradientUnits="userSpaceOnUse"> <stop stop-color="#2E3790"/> <stop offset="0.39691" stop-color="#FF7A45"/> <stop offset="1" stop-color="#EB2227"/> </linearGradient> <linearGradient id="fl_paint9_linear_3043_79" x1="473.058" y1="27.0007" x2="411.238" y2="27.0007" gradientUnits="userSpaceOnUse"> <stop stop-color="#344FA9"/> <stop offset="1" stop-color="#353FA7"/> </linearGradient> </defs> </svg><div class="nav-report-name">Rx intelligence</div></div>
+  <div class="masthead"><div class="brandbox"><svg class="fl-lockup" viewBox="0 0 563 119" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frontline Intelligence"><path d="M31 87.6936L38.7888 31.8987H76.984L75.5611 42.0092H48.9742L47.027 56.1639H69.8692L68.4463 66.2744H45.604L42.6083 87.6936H31Z" fill="url(#fi_paint0_linear_3052_80)"/><path d="M71.9598 87.6936L79.7486 31.8987H100.344C103.939 31.8987 107.084 32.5478 109.78 33.8459C112.477 35.0941 114.574 36.9664 116.071 39.4629C117.619 41.9593 118.393 45.0548 118.393 48.7495C118.393 51.3957 117.919 53.8422 116.97 56.089C116.071 58.3358 114.748 60.283 113.001 61.9306C111.303 63.5782 109.231 64.8764 106.785 65.825L116.146 87.6936H103.789L93.379 62.8293L100.344 67.4727H86.414L83.5681 87.6936H71.9598ZM87.837 57.3622H97.7977C99.5452 57.3622 101.068 56.9877 102.366 56.2388C103.714 55.4899 104.763 54.4663 105.512 53.1682C106.31 51.87 106.71 50.3972 106.71 48.7495C106.71 46.7025 106.036 45.0798 104.688 43.8815C103.39 42.6333 101.617 42.0092 99.3704 42.0092H89.934L87.837 57.3622Z" fill="url(#fi_paint1_linear_3052_80)"/><path d="M150.128 88.5923C146.083 88.5923 142.339 87.9183 138.894 86.5703C135.499 85.2222 132.528 83.3249 129.982 80.8784C127.485 78.4319 125.538 75.586 124.14 72.3407C122.742 69.0454 122.043 65.4506 122.043 61.5561C122.043 57.2124 122.842 53.1931 124.44 49.4984C126.037 45.8038 128.259 42.5834 131.105 39.8373C133.951 37.0413 137.246 34.8694 140.991 33.3217C144.785 31.7739 148.879 31 153.273 31C157.367 31 161.112 31.674 164.507 33.0221C167.952 34.3702 170.923 36.2674 173.419 38.7139C175.966 41.1105 177.913 43.9564 179.261 47.2517C180.659 50.497 181.358 54.0419 181.358 57.8864C181.358 62.2302 180.559 66.2744 178.961 70.019C177.364 73.7137 175.117 76.959 172.221 79.755C169.375 82.551 166.055 84.7229 162.26 86.2707C158.516 87.8185 154.471 88.5923 150.128 88.5923ZM150.128 78.1074C152.824 78.1074 155.345 77.6081 157.692 76.6095C160.088 75.611 162.185 74.213 163.983 72.4156C165.78 70.6181 167.178 68.4962 168.177 66.0497C169.225 63.5533 169.75 60.8572 169.75 57.9613C169.75 54.666 169.026 51.7952 167.578 49.3487C166.18 46.8522 164.232 44.93 161.736 43.5819C159.29 42.1839 156.469 41.485 153.273 41.485C150.577 41.485 148.031 41.9842 145.634 42.9828C143.287 43.9814 141.215 45.3794 139.418 47.1768C137.621 48.9243 136.198 51.0213 135.149 53.4678C134.151 55.9142 133.651 58.6104 133.651 61.5561C133.651 64.8015 134.35 67.6724 135.748 70.1688C137.196 72.6652 139.143 74.6124 141.59 76.0104C144.086 77.4084 146.932 78.1074 150.128 78.1074Z" fill="url(#fi_paint2_linear_3052_80)"/><path d="M182.769 87.6936L190.557 31.8987H199.47L223.21 71.3671L218.942 72.4905L224.633 31.8987H236.242L228.453 87.6936H219.466L196.249 47.9257L200.069 46.8023L194.377 87.6936H182.769Z" fill="url(#fi_paint3_linear_3052_80)"/><path d="M245.393 87.6936L251.759 42.0092H237.604L239.027 31.8987H278.72L277.297 42.0092H263.367L257.001 87.6936H245.393Z" fill="url(#fi_paint4_linear_3052_80)"/><path d="M273.684 87.6936L281.473 31.8987H293.081L286.715 77.5831H310.306L308.883 87.6936H273.684Z" fill="url(#fi_paint5_linear_3052_80)"/><path d="M311.645 87.6936L319.434 31.8987H331.042L323.253 87.6936H311.645Z" fill="url(#fi_paint6_linear_3052_80)"/><path d="M330.152 87.6936L337.941 31.8987H346.853L370.594 71.3671L366.325 72.4905L372.017 31.8987H383.625L375.836 87.6936H366.849L343.632 47.9257L347.452 46.8023L341.76 87.6936H330.152Z" fill="url(#fi_paint7_linear_3052_80)"/><path d="M382.74 87.6936L390.529 31.8987H428.05L426.627 42.0092H400.715L398.992 54.666H423.407L421.984 64.7765H397.569L395.772 77.5831H421.684L420.261 87.6936H382.74Z" fill="url(#fi_paint8_linear_3052_80)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M442.239 87.6953H461.494L482.19 59.7969L461.494 31.8984L442.239 31.8984L462.935 59.7969L442.239 87.6953ZM470.96 87.6953L491.656 59.7969L470.96 31.8984L490.215 31.8984L510.912 59.7969L490.215 87.6953H470.96Z" fill="url(#fi_paint9_linear_3052_80)"/><rect x="364.824" y="43.9648" width="168" height="32" rx="16" fill="url(#fi_paint10_linear_3052_80)"/><rect x="365.324" y="44.4648" width="167" height="31" rx="15.5" stroke="white" stroke-opacity="0.71"/><path d="M383.61 67.9648L385.69 53.0648H388.79L386.71 67.9648H383.61ZM388.552 67.9648L390.632 53.0648H393.012L399.352 63.6048L398.212 63.9048L399.732 53.0648H402.832L400.752 67.9648H398.352L392.152 57.3448L393.172 57.0448L391.652 67.9648H388.552ZM405.276 67.9648L406.976 55.7648H403.196L403.576 53.0648H414.176L413.796 55.7648H410.076L408.376 67.9648H405.276ZM412.831 67.9648L414.911 53.0648H424.931L424.551 55.7648H417.631L417.171 59.1448H423.691L423.311 61.8448H416.791L416.311 65.2648H423.231L422.851 67.9648H412.831ZM423.809 67.9648L425.889 53.0648H428.989L427.289 65.2648H433.589L433.209 67.9648H423.809ZM433.946 67.9648L436.026 53.0648H439.126L437.426 65.2648H443.726L443.346 67.9648H433.946ZM444.084 67.9648L446.164 53.0648H449.264L447.184 67.9648H444.084ZM456.686 68.2048C455.726 68.2048 454.819 68.0382 453.966 67.7048C453.126 67.3715 452.379 66.8915 451.726 66.2648C451.086 65.6382 450.579 64.8848 450.206 64.0048C449.832 63.1248 449.646 62.1382 449.646 61.0448C449.646 59.9115 449.846 58.8515 450.246 57.8648C450.659 56.8648 451.226 55.9915 451.946 55.2448C452.679 54.4848 453.532 53.8915 454.506 53.4648C455.492 53.0382 456.566 52.8248 457.726 52.8248C458.792 52.8248 459.746 53.0048 460.586 53.3648C461.426 53.7248 462.126 54.2048 462.686 54.8048C463.246 55.4048 463.626 56.0715 463.826 56.8048L460.986 58.1248C460.772 57.4048 460.366 56.8115 459.766 56.3448C459.179 55.8648 458.419 55.6248 457.486 55.6248C456.792 55.6248 456.159 55.7582 455.586 56.0248C455.012 56.2915 454.512 56.6648 454.086 57.1448C453.659 57.6248 453.326 58.1848 453.086 58.8248C452.859 59.4648 452.746 60.1582 452.746 60.9048C452.746 61.8115 452.919 62.6048 453.266 63.2848C453.612 63.9648 454.099 64.4915 454.726 64.8648C455.352 65.2248 456.079 65.4048 456.906 65.4048C457.599 65.4048 458.239 65.2782 458.826 65.0248C459.412 64.7582 459.899 64.3782 460.286 63.8848C460.672 63.3915 460.906 62.7982 460.986 62.1048L461.146 60.8648L462.486 62.0648H457.086L457.266 59.4648H464.366L464.186 61.4448C464.079 62.5782 463.799 63.5715 463.346 64.4248C462.892 65.2648 462.319 65.9648 461.626 66.5248C460.932 67.0848 460.159 67.5048 459.306 67.7848C458.466 68.0648 457.592 68.2048 456.686 68.2048ZM464.398 67.9648L466.478 53.0648H476.498L476.118 55.7648H469.198L468.738 59.1448H475.258L474.878 61.8448H468.358L467.878 65.2648H474.798L474.418 67.9648H464.398ZM475.375 67.9648L477.455 53.0648H479.835L486.175 63.6048L485.035 63.9048L486.555 53.0648H489.655L487.575 67.9648H485.175L478.975 57.3448L479.995 57.0448L478.475 67.9648H475.375ZM497.119 68.2048C496.092 68.2048 495.145 68.0315 494.279 67.6848C493.412 67.3248 492.659 66.8248 492.019 66.1848C491.392 65.5315 490.905 64.7648 490.559 63.8848C490.212 63.0048 490.039 62.0382 490.039 60.9848C490.039 59.8648 490.232 58.8115 490.619 57.8248C491.019 56.8382 491.579 55.9715 492.299 55.2248C493.019 54.4782 493.865 53.8915 494.839 53.4648C495.812 53.0382 496.879 52.8248 498.039 52.8248C499.132 52.8248 500.099 53.0115 500.939 53.3848C501.792 53.7448 502.499 54.2315 503.059 54.8448C503.619 55.4448 504.005 56.1115 504.219 56.8448L501.399 58.0848C501.185 57.3648 500.785 56.7782 500.199 56.3248C499.612 55.8582 498.859 55.6248 497.939 55.6248C497.245 55.6248 496.605 55.7582 496.019 56.0248C495.445 56.2915 494.939 56.6715 494.499 57.1648C494.072 57.6448 493.739 58.2115 493.499 58.8648C493.259 59.5182 493.139 60.2315 493.139 61.0048C493.139 61.8982 493.299 62.6782 493.619 63.3448C493.952 63.9982 494.412 64.5048 494.999 64.8648C495.599 65.2248 496.299 65.4048 497.099 65.4048C498.059 65.4048 498.879 65.1648 499.559 64.6848C500.239 64.1915 500.732 63.5848 501.039 62.8648L503.719 64.2648C503.412 64.9982 502.939 65.6648 502.299 66.2648C501.672 66.8515 500.919 67.3248 500.039 67.6848C499.159 68.0315 498.185 68.2048 497.119 68.2048ZM504.38 67.9648L506.46 53.0648H516.48L516.1 55.7648H509.18L508.72 59.1448H515.24L514.86 61.8448H508.34L507.86 65.2648H514.78L514.4 67.9648H504.38Z" fill="white"/><defs><linearGradient id="fi_paint0_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint1_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint2_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint3_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint4_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint5_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint6_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint7_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint8_linear_3052_80" x1="241.594" y1="-26.6229" x2="171.218" y2="77.7923" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient><linearGradient id="fi_paint9_linear_3052_80" x1="504.058" y1="58.0007" x2="442.238" y2="58.0007" gradientUnits="userSpaceOnUse"><stop stop-color="#344FA9"/><stop offset="1" stop-color="#353FA7"/></linearGradient><linearGradient id="fi_paint10_linear_3052_80" x1="453.814" y1="31.6012" x2="432.014" y2="71.3333" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient></defs></svg><svg class="fl-lockup fl-mark" viewBox="30 0 240 197" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frontline"><path fill-rule="evenodd" clip-rule="evenodd" d="M34.0001 192.479L99.043 192.479L168.955 98.2395L99.043 3.99999L34.0001 3.99999L103.912 98.2395L34.0001 192.479ZM131.019 192.479L200.931 98.2395L131.019 3.99999L196.062 4L265.974 98.2395L196.062 192.479L131.019 192.479Z" fill="url(#fm_paint0_linear_2602_84)"/><path d="M98.5398 191.479L35.988 191.479L104.716 98.835L105.157 98.2393L104.716 97.6435L35.988 4.99999L98.5408 4.99999L167.711 98.2393L98.5398 191.479ZM195.559 191.479L133.007 191.479L201.734 98.835L202.177 98.2393L201.734 97.6436L133.007 4.99999L195.56 5L264.73 98.2393L195.559 191.479Z" stroke="white" stroke-opacity="0.24" stroke-width="2"/><defs><linearGradient id="fm_paint0_linear_2602_84" x1="355.601" y1="103.838" x2="327.984" y2="5.92876" gradientUnits="userSpaceOnUse"><stop stop-color="#2E3790"/><stop offset="0.39691" stop-color="#FF7A45"/><stop offset="1" stop-color="#EB2227"/></linearGradient></defs></svg></div><div class="mh-row"><button class="icon-btn" id="rail3" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="side-panel--close"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg></button></div></div>
   <div class="brand"><div class="brandmark">BB</div><div class="brandtxt"><b>Hive Frontline</b><div class="brandsub">Field Rx Intelligence</div></div></div>
   <div class="sidescroll">
-    <div id="tabs"><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="analytics"><path d="M4,2H2V28a2,2,0,0,0,2,2H30V28H4Z"/><path d="M30,9H23v2h3.59L19,18.59l-4.29-4.3a1,1,0,0,0-1.42,0L6,21.59,7.41,23,14,16.41l4.29,4.3a1,1,0,0,0,1.42,0L28,12.41V16h2Z"/></svg><span>Performance</span></div><button class="nav-item" type="button" data-t="ov" aria-current="page" title="Pulse"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="dashboard"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Pulse</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="rx" aria-current="false" title="Rx engine"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="pills"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Rx engine</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="trend" aria-current="false" title="Trends"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="chart--line"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Trends</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg><span>Field</span></div><button class="nav-item" type="button" data-t="daily" aria-current="false" title="Field activity"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="events"><path d="M26,14H24v2h2a3.0033,3.0033,0,0,1,3,3v4h2V19A5.0058,5.0058,0,0,0,26,14Z"/><path d="M24,4a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,24,2Z"/><path d="M23,30H21V28a3.0033,3.0033,0,0,0-3-3H14a3.0033,3.0033,0,0,0-3,3v2H9V28a5.0059,5.0059,0,0,1,5-5h4a5.0059,5.0059,0,0,1,5,5Z"/><path d="M16,13a3,3,0,1,1-3,3,3,3,0,0,1,3-3m0-2a5,5,0,1,0,5,5A5,5,0,0,0,16,11Z"/><path d="M8,14H6a5.0059,5.0059,0,0,0-5,5v4H3V19a3.0033,3.0033,0,0,1,3-3H8Z"/><path d="M8,4A3,3,0,1,1,5,7,3,3,0,0,1,8,4M8,2a5,5,0,1,0,5,5A5,5,0,0,0,8,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Field activity</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="docs" aria-current="false" title="Doctors"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="stethoscope"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Doctors</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg><span>Action</span></div><button class="nav-item" type="button" data-t="exc" aria-current="false" title="Needs action"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="warning--alt--filled"><path fill="none" d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Zm-1.125-5h2.25V12h-2.25Z" data-icon-path="inner-path"/><path d="M16.002,6.1714h-.004L4.6487,27.9966,4.6506,28H27.3494l.0019-.0034ZM14.875,12h2.25v9h-2.25ZM16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26Z"/><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Needs action</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg><span>Team</span></div><button class="nav-item" type="button" data-t="mgr" aria-current="false" title="Managers"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Managers</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="org" aria-current="false" title="Org tree"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user"><path d="M16,4a5,5,0,1,1-5,5,5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,16,2Z"/><path d="M26,30H24V25a5,5,0,0,0-5-5H13a5,5,0,0,0-5,5v5H6V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Org tree</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg><span>Reference</span></div><button class="nav-item" type="button" data-t="guide" aria-current="false" title="Guide"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Guide</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="notes" aria-current="false" title="Notes"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="document"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Notes</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div id="navhidden" class="navhidden"><button data-t="inc">Incentive eligibility</button><button data-t="prod">Productivity</button><button data-t="calls">Call detail</button><button data-t="roster">Doctors by rep</button></div></div>
+    <div id="tabs"><div class="nav-section"><div class="nav-section-label"><span>Performance</span></div><button class="nav-item" type="button" data-t="ov" aria-current="page" title="Pulse"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="dashboard"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Pulse</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="rx" aria-current="false" title="Rx engine"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="pills"><path d="M22,14a7.94,7.94,0,0,0-4,1.0825V9A7,7,0,0,0,4,9V23a6.999,6.999,0,0,0,12.2855,4.5878A7.9969,7.9969,0,1,0,22,14Zm0,2a6.0046,6.0046,0,0,1,5.91,5H16.09A6.0046,6.0046,0,0,1,22,16ZM6,9A5,5,0,0,1,16,9v6H6Zm5,19a5.0059,5.0059,0,0,1-5-5V17h9.765a7.9566,7.9566,0,0,0-.7242,8.9315A4.9885,4.9885,0,0,1,11,28Zm11,0a6.0046,6.0046,0,0,1-5.91-5H27.91A6.0046,6.0046,0,0,1,22,28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Rx engine</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="trend" aria-current="false" title="Trends"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="chart--line"><path d="M4.67,28l6.39-12,7.3,6.49a2,2,0,0,0,1.7.47,2,2,0,0,0,1.42-1.07L27,10.9,25.18,10,19.69,21l-7.3-6.49A2,2,0,0,0,10.71,14a2,2,0,0,0-1.42,1L4,25V2H2V28a2,2,0,0,0,2,2H30V28Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Trends</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><span>Field</span></div><button class="nav-item" type="button" data-t="daily" aria-current="false" title="Field activity"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="calendar--task"><path d="M9 2H11V8H9z"/><path d="M21 2H23V8H21z"/><path d="M4 6H28V8H4z"/><path d="M4 26H28V28H4z"/><path d="M4 6H6V28H4z"/><path d="M26 6H28V28H26z"/><path d="M4 12H28V14H4z"/><path d="M14,23.41L9.29,18.71L10.71,17.29L14,20.59L21.29,13.29L22.71,14.71Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Field activity</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="docs" aria-current="false" title="Doctors"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="stethoscope"><path d="M24,2V4h2v6a4,4,0,0,1-8,0V4h2V2H16v8a6.0051,6.0051,0,0,0,5,5.91V22A6,6,0,0,1,9,22V15.8579a4,4,0,1,0-2,0V22a8,8,0,0,0,16,0V15.91A6.0051,6.0051,0,0,0,28,10V2ZM6,12a2,2,0,1,1,2,2A2.0023,2.0023,0,0,1,6,12Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Doctors</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><span>Action</span></div><button class="nav-item" type="button" data-t="exc" aria-current="false" title="Needs action"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="warning--alt"><path d="M29,30H3a1,1,0,0,1-.8872-1.4614l13-25a1,1,0,0,1,1.7744,0l13,25A1,1,0,0,1,29,30ZM4.6507,28H27.3493l.002-.0033L16.002,6.1714h-.004L4.6487,27.9967Z"/><path d="M14.875,12h2.25v9h-2.25z"/><path d="M16,26a1.5,1.5,0,1,1,1.5-1.5A1.5,1.5,0,0,1,16,26z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Needs action</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><span>Team</span></div><button class="nav-item" type="button" data-t="mgr" aria-current="false" title="Managers"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="user--multiple"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Managers</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="org" aria-current="false" title="Org tree"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="hierarchy"><path d="M12 3H20V5H12z"/><path d="M12 7H20V9H12z"/><path d="M12 3H14V9H12z"/><path d="M18 3H20V9H18z"/><path d="M15 9H17V15H15z"/><path d="M7 15H25V17H7z"/><path d="M7 15H9V21H7z"/><path d="M23 15H25V21H23z"/><path d="M4 21H12V23H4z"/><path d="M4 25H12V27H4z"/><path d="M4 21H6V27H4z"/><path d="M10 21H12V27H10z"/><path d="M20 21H28V23H20z"/><path d="M20 25H28V27H20z"/><path d="M20 21H22V27H20z"/><path d="M26 21H28V27H26z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Org tree</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div class="nav-section"><div class="nav-section-label"><span>Reference</span></div><button class="nav-item" type="button" data-t="guide" aria-current="false" title="Guide"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="book"><path d="M19 10H26V12H19z"/><path d="M19 15H26V17H19z"/><path d="M19 20H26V22H19z"/><path d="M6 10H13V12H6z"/><path d="M6 15H13V17H6z"/><path d="M6 20H13V22H6z"/><path d="M28,5H4A2.002,2.002,0,0,0,2,7V25a2.002,2.002,0,0,0,2,2H28a2.002,2.002,0,0,0,2-2V7A2.002,2.002,0,0,0,28,5ZM4,7H15V25H4ZM17,25V7H28V25Z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Guide</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button><button class="nav-item" type="button" data-t="notes" aria-current="false" title="Notes"><span class="nav-chip" aria-hidden="true"><svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" data-icon="document"><path d="M25.7,9.3l-7-7C18.5,2.1,18.3,2,18,2H8C6.9,2,6,2.9,6,4v24c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V10C26,9.7,25.9,9.5,25.7,9.3 z M18,4.4l5.6,5.6H18V4.4z M24,28H8V4h8v6c0,1.1,0.9,2,2,2h6V28z"/><path d="M10 22H22V24H10z"/><path d="M10 16H22V18H10z"/></svg></span><span class="nav-body"><span class="nav-line1"><span class="nav-name">Notes</span></span><span class="nav-line2"><span class="nav-metric"></span><span class="nav-desc"></span></span></span><span class="nav-dot" hidden></span></button></div><div id="navhidden" class="navhidden"><button data-t="inc">Incentive eligibility</button><button data-t="prod">Productivity</button><button data-t="calls">Call detail</button><button data-t="roster">Doctors by rep</button></div></div>
     
   </div>
   <div class="userchip">
@@ -1664,7 +1773,7 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button><button class="icon-btn" id="rail3" type="button" title="Collapse navigation" aria-label="Collapse navigation"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="side-panel--close"><path d="M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -1816,7 +1925,8 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
+<div id="navtip" role="tooltip" aria-hidden="true"></div>
+  <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
 /* ------------------------------------------------------------------ CARBON
@@ -2719,7 +2829,13 @@ function navBadge(){
  const b=$('tabs')&&$('tabs').querySelector('button[data-t="exc"]'); if(!b)return;
  /* the nav sub-line already states the count; a badge beside it is the same fact
     twice, and two places to disagree */
- if(b.querySelector('.navm')){const old=b.querySelector('.badge');if(old)old.remove();return;}
+ /* '.navm' was the sub-line's class before the v29 nav rebuild renamed it to
+    '.nav-metric'. The guard has been false ever since, so the badge was appended on
+    every render and the Needs action item showed its count twice — once as
+    "443 open" and once as a bare "443" below the row. The sub-line owns the fact;
+    this function's only remaining job is to make sure no stale badge survives. */
+ const line=b.querySelector('.nav-metric')||b.querySelector('.navm');
+ if(line){const old=b.querySelector('.badge');if(old)old.remove();return;}
  const n=fr().filter(r=>(r.fl||[]).length).length;
  let s=b.querySelector('.badge');
  if(!n){ if(s)s.remove(); return; }
@@ -4319,14 +4435,18 @@ function drillWire(){
 }
 
 /* ------------------------------------------------------------------- UI SHELL */
-const RAILICO={close:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z\"/></svg>",open:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,26H12v-9h10.2 l-3.6,3.6L20,22l6-6l-6-6l-1.4,1.4l3.6,3.6H12V6h16V26z\"/></svg>"};
+const RAILICO={close:"<svg class=\"icon-16\" data-icon=\"side-panel--close\" viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,15H17.8 l3.6-3.6L20,10l-6,6l6,6l1.4-1.4L17.8,17H28v9H12V6h16V15z\"/></svg>",open:"<svg class=\"icon-16\" data-icon=\"side-panel--open\" viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M28,4H4C2.9,4,2,4.9,2,6v20c0,1.1,0.9,2,2,2h24c1.1,0,2-0.9,2-2V6C30,4.9,29.1,4,28,4z M10,26H4V6h6V26z M28,26H12v-9h10.2 l-3.6,3.6L20,22l6-6l-6-6l-1.4,1.4l3.6,3.6H12V6h16V26z\"/></svg>"};
 const THEMEICO={dark:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z\"/></svg>",light:"<svg viewBox=\"0 0 32 32\" width=\"16\" height=\"16\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M15 2H17V7H15z\"/><path d=\"M21.668 6.854H26.625999999999998V8.854H21.668z\" transform=\"rotate(-45 24.147 7.853)\"/><path d=\"M25 15H30V17H25z\"/><path d=\"M23.147 21.668H25.147V26.625999999999998H23.147z\" transform=\"rotate(-45 24.147 24.146)\"/><path d=\"M15 25H17V30H15z\"/><path d=\"M5.375 23.147H10.333V25.147H5.375z\" transform=\"rotate(-45 7.853 24.146)\"/><path d=\"M2 15H7V17H2z\"/><path d=\"M6.854 5.375H8.854V10.333H6.854z\" transform=\"rotate(-45 7.854 7.853)\"/><path d=\"M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z\"/></svg>"};
 
 function railSet(on){
  document.querySelector('.app').classList.toggle('railed',!!on);
  try{localStorage.setItem('__fl_rail',on?'1':'0');}catch(e){}
  const lbl=on?'Expand navigation':'Collapse navigation';
- [document.getElementById('railtoggle'),document.getElementById('rail2')].forEach(b=>{
+ /* rail3 was never in this list. In the footer that was a cosmetic miss; now that it
+    is the primary control, a button whose label never changes is a button that lies
+    about what it does. */
+ [document.getElementById('railtoggle'),document.getElementById('rail2'),
+  document.getElementById('rail3')].forEach(b=>{
   if(!b)return;
   b.title=lbl;b.setAttribute('aria-label',lbl);
   const s=b.querySelector('svg');if(s)s.outerHTML=on?RAILICO.open:RAILICO.close;
@@ -4351,8 +4471,21 @@ function themeLabel(){
 function shellWire(){
  const t=document.getElementById('railtoggle');if(t)t.onclick=railToggle;
  const t2=document.getElementById('rail2');if(t2)t2.onclick=railToggle;
- let on=false;try{on=localStorage.getItem('__fl_rail')==='1';}catch(e){}
- railSet(on);
+ /* THE RAIL OPENS ON EVERY LOAD. Start collapsed with transitions suppressed, then
+    release both on the second frame so the first thing the report does is show you
+    where everything is. Two frames, not one: the first is when the browser applies
+    the collapsed state, and removing .boot in the same frame would cancel the
+    transition before it had anything to animate from.
+    This deliberately overrides a stored collapsed preference — the entrance was
+    asked for on every open, not only on a first visit. The preference is still
+    written, so the toggle keeps working normally within a session. */
+ const app=document.querySelector('.app');
+ document.documentElement.classList.add('boot');
+ railSet(true);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  document.documentElement.classList.remove('boot');
+  railSet(false);
+ }));
  themeLabel();
  /* Identity moves to the header, where Channel Health keeps it. It does NOT stay in
     the rail as well: "no control appears in two places" is the consistency contract,
@@ -5113,6 +5246,43 @@ function navValue(k,rows){
  return '';
 }
 
+/* ---- the nav tooltip -------------------------------------------------------- */
+/* Delegated from #tabs, wired once. navRender() runs on every filter change, so
+   per-item listeners would stack up one deeper each time the period moved. */
+function navTipWire(){
+ const host=$('tabs'), tip=$('navtip');
+ if(!host||!tip||host.dataset.tip)return;
+ host.dataset.tip='1';
+ const show=b=>{
+  const de=b&&b.querySelector('.nav-desc');
+  const txt=de?de.textContent.trim():'';
+  if(!txt){hide();return;}
+  tip.textContent=txt;
+  tip.classList.add('on');
+  /* Measure AFTER the text is in, or the first hover positions the box from the
+     previous item's height. */
+  const r=b.getBoundingClientRect(), t=tip.getBoundingClientRect();
+  let top=r.top+r.height/2-t.height/2;
+  top=Math.max(8,Math.min(top,innerHeight-t.height-8));
+  let left=r.right+8;
+  if(left+t.width>innerWidth-8)left=Math.max(8,r.left-t.width-8);
+  tip.style.top=top+'px'; tip.style.left=left+'px';
+ };
+ const hide=()=>{tip.classList.remove('on');};
+ host.addEventListener('mouseover',e=>{
+  const b=e.target.closest('.nav-item'); if(b)show(b);});
+ host.addEventListener('mouseout',e=>{
+  const b=e.target.closest('.nav-item');
+  if(b&&!b.contains(e.relatedTarget))hide();});
+ /* focusin, not focus: focus does not bubble, and the whole point of delegation is
+    that it does. Keyboard users get the same tooltip as the mouse. */
+ host.addEventListener('focusin',e=>{
+  const b=e.target.closest('.nav-item'); if(b)show(b);});
+ host.addEventListener('focusout',hide);
+ addEventListener('scroll',hide,true);
+ addEventListener('resize',hide);
+}
+
 function navRender(){
  const rows=fr();
  document.querySelectorAll('.nav-item').forEach(b=>{
@@ -5125,7 +5295,13 @@ function navRender(){
   if(m){m.textContent=v;
         if(meta.sev&&v)m.setAttribute('data-severity',meta.sev);
         else m.removeAttribute('data-severity');}
-  if(de)de.textContent=meta.d||'';
+  if(de){de.textContent=meta.d||'';
+        /* the description IS the item's accessible description, not a loose line */
+        if(!de.id)de.id='navd-'+k;
+        if(meta.d)b.setAttribute('aria-describedby',de.id);
+        else b.removeAttribute('aria-describedby');
+        /* title duplicated the visible name and fought the real tooltip */
+        b.removeAttribute('title');}
   /* the one optional tag the spec allows, on Field activity below the standard */
   let tag=l1?l1.querySelector('.tag'):null;
   const want=(k==='daily'&&parseFloat(v)<10)?'Below 10':'';
@@ -5135,6 +5311,7 @@ function navRender(){
   /* railed, a badged item shows a dot rather than a number it has no room for */
   if(dot)dot.hidden=!(meta.sev==='error'&&v&&parseFloat(v)>0);
  });
+ try{navTipWire();}catch(e){}
 }
 
 /* ---- the three screens that absorbed a nav item ------------------------------ */
