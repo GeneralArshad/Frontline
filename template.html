@@ -1397,7 +1397,11 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
                the rules keep saying which token they came from: calc(spacing-05*0.8)
                reads as "spacing-05, less twenty percent", where 12.8px reads as
                nothing at all. */
-:root{--side:320px;--brand-h:40px;--brand-air:0.8}
+/* --mark-scale  the mark's height as a fraction of the shared brand height. It is
+                  the ARTWORK that scales, not the slot: .brandbox stays --brand-h in
+                  both states, so the masthead cannot change height and v42's one-axis
+                  rule still holds. */
+:root{--side:320px;--brand-h:40px;--brand-air:0.8;--mark-scale:0.7}
 .app.railed{--side:72px}
 /* Carbon's moderate-02 with the productive curve: long enough to read as a panel
    moving, short enough not to be in the way. .boot suppresses it for the first two
@@ -1438,7 +1442,8 @@ thead th .sortmk svg{width:16px;height:16px;fill:var(--cds-icon-primary);stroke:
 .masthead .fl-lockup{display:block;height:var(--brand-h);width:auto;max-width:100%}
 .masthead .fl-mark{display:none}
 .app.railed .masthead .fl-lockup{display:none}
-.app.railed .masthead .fl-mark{display:block;height:var(--brand-h);width:auto}
+.app.railed .masthead .fl-mark{display:block;
+  height:calc(var(--brand-h)*var(--mark-scale));width:auto}
 .nav-report-name{font-size:var(--cds-body-compact-01-size);
   font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary);
   margin-top:var(--cds-spacing-03)}
