@@ -1151,11 +1151,6 @@ body.drillon{overflow:hidden}
 
 /* ================================================== FILTER BAR, SLIMMED */
 .fbar .fbody .fitem.more{display:none}
-.fbar.moreon .fbody .fitem.more{display:block}
-.morebtn{border:0;background:transparent;color:var(--cds-link-primary);cursor:pointer;
-  font:400 var(--cds-body-compact-01-size) var(--cds-font-sans);letter-spacing:0.16px;
-  height:32px;padding:0 var(--cds-spacing-05)}
-.morebtn:hover{background:var(--cds-layer-hover-01)}
 /* one identity row, not two */
 .topbar{display:none}
 
@@ -1754,6 +1749,49 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
   background:var(--cds-layer-02);color:var(--cds-text-primary);
   padding:var(--cds-spacing-05);margin:var(--cds-spacing-04) 0;
   overflow-x:auto;white-space:pre}
+
+/* ---- scope bar (MODULES_SPEC 1) --------------------------------------------- */
+/* One control carrying the whole scope while closed. 3px left edge rather than a
+   4-sided border: it is a disclosure, not a field. */
+.scope-toggle{flex:1 1 200px;min-width:0;min-height:56px;display:flex;align-items:center;
+  gap:var(--cds-spacing-03);padding:0 var(--cds-spacing-05);
+  border:0;border-left:3px solid transparent;background:var(--cds-layer-01);
+  cursor:pointer;font:inherit;text-align:left;color:var(--cds-text-primary)}
+.scope-toggle:hover{background:var(--cds-layer-hover-01)}
+.scope-toggle[aria-expanded="true"]{border-left-color:var(--cds-border-interactive);
+  background:var(--cds-layer-selected-01)}
+.scope-toggle svg{fill:var(--cds-icon-secondary);stroke:none;flex:0 0 auto}
+.scope-text{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;gap:1px}
+.scope-toggle .fcount{position:absolute;right:var(--cds-spacing-07);
+  top:50%;transform:translateY(-50%)}
+.scope-toggle{position:relative}
+.scope-label{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scope-value{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-primary);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-variant-numeric:tabular-nums}
+.scope-toggle .chevd{transition:transform var(--cds-duration-fast-02)
+  var(--cds-easing-standard-productive)}
+.scope-toggle[aria-expanded="true"] .chevd{transform:rotate(180deg)}
+
+/* The band: the same three cells, above the sticky bar, no grey plate. */
+.periodband{background:var(--cds-layer-01);
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.periodband[hidden]{display:none}
+.periodband .fbody{display:flex;flex-wrap:wrap;gap:1px;
+  background:var(--cds-border-subtle-00)}
+.periodband .fbody>*{flex:1 1 240px;min-width:0;background:var(--cds-layer-01);
+  padding:var(--cds-spacing-04) var(--cds-spacing-05) var(--cds-spacing-05)}
+
+/* One row at 1056px, two when narrow, never three. Every child grows from a small
+   basis: the measured failure was 170-250px bases totalling 1468px against 604px. */
+.fbar .fbody>.fitem{flex:1 1 140px;min-width:0}
+.fbar .fbody>.acts #fstate{font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls);color:var(--cds-text-secondary);
+  margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fbar .fbody>.acts{flex:1 1 auto;min-width:0;display:flex;align-items:center;
+  justify-content:flex-end;flex-wrap:wrap;gap:var(--cds-spacing-03);
+  background:var(--cds-layer-01);padding:0 var(--cds-spacing-05)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -1783,10 +1821,10 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
 </aside>
 <div class="main">
   <div class="gradbar"></div>
-  <div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
-<div class="fhead" id="fhead"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M18,28H14a2,2,0,0,1-2-2V18.41L4.59,11A2,2,0,0,1,4,9.59V6A2,2,0,0,1,6,4H26a2,2,0,0,1,2,2V9.59A2,2,0,0,1,27.41,11L20,18.41V26A2,2,0,0,1,18,28ZM6,6V9.59l8,8V26h4V17.59l8-8V6Z"/></svg>Filters<span class="fcount" id="fcount" style="display:none">0</span><span class="chev"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></span></div>
+  <div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
+
 <div class="fnote" id="fdropped"></div>
-<div class="fstate" id="fstate"></div>
+
 <div class="fbody">
 <div class="perbox" id="perbox">
   <div class="plab"><span>Period</span><span id="perdot"></span></div>
@@ -1823,7 +1861,7 @@ pre.ruleblk{font-family:'IBM Plex Mono',ui-monospace,monospace;
 <div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
 <div class="fitem"><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
-</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><span class="stamp" id="stamp"></span><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear filters</button></span></div></div>
+</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><span class="stamp" id="stamp"></span><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear</button></span></div></div>
   <div class="topbar">
     <button class="burger" id="burger" title="Open menu" aria-label="Open menu">&#9776;</button>
     <div style="display:flex;align-items:center;gap:14px"></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
@@ -2331,7 +2369,7 @@ function init(){
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
   S('doctor handlers',()=>{$('dfst').onchange=e=>{DF.st=e.target.value;docsView();};$('dfsp').onchange=e=>{DF.sp=e.target.value;docsView();};$('dfca').onchange=e=>{DF.ca=e.target.value;docsView();};$('dfpr').onchange=e=>{DF.pr=e.target.value;docsView();};$('dfid').onchange=e=>{DF.id=e.target.value;docsView();};$('dreset').onclick=()=>{DF.q='';DF.st='';DF.sp='';DF.ca='';DF.pr='';DF.id='';['dq','dfst','dfsp','dfca','dfpr','dfid'].forEach(x=>{if($(x))$(x).value='';});docsView();};});
-  S('sidebar chrome',()=>{$('fhead').onclick=()=>$('fpanel').classList.toggle('closed');$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf','fte'].forEach(id=>{if($(id))$(id).value='';});$('q').value='';
+  S('sidebar chrome',()=>{/* the FILTERS header is gone; the scope toggle is the only disclosure now */$('burger').onclick=()=>$('side').classList.toggle('open');document.addEventListener('click',e=>{if(window.innerWidth<=1000&&$('side').classList.contains('open')&&!$('side').contains(e.target)&&e.target!==$('burger'))$('side').classList.remove('open');});$('reset').onclick=()=>{Object.keys(F).forEach(k=>F[k]='');['fdi','fzn','fst','fhq','frl','fmg','fob','frx','fsp','fac','fpf','fte'].forEach(id=>{if($(id))$(id).value='';});$('q').value='';
    PR.mode='all';PR.wd='';PR.from='';PR.to='';if($('fpr'))$('fpr').value='all';if($('fwd'))$('fwd').value='';
    applyPeriod();};});
   S('period control',()=>{
@@ -3108,6 +3146,7 @@ let PBUSY=false;
 function periodBusy(){return PBUSY;}
 function applyPeriod(){
  const box=$('perbox');if(box)box.classList.toggle('on',perActive());
+ try{scopeSync();}catch(e){}
  const pr=$('prange');if(pr)pr.style.display=PR.mode==='custom'?'flex':'none';
  const nt=$('pnote'),cold=perActive()&&!PCACHE[pKey()];
  const finish=()=>{
@@ -4726,23 +4765,98 @@ function tilesClickable(){
 
 /* ---- filter bar: four fields visible, the rest behind "More filters" ---------- */
 const FMAIN=['fpr','fwd','q','fzn'];
-function filterSplit(){
- const bar=$('fbar'); if(!bar||bar.dataset.split)return;
- bar.dataset.split='1';
- bar.querySelectorAll('.fitem').forEach(it=>{
+/* ---- the scope bar ----------------------------------------------------------- */
+/* Everything here MOVES existing nodes rather than rebuilding them. A moved node keeps
+   its handlers, its value and its identity, so $('fpr') and the period engine go on
+   addressing exactly the element they always did. */
+const SCOPE_MAIN=['fzn','fwd','q'];      /* what stays in the bar beside the toggle */
+let SCOPEON=false;
+
+function scopeIcon(){
+ return '<svg class="icon-20" viewBox="0 0 32 32" width="20" height="20" '+
+  'aria-hidden="true" data-icon="calendar"><path d="M26 4h-4V2h-2v2h-8V2h-2v2H6'+
+  'C4.9 4 4 4.9 4 6v20c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6C28 4.9 27.1 4 26 4zM26 26H6'+
+  'V12h20V26zM26 10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg>';
+}
+function scopeChev(){
+ return '<svg class="icon-16 chevd" viewBox="0 0 32 32" width="16" height="16" '+
+  'aria-hidden="true"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg>';
+}
+
+function scopeInit(){
+ const bar=$('fbar'), band=$('perband'), body=bar&&bar.querySelector('.fbody');
+ if(!bar||!band||!body||bar.dataset.scope)return;
+ bar.dataset.scope='1';
+
+ /* the band gets its own body, then the period cell and every secondary filter */
+ const bb=document.createElement('div');
+ bb.className='fbody';
+ band.appendChild(bb);
+ const per=$('perbox'); if(per)bb.appendChild(per);
+ body.querySelectorAll('.fitem').forEach(it=>{
   const f=it.querySelector('select,input');
-  if(!f||FMAIN.indexOf(f.id)<0)it.classList.add('more');
+  if(!f||SCOPE_MAIN.indexOf(f.id)<0)bb.appendChild(it);
  });
- const n=bar.querySelectorAll('.fitem.more').length;
- const b=document.createElement('button');
- b.type='button';b.className='morebtn';b.id='fmore';
- b.textContent='More filters ('+n+')';
- b.onclick=()=>{
-  const on=bar.classList.toggle('moreon');
-  b.textContent=on?'Fewer filters':('More filters ('+n+')');
- };
+
+ /* the actions join the field row, or "one row" is unreachable: they were a second
+    row of their own before any wrapping had a chance to happen */
+ /* The state sentence goes FIRST, so it survives the wrapper being dropped. Moving
+    .acts out and then removing the now-empty .fstate took #fstate with it — the span
+    the spec wants kept as helper text inside the bar, and the one the JS writes to. */
  const acts=bar.querySelector('.fstate .acts');
- if(acts)acts.insertBefore(b,acts.firstChild);
+ const sent=bar.querySelector('#fstate');
+ if(sent&&acts)acts.insertBefore(sent,acts.firstChild);
+ if(acts)body.appendChild(acts);
+ const st=bar.querySelector('.fstate');
+ if(st&&!st.querySelector('.acts')&&!st.querySelector('#fstate'))st.remove();
+
+ const b=document.createElement('button');
+ b.type='button'; b.className='scope-toggle'; b.id='scopetog';
+ b.setAttribute('aria-expanded','false');
+ b.setAttribute('aria-controls','perband');
+ b.innerHTML=scopeIcon()+'<span class="scope-text">'+
+   '<span class="scope-label" id="scopelab"></span>'+
+   '<span class="fcount" id="fcount" style="display:none">0</span>'+
+   '<span class="scope-value" id="scopeval"></span></span>'+scopeChev();
+ b.onclick=()=>scopeSet(!SCOPEON);
+ body.insertBefore(b,body.firstChild);
+
+ scopeSet(false);
+}
+
+function scopeSet(on){
+ SCOPEON=!!on;
+ const band=$('perband'), b=$('scopetog');
+ if(band){
+  band.hidden=!SCOPEON;
+  /* The label is applied only when open. A hidden region should not advertise itself
+     as a landmark, and the spec's check is that nothing answers to
+     [aria-label="Reporting period"] while the band is closed. */
+  if(SCOPEON)band.setAttribute('aria-label','Reporting period');
+  else band.removeAttribute('aria-label');
+ }
+ if(b)b.setAttribute('aria-expanded',SCOPEON?'true':'false');
+ scopeSync();
+}
+
+/* The collapsed control states the FULL scope: the comparison as well as the range. */
+function scopeSync(){
+ const lab=$('scopelab'), val=$('scopeval');
+ if(!lab||!val)return;
+ let cmp='vs previous period';
+ try{ if(typeof cmpTotals==='function'&&PR&&PR.mode==='all')cmp='vs previous period'; }catch(e){}
+ lab.textContent='Period · '+cmp;
+ let txt='';
+ try{ const p=perRange(); txt=dlabel(p[0])+' – '+dlabel(p[1]); }catch(e){}
+ val.textContent=txt||'All time';
+}
+
+function filterSplit(){
+ /* The "More filters (N)" row is gone: the secondary filters live in the scope band,
+    which is one disclosure for the whole of scope rather than two competing ones.
+    Kept as a named no-op because five call sites reference it and a rename would be a
+    bigger diff than the change it documents. */
+ scopeInit();
 }
 
 /* ======================================================== CHART CARD ANSWERS
@@ -5189,7 +5303,10 @@ function headlineDelta(rows){
 /* the stamp the filter strip carries, so "when was this" never needs asking */
 function updateStamp(){
  const s=$('stamp'); if(!s)return;
- s.innerHTML='<span class="dot"></span>Data updated '+((D&&D.gen)||'');
+ /* a time, not a sentence — the bar has one row to spend */
+ const g=(D&&D.gen)||'';
+ s.title='Data updated '+g;
+ s.innerHTML='<span class="dot"></span>'+(g.split(' ').pop()||g);
 }
 
 /* ================================================== NAV, per NAV_SPEC.md

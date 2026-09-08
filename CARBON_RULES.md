@@ -29,6 +29,10 @@ Binding spec for every screen of this app. Values come from `carbon-tokens.css`;
 
 IBM Plex Sans 300/400/600. Plex Mono only for code and fingerprints. Large sizes go *lighter*, never bolder. Never below 12px.
 
+**Figures.** `font-variant-numeric: tabular-nums` on every data table (set it on the `<table>`; cells inherit), every metric value and every axis label — proportional digits make a column of numbers ragged and defeat the vertical comparison these tables exist for. Display figures also tighten: `-0.64px` at 3.375rem, `-0.32px` at 2rem and 1.75rem.
+
+**Tables of numbers.** Numeric columns are right-aligned, header included. The identifier column is weight 600. Left-aligned numbers are a defect, not a style choice.
+
 ## Controls
 
 Heights: sm 32 · md 40 · lg 48 · xl 64. Inputs and selects sit on `--cds-field-01` with **only** `border-bottom: 1px solid var(--cds-border-strong-01)`. Buttons: square corners, left-aligned labels, `padding: 0 63px 0 15px`. Icon-only buttons are 32px with `title` **and** `aria-label` worded as the action.
@@ -65,6 +69,8 @@ Rules:
 - Series 1 `--cds-interactive`; series 2 `--cds-support-warning`; target and threshold lines dashed `4 4` in `--cds-support-warning`; gridlines `--cds-border-subtle-00`; axis `--cds-border-strong-01`.
 - **Every chart card has the same header**: question title (1rem/600), 12px helper sub-line, 32px ghost `maximize` button on the right. Then a bold one-line answer. Then the graphic.
 - **Multi-series charts share one zero-anchored scale.** Per-series normalisation makes a flat series look volatile and can invert the story the copy tells.
+- **Every line chart carries a labelled value scale** — a 32px label column at three to five round values, and gridlines moved to land on those round numbers rather than arbitrary pixel offsets. Gridlines without labels make magnitude unreadable. Where a chart has a target, label the target on the plot.
+- **Ordinal scales are encoded ordinally.** For a ranked set with no hue in the token set (tier, grade, band), use a fill-weight ramp — solid, outlined, hairline — not invented colours. It reads instantly, survives the dark theme, and survives a monochrome print.
 - Sanctioned textures, and only these: a 1px repeating column/row grid behind a plot (`--cds-border-subtle-01`), a 135° 2px hatch to mark a negative or excluded segment, a filled area under a line in `--cds-highlight`, and a 24px dot grid on empty states.
 - Bars: 16px horizontal, 8px gaps for columns. Value labels outside the bar in `--cds-text-primary`.
 
@@ -125,7 +131,7 @@ Sentence case everywhere. Plain, declarative, no superlatives, no exclamation ma
 
 Every one of these shipped at least once during the design and cost a review cycle.
 
-1. **Undefined tokens fail silently** — the property renders as nothing, or inherits. These names do **not** exist in this token set: `--cds-layer-accent-03`, `--cds-support-warning-inverse`, `--cds-support-success-inverse`, `--cds-text-inverse-secondary`. There is no secondary inverse text token; use `--cds-text-inverse` and differentiate by size. CI gate 2 exists for this.
+1. **Undefined tokens fail silently** — the property renders as nothing, or inherits. These names do **not** exist in this token set: `--cds-layer-accent-03`, `--cds-support-warning-inverse`, `--cds-support-success-inverse`, `--cds-text-inverse-secondary`, `--cds-tag-yellow-bg`. There is no secondary inverse text token; use `--cds-text-inverse` and differentiate by size. **The defined tag tones are gray, cool-gray, warm-gray, red, magenta, purple, blue, cyan, teal, green — there is no yellow and nothing metallic**; `type="yellow"` renders as gray and cost this design a module where three tiers came out pixel-identical. CI gate 2 exists for this.
 2. **`--cds-layer-02` is `#ffffff` in the White theme, the same as `--cds-background`; `--cds-layer-01` is the `#f4f4f4` grey.** Layering is not "higher number = darker". To make a surface read as a distinct plate, put it on `layer-01` or `layer-accent-01` with its cards on `layer-02`, or give it a hairline — do not assume a layer step is visible.
 3. **Neither White-theme success nor warning token passes 4.5:1 as 12px text.** `--cds-support-success` is ~3.35:1, green 40 ~2.4:1. Tint only the error case (`--cds-text-error`); carry success and warning severity with a tag or a status icon instead of coloured small text.
 4. **`auto-fit` grids leave remainder tracks** that paint through a gap-background. Use flex-wrap for any row whose item count does not divide the track count.
@@ -146,8 +152,9 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Exactly one headline metric on the screen.
 - [ ] Every supporting metric tile is clickable and opens the drill panel.
 - [ ] Every chart title is a question, has a bold answer line, and a `maximize` button.
-- [ ] Multi-series charts share one zero-anchored scale.
-- [ ] Tables: 48px rows, accent-01 header, sorted column marked, footer with range and one paging action, no zebra, no vertical rules.
+- [ ] Multi-series charts share one zero-anchored scale, and every line chart has a labelled value scale on round numbers.
+- [ ] Tabular figures on every table, metric and axis label; display figures carry negative tracking.
+- [ ] Tables: 48px rows, accent-01 header, sorted column marked, footer with range and one paging action, no zebra, no vertical rules, numeric columns right-aligned, identifier column at 600.
 - [ ] Every fetch shows page progress plus skeletons; every in-flight action shows a spinner or a disabled label; nothing blocks reading.
 - [ ] Every interactive element shows the 2px Blue 60 focus ring on keyboard focus.
 - [ ] Every icon-only control has `title` and `aria-label`.

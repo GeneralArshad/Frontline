@@ -1,6 +1,6 @@
 # Conformance — definition of done, item by item
 
-The 19 checklist items in `CARBON_RULES.md`, each restated as **a thing that is either present in the built template or not**. The audit script in `audit/_audit.py` scores exactly this list.
+The checklist items in `CARBON_RULES.md`, each restated as **a thing that is either present in the built template or not**. The audit script in `audit/_audit.py` scores exactly this list.
 
 Read this before starting a screen, and again before calling one done. Prose in the README explains *why*; this file is the contract.
 
@@ -149,6 +149,22 @@ Five ampersands and three emoji in a first build means copy was written outside 
 The metric and description table is in `README.md` → Information architecture. This is not decoration: the nav doubles as a status board, it is why items are 60px rather than 32px, and it is the reason the top header bar could be removed. A labels-only nav is a different design.
 
 Collapsed rail: labels hidden, icon chip and active border visible, badge counts become a 6px red dot (absolutely positioned), tooltip carries name and description.
+
+## 20. Figures are tabular and numeric columns right-aligned — SOURCE
+
+`font-variant-numeric: tabular-nums` on every `<table>`, metric value and axis label. Numeric table columns right-aligned including the header; identifier column at weight 600. Display figures carry negative tracking (-0.64px at 3.375rem, -0.32px at 2rem/1.75rem).
+
+## 21. Every line chart has a labelled value scale — SOURCE
+
+A 32px label column with three to five round values, gridlines landing on those values, and any target line labelled on the plot. Gridlines alone do not satisfy this.
+
+## 22. Ordinal scales use a fill-weight ramp, not invented hues — SOURCE
+
+No `type="yellow"` and no tag tone outside gray, cool-gray, warm-gray, red, magenta, purple, blue, cyan, teal, green. Ranked sets (tier, grade, band) use solid → outlined → hairline. Probe: the computed `backgroundColor` of the chips in a ranked set must be pairwise distinct.
+
+## 23. Chrome does not exceed 25% of the viewport — LIVE
+
+Measured from the top of the content area: nav plus sticky bar plus any permanently open band. The page's first `<h1>` must sit above 160px on a 900px viewport. The reporting-period band is collapsed by default; the filter bar is one row at 1056px and never three at any width.
 
 ## 19. Hairline count in single digits — EYE
 
