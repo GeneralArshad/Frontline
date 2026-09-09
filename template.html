@@ -1912,6 +1912,27 @@ table.rep-reports tr[data-zero="1"] .bar{background:var(--cds-support-error)}
 .nrep-chase{box-shadow:inset 3px 0 0 var(--cds-support-error)}
 .nrep-note{color:var(--cds-text-secondary);font-size:var(--cds-label-01-size);
   letter-spacing:var(--cds-label-01-ls);margin-top:var(--cds-spacing-04)}
+
+/* ---- calendar day drill-down (v49) ------------------------------------------- */
+/* Only cells carrying calls become controls; the rest keep their tooltip and stay inert,
+   so the tab order is the ~30 days that have something behind them, not all 140. */
+.dc[data-d]{cursor:pointer}
+.dc[data-d]:hover{outline:2px solid var(--cds-border-interactive);outline-offset:-2px}
+.dc[data-d]:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.dc[data-d][aria-pressed="true"]{outline:3px solid var(--cds-border-interactive);
+  outline-offset:-3px}
+.calday{margin-top:var(--cds-spacing-05);border-top:1px solid var(--cds-border-subtle-01);
+  padding-top:var(--cds-spacing-05)}
+.calday[hidden]{display:none}
+.caldayh{display:flex;align-items:baseline;gap:var(--cds-spacing-04);
+  margin-bottom:var(--cds-spacing-04)}
+.caldayh h4{margin:0;font-size:1rem;font-weight:var(--cds-font-weight-semibold);
+  color:var(--cds-text-primary)}
+.caldayh .hint{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  letter-spacing:var(--cds-label-01-ls);margin-left:auto}
+.caldayh button{appearance:none;border:0;background:transparent;cursor:pointer;font:inherit;
+  color:var(--cds-link-primary);padding:0}
+.caldayh button:hover{text-decoration:underline}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2688,7 +2709,13 @@ function attCal(r){
    else if(sun){cls='sun';tip=dlabel(iso)+' — Sunday';}
    else {cls='abs';tip=dlabel(iso)+' — nothing recorded';mwd++;absent++;}
    if(iso===end)cls+=' today';
-   cells+='<div class="dc '+cls+'" title="'+esc(tip)+'">'+dd+'</div>';
+   /* A cell is a control only when there is something behind it. The date goes on the
+      element so the handler never has to reconstruct it from the grid position. */
+   const hit=(n>0&&iso>=start&&iso<=end);
+   cells+='<div class="dc '+cls+'" title="'+esc(tip)+'"'+
+    (hit?(' data-d="'+iso+'" data-n="'+n+'" role="button" tabindex="0"'+
+          ' aria-pressed="false" aria-label="'+esc(tip)+'. Show the calls."'):'')+
+    '>'+dd+'</div>';
   }
   return '<div class="calm"><div class="cmh"><span>'+mlabel(mk+'-01')+'</span>'+
    (mwd?('<span><b>'+mrep+'</b>/'+mwd+'</span>'):'')+'</div><div class="calg">'+
@@ -2706,7 +2733,8 @@ function attCal(r){
   '<span><i class="pre"></i>before joining</span>'+
   '<span><i class="swk"></i>worked, not counted</span>'+
   '<span>Sundays are blank. Approved leave is not in this data, so a grey day means '+
-  '&ldquo;no call recorded&rdquo;, not &ldquo;absent&rdquo;.</span></div></div>';
+  '&ldquo;no call recorded&rdquo;, not &ldquo;absent&rdquo;.</span></div>'+
+  '<div class="calday" id="calday" hidden></div></div>';
 }
 
 /* ---- rep profile modal (MODULES_SPEC pass 3) --------------------------------- */
@@ -3091,6 +3119,7 @@ const head='<div class="rep-modal-header">'+
 
  /* daily call report: expandable days + the per-rep CSV */
  try{ dcrWire(); }catch(e){ console.warn('dcr', e); }
+ try{ calDayWire(code); }catch(e){ console.warn('calday', e); }
 
  /* notes */
  try{ const nb=$('pnotesbody'); if(nb){ nb.innerHTML='';
@@ -4360,7 +4389,16 @@ function expRead(tbl){
   if(tr.querySelector('table'))return;
   if(tr.querySelector('.emptyc'))return;      /* an explanation is not a data row */
   const cells=[...tr.children].map(td=>{
-   /* pills and badges carry meaning the raw text keeps; strip only whitespace */
+   /* Pills and badges carry meaning the raw text keeps — a pill reading "Y" or "50" IS
+      the cell's value — so they stay. The avatar chip is the one exception: its text is
+      the initials of the name sitting right next to it, so keeping it does not preserve
+      data, it duplicates it. Left in, every export read "AKArun Kumar".
+      Cloned first: this must not disturb the table the user is still looking at. */
+   if(td.querySelector('.av')){
+    const c=td.cloneNode(true);
+    c.querySelectorAll('.av').forEach(a=>a.remove());
+    return c.textContent.replace(/\s+/g,' ').trim();
+   }
    return td.textContent.replace(/\s+/g,' ').trim();
   });
   if(cells.length)out.push(cells);
@@ -4519,6 +4557,7 @@ function dcrDay(cs,dt){
    '<td>'+(isDoc?'<span class="pill yes">DR</span>':'<span class="pill no">CH</span>')+'</td>'+
    '<td><b>'+esc(v[3]||'')+'</b></td>'+
    '<td>'+esc(v[4]||'')+'</td>'+
+   '<td>'+esc(v[7]||'')+'</td>'+
    '<td>'+esc(v[5]||'')+'</td>'+
    '<td>'+esc(v[6]||'')+'</td>'+
    '<td>'+(v[9]?'<span class="pill yes">YES</span>':'')+'</td>'+
@@ -4529,6 +4568,7 @@ function dcrDay(cs,dt){
  }).join('');
  return head+'<div class="tablewrap" style="margin:0;border:0;border-radius:0;max-height:340px">'+
   '<table><thead><tr><th>Time</th><th>Type</th><th>Doctor / entity</th><th>Code</th>'+
+  '<th>Clinic</th>'+
   '<th>Specialization</th><th>Category</th><th>Presc</th><th>Reaction</th>'+
   '<th style="text-align:right">Rx</th><th>Products</th>'+
   '<th style="text-align:right">Samp</th></tr></thead><tbody>'+body+'</tbody></table></div>';
@@ -4536,6 +4576,49 @@ function dcrDay(cs,dt){
 
 /* One delegated listener on the table, so 60 rows cost one handler rather than 60,
    and re-rendering the profile cannot leave orphans behind. */
+/* ---- calendar day drill-down -------------------------------------------------- */
+/* One delegated listener for the whole calendar, so 140 cells cost one handler and a
+   re-render cannot leave orphans behind — the same reason dcrWire() delegates. */
+function calDayWire(code){
+ const wrap=document.querySelector('#pcard .calwrap');
+ const panel=document.getElementById('calday');
+ if(!wrap||!panel||wrap.dataset.w)return;
+ wrap.dataset.w='1';
+
+ const open=cell=>{
+  const iso=cell.dataset.d; if(!iso)return;
+  const already=cell.getAttribute('aria-pressed')==='true';
+  wrap.querySelectorAll('.dc[data-d]').forEach(c=>c.setAttribute('aria-pressed','false'));
+  if(already){panel.hidden=true;panel.innerHTML='';return;}
+  cell.setAttribute('aria-pressed','true');
+
+  /* THE SOURCE MUST BE THE ONE THE CELL WAS DRAWN FROM. attCal() reads BASE.calls
+     unfiltered so the calendar always shows the full history; CALLS() applies the active
+     period. Reading CALLS() here would print "No calls recorded on this day" on a day the
+     calendar had just drawn green, whenever a period was set. */
+  const all=(BASE&&BASE.calls&&BASE.calls[code])||[];
+  const cs=all.filter(v=>v[0]===iso);
+  panel.innerHTML='<div class="caldayh"><h4>'+esc(dlabel(iso))+'</h4>'+
+    '<span class="hint">'+cs.length+' call'+(cs.length===1?'':'s')+' recorded</span>'+
+    '<button type="button" id="caldayx">Close</button></div>'+dcrDay(cs,iso);
+  panel.hidden=false;
+  const x=document.getElementById('caldayx');
+  if(x)x.onclick=()=>{panel.hidden=true;panel.innerHTML='';
+    wrap.querySelectorAll('.dc[data-d]').forEach(c=>c.setAttribute('aria-pressed','false'));};
+  try{panel.scrollIntoView({block:'nearest'});}catch(e){}
+ };
+
+ wrap.addEventListener('click',e=>{
+  const cell=e.target.closest('.dc[data-d]'); if(cell)open(cell);
+ });
+ /* a div with role=button is not a button until it answers the keyboard */
+ wrap.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const cell=e.target.closest&&e.target.closest('.dc[data-d]'); if(!cell)return;
+  e.preventDefault(); open(cell);
+ });
+}
+
 function dcrWire(){
  const box=document.getElementById('pcard');if(!box)return;
  box.querySelectorAll('.dcrrow').forEach(tr=>{

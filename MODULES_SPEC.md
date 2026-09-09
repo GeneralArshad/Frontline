@@ -290,3 +290,49 @@ out. Marking rows on it split three identical empty bars into one red row and tw
 ones. The bar states Rx, so the colour states Rx; *why* a rep is at zero is in the Visits
 column immediately to its left, and the header now says so ("4 at zero Rx, 2 of them with
 no visits either").
+
+---
+
+## v49 — the calendar drills into the day
+
+Arshad's framing: the calendar is the map, the day is the rabbit hole. Opex sees the whole
+span, then opens one day without losing their place.
+
+**Almost none of this was new code.** `dcrDay()` has rendered time, doctor, code,
+specialization, category, prescriber, reaction, Rx, products with quantities and samples
+since v19. It was reachable only from the Recent activity table, which sits directly below
+the calendar on the same tab — two things answering the same question, inches apart, not
+wired together. v49 wires them and adds the Clinic column. The renderer is otherwise
+untouched, so the calendar and the day list cannot drift into disagreeing about a day.
+
+### The trap, and it was live
+
+`attCal()` reads `BASE.calls` **unfiltered**, deliberately, so the calendar always shows
+the full history. `CALLS()` applies the active period. Had the panel read `CALLS()`,
+clicking a green day outside a 30-day window would have printed "No calls recorded on this
+day" on a day the calendar had just drawn green — the report contradicting itself on one
+screen, and invisible unless a period happened to be set.
+
+The panel reads the same source the cell was drawn from. `_calday_test.js` sets a 30-day
+period, opens the oldest clickable day, and confirms it still shows its calls; on the
+current fixture that day genuinely falls outside the window, so the check is exercising
+the bug rather than describing it.
+
+### Two smaller decisions
+
+- **Only days with calls are controls.** A grey day has nothing to open, and 140 focusable
+  cells per rep would make the tab order useless. Grey days keep the tooltip that already
+  explains each state. The empty cells that align the 1st of a month to its weekday carry
+  no date and no tooltip, correctly — a first draft of the test called that missing
+  information.
+- **Clinic is its own column, not a sub-line under the doctor name.** On screen the
+  sub-line reads better and matches the Call detail screen. But `expRead()` flattens a
+  cell with `textContent`, so a sub-line would have exported as
+  "Dr. AmrithalalDr. Nair's Hospital" — v48's bug, reintroduced one column over.
+
+### What it cost elsewhere
+
+`dcrDay()` went from 11 columns to 12. Nothing in the report reads those cells
+positionally, so nothing broke — but `_dcr_test.js` read `children[8]` for Rx and, after
+the insert, was silently summing the Products column and reporting that no day reconciled.
+It now locates Rx and Type by header name, so the next column costs nothing there.
