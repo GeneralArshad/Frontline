@@ -1933,6 +1933,19 @@ table.rep-reports tr[data-zero="1"] .bar{background:var(--cds-support-error)}
 .caldayh button{appearance:none;border:0;background:transparent;cursor:pointer;font:inherit;
   color:var(--cds-link-primary);padding:0}
 .caldayh button:hover{text-decoration:underline}
+
+/* ---- travel between calls (v50) ---------------------------------------------- */
+.leg{font-variant-numeric:tabular-nums;white-space:nowrap;
+  color:var(--cds-text-secondary);font-size:var(--cds-label-01-size)}
+.leg b{color:var(--cds-text-primary);font-weight:var(--cds-font-weight-semibold)}
+.leg.imposs{color:var(--cds-text-error)}
+.leg.imposs b{color:var(--cds-text-error)}
+tr[data-imposs="1"]{box-shadow:inset 3px 0 0 var(--cds-support-error)}
+.gpsnote{color:var(--cds-text-secondary);font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls)}
+.gpsflag{display:inline-flex;align-items:center;gap:var(--cds-spacing-02);
+  background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);
+  padding:2px var(--cds-spacing-03);font-size:var(--cds-label-01-size)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -4528,9 +4541,88 @@ function dcrSpan(mins){
  return h?(h+'h '+(m?m+'m':'').trim()):(m+'m');
 }
 
+/* ---- travel between calls ----------------------------------------------------- */
+/* One place for the thresholds, as INCENTIVE_RULES is for pay. A number that decides
+   whether someone gets asked a difficult question should not be buried in a function. */
+const GPS_RULES={
+ minKm:25,        /* below this, a fast leg is GPS jitter, not a journey            */
+ maxKmh:120,      /* sustained road speed in India; above it, by car, did not happen */
+ minStops:3,      /* fewer calls than this is not a "day" worth calling one-spot     */
+ sameM:0          /* one-spot means the SAME stored point, not merely a close one    */
+};
+
+function gpsOf(v){
+ const la=v&&v[13], ln=v&&v[14];
+ if(la===''||ln===''||la==null||ln==null)return null;
+ const a=+la, b=+ln;
+ return (isFinite(a)&&isFinite(b)&&!(a===0&&b===0))?[a,b]:null;
+}
+
+/* Haversine. Great-circle, so it understands that a degree of longitude is not a fixed
+   number of kilometres — it shrinks with the cosine of the latitude, by a tenth between
+   Kanyakumari and Delhi. */
+function gpsKm(p,q){
+ if(!p||!q)return null;
+ const R=6371.0088, r=Math.PI/180;
+ const p1=p[0]*r, p2=q[0]*r, dp=(q[0]-p[0])*r, dl=(q[1]-p[1])*r;
+ const x=Math.sin(dp/2)*Math.sin(dp/2)+
+         Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)*Math.sin(dl/2);
+ return 2*R*Math.asin(Math.min(1,Math.sqrt(x)));
+}
+
+/* The legs of one day, in order. A leg needs BOTH ends located; a visit with no
+   coordinate breaks the chain rather than being silently bridged over, because bridging
+   would invent a distance across the gap and report it as travelled. */
+function gpsLegs(rows){
+ const out=[]; let prev=null, prevT=null;
+ for(let i=0;i<rows.length;i++){
+  const v=rows[i], p=gpsOf(v), t=dcrMin(v[1]);
+  let leg=null;
+  if(p&&prev&&prevT>=0&&t>=0&&t>prevT){
+   const km=gpsKm(prev,p), mins=t-prevT;
+   const kmh=mins>0?(km/(mins/60)):null;
+   leg={km:km,mins:mins,kmh:kmh,
+        imposs:(km>GPS_RULES.minKm&&kmh!=null&&kmh>GPS_RULES.maxKmh)};
+  }
+  out.push(leg);
+  if(p){prev=p;prevT=t;}
+ }
+ return out;
+}
+
+/* Did the whole day come from one stored point? Legitimate at a multi-doctor hospital —
+   which is why the clinic name decides. Same point and one clinic is a hospital; same
+   point and several clinics is one fix captured once and reused. */
+function gpsOneSpot(rows){
+ const loc=rows.map(gpsOf).filter(Boolean);
+ if(loc.length<GPS_RULES.minStops)return null;
+ const key=p=>p[0].toFixed(5)+','+p[1].toFixed(5);
+ const pts=new Set(loc.map(key));
+ if(pts.size!==1)return null;
+ const clinics=new Set(rows.filter(v=>v[2]&&v[7]).map(v=>String(v[7]).trim()));
+ return {n:loc.length, clinics:[...clinics],
+         flag:clinics.size>1};
+}
+
+function gpsCover(rows){
+ const n=rows.length, k=rows.filter(v=>gpsOf(v)).length;
+ return {n:n, located:k, pct:n?Math.round(100*k/n):0};
+}
+
+/* The cell. Three facts in one column rather than three columns: how far, how long,
+   and how fast that implies. */
+function gpsLegCell(leg){
+ if(!leg)return '<span class="leg">&mdash;</span>';
+ const km=leg.km<10?(Math.round(leg.km*10)/10):Math.round(leg.km);
+ const sp=leg.kmh==null?'':(' &middot; '+Math.round(leg.kmh)+' km/h');
+ return '<span class="leg'+(leg.imposs?' imposs':'')+'"><b>'+km+' km</b> &middot; '+
+   leg.mins+' min'+sp+'</span>';
+}
+
 function dcrDay(cs,dt){
  if(!cs||!cs.length)return '<div class="dcrempty">No calls recorded on this day.</div>';
  const rows=cs.slice().sort((a,b)=>String(a[1]||'').localeCompare(String(b[1]||'')));
+ const LEGS=gpsLegs(rows);
  const times=rows.map(v=>dcrMin(v[1])).filter(x=>x>=0).sort((a,b)=>a-b);
  const rx=rows.reduce((s,v)=>s+(+v[8]||0),0);
  const sm=rows.reduce((s,v)=>s+(+v[12]||0),0);
@@ -4539,6 +4631,24 @@ function dcrDay(cs,dt){
  /* field span: first call to last. Not hours worked — it is what the timestamps
     support, and calling it anything more would be inventing precision. */
  const span=times.length>1?(times[times.length-1]-times[0]):0;
+ /* what the coordinates say about the day, stated with their own coverage */
+ const _cov=gpsCover(rows), _one=gpsOneSpot(rows);
+ const _far=LEGS.filter(l=>l&&l.imposs).length;
+ const _tot=LEGS.reduce((s,l)=>s+(l?l.km:0),0);
+ let _gps='';
+ if(_cov.located===0){
+  _gps='<span class="gpsnote">No location recorded on any of these calls</span>';
+ }else{
+  _gps='<span class="gpsnote"><b>'+(Math.round(_tot*10)/10)+' km</b> between calls'+
+   (_cov.located<_cov.n?(' &middot; from the '+_cov.located+' of '+_cov.n+
+     ' calls that carry a location'):'')+'</span>'+
+   (_far?('<span class="gpsflag">'+_far+' leg'+(_far===1?'':'s')+
+     ' worth asking about</span>'):'')+
+   (_one&&_one.flag?('<span class="gpsflag">every call from one point, '+
+     _one.clinics.length+' different clinics</span>'):'')+
+   (_one&&!_one.flag&&_one.clinics.length?('<span class="gpsnote">all '+_one.n+
+     ' calls at one point &mdash; '+esc(_one.clinics[0])+'</span>'):'');
+ }
  const head='<div class="dcrhead">'+
   '<span><b>'+rows.length+'</b> calls</span>'+
   '<span><b>'+dr+'</b> doctor'+(dr===1?'':'s')+(uniq!==dr?' ('+uniq+' distinct)':'')+'</span>'+
@@ -4547,13 +4657,15 @@ function dcrDay(cs,dt){
   (sm?'<span><b>'+fmt(sm)+'</b> samples</span>':'')+
   (times.length?'<span>'+rows[0][1]+' to '+rows[rows.length-1][1]+
     (span>0?' &middot; '+dcrSpan(span)+' in the field':'')+'</span>':'')+
+  _gps+
   '</div>';
- const body=rows.map(v=>{
+ const body=rows.map((v,i)=>{
   const isDoc=!!v[2];
   const prods=(v[11]||'').split('|').filter(Boolean)
     .map(p=>{const i=p.indexOf('~');return i<0?p:(p.slice(0,i)+' &times;'+p.slice(i+1));})
     .join(', ');
-  return '<tr><td>'+(v[1]||'&mdash;')+'</td>'+
+  const _leg=LEGS[i];
+  return '<tr'+(_leg&&_leg.imposs?' data-imposs="1"':'')+'><td>'+(v[1]||'&mdash;')+'</td>'+
    '<td>'+(isDoc?'<span class="pill yes">DR</span>':'<span class="pill no">CH</span>')+'</td>'+
    '<td><b>'+esc(v[3]||'')+'</b></td>'+
    '<td>'+esc(v[4]||'')+'</td>'+
@@ -4564,14 +4676,16 @@ function dcrDay(cs,dt){
    '<td>'+esc(v[10]||'')+'</td>'+
    '<td class=n>'+((+v[8]||0)?'<b>'+fmt(+v[8])+'</b>':'')+'</td>'+
    '<td>'+prods+'</td>'+
-   '<td class=n>'+((+v[12]||0)||'')+'</td></tr>';
+   '<td class=n>'+((+v[12]||0)||'')+'</td>'+
+   '<td>'+gpsLegCell(_leg)+'</td></tr>';
  }).join('');
  return head+'<div class="tablewrap" style="margin:0;border:0;border-radius:0;max-height:340px">'+
   '<table><thead><tr><th>Time</th><th>Type</th><th>Doctor / entity</th><th>Code</th>'+
   '<th>Clinic</th>'+
   '<th>Specialization</th><th>Category</th><th>Presc</th><th>Reaction</th>'+
   '<th style="text-align:right">Rx</th><th>Products</th>'+
-  '<th style="text-align:right">Samp</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+  '<th style="text-align:right">Samp</th><th>From the last call</th>'+
+  '</tr></thead><tbody>'+body+'</tbody></table></div>';
 }
 
 /* One delegated listener on the table, so 60 rows cost one handler rather than 60,

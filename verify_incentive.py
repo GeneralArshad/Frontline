@@ -48,6 +48,27 @@ except ImportError:
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+def _envval(raw):
+    """Strip a trailing ` # comment` without eating a '#' inside the value.
+
+    .env.example writes `FRONTLINE_ORG_ID=            # your organization id`. Parsing
+    that with .strip() alone set the org id to the literal string "# your organization
+    id" — non-empty, so the credential check waved it through and the API answered 401
+    with no explanation. An unquoted value starting with '#' is a comment and nothing
+    else; a value that really begins with a hash has to be quoted.
+    """
+    v = raw.strip()
+    if v[:1] in ('"', "'"):
+        q = v[0]
+        end = v.find(q, 1)
+        return v[1:end] if end > 0 else v[1:]
+    if v.startswith("#"):
+        return ""
+    cut = re.search(r"\s#", v)
+    return (v[:cut.start()] if cut else v).strip()
+
+
+
 # .env, if python-dotenv is around; otherwise a two-line parser so this works bare.
 _envf = os.path.join(HERE, ".env")
 if os.path.exists(_envf):
@@ -56,7 +77,7 @@ if os.path.exists(_envf):
         if not line or line.startswith("#") or "=" not in line:
             continue
         k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+        os.environ.setdefault(k.strip(), _envval(v))
 
 BASE = os.environ.get("FRONTLINE_BASE", "https://hive-frontline-backend.com")
 ORG = os.environ.get("FRONTLINE_ORG_ID", "")

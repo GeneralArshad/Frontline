@@ -425,6 +425,41 @@ def _sstr(x):
     if isinstance(x, list): return ", ".join(str(i) for i in x)
     return x or ""
 
+
+def _geopair(loc):
+    """The visit's location is GeoJSON: {"type":"Point","coordinates":[lng, lat]}.
+
+    LONGITUDE COMES FIRST. This function exists because the original code read
+    loc["lat"] / loc["latitude"], neither of which is a key on these objects — so every
+    coordinate the app has ever captured was stored as "" and the report has had no GPS
+    at all. The `lat`/`lng` spellings are kept as a fallback in case another endpoint
+    ever uses them.
+
+    Returns (lat, lng) or ("", "").
+    """
+    if not isinstance(loc, dict):
+        return ("", "")
+    c = loc.get("coordinates")
+    if isinstance(c, (list, tuple)) and len(c) >= 2:
+        try:
+            return (float(c[1]), float(c[0]))          # [lng, lat] -> (lat, lng)
+        except (TypeError, ValueError):
+            return ("", "")
+    la, ln = loc.get("lat") or loc.get("latitude"), loc.get("lng") or loc.get("longitude")
+    try:
+        return (float(la), float(ln)) if (la not in ("", None) and ln not in ("", None)) else ("", "")
+    except (TypeError, ValueError):
+        return ("", "")
+
+
+def _geolat(loc):
+    return _geopair(loc)[0]
+
+
+def _geolng(loc):
+    return _geopair(loc)[1]
+
+
 def parse_visits(visits):
     rows = []
     for v in visits:
@@ -443,8 +478,7 @@ def parse_visits(visits):
                      "spec": _sstr(en.get("specialization")), "cat": _sstr(en.get("category")),
                      "clinic": en.get("clinicName") or "", "rx": vrx, "sm": sm, "react": react,
                      "presc": presc, "t": tm, "prods": prods,
-                     "lat": (loc.get("lat") or loc.get("latitude") or ""),
-                     "lng": (loc.get("lng") or loc.get("longitude") or "")})
+                     "lat": _geolat(loc), "lng": _geolng(loc)})
     return rows
 
 def phase_c(api, emps, s1, con, win_start, win_end):
