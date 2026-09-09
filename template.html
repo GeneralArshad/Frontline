@@ -1946,6 +1946,18 @@ tr[data-imposs="1"]{box-shadow:inset 3px 0 0 var(--cds-support-error)}
 .gpsflag{display:inline-flex;align-items:center;gap:var(--cds-spacing-02);
   background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);
   padding:2px var(--cds-spacing-03);font-size:var(--cds-label-01-size)}
+
+/* ---- which rule decided this row (v51) --------------------------------------- */
+/* Carbon ships ONE layer-accent, not a numbered scale. --cds-layer-accent-02 was
+   invented, and the audit's undefined-token gate caught it — the same way it caught an
+   invented easing token earlier. The two chips take Carbon's tag palette instead, which
+   is what tags are for. */
+.rulechip{display:inline-block;padding:1px var(--cds-spacing-03);
+  font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text)}
+.rulechip.mgr{background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text)}
+/* an empty cell must read as "not tested", not as a missing value */
+td .na{color:var(--cds-text-placeholder)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2153,7 +2165,13 @@ const TT={dpd:'Doctor calls per day actually reported. Not distinct doctors — 
  'made it impossible to clear over a long period.',
  days:'Distinct working days with at least one call recorded, in the selected period.',
  avail:'Every non-Sunday in the selected period, from the date of joining onwards.',
- sharep:'Days reported as a share of days available.',
+ sharep:'Days reported as a share of days available. Both rules test this, against '+
+   'different bars: a field rep needs 90% for Gold, a manager 60%.',
+ rule:'Which of the two rules decided this row. Field reps are scored on days, coverage '+
+   'and doctor calls a day; managers on their own days and the share of their team that '+
+   'qualified. The columns that do not apply to a row are left empty.',
+ teamp:'Share of this manager\'s assessed reps who reached a tier. Managers only — a '+
+   'field rep has no team, so the cell is empty rather than zero.',
  tier:'The highest tier whose three tests are all met.',
  why:'The reason in full — for a miss, every test that was failed.',
  c:'Employee code',n:'Name',r:'Role',di:'Division',zn:'Zone',st:'State',hq:'HQ',mg:'Manager',rx:GL.rx,rpc:GL.rpc,rxPerDoc:GL.rxPerDoc,rxPerDay:GL.rxPerDay,rxConv:GL.rxConv,rxD:GL.rxD,zeroRx:GL.zeroRx,s2r:GL.s2r,vis:GL.vis,cov:GL.cov,cpd:GL.cpd,pi:GL.pi,ud:GL.ud,da:GL.da,ob:GL.ob,tp:GL.tp,freq:GL.freq,att:GL.att,repc:GL.repc,cl:GL.cl,rec:GL.rec,newd:GL.newd,mom:GL.mom,chsh:GL.chsh,fhrs:GL.fhrs,tdc:GL.tdc,rpct:GL.rpct,ds:GL.ds,scf:GL.scf,mpc:GL.mpc,ndc:GL.ndc};
@@ -6152,9 +6170,10 @@ function incScore(rows){
  return out;
 }
 
-const INCC_P=[['c','Code'],['n','Name'],['r','Role'],['st','State'],['hq','HQ'],
- ['mg','Reports to'],['days','Days'],['avail','Available'],['sharep','Days %'],
- ['cov','Cov%'],['dpd','Dr calls/day'],['tier','Tier'],['why','Assessment']];
+const INCC_P=[['c','Code'],['n','Name'],['r','Role'],['rule','Rule'],['st','State'],
+ ['hq','HQ'],['mg','Reports to'],['days','Days'],['avail','Available'],
+ ['sharep','Days %'],['cov','Cov%'],['dpd','Dr calls/day'],['teamp','Team %'],
+ ['tier','Tier'],['why','Assessment']];
 let INCC=INCC_P;
 let incS='tier',incA=false;
 let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
@@ -6594,9 +6613,18 @@ function incView(rows){
  const order={Gold:0,Silver:1,Bronze:2};
  const enriched=scope.map(r=>{
   const s=scored[r.c]||{tier:null,why:''};
+  /* A row carries only the figures its own rule tested. The field metrics are left
+     EMPTY on a manager and the team share EMPTY on a field rep, because a number
+     sitting in a column that decided the row above it will be read as though it
+     decided this one — which is precisely how a Silver came to look stronger than
+     every Gold. */
+  const isMgr=R.mgrRoles.indexOf(r.r)>=0;
   return {...r, days:incDays(r), avail:incAvail(r),
+          rule:isMgr?'Manager':'Field',
           sharep:incAvail(r)?Math.round(1000*incDays(r)/incAvail(r))/10:0,
-          cov:incCov(r), dpd:Math.round(10*incDpd(r))/10,
+          cov:isMgr?'':incCov(r),
+          dpd:isMgr?'':Math.round(10*incDpd(r))/10,
+          teamp:(isMgr&&s.team)?Math.round(1000*s.qual/s.team)/10:'',
           tier:s.tier||'', why:s.why||'', gate:!!s.gate,
           rank:s.tier?order[s.tier]:9};
  });
@@ -6815,10 +6843,15 @@ function incFill(){
    '<td class=n>'+r.avg+'</td></tr>';
   const cls=r.tier?r.tier.toLowerCase():(r.gate?'gate':'none');
   const label=incStatus(r);
-  return '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
-   '<td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+r.days+'</td>'+
+  const na='<span class="na">&mdash;</span>';
+  return '<tr><td>'+r.c+'</td><td>'+pl(r)+'</td><td>'+r.r+'</td>'+
+   '<td><span class="rulechip '+(r.rule==='Manager'?'mgr':'fld')+'">'+r.rule+
+     '</span></td>'+
+   '<td>'+r.st+'</td><td>'+r.hq+'</td><td>'+r.mg+'</td><td class=n>'+r.days+'</td>'+
    '<td class=n>'+r.avail+'</td><td class=n>'+r.sharep+'</td>'+
-   '<td class=n>'+r.cov+'</td><td class=n>'+r.dpd+'</td>'+
+   '<td class=n>'+(r.cov===''?na:r.cov)+'</td>'+
+   '<td class=n>'+(r.dpd===''?na:r.dpd)+'</td>'+
+   '<td class=n>'+(r.teamp===''?na:r.teamp)+'</td>'+
    '<td><span class="tier '+cls+'">'+label+'</span></td>'+
    '<td class="whycell">'+esc(r.why)+'</td></tr>';
  }).join('')
