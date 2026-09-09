@@ -609,3 +609,48 @@ but never rendered — and a lint that flags those teaches people to ignore it. 
 only checked if its selector matches something that actually renders, and skipped if the
 element is `display:none` in either state, because an element with no box cannot shift
 anything. Current run: 8 live rules checked, 21 skipped, 0 offenders.
+
+---
+
+## v47 — the ten became eleven
+
+The v2 IA collapsed 13 tabs into 10. v47 adds an eleventh, **Not reporting**, in the
+Action group beside Needs action. Recorded here because "the spec said ten" is exactly
+the kind of rule that should cost something to break.
+
+**Why it is not hidden.** `inc` and three others live in `#navhidden` — addressable by
+URL, absent from the rail. That was right for screens that duplicate a view reachable
+elsewhere. This one duplicates nothing, and it exists *because* a stakeholder could not
+find the people it lists. Burying it behind a URL would have reproduced the failure it
+was built to fix.
+
+**What the ten were protecting against.** The v2 collapse removed tabs that were slices
+of each other — `calls` and `roster` are `daily` and `docs` at a different grain. Nothing
+here is a slice of anything: `incAssessable()` filters this population out of the
+incentive ranking before a tier is considered, so no existing screen can show them.
+
+**The bar to clear for a twelfth.** It must answer a question no current screen can
+answer, not a question a current screen answers awkwardly. If the next addition cannot
+say that, the IA needs revisiting rather than the count.
+
+Six test files asserted `10` and one asserted `14` screens. All seven now assert the new
+numbers, each with a one-line pointer to the argument above rather than a silent edit.
+
+### The screen itself
+
+`nrepBuckets(rows)` is the single source of truth: seven ordered, disjoint, exhaustive
+groups that must sum to the field roster. Two things it is deliberate about:
+
+- **"No activity recorded", never "never logged in".** There is no login signal in this
+  data. `ob` reads as *Onboarded* in the profile but the ETL computes it as
+  `1 if days>0 else 0` — reporting activity wearing a login's name. Someone who opened
+  the app and reported nothing and someone who never opened it are indistinguishable
+  here, and they need different conversations. The screen says so.
+- **New joiners are split out of the chase list.** Anyone inside the `minWindow` floor
+  gets their own carry-forward group. Merging them in is how a list teaches managers to
+  ignore it.
+
+`_notreporting_test.js` checks the arithmetic against a population count computed without
+the function under test, and checks that the buckets the screen calls *dropped* are
+exactly the ones `incAssessable()` drops — so the screen cannot drift into describing a
+rule the ranking is not using.
