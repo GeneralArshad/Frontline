@@ -1958,6 +1958,21 @@ tr[data-imposs="1"]{box-shadow:inset 3px 0 0 var(--cds-support-error)}
 .rulechip.mgr{background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text)}
 /* an empty cell must read as "not tested", not as a missing value */
 td .na{color:var(--cds-text-placeholder)}
+
+/* ---- how a month is won (v52) ------------------------------------------------- */
+.mbasis{display:flex;align-items:center;gap:var(--cds-spacing-03);flex-wrap:wrap;
+  padding:var(--cds-spacing-04) 0 0}
+.mbasis .mbl{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  text-transform:uppercase;color:var(--cds-text-secondary)}
+.mbasis button{appearance:none;border:1px solid var(--cds-border-subtle-01);
+  background:var(--cds-layer-01);color:var(--cds-text-secondary);cursor:pointer;
+  font:inherit;min-height:32px;padding:0 var(--cds-spacing-04)}
+.mbasis button:hover{background:var(--cds-layer-hover-01);color:var(--cds-text-primary)}
+.mbasis button:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.mbasis button[aria-pressed="true"]{background:var(--cds-background-inverse);
+  color:var(--cds-text-inverse);border-color:var(--cds-background-inverse)}
+.mbasis .mbhelp{flex:1 1 240px;font-size:var(--cds-label-01-size);
+  letter-spacing:var(--cds-label-01-ls);color:var(--cds-text-secondary)}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -6292,8 +6307,22 @@ function incRankRows(rows){
   const won=judged.filter(c=>c.tier);
   const best=won.length?won.map(c=>c.tier).sort((a,b)=>ORD[a]-ORD[b])[0]:'';
   const avg=judged.length?judged.reduce((s,c)=>s+c.share,0)/judged.length:0;
+  /* Points are raw; the rate normalises. Both are carried so switching the ranking
+     basis never recomputes the month cells, only re-sorts them. */
+  const pts=judged.reduce((s,c)=>s+incPts(c.tier),0);
+  const rate=judged.length?won.length/judged.length:0;
+  /* Movement: last judged month against the first, on the tier scale. Only counted when
+     the LATEST judged month reached a tier — otherwise "nothing to nothing" ranks as
+     improvement and outranks somebody who held Gold throughout. */
+  const fst=judged[0], lst=judged[judged.length-1];
+  const arrived=!!(lst&&lst.tier);
+  const moved=(judged.length>=2&&arrived)?(incPts(lst.tier)-incPts(fst.tier)):-99;
   return {...r, cells:cells, months:judged.length, won:won.length,
           best:best, bestRank:best?ORD[best]:9,
+          pts:pts, rate:Math.round(1000*rate)/10, rateRaw:rate,
+          moved:moved,
+          movedShare:(judged.length>=2&&arrived)?(lst.share-fst.share):-99,
+          movedLab:(moved===-99)?'':((fst.tier||'none')+' \u2192 '+(lst.tier||'none')),
           avg:Math.round(1000*avg)/10, avgRaw:avg};
  });
  /* Compare on the fields, not on a packed integer. The first version scored
@@ -6302,9 +6331,11 @@ function incRankRows(rows){
     to alphabetical order, and the rounding made the tie-break look arbitrary rather
     than absent. A comparator that reads like the sentence in the header cannot drift
     from it. */
- out.sort((a,b)=>b.won-a.won||b.avgRaw-a.avgRaw||a.n.localeCompare(b.n));
- out.forEach((r,i)=>{r.rank=i+1;});
- return out;
+ /* RANKED ON THE CHOSEN BASIS, NOT ON THE RAW COUNT. `won` is a count and `months`
+    varies with joining date, so sorting on `won` alone meant a rep judged on three
+    months could never pass one judged on six however well they performed. The default
+    basis is the rate, which normalises exactly that. incBasisSort assigns rank. */
+ return incBasisSort(out,incBasis);
 }
 
 /* The rule card. Printed from INCENTIVE_RULES rather than written out, so it cannot
@@ -6605,7 +6636,8 @@ function nrepView(rows){
 
 function incView(rows){
  const el=$('incbody'); if(!el)return;
- if(incMode==='months'){incMonthView(rows);incSwitchWire();incWireControls();return;}
+ if(incMode==='months'){incMonthView(rows);incSwitchWire();incWireControls();
+   try{incBasisWire();}catch(e){console.warn('basis',e);} return;}
  INCC=INCC_P;
  const R=INCENTIVE_RULES;
  const scored=incScore(rows);
@@ -6746,6 +6778,85 @@ function incSwitchWire(){
  if(p)p.onclick=()=>{if(incMode!=='period'){incMode='period';incView(fr());}};
  if(m)m.onclick=()=>{if(incMode!=='months'){incMode='months';incView(fr());}};
 }
+/* ---- how a month is won ------------------------------------------------------- */
+const MTIER={Gold:3,Silver:2,Bronze:1};
+function incPts(t){return MTIER[t]||0;}
+
+/* The bases. Each is a sort key and a headline column; the underlying month cells are
+   identical, so switching basis re-ranks the same evidence rather than recomputing it. */
+const MBASIS={
+ rate:{lab:'Qualified rate',col:'Rate',
+   help:'Months at a tier as a share of the months this person could be judged in. '+
+        'The fairest comparison when people joined at different times.'},
+ pts:{lab:'Points',col:'Points',
+   help:'Gold 3, Silver 2, Bronze 1, added up. A running total, so a longer tenure '+
+        'earns more — the judged-month count beside it says how long.'},
+ moved:{lab:'Most improved',col:'Moved',
+   help:'Tier in the last judged month against the first. Counted only when the latest '+
+        'month reached a tier, so improving from nothing to nothing does not rank.'}};
+let incBasis='rate';
+
+function incBasisSort(rows,basis){
+ const out=rows.slice();
+ if(basis==='pts')      out.sort((a,b)=>b.pts-a.pts||b.rate-a.rate||a.n.localeCompare(b.n));
+ else if(basis==='moved')out.sort((a,b)=>(b.moved-a.moved)||(b.movedShare-a.movedShare)||
+                                          a.n.localeCompare(b.n));
+ else                   out.sort((a,b)=>b.rate-a.rate||b.pts-a.pts||a.n.localeCompare(b.n));
+ out.forEach((r,i)=>{r.rank=i+1;});
+ return out;
+}
+
+/* Winner of each month, PER RULE. v51 separated the two populations because they are
+   scored on different tests; naming one winner per month would put them back in a single
+   ranking and undo it. */
+function incMonthWinners(ranked){
+ const R=INCENTIVE_RULES, MK=incMonthKeys();
+ return MK.map((mk,i)=>{
+  const pick=list=>{
+   const cand=list.map(r=>({r:r,c:r.cells[i]}))
+     .filter(x=>x.c&&x.c.state==='ok'&&x.c.tier);
+   if(!cand.length)return null;
+   cand.sort((a,b)=>incPts(b.c.tier)-incPts(a.c.tier)||
+                    (b.c.share-a.c.share)||a.r.n.localeCompare(b.r.n));
+   return cand[0];
+  };
+  return {mk:mk,
+    field:pick(ranked.filter(r=>R.fieldRoles.indexOf(r.r)>=0)),
+    mgr:pick(ranked.filter(r=>R.mgrRoles.indexOf(r.r)>=0))};
+ });
+}
+
+function incWinnerCard(ranked){
+ const W=incMonthWinners(ranked);
+ const cell=w=>w?('<b>'+esc(w.r.n)+'</b><div class="sub">'+esc(w.r.hq||w.r.st||'')+
+   ' &middot; <span class="tier '+w.c.tier.toLowerCase()+'">'+w.c.tier+'</span> &middot; '+
+   Math.round(w.c.share*100)+'% of days</div>'):'<span class="na">&mdash;</span>';
+ return '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+  '<h3>Who won each month?</h3><div class="cs">The highest tier that month, then the '+
+  'largest share of days. Field reps and managers are named separately because they '+
+  'are scored on different tests &mdash; a single winner would rank them against each '+
+  'other, which their rules do not support.</div></div></div>'+
+  '<div class="tablewrap" style="max-height:none"><table><thead><tr>'+
+  '<th>Month</th><th>Field</th><th>Manager</th></tr></thead><tbody>'+
+  W.map(w=>'<tr><td><b>'+mlabel(w.mk+'-01')+'</b></td><td>'+cell(w.field)+'</td>'+
+   '<td>'+cell(w.mgr)+'</td></tr>').join('')+
+  '</tbody></table></div></div>';
+}
+
+function incBasisBar(){
+ return '<div class="mbasis" role="group" aria-label="Rank the list by">'+
+  '<span class="mbl">Rank by</span>'+
+  Object.keys(MBASIS).map(k=>'<button type="button" data-mb="'+k+'" '+
+   'aria-pressed="'+(incBasis===k)+'">'+MBASIS[k].lab+'</button>').join('')+
+  '<span class="mbhelp">'+MBASIS[incBasis].help+'</span></div>';
+}
+function incBasisWire(){
+ document.querySelectorAll('#incbody .mbasis button').forEach(b=>{
+  b.onclick=()=>{ if(incBasis===b.dataset.mb)return;
+   incBasis=b.dataset.mb; incS='tier'; incA=false; incView(fr()); };
+ });
+}
+
 function incMonthView(rows){
  const el=$('incbody'); if(!el)return;
  const R=INCENTIVE_RULES, MK=incMonthKeys(), ranked=incRankRows(rows);
@@ -6763,12 +6874,16 @@ function incMonthView(rows){
   incSwitch()+
   '<div class="kpis" id="inckpis" style="margin-top:18px"></div>'+
   incRuleCard()+
+  incWinnerCard(ranked)+
   '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
    '<h3>Every month, and the tier earned in it</h3><div class="cs">'+
-   'A month is the unit you pay against. Over the whole captured range nobody clears '+
-   '60% of 138 working days, and that says more about the length of the window than '+
-   'about the field. Each cell is days reported over working days in that month.'+
+   'A month is the unit you pay against. Each cell is days reported over working days '+
+   'in that month. <b>A month is a far harsher window for the leave gap than a period '+
+   'is</b> &mdash; two weeks off costs about 7% of a six-month window and roughly half '+
+   'of a single month, usually enough to lose that month outright. Every ranking below '+
+   'inherits that until approved leave is in the data.'+
    '</div></div></div>'+
+   incBasisBar()+
    '<div class="locf">'+
     '<div class="lf wide"><label for="incq">Search</label>'+
      '<input id="incq" type="search" placeholder="Code or name" '+
@@ -6837,7 +6952,12 @@ function incFill(){
   if(incMode==='months')return '<tr><td class="mrank">'+r.rank+'</td><td>'+r.c+'</td>'+
    '<td>'+pl(r)+'</td><td>'+r.r+'</td><td>'+r.st+'</td>'+
    r.cells.map(mcell).join('')+
-   '<td class=n><b>'+r.won+'</b></td><td class=n>'+r.months+'</td>'+
+   '<td class=n><b>'+(incBasis==='pts'?r.pts:incBasis==='moved'
+        ?(r.moved===-99?'<span class="na">&mdash;</span>':(r.moved>0?'+':'')+r.moved)
+        :r.rate+'%')+'</b>'+
+    (incBasis==='moved'&&r.movedLab?('<div class="sub">'+r.movedLab+'</div>'):'')+
+    '</td>'+
+   '<td class=n>'+r.won+' of '+r.months+'</td>'+
    '<td>'+(r.best?('<span class="tier '+r.best.toLowerCase()+'">'+r.best+'</span>')
                 :'<span class="tier none">none</span>')+'</td>'+
    '<td class=n>'+r.avg+'</td></tr>';
