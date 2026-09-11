@@ -6209,7 +6209,14 @@ const INCC_P=[['c','Code'],['n','Name'],['r','Role'],['rule','Rule'],['st','Stat
  ['sharep','Days %'],['cov','Cov%'],['dpd','Dr calls/day'],['teamp','Team %'],
  ['tier','Tier'],['why','Assessment']];
 let INCC=INCC_P;
-let incS='tier',incA=false;
+/* Which sort keys count UP. `rank` and its relatives are positions — 1 and 0 are the
+   best — so they read ascending. Everything else is a quantity, where more is better and
+   descending is right. sortRows multiplies by (asc?1:-1), so getting this backwards on a
+   position key silently lists the worst performers first, which is exactly what the
+   incentive tables were doing. */
+const INC_ASC={tier:1,best:1,rank:1,bestRank:1};
+function incAscFor(k){return !!INC_ASC[k];}
+let incS='tier',incA=incAscFor('tier');
 let INCE=[],incF={q:'',role:'',mgr:'',tier:''};
 
 /* Status, not tier. "Gate failed" is the cut a manager actually works — someone who
@@ -6748,7 +6755,7 @@ function incView(rows){
  incSwitchWire();
  $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
  $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
-  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=false;}
+  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=incAscFor(k);}
   incFill();});
  incFill();
 }
@@ -6872,7 +6879,7 @@ function incBasisBar(){
 function incBasisWire(){
  document.querySelectorAll('#incbody .mbasis button').forEach(b=>{
   b.onclick=()=>{ if(incBasis===b.dataset.mb)return;
-   incBasis=b.dataset.mb; incS='tier'; incA=false; incView(fr()); };
+   incBasis=b.dataset.mb; incS='tier'; incA=incAscFor('tier'); incView(fr()); };
  });
 }
 
@@ -6942,7 +6949,7 @@ function incMonthTable(MK){
  INCC=base.concat(MK.map(mk=>['m:'+mk,mlabel(mk+'-01')])).concat(tail);
  $('inch').innerHTML=INCC.map(c=>th(c[0],c[1])).join('');
  $('inch').querySelectorAll('th').forEach(t=>t.onclick=()=>{
-  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=(k==='rank');}
+  const k=t.dataset.k; if(k===incS)incA=!incA; else {incS=k;incA=incAscFor(k);}
   incFill();});
  incFill();
 }
