@@ -2000,6 +2000,20 @@ td .na{color:var(--cds-text-placeholder)}
 .adbar>i[data-rung="Regular"]{background:var(--cds-chart-04)}
 .adbar>i[data-rung="Occasional"]{background:var(--cds-chart-06)}
 .adbar>i[data-rung="Not-using"]{background:var(--cds-support-error)}
+
+/* ---- build stamp (v56) -------------------------------------------------------- */
+.nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
+  margin-left:auto;margin-right:var(--cds-spacing-03);white-space:nowrap}
+.app.railed .nav-ver{display:none}
+/* a screen that could not draw says so, rather than showing an empty page */
+.screenfail{background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);
+  padding:var(--cds-spacing-05);margin-bottom:var(--cds-spacing-05);
+  font-size:var(--cds-body-01-size);line-height:var(--cds-body-01-lh)}
+.screenfail .sf{display:block;margin-top:var(--cds-spacing-03);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:var(--cds-code-01-size);letter-spacing:var(--cds-code-01-ls);
+  opacity:.85}
 </style></head><body>
 <div id="load">Decompressing report&hellip;</div>
 <div class="app">
@@ -2024,7 +2038,7 @@ td .na{color:var(--cds-text-placeholder)}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v56 · 11 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2178,7 +2192,8 @@ td .na{color:var(--cds-text-placeholder)}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<div id="navtip" role="tooltip" aria-hidden="true"></div>
+<meta name="hfi-version" content="v56 · 11 Sep 2026">
+  <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
 <script id="d" type="application/json">__DATA_MARKER__</script><script>
@@ -2199,6 +2214,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
+window.HFI_BUILD='v56 · 11 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -2536,11 +2552,35 @@ function render(){
  try{refill();}catch(e){console.warn('refill',e);}
  fcount();const rows=fr();
  /* the panel hosts one of these; repainting it from here would fight drillRender */
+ /* THE DISPATCH IS GUARDED. Everything else in render() already was; this was not,
+    so a view that threw left a blank screen and a silent console. Now the screen says
+    which one broke and why, and the rest of the page still renders. */
+ let _drew=false;
+ try{
  if(typeof drillKey!=='undefined'&&drillKey&&drillKey===TAB){}
  else if(TAB==='inc')incView(rows);
  else if(TAB==='nrep')nrepView(rows);
  else if(TAB==='adopt')adoptView(rows);
  else if(TAB==='rx')rxView(rows);else if(TAB==='ov'){kpis(rows);ovCharts(rows);empTable(rows);}else if(TAB==='prod')prodView(rows);else if(TAB==='mgr')mgrView();else if(TAB==='exc')excView(rows);else if(TAB==='daily')dailyView();else if(TAB==='docs')docsView();else if(TAB==='calls')callsView();else if(TAB==='roster')rosterView();else if(TAB==='trend')trendView(rows);else if(TAB==='org')orgView(rows);else if(TAB==='notes')notesView();else guide();
+ _drew=true;
+ }catch(e){
+  console.error('screen '+TAB+' failed to render',e);
+  const sec=document.getElementById('sec_'+TAB);
+  if(sec){
+   let box=sec.querySelector('.screenfail');
+   if(!box){box=document.createElement('div');box.className='screenfail';
+            sec.insertBefore(box,sec.firstChild);}
+   box.innerHTML='<b>This screen could not be drawn.</b> '+
+     'Everything else on the report is unaffected, and nothing below is missing data — '+
+     'it simply did not render. '+
+     '<span class="sf">'+esc(TAB+': '+(e&&e.message||String(e)))+'</span>';
+  }
+ }
+ /* Clear the notice only when the screen DREW. Keying it off the tab name removed
+    the box on the same render that created it, because the box always lives inside
+    sec_<TAB> — the guard would have been invisible. */
+ if(_drew){try{const _b=document.querySelector('#sec_'+TAB+' .screenfail');
+   if(_b)_b.remove();}catch(_){}}
  $('sub').textContent=D.label+' · '+fmt(D.rx.totRx)+' Rx · '+D.reps.length+' reps · '+fmt(D.docs.length)+' doctors · '+D.gen;
  try{navBadge();}catch(_){}
  try{periodBand();}catch(e){console.warn('periodBand',e);}
