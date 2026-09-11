@@ -2008,6 +2008,48 @@ td .na{color:var(--cds-text-placeholder)}
   text-transform:uppercase;color:var(--cds-text-secondary)}
 .addl select{min-height:32px}
 
+/* ---- geography as a tile grid (v59) ------------------------------------------- */
+.orgmode{display:flex;gap:0;margin-bottom:var(--cds-spacing-05);
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.orgmode button{appearance:none;border:0;background:transparent;cursor:pointer;font:inherit;
+  height:40px;padding:0 var(--cds-spacing-05);color:var(--cds-text-secondary);
+  border-bottom:2px solid transparent;margin-bottom:-1px}
+.orgmode button:hover{background:var(--cds-layer-hover-01);color:var(--cds-text-primary)}
+.orgmode button:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.orgmode button[aria-selected="true"]{color:var(--cds-text-primary);
+  border-bottom-color:var(--cds-border-interactive)}
+.geowrap[hidden]{display:none}
+.geogrid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:var(--cds-spacing-03);
+  margin-top:var(--cds-spacing-05);max-width:720px}
+.geot{appearance:none;border:1px solid var(--cds-border-subtle-01);cursor:pointer;
+  font:inherit;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;padding:2px;background:var(--cds-layer-01);
+  color:var(--cds-text-primary)}
+.geot:hover{outline:2px solid var(--cds-border-interactive);outline-offset:-2px}
+.geot:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.geot[data-empty="1"]{cursor:default;opacity:.55}
+.geot .gk{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  font-weight:var(--cds-font-weight-semibold)}
+.geot .gv{font-size:var(--cds-label-01-size);font-variant-numeric:tabular-nums;
+  opacity:.9}
+/* One token, mixed five ways: a quantity getting darker, not five categories. */
+.geot[data-step="1"]{background:color-mix(in srgb,var(--cds-interactive) 14%,var(--cds-layer-01))}
+.geot[data-step="2"]{background:color-mix(in srgb,var(--cds-interactive) 32%,var(--cds-layer-01))}
+.geot[data-step="3"]{background:color-mix(in srgb,var(--cds-interactive) 52%,var(--cds-layer-01))}
+.geot[data-step="4"]{background:color-mix(in srgb,var(--cds-interactive) 74%,var(--cds-layer-01));
+  color:var(--cds-text-on-color)}
+.geot[data-step="5"]{background:var(--cds-interactive);color:var(--cds-text-on-color)}
+.geoleg{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  margin-top:var(--cds-spacing-04)}
+.geoleg i{display:block;width:26px;height:12px;border:1px solid var(--cds-border-subtle-01)}
+.geoleg i[data-step="1"]{background:color-mix(in srgb,var(--cds-interactive) 14%,var(--cds-layer-01))}
+.geoleg i[data-step="2"]{background:color-mix(in srgb,var(--cds-interactive) 32%,var(--cds-layer-01))}
+.geoleg i[data-step="3"]{background:color-mix(in srgb,var(--cds-interactive) 52%,var(--cds-layer-01))}
+.geoleg i[data-step="4"]{background:color-mix(in srgb,var(--cds-interactive) 74%,var(--cds-layer-01))}
+.geoleg i[data-step="5"]{background:var(--cds-interactive)}
+.geoleg .gl{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  color:var(--cds-text-secondary)}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2045,7 +2087,7 @@ td .na{color:var(--cds-text-placeholder)}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v58 · 11 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v60 · 11 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2165,6 +2207,8 @@ td .na{color:var(--cds-text-placeholder)}
 <section class="sec" id="sec_inc"><div class="secttl"><div class="eye">Adoption</div><div class="big">Incentive eligibility</div></div><div id="incbody"></div></section>
 <section class="sec" id="sec_calls"><div class="secttl"><div class="eye">Field</div><div class="big">Call-by-call detail</div><div class="d">Every doctor and chemist visit logged by each rep. Filters above apply; click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="clcnt" class="sub"></span></h3><div class="cs">Click a rep to expand their visits</div></div></div><div id="cllist"></div></div></section><section class="sec" id="sec_roster"><div class="secttl"><div class="eye">Relationships</div><div class="big">Doctors per rep</div><div class="d">Every doctor each rep covers &mdash; specialization, category, prescriber status, visits, Rx and last seen. Filters above apply (including specialization); click a rep to expand.</div></div><div class="card"><div class="ch"><div><h3>Reps <span id="rocnt" class="sub"></span></h3><div class="cs">Click a rep to expand their doctor list</div></div></div><div id="rolist"></div></div></section><section class="sec" id="sec_org">
 <div class="secttl"><div class="eye">Structure</div><div class="big">The org, as it actually reports</div><div class="d">Every branch is a real reporting line, drawn from each employee&rsquo;s manager. Size is prescriptions, colour is health. Click anyone to open their profile; the sidebar filters and the period both apply, so this re-colours itself when you change either.</div></div>
+<div class="orgmodebar" id="orgmodebar"></div>
+<div class="geowrap" id="geowrap" hidden></div>
 <div class="orgwrap" id="orgwrap">
   <canvas id="orgcv"></canvas>
   <div class="orgbar">
@@ -2199,7 +2243,7 @@ td .na{color:var(--cds-text-placeholder)}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v58 · 11 Sep 2026">
+<meta name="hfi-version" content="v60 · 11 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2221,7 +2265,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v58 · 11 Sep 2026';
+window.HFI_BUILD='v60 · 11 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -4394,7 +4438,242 @@ function orgCoverage(){
   '<span style="color:var(--faint)">'+(m.division||'')+' · '+(m.zone||'')+'</span>';}
 
 let spS='team',spA=false;
+/* ---- geography, as a tile grid ------------------------------------------------- */
+/* Row and column are a legible arrangement, not coordinates. Every state and union
+   territory has a home so that anything appearing in the data has somewhere to land —
+   including states the org file has never heard of, which is how Assam surfaced. */
+const GEO_TILES={
+ LA:['Ladakh',0,4],            JK:['Jammu & Kashmir',1,3],
+ PB:['Punjab',2,2],  HP:['Himachal Pradesh',2,3],  UK:['Uttarakhand',2,4],
+ AR:['Arunachal Pradesh',2,7],
+ RJ:['Rajasthan',3,1], HR:['Haryana',3,2], DL:['Delhi',3,3], UP:['Uttar Pradesh',3,4],
+ SK:['Sikkim',3,5],  AS:['Assam',3,6],  NL:['Nagaland',3,7],
+ GJ:['Gujarat',4,1], MP:['Madhya Pradesh',4,3], BR:['Bihar',4,4], WB:['West Bengal',4,5],
+ ML:['Meghalaya',4,6], MN:['Manipur',4,7],
+ DD:['Dadra & Nagar Haveli and Daman & Diu',5,0], MH:['Maharashtra',5,1],
+ CG:['Chhattisgarh',5,3], JH:['Jharkhand',5,4], OD:['Odisha',5,5],
+ TR:['Tripura',5,6], MZ:['Mizoram',5,7],
+ GA:['Goa',6,1], KA:['Karnataka',6,2], TG:['Telangana',6,3], AP:['Andhra Pradesh',6,4],
+ KL:['Kerala',7,2], TN:['Tamil Nadu',7,3], PY:['Puducherry',7,4],
+ LD:['Lakshadweep',8,1], AN:['Andaman & Nicobar',8,5],
+ CH:['Chandigarh',2,1]
+};
+
+/* One string, one state. The data spells the same place several ways, so normalise to
+   letters only, drop anything parenthesised, then look the result up. */
+const GEO_ALIAS={
+ TAMILNADU:'TN', TAMILNAADU:'TN', TN:'TN',
+ KARNATAKA:'KA', KARNATAK:'KA',
+ KERALA:'KL', KERELA:'KL',
+ ANDHRAPRADESH:'AP', ANDHRA:'AP', AP:'AP',
+ TELANGANA:'TG', TELENGANA:'TG', TS:'TG',
+ MAHARASHTRA:'MH', MAHARASTRA:'MH',
+ GOA:'GA',
+ ASSAM:'AS',
+ GUJARAT:'GJ', GUJRAT:'GJ',
+ RAJASTHAN:'RJ',
+ MADHYAPRADESH:'MP',
+ UTTARPRADESH:'UP',
+ UTTARAKHAND:'UK', UTTARANCHAL:'UK',
+ HIMACHALPRADESH:'HP',
+ PUNJAB:'PB', HARYANA:'HR', DELHI:'DL', NEWDELHI:'DL',
+ CHANDIGARH:'CH',
+ JAMMUKASHMIR:'JK', JAMMUANDKASHMIR:'JK', JK:'JK', LADAKH:'LA',
+ BIHAR:'BR', JHARKHAND:'JH', WESTBENGAL:'WB', SIKKIM:'SK',
+ ODISHA:'OD', ORISSA:'OD',
+ CHHATTISGARH:'CG', CHATTISGARH:'CG',
+ ARUNACHALPRADESH:'AR', NAGALAND:'NL', MANIPUR:'MN', MIZORAM:'MZ',
+ TRIPURA:'TR', MEGHALAYA:'ML',
+ PUDUCHERRY:'PY', PONDICHERRY:'PY',
+ LAKSHADWEEP:'LD',
+ ANDAMANNICOBAR:'AN', ANDAMANANDNICOBAR:'AN', ANDAMANNICOBARISLANDS:'AN',
+ DADRANAGARHAVELIANDDAMANDIU:'DD', DAMANDIU:'DD', DADRANAGARHAVELI:'DD'
+};
+function geoKey(s){
+ if(!s)return '';
+ const t=String(s).replace(/\([^)]*\)/g,'').toUpperCase().replace(/[^A-Z]/g,'');
+ return GEO_ALIAS[t]||'';
+}
+
+/* What a tile can be shaded by. Each is a reducer over the rows in that state, so the
+   grid never holds a number the rest of the report cannot also produce. */
+const GEO_METRICS={
+ reps:{lab:'People',      f:rs=>rs.length,                       fmt:v=>fmt(v)},
+ active:{lab:'Reporting', f:rs=>rs.filter(r=>r.vis>0).length,     fmt:v=>fmt(v)},
+ rx:{lab:'Rx',            f:rs=>rs.reduce((s,r)=>s+(+r.rx||0),0), fmt:v=>fmt(v)},
+ vis:{lab:'Visits',       f:rs=>rs.reduce((s,r)=>s+(+r.vis||0),0),fmt:v=>fmt(v)},
+ silent:{lab:'Not reporting',f:rs=>rs.filter(r=>!r.vis).length,   fmt:v=>fmt(v)}
+};
+let geoMetric='reps';
+
+function geoAgg(rows){
+ const by={}, un={};
+ rows.forEach(r=>{
+  const k=geoKey(r.st);
+  if(!k){ const nm=(r.st||'').trim()||'(blank)'; un[nm]=(un[nm]||0)+1; return; }
+  (by[k]=by[k]||[]).push(r);
+ });
+ const out={};
+ Object.keys(by).forEach(k=>{
+  const rs=by[k], zn={};
+  rs.forEach(r=>{ if(r.zn)zn[r.zn]=(zn[r.zn]||0)+1; });
+  const zone=Object.keys(zn).sort((a,b)=>zn[b]-zn[a])[0]||'';
+  out[k]={rows:rs, zone:zone,
+          v:GEO_METRICS[geoMetric].f(rs),
+          reps:rs.length};
+ });
+ return {by:out, unmatched:un};
+}
+
+/* Five steps, mixed from one token rather than five invented colours, so the ramp reads
+   as one quantity getting darker instead of five categories. */
+function geoStep(v,max){
+ if(!max||!v)return 0;
+ return Math.min(5,Math.max(1,Math.ceil(5*v/max)));
+}
+
+function geoGrid(A){
+ const max=Math.max.apply(null,Object.keys(A.by).map(k=>A.by[k].v).concat([0]));
+ let R=0,C=0;
+ Object.keys(GEO_TILES).forEach(k=>{R=Math.max(R,GEO_TILES[k][1]);C=Math.max(C,GEO_TILES[k][2]);});
+ const cells=[];
+ Object.keys(GEO_TILES).forEach(k=>{
+  const t=GEO_TILES[k], a=A.by[k];
+  const step=a?geoStep(a.v,max):0;
+  const lab=a?GEO_METRICS[geoMetric].fmt(a.v):'';
+  cells.push('<button type="button" class="geot" data-st="'+k+'" data-step="'+step+'"'+
+   ' style="grid-row:'+(t[1]+1)+';grid-column:'+(t[2]+1)+'"'+
+   (a?'':' data-empty="1"')+
+   ' title="'+esc(t[0]+(a?(' — '+lab+' '+GEO_METRICS[geoMetric].lab.toLowerCase()+
+      ', '+a.reps+' people'+(a.zone?', '+a.zone+' zone':'')):' — nobody in this view'))+'"'+
+   ' aria-label="'+esc(t[0]+(a?(': '+lab):': no one'))+'">'+
+   '<span class="gk">'+k+'</span>'+
+   (a?('<span class="gv">'+lab+'</span>'):'')+'</button>');
+ });
+ return '<div class="geogrid" role="group" aria-label="States, arranged as a diagram">'+
+  cells.join('')+'</div>';
+}
+
+function geoLegend(A){
+ const max=Math.max.apply(null,Object.keys(A.by).map(k=>A.by[k].v).concat([0]));
+ return '<div class="geoleg"><span class="gl">Fewer</span>'+
+  [1,2,3,4,5].map(s=>'<i data-step="'+s+'"></i>').join('')+
+  '<span class="gl">More &middot; up to '+GEO_METRICS[geoMetric].fmt(max)+'</span></div>';
+}
+
+function geoZones(A){
+ const z={};
+ Object.keys(A.by).forEach(k=>{
+  const a=A.by[k], n=a.zone||'No zone recorded';
+  z[n]=z[n]||{states:[],reps:0,v:0};
+  z[n].states.push(k); z[n].reps+=a.reps; z[n].v+=a.v;
+ });
+ const names=Object.keys(z).sort((a,b)=>z[b].reps-z[a].reps);
+ return '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+  '<h3>Zones</h3><div class="cs">Each state takes the zone most of its people are '+
+  'recorded under, so a state split across two zones lands in the larger one rather '+
+  'than being counted twice.</div></div></div>'+
+  '<div class="tablewrap" style="max-height:none"><table><thead><tr><th>Zone</th>'+
+  '<th class="n">States</th><th class="n">People</th>'+
+  '<th class="n">'+GEO_METRICS[geoMetric].lab+'</th><th>Which states</th>'+
+  '</tr></thead><tbody>'+
+  names.map(n=>'<tr><td><b>'+esc(n)+'</b></td><td class="n">'+z[n].states.length+'</td>'+
+   '<td class="n">'+fmt(z[n].reps)+'</td>'+
+   '<td class="n">'+GEO_METRICS[geoMetric].fmt(z[n].v)+'</td>'+
+   '<td>'+z[n].states.map(k=>esc(GEO_TILES[k][0])).join(', ')+'</td></tr>').join('')+
+  '</tbody></table></div></div>';
+}
+
+/* Anything that did not resolve is named. A state rendering grey because nobody worked
+   there and a state rendering grey because its spelling was not recognised look
+   identical on the grid, and only one of them is a data problem. */
+function geoUnmatchedCard(A){
+ const keys=Object.keys(A.unmatched).sort((a,b)=>A.unmatched[b]-A.unmatched[a]);
+ if(!keys.length)return '<div class="card" style="margin-top:18px"><div class="ch"><div>'+
+   '<h3>Every state name was recognised</h3><div class="cs">Nothing in this view failed '+
+   'to match a tile.</div></div></div></div>';
+ const tot=keys.reduce((s,k)=>s+A.unmatched[k],0);
+ return '<div class="card nrep-chase" style="margin-top:18px"><div class="ch"><div>'+
+  '<h3>Not on the grid<span class="sub"> '+keys.length+'</span></h3>'+
+  '<div class="cs">'+fmt(tot)+' people carry a state value that did not match any tile, '+
+  'so they are absent from the diagram above. Managers have no state of their own and '+
+  'appear here as a dash; anything else is a spelling the alias list does not yet '+
+  'know.</div></div></div>'+
+  '<div class="tablewrap" style="max-height:300px"><table><thead><tr>'+
+  '<th>Value in the data</th><th class="n">People</th></tr></thead><tbody>'+
+  keys.map(k=>'<tr><td>'+esc(k)+'</td><td class="n">'+fmt(A.unmatched[k])+
+    '</td></tr>').join('')+
+  '</tbody></table></div></div>';
+}
+
+function geoMetricBar(){
+ return '<div class="mbasis" role="group" aria-label="Shade the states by">'+
+  '<span class="mbl">Shade by</span>'+
+  Object.keys(GEO_METRICS).map(k=>'<button type="button" data-gm="'+k+'" '+
+   'aria-pressed="'+(geoMetric===k)+'">'+GEO_METRICS[k].lab+'</button>').join('')+
+  '</div>';
+}
+
+function geoView(rows){
+ const el=$('geowrap'); if(!el)return;
+ const A=geoAgg(rows);
+ const states=Object.keys(A.by).length;
+ el.innerHTML=
+  '<div class="card"><div class="ch"><div>'+
+   '<h3>Where the field is</h3><div class="cs"><b>This is a diagram, not a map.</b> '+
+   'Every state is one tile of the same size, arranged roughly as India sits, so Goa '+
+   'and Kerala stay readable next to Maharashtra. No boundary is drawn and none is '+
+   'implied. Territories and HQs are not shown because nothing in the data says where '+
+   'they are &mdash; a territory is a label, not an area.</div></div></div>'+
+   geoMetricBar()+geoGrid(A)+geoLegend(A)+
+   '<div class="gpsnote" style="margin-top:12px">'+states+' state'+
+   (states===1?'':'s')+' have people in this view.</div>'+
+  '</div>'+
+  geoZones(A)+
+  geoUnmatchedCard(A);
+}
+
+function geoWire(){
+ document.querySelectorAll('#geowrap .mbasis button').forEach(b=>{
+  b.onclick=()=>{ if(geoMetric===b.dataset.gm)return;
+   geoMetric=b.dataset.gm; geoView(fr()); geoWire(); };
+ });
+ document.querySelectorAll('#geowrap .geot[data-st]').forEach(b=>{
+  b.onclick=()=>{ const nm=GEO_TILES[b.dataset.st];
+   if(!nm)return;
+   /* the state filter is the one the whole report already uses */
+   const sel=document.getElementById('fst');
+   if(sel){ const opt=[...sel.options].find(o=>geoKey(o.value)===b.dataset.st);
+     if(opt){sel.value=opt.value;sel.dispatchEvent(new Event('change',{bubbles:true}));} }
+  };
+ });
+}
+
+/* tree | geography — two cuts of the same question, one screen */
+let orgMode='tree';
+function orgModeBar(){
+ return '<div class="orgmode" role="tablist" aria-label="How to view the organisation">'+
+  '<button role="tab" type="button" data-om="tree" aria-selected="'+(orgMode==='tree')+
+   '">Reporting lines</button>'+
+  '<button role="tab" type="button" data-om="geo" aria-selected="'+(orgMode==='geo')+
+   '">Geography</button></div>';
+}
+function orgModeWire(){
+ document.querySelectorAll('#sec_org .orgmode button').forEach(b=>{
+  b.onclick=()=>{ if(orgMode===b.dataset.om)return;
+   orgMode=b.dataset.om; render(); };
+ });
+}
+
 function orgView(rows){
+ /* The mode bar is outside both views, so switching never destroys the one being left
+    and the canvas keeps its zoom. */
+ const bar=$('orgmodebar'); if(bar)bar.innerHTML=orgModeBar();
+ const ow=$('orgwrap'), gw=$('geowrap');
+ if(ow)ow.hidden=(orgMode!=='tree');
+ if(gw)gw.hidden=(orgMode!=='geo');
+ try{orgModeWire();}catch(e){console.warn('orgmode',e);}
+ if(orgMode==='geo'){ geoView(rows); try{geoWire();}catch(e){console.warn('geo',e);} return; }
  const T=orgLayout(orgBuild(rows),320);
  ORG.T=T;
  /* first render of a given tree opens at the auto depth; later renders keep the
