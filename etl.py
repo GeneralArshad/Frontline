@@ -17,6 +17,20 @@ except Exception as _e:            # a broken org.py must not take the ETL down
     load_org = lambda p: ({}, ["org.py failed to import: %s" % _e])
     match_roster = lambda o, c: dict(matched=0, rosterOnly=list(c), orgOnly=[], rate=0)
     orgnorm = lambda c: re.sub(r"[^A-Z0-9]", "", str(c or "").upper())
+try:
+    import hrgeo
+except Exception as _e2:           # a broken hrgeo.py must not take the ETL down either
+    class _NoHrGeo:
+        @staticmethod
+        def load(p): return None, ["hrgeo.py failed to import: %s" % _e2]
+        @staticmethod
+        def overlay(h, reps):
+            for _x in reps:
+                _x["hzn"] = _x["hst"] = _x["hlab"] = _x["hhq"] = ""; _x["gsrc"] = ""
+            return {"matched": 0, "flOnly": len(reps), "hrOnly": 0}
+        @staticmethod
+        def payload(h, reps, s): return {}
+    hrgeo = _NoHrGeo()
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -545,6 +559,18 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     ORG, ORG_ISSUES = load_org(os.path.join(BASE_DIR, "bb_org.json"))
     ORG_PEOPLE = ORG.get("people", {}) if ORG else {}
 
+    # ---- HR geography overlay (optional enrichment) ------------------------------
+    # bb_org.json covers 430 people in two zones; HR's roster covers 803 in four. This
+    # adds the missing geography WITHOUT touching zn/st/hq, which every other screen
+    # already groups by — see hrgeo.py for why it is an overlay and not a replacement.
+    # A copy on the data disk wins, so HR can be refreshed without a deploy.
+    HRG, HRG_ISSUES = (None, [])
+    for _hp in (os.path.join(DATA_DIR, "hr_org.json"),
+                os.path.join(BASE_DIR, "hr_org.json")):
+        HRG, HRG_ISSUES = hrgeo.load(_hp)
+        if HRG:
+            break
+
     AGG = {}; DAILY = {}; PROD = {}; SPEC = {}; CAT = {}; REACT = {}
     def A(i):
         if i not in AGG:
@@ -882,12 +908,25 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         print("[org] no org file — territory, DOJ and the org spine are unavailable")
         for i in ORG_ISSUES[:3]: print("[org]  ", i)
 
+    # ---- HR geography overlay ----------------------------------------------
+    # Runs AFTER R is complete: it reads every rep's code, and adds fields rather than
+    # changing any. If hr_org.json is absent this is a no-op and the report is unchanged.
+    _hstats = hrgeo.overlay(HRG, R)
+    HRGEO_OUT = hrgeo.payload(HRG, R, _hstats)
+    if HRG:
+        print("[hrgeo] %d of %d reps placed from HR, %d from Frontline only, "
+              "%d HR posts Frontline has never seen"
+              % (_hstats["matched"], len(R), _hstats["flOnly"], _hstats["hrOnly"]))
+    else:
+        print("[hrgeo] no hr_org.json — zone/state/HQ stay as Frontline reports them")
+        for i in HRG_ISSUES[:3]: print("[hrgeo]  ", i)
+
     label = f"{data_start} → {data_end} · {len(R)}-rep roster"
     D = dict(label=label, gen=datetime.date.today().isoformat(),
              dataStart=data_start, dataEnd=data_end, workDays=wd,
              rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
-             hr=hr_used, org=ORG_OUT)
+             hr=hr_used, org=ORG_OUT, hrgeo=HRGEO_OUT)
     # ---- memory-frugal encode ----------------------------------------------
     # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
     # bytes, the final HTML string) which OOM-kills a small instance on lifetime data.
