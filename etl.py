@@ -908,6 +908,24 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         print("[org] no org file — territory, DOJ and the org spine are unavailable")
         for i in ORG_ISSUES[:3]: print("[org]  ", i)
 
+    # ---- HQ coordinates, and optional boundary geometry ----------------------
+    # Both are plain data files beside the code, like bb_org.json. The map degrades in
+    # steps: no gazetteer means no map; a gazetteer alone gives points with zoom and pan;
+    # adding india_topo.json draws the states underneath. No step is required by the one
+    # below it, so a missing file never takes a screen down.
+    HQGEO, MAPGEO = {}, {}
+    for _name, _slot in (("hq_gazetteer.json", "hq"), ("india_topo.json", "map")):
+        for _dir in (DATA_DIR, BASE_DIR):
+            try:
+                _v = json.load(open(os.path.join(_dir, _name), encoding="utf-8"))
+            except Exception:
+                continue
+            if _slot == "hq": HQGEO = _v
+            else: MAPGEO = _v
+            break
+    print("[map] %d HQ coordinates, boundary geometry %s"
+          % (len((HQGEO or {}).get("hq") or {}), "loaded" if MAPGEO else "absent"))
+
     # ---- HR geography overlay ----------------------------------------------
     # Runs AFTER R is complete: it reads every rep's code, and adds fields rather than
     # changing any. If hr_org.json is absent this is a no-op and the report is unchanged.
@@ -926,7 +944,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
              dataStart=data_start, dataEnd=data_end, workDays=wd,
              rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
-             hr=hr_used, org=ORG_OUT, hrgeo=HRGEO_OUT)
+             hr=hr_used, org=ORG_OUT, hrgeo=HRGEO_OUT,
+             hqgeo=HQGEO, mapgeo=MAPGEO)
     # ---- memory-frugal encode ----------------------------------------------
     # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
     # bytes, the final HTML string) which OOM-kills a small instance on lifetime data.
