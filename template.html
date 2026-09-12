@@ -2125,6 +2125,28 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 .msnote{margin-top:var(--cds-spacing-05);color:var(--cds-text-secondary);
   font-size:var(--cds-label-01-size);line-height:1.45}
 
+/* ---- density: the scope bar (v69) --------------------------------------------- */
+/* 56px of control plus padding, on every screen, mostly to say "no filters applied".
+   Now 40px, with the labels folded into placeholders. Nothing was removed. */
+.scope-toggle{min-height:40px}
+.fstrip,.filters{padding-top:var(--cds-spacing-02)!important;
+  padding-bottom:var(--cds-spacing-02)!important;margin-top:0!important;
+  align-items:center!important}
+.filters>div{min-width:150px}
+.filters label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  white-space:nowrap}          /* kept for screen readers, out of the layout */
+.filters select,.filters input{padding:6px 9px;font-size:12.5px;min-height:32px}
+.scope-label{display:none}
+.scope-value{font-size:var(--cds-body-compact-01-size)}
+/* The reassurance sentence earns its space only when there is something to reassure
+   about. With no filters on, it was telling the reader nothing, forever. */
+.fnote:empty{display:none}
+
+/* ---- map labels (v69) ---------------------------------------------------------- */
+.maplab{fill:var(--cds-text-secondary);font-family:'IBM Plex Sans',system-ui,sans-serif;
+  paint-order:stroke;stroke:var(--cds-layer-01);stroke-width:3px;stroke-linejoin:round;
+  pointer-events:none;dominant-baseline:middle}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2162,7 +2184,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v68 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v70 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2319,7 +2341,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v68 · 12 Sep 2026">
+<meta name="hfi-version" content="v70 · 12 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2341,7 +2363,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v68 · 12 Sep 2026';
+window.HFI_BUILD='v70 · 12 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -7902,6 +7924,22 @@ function mapMercY(lat){
 }
 /* lat,lng -> viewBox units. Uniform scale on both axes, so the country is not stretched;
    an aspect-distorted India is instantly recognisable as wrong. */
+/* The extent the DATA occupies, not the country's. The fixed bounding box reached the
+   Andamans and Arunachal, where nobody works, so a third of the frame was permanently
+   empty. Falls back to the national box when there is nothing to fit. */
+let MAP_EXT=null;
+function mapExtent(){return MAP_EXT||MAP_BBOX;}
+function mapSetExtent(pts){
+ const ok=(pts||[]).filter(p=>typeof p.lat==='number');
+ if(ok.length<3){MAP_EXT=null;return;}
+ let a=90,b=-90,c=200,e=-200;
+ ok.forEach(p=>{a=Math.min(a,p.lat);b=Math.max(b,p.lat);
+                c=Math.min(c,p.lng);e=Math.max(e,p.lng);});
+ const padLat=Math.max(1.2,(b-a)*0.06), padLng=Math.max(1.2,(e-c)*0.06);
+ MAP_EXT={lat0:Math.max(MAP_BBOX.lat0,a-padLat),lat1:Math.min(MAP_BBOX.lat1,b+padLat),
+          lng0:Math.max(MAP_BBOX.lng0,c-padLng),lng1:Math.min(MAP_BBOX.lng1,e+padLng)};
+}
+
 function mapFit(){
  /* yTop is the NORTHERN edge and is the LARGEST Mercator value, because Mercator y
     grows northward while screen y grows downward. The first version subtracted these
@@ -7914,8 +7952,9 @@ function mapFit(){
     axes 57.3x apart. The first version did exactly that and squashed the whole country
     into a 19-pixel band — and every "is it inside the frame" check still passed, because
     a squashed map is still inside the frame. Only comparing the two axes caught it. */
- const x0=MAP_BBOX.lng0*Math.PI/180, x1=MAP_BBOX.lng1*Math.PI/180;
- const yTop=mapMercY(MAP_BBOX.lat1), yBot=mapMercY(MAP_BBOX.lat0);
+ const E=mapExtent();
+ const x0=E.lng0*Math.PI/180, x1=E.lng1*Math.PI/180;
+ const yTop=mapMercY(E.lat1), yBot=mapMercY(E.lat0);
  const p=MAP_VB.pad, wSpan=x1-x0, hSpan=yTop-yBot;
  const s=Math.min((MAP_VB.w-2*p)/wSpan,(MAP_VB.h-2*p)/hSpan);
  return {x0:x0,yTop:yTop,s:s,
@@ -7984,7 +8023,15 @@ function mapTopo(){
 
 /* One marker per HQ that has a coordinate. Radius by sqrt of headcount, because area is
    what the eye compares — scaling the radius linearly makes a 30-person HQ look nine
-   times a 10-person one. */
+   times a 10-person one. *//* Just the coordinates, unprojected — used to work out the frame before projecting. */
+function mapRaw(P){
+ return hgRoll(P,p=>p.hq||'').map(a=>{
+   if(mapIsNepal(a.key))return null;
+   const g=mapLookup(a.key);
+   return (g&&typeof g.lat==='number')?{lat:g.lat,lng:g.lng}:null;
+ }).filter(Boolean);
+}
+
 function mapPoints(P){
  const rows=hgRoll(P,p=>p.hq||'');
  const placed=[], missing=[], nepal=[];
@@ -8022,15 +8069,18 @@ function mapR(people){return Math.max(3.2,Math.min(26,2.6*Math.sqrt(people||1)))
    exactly what this map is not allowed to do until licensed geometry arrives. */
 function mapGrid(){
  const out=[];
+ const E=mapExtent();
  for(let lat=10;lat<=35;lat+=5){
-  const a=mapProject(lat,MAP_BBOX.lng0), b=mapProject(lat,MAP_BBOX.lng1);
+  if(lat<E.lat0||lat>E.lat1)continue;
+  const a=mapProject(lat,E.lng0), b=mapProject(lat,E.lng1);
   out.push('<line class="mapgrid" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+
     '" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
   out.push('<text class="mapgt" x="'+(a[0]+4).toFixed(1)+'" y="'+(a[1]-4).toFixed(1)+
     '">'+lat+'\u00b0N</text>');
  }
  for(let lng=70;lng<=95;lng+=5){
-  const a=mapProject(MAP_BBOX.lat1,lng), b=mapProject(MAP_BBOX.lat0,lng);
+  if(lng<E.lng0||lng>E.lng1)continue;
+  const a=mapProject(E.lat1,lng), b=mapProject(E.lat0,lng);
   out.push('<line class="mapgrid" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+
     '" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
   out.push('<text class="mapgt" x="'+a[0].toFixed(1)+'" y="'+(b[1]-6).toFixed(1)+
@@ -8038,8 +8088,33 @@ function mapGrid(){
  }
  return '<g aria-hidden="true">'+out.join('')+'</g>';
 }
+/* Names, not borders. The budget grows with zoom so the national view stays readable;
+   collision testing runs biggest-first and DROPS a label rather than overlapping one,
+   because an unreadable label is worse than an absent one. */
+function mapLabels(placed){
+ const budget=Math.round(9+16*Math.log2(mapK+1));
+ const fs=13/mapK, taken=[], out=[];
+ for(let i=0;i<placed.length&&out.length<budget;i++){
+  const p=placed[i];
+  const w=(String(p.key).length*fs*0.56)+6, h=fs*1.25;
+  const x=p.x+mapR(p.people)/mapK+4/mapK, y=p.y+h*0.32;
+  const box=[x,y-h,w,h];
+  let hit=false;
+  for(let j=0;j<taken.length;j++){const t=taken[j];
+   if(!(box[0]+box[2]<t[0]||t[0]+t[2]<box[0]||box[1]+box[3]<t[1]||t[1]+t[3]<box[1])){
+    hit=true;break;}}
+  if(hit)continue;
+  taken.push(box);
+  out.push('<text class="maplab" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+
+    '" font-size="'+fs.toFixed(2)+'">'+esc(p.key)+'</text>');
+ }
+ return '<g id="maplabs" aria-hidden="true">'+out.join('')+'</g>';
+}
 
 function mapSvg(P){
+ /* Set the extent from the UNPROJECTED points first, then project. mapPoints projects,
+    so the extent must be known before it runs or the first paint uses the old frame. */
+ mapSetExtent(mapRaw(P));
  const pts=mapPoints(P);
  const topo=mapTopo();
  const body=pts.placed.map(p=>{
@@ -8063,6 +8138,7 @@ function mapSvg(P){
    '<g id="mapland" aria-hidden="true">'+(topo?'':'')+'</g>'+
    mapGrid()+
    '<g id="mappts">'+body+'</g>'+
+   mapLabels(pts.placed)+
   '</g></svg>';
 }
 /* The right-hand third used to be white space. It now answers "what am I looking at"
@@ -8132,7 +8208,8 @@ function mapCard(P){
    ' Coordinates are city-centre approximations'+
    (m.src==='pin'?'':' written for this report, not read from a published source')+
    ', accurate enough to place a town, not a building.'+
-   (mapTopo()?'':' State boundaries are not drawn: no licensed geometry is loaded.')+
+   ' Places are named rather than outlined: a label says where somewhere is more '+
+   'directly than a border does, and no state boundary is drawn or implied.'+
   '</div></div>';
 }
 
@@ -8140,7 +8217,17 @@ function mapWire(){
  const wrap=$('mapwrap'); if(!wrap)return;
  const redraw=()=>{const g=$('mapg');
    if(g)g.setAttribute('transform','translate('+mapTX.toFixed(2)+','+mapTY.toFixed(2)+
-     ') scale('+mapK.toFixed(3)+')');};
+     ') scale('+mapK.toFixed(3)+')');
+   /* Labels must be recomputed, not just transformed: the budget, the type size and
+      which names fit without colliding all depend on the zoom. */
+   const L=$('maplabs');
+   if(L&&L.parentNode){
+    const tmp=document.createElement('div');
+    tmp.innerHTML='<svg>'+mapLabels(mapPoints(hgPeople()).placed)+'</svg>';
+    const fresh=tmp.querySelector('#maplabs');
+    if(fresh)L.parentNode.replaceChild(
+      document.importNode(fresh,true),L);
+   }};
  const zoom=(f,cx,cy)=>{
    const k0=mapK, k=mapClampK(mapK*f);
    if(k===k0)return;
