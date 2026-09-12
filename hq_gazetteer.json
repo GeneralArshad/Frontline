@@ -1861,6 +1861,2176 @@
    "elsewhere": ""
   }
  },
+ "index": {
+  "BANGALORE": {
+   "lat": 12.97,
+   "lng": 77.59,
+   "hq": "Bangalore",
+   "elsewhere": ""
+  },
+  "MYSORE": {
+   "lat": 12.3,
+   "lng": 76.64,
+   "hq": "Mysore",
+   "elsewhere": ""
+  },
+  "HUBLI": {
+   "lat": 15.36,
+   "lng": 75.12,
+   "hq": "Hubli",
+   "elsewhere": ""
+  },
+  "MANGALORE": {
+   "lat": 12.91,
+   "lng": 74.86,
+   "hq": "Mangalore",
+   "elsewhere": ""
+  },
+  "SHIMOGA": {
+   "lat": 13.93,
+   "lng": 75.57,
+   "hq": "Shimoga",
+   "elsewhere": ""
+  },
+  "DAVANAGERE": {
+   "lat": 14.47,
+   "lng": 75.92,
+   "hq": "Davanagere",
+   "elsewhere": ""
+  },
+  "GULBARGA": {
+   "lat": 17.33,
+   "lng": 76.83,
+   "hq": "Gulbarga",
+   "elsewhere": ""
+  },
+  "BELGAUM": {
+   "lat": 15.85,
+   "lng": 74.5,
+   "hq": "Belgaum",
+   "elsewhere": ""
+  },
+  "BIJAPUR": {
+   "lat": 16.83,
+   "lng": 75.71,
+   "hq": "Bijapur",
+   "elsewhere": ""
+  },
+  "CHIKKABALLAPUR": {
+   "lat": 13.43,
+   "lng": 77.73,
+   "hq": "Chikkaballapur",
+   "elsewhere": ""
+  },
+  "HASSAN": {
+   "lat": 13.01,
+   "lng": 76.1,
+   "hq": "Hassan",
+   "elsewhere": ""
+  },
+  "KOLAR": {
+   "lat": 13.14,
+   "lng": 78.13,
+   "hq": "Kolar",
+   "elsewhere": ""
+  },
+  "MANDYA": {
+   "lat": 12.52,
+   "lng": 76.9,
+   "hq": "Mandya",
+   "elsewhere": ""
+  },
+  "TUMKUR": {
+   "lat": 13.34,
+   "lng": 77.1,
+   "hq": "Tumkur",
+   "elsewhere": ""
+  },
+  "BELLARY": {
+   "lat": 15.14,
+   "lng": 76.92,
+   "hq": "Bellary",
+   "elsewhere": ""
+  },
+  "BIDAR": {
+   "lat": 17.91,
+   "lng": 77.52,
+   "hq": "Bidar",
+   "elsewhere": ""
+  },
+  "CHIKKAMAGALURU": {
+   "lat": 13.32,
+   "lng": 75.77,
+   "hq": "Chikkamagaluru",
+   "elsewhere": ""
+  },
+  "GADAG": {
+   "lat": 15.43,
+   "lng": 75.63,
+   "hq": "Gadag",
+   "elsewhere": ""
+  },
+  "HAVERI": {
+   "lat": 14.8,
+   "lng": 75.4,
+   "hq": "Haveri",
+   "elsewhere": ""
+  },
+  "RAICHUR": {
+   "lat": 16.21,
+   "lng": 77.36,
+   "hq": "Raichur",
+   "elsewhere": ""
+  },
+  "SIRSI": {
+   "lat": 14.62,
+   "lng": 74.84,
+   "hq": "Sirsi",
+   "elsewhere": ""
+  },
+  "UDUPI": {
+   "lat": 13.34,
+   "lng": 74.75,
+   "hq": "Udupi",
+   "elsewhere": ""
+  },
+  "HYDERABAD": {
+   "lat": 17.39,
+   "lng": 78.49,
+   "hq": "Hyderabad",
+   "elsewhere": ""
+  },
+  "KARIMNAGAR": {
+   "lat": 18.44,
+   "lng": 79.13,
+   "hq": "Karimnagar",
+   "elsewhere": ""
+  },
+  "KAMAREDDY": {
+   "lat": 18.32,
+   "lng": 78.34,
+   "hq": "Kamareddy",
+   "elsewhere": ""
+  },
+  "KHAMMAM": {
+   "lat": 17.25,
+   "lng": 80.15,
+   "hq": "Khammam",
+   "elsewhere": ""
+  },
+  "NIZAMABAD": {
+   "lat": 18.67,
+   "lng": 78.09,
+   "hq": "Nizamabad",
+   "elsewhere": ""
+  },
+  "WARANGAL": {
+   "lat": 17.97,
+   "lng": 79.59,
+   "hq": "Warangal",
+   "elsewhere": ""
+  },
+  "CHENNAI": {
+   "lat": 13.08,
+   "lng": 80.27,
+   "hq": "Chennai",
+   "elsewhere": ""
+  },
+  "MADURAI": {
+   "lat": 9.93,
+   "lng": 78.12,
+   "hq": "Madurai",
+   "elsewhere": ""
+  },
+  "COIMBATORE": {
+   "lat": 11.02,
+   "lng": 76.96,
+   "hq": "Coimbatore",
+   "elsewhere": ""
+  },
+  "TRICHY": {
+   "lat": 10.79,
+   "lng": 78.7,
+   "hq": "Trichy",
+   "elsewhere": ""
+  },
+  "NAGERCOIL": {
+   "lat": 8.18,
+   "lng": 77.43,
+   "hq": "Nagercoil",
+   "elsewhere": ""
+  },
+  "TIRUNELVELI": {
+   "lat": 8.71,
+   "lng": 77.76,
+   "hq": "Tirunelveli",
+   "elsewhere": ""
+  },
+  "CUDDALORE": {
+   "lat": 11.75,
+   "lng": 79.77,
+   "hq": "Cuddalore",
+   "elsewhere": ""
+  },
+  "ERODE": {
+   "lat": 11.34,
+   "lng": 77.72,
+   "hq": "Erode",
+   "elsewhere": ""
+  },
+  "KUMBAKONAM": {
+   "lat": 10.96,
+   "lng": 79.38,
+   "hq": "Kumbakonam",
+   "elsewhere": ""
+  },
+  "SALEM": {
+   "lat": 11.66,
+   "lng": 78.15,
+   "hq": "Salem",
+   "elsewhere": ""
+  },
+  "THANJAVUR": {
+   "lat": 10.79,
+   "lng": 79.14,
+   "hq": "Thanjavur",
+   "elsewhere": ""
+  },
+  "DHARMAPURI": {
+   "lat": 12.13,
+   "lng": 78.16,
+   "hq": "Dharmapuri",
+   "elsewhere": ""
+  },
+  "DINDUGUL": {
+   "lat": 10.37,
+   "lng": 77.98,
+   "hq": "Dindugul",
+   "elsewhere": ""
+  },
+  "VELLORE": {
+   "lat": 12.92,
+   "lng": 79.13,
+   "hq": "Vellore",
+   "elsewhere": ""
+  },
+  "VILLUPURAM": {
+   "lat": 11.94,
+   "lng": 79.49,
+   "hq": "Villupuram",
+   "elsewhere": ""
+  },
+  "KOVILPATTI": {
+   "lat": 9.17,
+   "lng": 77.87,
+   "hq": "Kovilpatti",
+   "elsewhere": ""
+  },
+  "RAMANATHAPURAM": {
+   "lat": 9.37,
+   "lng": 78.83,
+   "hq": "Ramanathapuram",
+   "elsewhere": ""
+  },
+  "TENKASI": {
+   "lat": 8.96,
+   "lng": 77.31,
+   "hq": "Tenkasi",
+   "elsewhere": ""
+  },
+  "TUTICORIN": {
+   "lat": 8.76,
+   "lng": 78.13,
+   "hq": "Tuticorin",
+   "elsewhere": ""
+  },
+  "KARUR": {
+   "lat": 10.96,
+   "lng": 78.08,
+   "hq": "Karur",
+   "elsewhere": ""
+  },
+  "PONDICHERRY": {
+   "lat": 11.94,
+   "lng": 79.83,
+   "hq": "Pondicherry",
+   "elsewhere": "Puducherry"
+  },
+  "ERNAKULAM": {
+   "lat": 9.98,
+   "lng": 76.28,
+   "hq": "Ernakulam",
+   "elsewhere": ""
+  },
+  "THRISSUR": {
+   "lat": 10.53,
+   "lng": 76.21,
+   "hq": "Thrissur",
+   "elsewhere": ""
+  },
+  "TRIVANDRUM": {
+   "lat": 8.52,
+   "lng": 76.94,
+   "hq": "Trivandrum",
+   "elsewhere": ""
+  },
+  "THIRUVANANTHAPURAM": {
+   "lat": 8.52,
+   "lng": 76.94,
+   "hq": "Thiruvananthapuram",
+   "elsewhere": ""
+  },
+  "CALICUT": {
+   "lat": 11.25,
+   "lng": 75.78,
+   "hq": "Calicut",
+   "elsewhere": ""
+  },
+  "KOTTAYAM": {
+   "lat": 9.59,
+   "lng": 76.52,
+   "hq": "Kottayam",
+   "elsewhere": ""
+  },
+  "KANNUR": {
+   "lat": 11.87,
+   "lng": 75.37,
+   "hq": "Kannur",
+   "elsewhere": ""
+  },
+  "KOLLAM": {
+   "lat": 8.89,
+   "lng": 76.61,
+   "hq": "Kollam",
+   "elsewhere": ""
+  },
+  "ALAPPUZHA": {
+   "lat": 9.5,
+   "lng": 76.34,
+   "hq": "Alappuzha",
+   "elsewhere": ""
+  },
+  "KASARGOOD": {
+   "lat": 12.5,
+   "lng": 74.99,
+   "hq": "Kasargood",
+   "elsewhere": ""
+  },
+  "PALAKKAD": {
+   "lat": 10.78,
+   "lng": 76.65,
+   "hq": "Palakkad",
+   "elsewhere": ""
+  },
+  "PERINTHALMANNA": {
+   "lat": 10.98,
+   "lng": 76.23,
+   "hq": "Perinthalmanna",
+   "elsewhere": ""
+  },
+  "CHANGANASSERRY": {
+   "lat": 9.45,
+   "lng": 76.54,
+   "hq": "Changanasserry",
+   "elsewhere": ""
+  },
+  "COCHIN": {
+   "lat": 9.93,
+   "lng": 76.27,
+   "hq": "Cochin",
+   "elsewhere": ""
+  },
+  "KOTTARAKARA": {
+   "lat": 9.0,
+   "lng": 76.78,
+   "hq": "Kottarakara",
+   "elsewhere": ""
+  },
+  "NEYYATTINKARA": {
+   "lat": 8.4,
+   "lng": 77.09,
+   "hq": "Neyyattinkara",
+   "elsewhere": ""
+  },
+  "PATHANAMTHITA": {
+   "lat": 9.26,
+   "lng": 76.79,
+   "hq": "Pathanamthita",
+   "elsewhere": ""
+  },
+  "THIRUVALLA": {
+   "lat": 9.38,
+   "lng": 76.57,
+   "hq": "Thiruvalla",
+   "elsewhere": ""
+  },
+  "THODUPUZHA": {
+   "lat": 9.9,
+   "lng": 76.72,
+   "hq": "Thodupuzha",
+   "elsewhere": ""
+  },
+  "TIRUR": {
+   "lat": 10.91,
+   "lng": 75.92,
+   "hq": "Tirur",
+   "elsewhere": ""
+  },
+  "WAYANAD": {
+   "lat": 11.69,
+   "lng": 76.08,
+   "hq": "Wayanad",
+   "elsewhere": ""
+  },
+  "MUVATTUPUZHA": {
+   "lat": 9.98,
+   "lng": 76.58,
+   "hq": "Muvattupuzha",
+   "elsewhere": ""
+  },
+  "VIJAYAWADA": {
+   "lat": 16.51,
+   "lng": 80.65,
+   "hq": "Vijayawada",
+   "elsewhere": ""
+  },
+  "VIZAG": {
+   "lat": 17.69,
+   "lng": 83.22,
+   "hq": "Vizag",
+   "elsewhere": ""
+  },
+  "KURNOOL": {
+   "lat": 15.83,
+   "lng": 78.04,
+   "hq": "Kurnool",
+   "elsewhere": ""
+  },
+  "RAJAHMUNDRY": {
+   "lat": 17.0,
+   "lng": 81.78,
+   "hq": "Rajahmundry",
+   "elsewhere": ""
+  },
+  "TIRUPATHI": {
+   "lat": 13.63,
+   "lng": 79.42,
+   "hq": "Tirupathi",
+   "elsewhere": ""
+  },
+  "ANANTAPUR": {
+   "lat": 14.68,
+   "lng": 77.6,
+   "hq": "Anantapur",
+   "elsewhere": ""
+  },
+  "GUNTUR": {
+   "lat": 16.31,
+   "lng": 80.44,
+   "hq": "Guntur",
+   "elsewhere": ""
+  },
+  "KAKINADA": {
+   "lat": 16.99,
+   "lng": 82.25,
+   "hq": "Kakinada",
+   "elsewhere": ""
+  },
+  "ONGOLE": {
+   "lat": 15.5,
+   "lng": 80.05,
+   "hq": "Ongole",
+   "elsewhere": ""
+  },
+  "SRIKAKULAM": {
+   "lat": 18.3,
+   "lng": 83.9,
+   "hq": "Srikakulam",
+   "elsewhere": ""
+  },
+  "ELURU": {
+   "lat": 16.71,
+   "lng": 81.1,
+   "hq": "Eluru",
+   "elsewhere": ""
+  },
+  "KADAPA": {
+   "lat": 14.47,
+   "lng": 78.82,
+   "hq": "Kadapa",
+   "elsewhere": ""
+  },
+  "NARASARAOPET": {
+   "lat": 16.24,
+   "lng": 80.05,
+   "hq": "Narasaraopet",
+   "elsewhere": ""
+  },
+  "NELLORE": {
+   "lat": 14.44,
+   "lng": 79.99,
+   "hq": "Nellore",
+   "elsewhere": ""
+  },
+  "TANUKU": {
+   "lat": 16.75,
+   "lng": 81.68,
+   "hq": "Tanuku",
+   "elsewhere": ""
+  },
+  "TENALI": {
+   "lat": 16.24,
+   "lng": 80.65,
+   "hq": "Tenali",
+   "elsewhere": ""
+  },
+  "VIZIANAGARAM": {
+   "lat": 18.11,
+   "lng": 83.4,
+   "hq": "Vizianagaram",
+   "elsewhere": ""
+  },
+  "PUNE": {
+   "lat": 18.52,
+   "lng": 73.86,
+   "hq": "Pune",
+   "elsewhere": ""
+  },
+  "THANE": {
+   "lat": 19.22,
+   "lng": 72.98,
+   "hq": "Thane",
+   "elsewhere": ""
+  },
+  "NAGPUR": {
+   "lat": 21.15,
+   "lng": 79.09,
+   "hq": "Nagpur",
+   "elsewhere": ""
+  },
+  "KALYAN": {
+   "lat": 19.24,
+   "lng": 73.13,
+   "hq": "Kalyan",
+   "elsewhere": ""
+  },
+  "PANVEL": {
+   "lat": 18.99,
+   "lng": 73.11,
+   "hq": "Panvel",
+   "elsewhere": ""
+  },
+  "VASHI": {
+   "lat": 19.08,
+   "lng": 73.0,
+   "hq": "Vashi",
+   "elsewhere": ""
+  },
+  "VIRAR": {
+   "lat": 19.46,
+   "lng": 72.81,
+   "hq": "Virar",
+   "elsewhere": ""
+  },
+  "CENTRALMUMBAI": {
+   "lat": 19.02,
+   "lng": 72.86,
+   "hq": "Central Mumbai",
+   "elsewhere": ""
+  },
+  "SOUTHMUMBAI1": {
+   "lat": 18.93,
+   "lng": 72.83,
+   "hq": "South Mumbai -1",
+   "elsewhere": ""
+  },
+  "SOUTHMUMBAI2": {
+   "lat": 18.96,
+   "lng": 72.82,
+   "hq": "South Mumbai -2",
+   "elsewhere": ""
+  },
+  "WESTERNMUMBAI1": {
+   "lat": 19.11,
+   "lng": 72.85,
+   "hq": "Western Mumbai -1",
+   "elsewhere": ""
+  },
+  "WESTRENMUMBAI2": {
+   "lat": 19.18,
+   "lng": 72.84,
+   "hq": "Westren Mumbai -2",
+   "elsewhere": ""
+  },
+  "MUMBAI": {
+   "lat": 19.08,
+   "lng": 72.88,
+   "hq": "Mumbai",
+   "elsewhere": ""
+  },
+  "KOLHAPUR": {
+   "lat": 16.7,
+   "lng": 74.24,
+   "hq": "Kolhapur",
+   "elsewhere": ""
+  },
+  "AURANGABAD": {
+   "lat": 19.88,
+   "lng": 75.34,
+   "hq": "Aurangabad",
+   "elsewhere": ""
+  },
+  "NASHIK": {
+   "lat": 20.0,
+   "lng": 73.79,
+   "hq": "Nashik",
+   "elsewhere": ""
+  },
+  "SOLAPUR": {
+   "lat": 17.66,
+   "lng": 75.91,
+   "hq": "Solapur",
+   "elsewhere": ""
+  },
+  "AKOLA": {
+   "lat": 20.7,
+   "lng": 77.0,
+   "hq": "Akola",
+   "elsewhere": ""
+  },
+  "SANGALI": {
+   "lat": 16.85,
+   "lng": 74.58,
+   "hq": "Sangali",
+   "elsewhere": ""
+  },
+  "PUNEPCMC": {
+   "lat": 18.63,
+   "lng": 73.8,
+   "hq": "Pune Pcmc",
+   "elsewhere": ""
+  },
+  "AHMEDNAGAR": {
+   "lat": 19.09,
+   "lng": 74.75,
+   "hq": "Ahmednagar",
+   "elsewhere": ""
+  },
+  "AMRAVATI": {
+   "lat": 20.93,
+   "lng": 77.78,
+   "hq": "Amravati",
+   "elsewhere": ""
+  },
+  "BULDHANA": {
+   "lat": 20.53,
+   "lng": 76.18,
+   "hq": "Buldhana",
+   "elsewhere": ""
+  },
+  "CHANDRAPUR": {
+   "lat": 19.95,
+   "lng": 79.3,
+   "hq": "Chandrapur",
+   "elsewhere": ""
+  },
+  "BARAMATI": {
+   "lat": 18.15,
+   "lng": 74.58,
+   "hq": "Baramati",
+   "elsewhere": ""
+  },
+  "KHAMGAON": {
+   "lat": 20.71,
+   "lng": 76.57,
+   "hq": "Khamgaon",
+   "elsewhere": ""
+  },
+  "DHULE": {
+   "lat": 20.9,
+   "lng": 74.77,
+   "hq": "Dhule",
+   "elsewhere": ""
+  },
+  "GONDIA": {
+   "lat": 21.46,
+   "lng": 80.2,
+   "hq": "Gondia",
+   "elsewhere": ""
+  },
+  "JALGAON": {
+   "lat": 21.01,
+   "lng": 75.56,
+   "hq": "Jalgaon",
+   "elsewhere": ""
+  },
+  "LATUR": {
+   "lat": 18.4,
+   "lng": 76.58,
+   "hq": "Latur",
+   "elsewhere": ""
+  },
+  "NANDED": {
+   "lat": 19.16,
+   "lng": 77.32,
+   "hq": "Nanded",
+   "elsewhere": ""
+  },
+  "PARBHANI": {
+   "lat": 19.27,
+   "lng": 76.77,
+   "hq": "Parbhani",
+   "elsewhere": ""
+  },
+  "SANGMNER": {
+   "lat": 19.57,
+   "lng": 74.22,
+   "hq": "Sangmner",
+   "elsewhere": ""
+  },
+  "SATARA": {
+   "lat": 17.69,
+   "lng": 74.0,
+   "hq": "Satara",
+   "elsewhere": ""
+  },
+  "YAVATMAL": {
+   "lat": 20.39,
+   "lng": 78.13,
+   "hq": "Yavatmal",
+   "elsewhere": ""
+  },
+  "GOA": {
+   "lat": 15.49,
+   "lng": 73.83,
+   "hq": "Goa",
+   "elsewhere": ""
+  },
+  "AHMEDABAD": {
+   "lat": 23.02,
+   "lng": 72.57,
+   "hq": "Ahmedabad",
+   "elsewhere": ""
+  },
+  "BARODA": {
+   "lat": 22.31,
+   "lng": 73.18,
+   "hq": "Baroda",
+   "elsewhere": ""
+  },
+  "SURAT": {
+   "lat": 21.17,
+   "lng": 72.83,
+   "hq": "Surat",
+   "elsewhere": ""
+  },
+  "RAJKOT": {
+   "lat": 22.3,
+   "lng": 70.8,
+   "hq": "Rajkot",
+   "elsewhere": ""
+  },
+  "BHAVNAGAR": {
+   "lat": 21.76,
+   "lng": 72.15,
+   "hq": "Bhavnagar",
+   "elsewhere": ""
+  },
+  "GODHRA": {
+   "lat": 22.78,
+   "lng": 73.61,
+   "hq": "Godhra",
+   "elsewhere": ""
+  },
+  "JAMNAGAR": {
+   "lat": 22.47,
+   "lng": 70.06,
+   "hq": "Jamnagar",
+   "elsewhere": ""
+  },
+  "JUNAGARH": {
+   "lat": 21.52,
+   "lng": 70.46,
+   "hq": "Junagarh",
+   "elsewhere": ""
+  },
+  "MEHSANA": {
+   "lat": 23.6,
+   "lng": 72.39,
+   "hq": "Mehsana",
+   "elsewhere": ""
+  },
+  "NADIAD": {
+   "lat": 22.69,
+   "lng": 72.86,
+   "hq": "Nadiad",
+   "elsewhere": ""
+  },
+  "NAVSARI": {
+   "lat": 20.95,
+   "lng": 72.93,
+   "hq": "Navsari",
+   "elsewhere": ""
+  },
+  "VALSAD": {
+   "lat": 20.61,
+   "lng": 72.93,
+   "hq": "Valsad",
+   "elsewhere": ""
+  },
+  "BHOPAL": {
+   "lat": 23.26,
+   "lng": 77.41,
+   "hq": "Bhopal",
+   "elsewhere": ""
+  },
+  "INDORE": {
+   "lat": 22.72,
+   "lng": 75.86,
+   "hq": "Indore",
+   "elsewhere": ""
+  },
+  "JABALPUR": {
+   "lat": 23.18,
+   "lng": 79.99,
+   "hq": "Jabalpur",
+   "elsewhere": ""
+  },
+  "GWALIOR": {
+   "lat": 26.22,
+   "lng": 78.18,
+   "hq": "Gwalior",
+   "elsewhere": ""
+  },
+  "BALAGHAT": {
+   "lat": 21.81,
+   "lng": 80.19,
+   "hq": "Balaghat",
+   "elsewhere": ""
+  },
+  "BETUL": {
+   "lat": 21.9,
+   "lng": 77.9,
+   "hq": "Betul",
+   "elsewhere": ""
+  },
+  "CHATARPUR": {
+   "lat": 24.92,
+   "lng": 79.59,
+   "hq": "Chatarpur",
+   "elsewhere": ""
+  },
+  "CHINDWARA": {
+   "lat": 22.06,
+   "lng": 78.94,
+   "hq": "Chindwara",
+   "elsewhere": ""
+  },
+  "KHANDWA": {
+   "lat": 21.83,
+   "lng": 76.35,
+   "hq": "Khandwa",
+   "elsewhere": ""
+  },
+  "RATLAM": {
+   "lat": 23.33,
+   "lng": 75.04,
+   "hq": "Ratlam",
+   "elsewhere": ""
+  },
+  "REWA": {
+   "lat": 24.53,
+   "lng": 81.3,
+   "hq": "Rewa",
+   "elsewhere": ""
+  },
+  "SAGAR": {
+   "lat": 23.84,
+   "lng": 78.74,
+   "hq": "Sagar",
+   "elsewhere": ""
+  },
+  "SATNA": {
+   "lat": 24.57,
+   "lng": 80.83,
+   "hq": "Satna",
+   "elsewhere": ""
+  },
+  "SHIVPURI": {
+   "lat": 25.42,
+   "lng": 77.66,
+   "hq": "Shivpuri",
+   "elsewhere": ""
+  },
+  "UJJAIN": {
+   "lat": 23.18,
+   "lng": 75.78,
+   "hq": "Ujjain",
+   "elsewhere": ""
+  },
+  "RAIPUR": {
+   "lat": 21.25,
+   "lng": 81.63,
+   "hq": "Raipur",
+   "elsewhere": ""
+  },
+  "BILASPUR": {
+   "lat": 22.08,
+   "lng": 82.15,
+   "hq": "Bilaspur",
+   "elsewhere": ""
+  },
+  "DURG": {
+   "lat": 21.19,
+   "lng": 81.28,
+   "hq": "Durg",
+   "elsewhere": ""
+  },
+  "RAIGARH": {
+   "lat": 21.9,
+   "lng": 83.4,
+   "hq": "Raigarh",
+   "elsewhere": ""
+  },
+  "AMBIKAPUR": {
+   "lat": 23.12,
+   "lng": 83.2,
+   "hq": "Ambikapur",
+   "elsewhere": ""
+  },
+  "JAGALDALPUR": {
+   "lat": 19.08,
+   "lng": 82.03,
+   "hq": "Jagaldalpur",
+   "elsewhere": ""
+  },
+  "JAIPUR": {
+   "lat": 26.91,
+   "lng": 75.79,
+   "hq": "Jaipur",
+   "elsewhere": ""
+  },
+  "JODHPUR": {
+   "lat": 26.24,
+   "lng": 73.02,
+   "hq": "Jodhpur",
+   "elsewhere": ""
+  },
+  "AJMER": {
+   "lat": 26.45,
+   "lng": 74.64,
+   "hq": "Ajmer",
+   "elsewhere": ""
+  },
+  "BIKANER": {
+   "lat": 28.02,
+   "lng": 73.31,
+   "hq": "Bikaner",
+   "elsewhere": ""
+  },
+  "PALI": {
+   "lat": 25.77,
+   "lng": 73.33,
+   "hq": "Pali",
+   "elsewhere": ""
+  },
+  "SIKAR": {
+   "lat": 27.61,
+   "lng": 75.14,
+   "hq": "Sikar",
+   "elsewhere": ""
+  },
+  "UDAIPUR": {
+   "lat": 24.58,
+   "lng": 73.71,
+   "hq": "Udaipur",
+   "elsewhere": ""
+  },
+  "EASTDELHI": {
+   "lat": 28.63,
+   "lng": 77.29,
+   "hq": "East Delhi",
+   "elsewhere": ""
+  },
+  "WESTDELHI": {
+   "lat": 28.65,
+   "lng": 77.1,
+   "hq": "West Delhi",
+   "elsewhere": ""
+  },
+  "SOUTHDELHI": {
+   "lat": 28.52,
+   "lng": 77.21,
+   "hq": "South Delhi",
+   "elsewhere": ""
+  },
+  "NORTHDELHI": {
+   "lat": 28.7,
+   "lng": 77.2,
+   "hq": "North Delhi",
+   "elsewhere": ""
+  },
+  "CENTRALDELHI": {
+   "lat": 28.64,
+   "lng": 77.22,
+   "hq": "Central Delhi",
+   "elsewhere": ""
+  },
+  "DELHI": {
+   "lat": 28.61,
+   "lng": 77.21,
+   "hq": "Delhi",
+   "elsewhere": ""
+  },
+  "DELHIDIET": {
+   "lat": 28.61,
+   "lng": 77.21,
+   "hq": "Delhi Diet",
+   "elsewhere": ""
+  },
+  "AMBALA": {
+   "lat": 30.38,
+   "lng": 76.78,
+   "hq": "Ambala",
+   "elsewhere": ""
+  },
+  "GURGAON": {
+   "lat": 28.46,
+   "lng": 77.03,
+   "hq": "Gurgaon",
+   "elsewhere": ""
+  },
+  "FARIDABAD": {
+   "lat": 28.41,
+   "lng": 77.31,
+   "hq": "Faridabad",
+   "elsewhere": ""
+  },
+  "HISAR": {
+   "lat": 29.15,
+   "lng": 75.72,
+   "hq": "Hisar",
+   "elsewhere": ""
+  },
+  "KARNAL": {
+   "lat": 29.69,
+   "lng": 76.99,
+   "hq": "Karnal",
+   "elsewhere": ""
+  },
+  "REWARI": {
+   "lat": 28.19,
+   "lng": 76.62,
+   "hq": "Rewari",
+   "elsewhere": ""
+  },
+  "ROHTAK": {
+   "lat": 28.9,
+   "lng": 76.61,
+   "hq": "Rohtak",
+   "elsewhere": ""
+  },
+  "AMRITSAR": {
+   "lat": 31.63,
+   "lng": 74.87,
+   "hq": "Amritsar",
+   "elsewhere": ""
+  },
+  "JALANDHAR": {
+   "lat": 31.33,
+   "lng": 75.58,
+   "hq": "Jalandhar",
+   "elsewhere": ""
+  },
+  "LUDHIANA": {
+   "lat": 30.9,
+   "lng": 75.86,
+   "hq": "Ludhiana",
+   "elsewhere": ""
+  },
+  "FEROZPUR": {
+   "lat": 30.93,
+   "lng": 74.61,
+   "hq": "Ferozpur",
+   "elsewhere": ""
+  },
+  "PATIALA": {
+   "lat": 30.34,
+   "lng": 76.39,
+   "hq": "Patiala",
+   "elsewhere": ""
+  },
+  "CHANDIGARH": {
+   "lat": 30.73,
+   "lng": 76.78,
+   "hq": "Chandigarh",
+   "elsewhere": ""
+  },
+  "SRINAGAR": {
+   "lat": 34.08,
+   "lng": 74.8,
+   "hq": "Srinagar",
+   "elsewhere": ""
+  },
+  "JAMMUUDHAMPUR": {
+   "lat": 32.73,
+   "lng": 74.87,
+   "hq": "Jammu + Udhampur",
+   "elsewhere": ""
+  },
+  "SOPORE": {
+   "lat": 34.29,
+   "lng": 74.47,
+   "hq": "Sopore",
+   "elsewhere": ""
+  },
+  "KANPUR": {
+   "lat": 26.45,
+   "lng": 80.33,
+   "hq": "Kanpur",
+   "elsewhere": ""
+  },
+  "LUCKNOW": {
+   "lat": 26.85,
+   "lng": 80.95,
+   "hq": "Lucknow",
+   "elsewhere": ""
+  },
+  "GHAZIABAD": {
+   "lat": 28.67,
+   "lng": 77.44,
+   "hq": "Ghaziabad",
+   "elsewhere": ""
+  },
+  "GORAKHPUR": {
+   "lat": 26.76,
+   "lng": 83.37,
+   "hq": "Gorakhpur",
+   "elsewhere": ""
+  },
+  "VARANASI": {
+   "lat": 25.32,
+   "lng": 82.97,
+   "hq": "Varanasi",
+   "elsewhere": ""
+  },
+  "AGRA": {
+   "lat": 27.18,
+   "lng": 78.02,
+   "hq": "Agra",
+   "elsewhere": ""
+  },
+  "ALLAHABAD": {
+   "lat": 25.44,
+   "lng": 81.85,
+   "hq": "Allahabad",
+   "elsewhere": ""
+  },
+  "JHANSI": {
+   "lat": 25.45,
+   "lng": 78.57,
+   "hq": "Jhansi",
+   "elsewhere": ""
+  },
+  "MEERUT": {
+   "lat": 28.98,
+   "lng": 77.71,
+   "hq": "Meerut",
+   "elsewhere": ""
+  },
+  "NOIDA": {
+   "lat": 28.54,
+   "lng": 77.39,
+   "hq": "Noida",
+   "elsewhere": ""
+  },
+  "ALIGARH": {
+   "lat": 27.9,
+   "lng": 78.08,
+   "hq": "Aligarh",
+   "elsewhere": ""
+  },
+  "AZAMGARH": {
+   "lat": 26.07,
+   "lng": 83.18,
+   "hq": "Azamgarh",
+   "elsewhere": ""
+  },
+  "BAHRAICH": {
+   "lat": 27.57,
+   "lng": 81.6,
+   "hq": "Bahraich",
+   "elsewhere": ""
+  },
+  "BALLIA": {
+   "lat": 25.76,
+   "lng": 84.15,
+   "hq": "Ballia",
+   "elsewhere": ""
+  },
+  "BANDA": {
+   "lat": 25.48,
+   "lng": 80.33,
+   "hq": "Banda",
+   "elsewhere": ""
+  },
+  "BAREILLY": {
+   "lat": 28.37,
+   "lng": 79.43,
+   "hq": "Bareilly",
+   "elsewhere": ""
+  },
+  "BARIELLY": {
+   "lat": 28.37,
+   "lng": 79.43,
+   "hq": "Barielly",
+   "elsewhere": ""
+  },
+  "BIJNORE": {
+   "lat": 29.37,
+   "lng": 78.14,
+   "hq": "Bijnore",
+   "elsewhere": ""
+  },
+  "DEORIA": {
+   "lat": 26.5,
+   "lng": 83.78,
+   "hq": "Deoria",
+   "elsewhere": ""
+  },
+  "FAIZABAD": {
+   "lat": 26.78,
+   "lng": 82.13,
+   "hq": "Faizabad",
+   "elsewhere": ""
+  },
+  "FARRUKHABAD": {
+   "lat": 27.39,
+   "lng": 79.58,
+   "hq": "Farrukhabad",
+   "elsewhere": ""
+  },
+  "GONDA": {
+   "lat": 27.13,
+   "lng": 81.96,
+   "hq": "Gonda",
+   "elsewhere": ""
+  },
+  "JAUNPUR": {
+   "lat": 25.75,
+   "lng": 82.68,
+   "hq": "Jaunpur",
+   "elsewhere": ""
+  },
+  "LAKHIMPUR": {
+   "lat": 27.95,
+   "lng": 80.78,
+   "hq": "Lakhimpur",
+   "elsewhere": ""
+  },
+  "MATHURA": {
+   "lat": 27.49,
+   "lng": 77.67,
+   "hq": "Mathura",
+   "elsewhere": ""
+  },
+  "MIRZAPUR": {
+   "lat": 25.15,
+   "lng": 82.57,
+   "hq": "Mirzapur",
+   "elsewhere": ""
+  },
+  "MORADABAD": {
+   "lat": 28.84,
+   "lng": 78.77,
+   "hq": "Moradabad",
+   "elsewhere": ""
+  },
+  "MUZAFFARNAGAR": {
+   "lat": 29.47,
+   "lng": 77.7,
+   "hq": "Muzaffarnagar",
+   "elsewhere": ""
+  },
+  "ORAI": {
+   "lat": 25.99,
+   "lng": 79.45,
+   "hq": "Orai",
+   "elsewhere": ""
+  },
+  "SITAPUR": {
+   "lat": 27.57,
+   "lng": 80.68,
+   "hq": "Sitapur",
+   "elsewhere": ""
+  },
+  "SULTANPUR": {
+   "lat": 26.26,
+   "lng": 82.07,
+   "hq": "Sultanpur",
+   "elsewhere": ""
+  },
+  "DEHRADUN": {
+   "lat": 30.32,
+   "lng": 78.03,
+   "hq": "Dehradun",
+   "elsewhere": "Uttarakhand"
+  },
+  "HALDWANI": {
+   "lat": 29.22,
+   "lng": 79.52,
+   "hq": "Haldwani",
+   "elsewhere": "Uttarakhand"
+  },
+  "HARIDWAR": {
+   "lat": 29.95,
+   "lng": 78.16,
+   "hq": "Haridwar",
+   "elsewhere": "Uttarakhand"
+  },
+  "PATNA": {
+   "lat": 25.59,
+   "lng": 85.14,
+   "hq": "Patna",
+   "elsewhere": ""
+  },
+  "GAYA": {
+   "lat": 24.79,
+   "lng": 85.0,
+   "hq": "Gaya",
+   "elsewhere": ""
+  },
+  "MUZAFFARPUR": {
+   "lat": 26.12,
+   "lng": 85.39,
+   "hq": "Muzaffarpur",
+   "elsewhere": ""
+  },
+  "PURNIA": {
+   "lat": 25.78,
+   "lng": 87.47,
+   "hq": "Purnia",
+   "elsewhere": ""
+  },
+  "ARA": {
+   "lat": 25.56,
+   "lng": 84.66,
+   "hq": "Ara",
+   "elsewhere": ""
+  },
+  "ARARIA": {
+   "lat": 26.15,
+   "lng": 87.52,
+   "hq": "Araria",
+   "elsewhere": ""
+  },
+  "BEGUSARAI": {
+   "lat": 25.42,
+   "lng": 86.13,
+   "hq": "Begusarai",
+   "elsewhere": ""
+  },
+  "BETTIAH": {
+   "lat": 26.8,
+   "lng": 84.5,
+   "hq": "Bettiah",
+   "elsewhere": ""
+  },
+  "BHAGALPUR": {
+   "lat": 25.24,
+   "lng": 86.99,
+   "hq": "Bhagalpur",
+   "elsewhere": ""
+  },
+  "BIHARSHARIF": {
+   "lat": 25.2,
+   "lng": 85.52,
+   "hq": "Biharsharif",
+   "elsewhere": ""
+  },
+  "CHAPRA": {
+   "lat": 25.78,
+   "lng": 84.73,
+   "hq": "Chapra",
+   "elsewhere": ""
+  },
+  "DARBHANGA": {
+   "lat": 26.15,
+   "lng": 85.9,
+   "hq": "Darbhanga",
+   "elsewhere": ""
+  },
+  "HAJIPUR": {
+   "lat": 25.69,
+   "lng": 85.21,
+   "hq": "Hajipur",
+   "elsewhere": ""
+  },
+  "JAMUI": {
+   "lat": 24.92,
+   "lng": 86.22,
+   "hq": "Jamui",
+   "elsewhere": ""
+  },
+  "KATIHAR": {
+   "lat": 25.54,
+   "lng": 87.57,
+   "hq": "Katihar",
+   "elsewhere": ""
+  },
+  "KISHANGANJ": {
+   "lat": 26.1,
+   "lng": 87.95,
+   "hq": "Kishanganj",
+   "elsewhere": ""
+  },
+  "LAHERISARAI": {
+   "lat": 26.15,
+   "lng": 85.9,
+   "hq": "Laherisarai",
+   "elsewhere": ""
+  },
+  "MOTIHARI": {
+   "lat": 26.65,
+   "lng": 84.92,
+   "hq": "Motihari",
+   "elsewhere": ""
+  },
+  "NAWADHA": {
+   "lat": 24.88,
+   "lng": 85.54,
+   "hq": "Nawadha",
+   "elsewhere": ""
+  },
+  "SAHARSA": {
+   "lat": 25.88,
+   "lng": 86.6,
+   "hq": "Saharsa",
+   "elsewhere": ""
+  },
+  "SAMASTIPUR": {
+   "lat": 25.86,
+   "lng": 85.78,
+   "hq": "Samastipur",
+   "elsewhere": ""
+  },
+  "SASARAM": {
+   "lat": 24.95,
+   "lng": 84.03,
+   "hq": "Sasaram",
+   "elsewhere": ""
+  },
+  "SIWAN": {
+   "lat": 26.22,
+   "lng": 84.36,
+   "hq": "Siwan",
+   "elsewhere": ""
+  },
+  "RANCHI": {
+   "lat": 23.34,
+   "lng": 85.31,
+   "hq": "Ranchi",
+   "elsewhere": ""
+  },
+  "DHANBAD": {
+   "lat": 23.8,
+   "lng": 86.43,
+   "hq": "Dhanbad",
+   "elsewhere": ""
+  },
+  "BOKARO": {
+   "lat": 23.67,
+   "lng": 86.15,
+   "hq": "Bokaro",
+   "elsewhere": ""
+  },
+  "DEOGHAR": {
+   "lat": 24.48,
+   "lng": 86.7,
+   "hq": "Deoghar",
+   "elsewhere": ""
+  },
+  "GIRIDI": {
+   "lat": 24.18,
+   "lng": 86.3,
+   "hq": "Giridi",
+   "elsewhere": ""
+  },
+  "HAZARIBAGH": {
+   "lat": 23.99,
+   "lng": 85.36,
+   "hq": "Hazaribagh",
+   "elsewhere": ""
+  },
+  "JAMSHEDPUR": {
+   "lat": 22.8,
+   "lng": 86.2,
+   "hq": "Jamshedpur",
+   "elsewhere": ""
+  },
+  "MADHUPUR": {
+   "lat": 24.27,
+   "lng": 86.64,
+   "hq": "Madhupur",
+   "elsewhere": ""
+  },
+  "SAHIBGANJ": {
+   "lat": 25.25,
+   "lng": 87.64,
+   "hq": "Sahibganj",
+   "elsewhere": ""
+  },
+  "KOLKATA": {
+   "lat": 22.57,
+   "lng": 88.36,
+   "hq": "Kolkata",
+   "elsewhere": ""
+  },
+  "BARDHAMAN": {
+   "lat": 23.26,
+   "lng": 87.86,
+   "hq": "Bardhaman",
+   "elsewhere": ""
+  },
+  "BERHAMPORE": {
+   "lat": 24.1,
+   "lng": 88.25,
+   "hq": "Berhampore",
+   "elsewhere": ""
+  },
+  "HOWRAH": {
+   "lat": 22.59,
+   "lng": 88.31,
+   "hq": "Howrah",
+   "elsewhere": ""
+  },
+  "SILIGURI": {
+   "lat": 26.73,
+   "lng": 88.4,
+   "hq": "Siliguri",
+   "elsewhere": ""
+  },
+  "ASANSOL": {
+   "lat": 23.68,
+   "lng": 86.98,
+   "hq": "Asansol",
+   "elsewhere": ""
+  },
+  "BARASAT": {
+   "lat": 22.72,
+   "lng": 88.48,
+   "hq": "Barasat",
+   "elsewhere": ""
+  },
+  "BASIRHAT": {
+   "lat": 22.66,
+   "lng": 88.87,
+   "hq": "Basirhat",
+   "elsewhere": ""
+  },
+  "NAIHATI": {
+   "lat": 22.9,
+   "lng": 88.42,
+   "hq": "Naihati",
+   "elsewhere": ""
+  },
+  "ARAMBAGH": {
+   "lat": 22.88,
+   "lng": 87.78,
+   "hq": "Arambagh",
+   "elsewhere": ""
+  },
+  "BARRAKPORE": {
+   "lat": 22.76,
+   "lng": 88.37,
+   "hq": "Barrakpore",
+   "elsewhere": ""
+  },
+  "CONTAI": {
+   "lat": 21.78,
+   "lng": 87.75,
+   "hq": "Contai",
+   "elsewhere": ""
+  },
+  "COOCHBEHAR": {
+   "lat": 26.32,
+   "lng": 89.44,
+   "hq": "Cooch Behar",
+   "elsewhere": ""
+  },
+  "DIAMONDHARBAR": {
+   "lat": 22.19,
+   "lng": 88.19,
+   "hq": "Diamond Harbar",
+   "elsewhere": ""
+  },
+  "HOOGHLY": {
+   "lat": 22.9,
+   "lng": 88.39,
+   "hq": "Hooghly",
+   "elsewhere": ""
+  },
+  "KALYANI": {
+   "lat": 22.98,
+   "lng": 88.43,
+   "hq": "Kalyani",
+   "elsewhere": ""
+  },
+  "KRISHNANAGAR": {
+   "lat": 23.4,
+   "lng": 88.5,
+   "hq": "Krishnanagar",
+   "elsewhere": ""
+  },
+  "MALDA": {
+   "lat": 25.0,
+   "lng": 88.14,
+   "hq": "Malda",
+   "elsewhere": ""
+  },
+  "MIDNAPORE": {
+   "lat": 22.42,
+   "lng": 87.32,
+   "hq": "Midnapore",
+   "elsewhere": ""
+  },
+  "MURSHIDABAD": {
+   "lat": 24.18,
+   "lng": 88.27,
+   "hq": "Murshidabad",
+   "elsewhere": ""
+  },
+  "RAIGANJ": {
+   "lat": 25.62,
+   "lng": 88.13,
+   "hq": "Raiganj",
+   "elsewhere": ""
+  },
+  "RANAGHAT": {
+   "lat": 23.18,
+   "lng": 88.56,
+   "hq": "Ranaghat",
+   "elsewhere": ""
+  },
+  "SONARPUR": {
+   "lat": 22.44,
+   "lng": 88.42,
+   "hq": "Sonarpur",
+   "elsewhere": ""
+  },
+  "SURI": {
+   "lat": 23.91,
+   "lng": 87.53,
+   "hq": "Suri",
+   "elsewhere": ""
+  },
+  "TAMLUK": {
+   "lat": 22.3,
+   "lng": 87.92,
+   "hq": "Tamluk",
+   "elsewhere": ""
+  },
+  "BHUBANESWAR": {
+   "lat": 20.3,
+   "lng": 85.82,
+   "hq": "Bhubaneswar",
+   "elsewhere": ""
+  },
+  "CUTTACK": {
+   "lat": 20.46,
+   "lng": 85.88,
+   "hq": "Cuttack",
+   "elsewhere": ""
+  },
+  "BRAHMAPUR": {
+   "lat": 19.31,
+   "lng": 84.79,
+   "hq": "Brahmapur",
+   "elsewhere": ""
+  },
+  "BRAHAMAPUR": {
+   "lat": 19.31,
+   "lng": 84.79,
+   "hq": "Brahamapur",
+   "elsewhere": ""
+  },
+  "BALASORE": {
+   "lat": 21.49,
+   "lng": 86.93,
+   "hq": "Balasore",
+   "elsewhere": ""
+  },
+  "BARIPADA": {
+   "lat": 21.93,
+   "lng": 86.73,
+   "hq": "Baripada",
+   "elsewhere": ""
+  },
+  "BOLANGIR": {
+   "lat": 20.72,
+   "lng": 83.48,
+   "hq": "Bolangir",
+   "elsewhere": ""
+  },
+  "ROURKELA": {
+   "lat": 22.26,
+   "lng": 84.85,
+   "hq": "Rourkela",
+   "elsewhere": ""
+  },
+  "SAMBALPUR": {
+   "lat": 21.47,
+   "lng": 83.98,
+   "hq": "Sambalpur",
+   "elsewhere": ""
+  },
+  "ANGUL": {
+   "lat": 20.84,
+   "lng": 85.1,
+   "hq": "Angul",
+   "elsewhere": ""
+  },
+  "BARGARH": {
+   "lat": 21.33,
+   "lng": 83.62,
+   "hq": "Bargarh",
+   "elsewhere": ""
+  },
+  "BHADRAK": {
+   "lat": 21.06,
+   "lng": 86.51,
+   "hq": "Bhadrak",
+   "elsewhere": ""
+  },
+  "DHENKANAL": {
+   "lat": 20.66,
+   "lng": 85.6,
+   "hq": "Dhenkanal",
+   "elsewhere": ""
+  },
+  "JEYPORE": {
+   "lat": 18.86,
+   "lng": 82.57,
+   "hq": "Jeypore",
+   "elsewhere": ""
+  },
+  "KEONJHAR": {
+   "lat": 21.63,
+   "lng": 85.58,
+   "hq": "Keonjhar",
+   "elsewhere": ""
+  },
+  "PURI": {
+   "lat": 19.81,
+   "lng": 85.83,
+   "hq": "Puri",
+   "elsewhere": ""
+  },
+  "RAYGADA": {
+   "lat": 19.17,
+   "lng": 83.42,
+   "hq": "Raygada",
+   "elsewhere": ""
+  },
+  "GUWAHATI": {
+   "lat": 26.14,
+   "lng": 91.74,
+   "hq": "Guwahati",
+   "elsewhere": ""
+  },
+  "BANGAIGAON": {
+   "lat": 26.48,
+   "lng": 90.56,
+   "hq": "Bangaigaon",
+   "elsewhere": ""
+  },
+  "DIBRUGARH": {
+   "lat": 27.47,
+   "lng": 94.91,
+   "hq": "Dibrugarh",
+   "elsewhere": ""
+  },
+  "SILCHAR": {
+   "lat": 24.83,
+   "lng": 92.78,
+   "hq": "Silchar",
+   "elsewhere": ""
+  },
+  "BARPETA": {
+   "lat": 26.32,
+   "lng": 91.0,
+   "hq": "Barpeta",
+   "elsewhere": ""
+  },
+  "DHUBRI": {
+   "lat": 26.02,
+   "lng": 89.98,
+   "hq": "Dhubri",
+   "elsewhere": ""
+  },
+  "GOALPARA": {
+   "lat": 26.17,
+   "lng": 90.62,
+   "hq": "Goalpara",
+   "elsewhere": ""
+  },
+  "JORHAT": {
+   "lat": 26.75,
+   "lng": 94.22,
+   "hq": "Jorhat",
+   "elsewhere": ""
+  },
+  "KARIMGANJ": {
+   "lat": 24.87,
+   "lng": 92.36,
+   "hq": "Karimganj",
+   "elsewhere": ""
+  },
+  "MANGALDOI": {
+   "lat": 26.44,
+   "lng": 92.03,
+   "hq": "Mangaldoi",
+   "elsewhere": ""
+  },
+  "NALBARI": {
+   "lat": 26.44,
+   "lng": 91.44,
+   "hq": "Nalbari",
+   "elsewhere": ""
+  },
+  "NAOGAON": {
+   "lat": 26.35,
+   "lng": 92.68,
+   "hq": "Naogaon",
+   "elsewhere": ""
+  },
+  "NORTHLAKHIMPUR": {
+   "lat": 27.23,
+   "lng": 94.11,
+   "hq": "North Lakhimpur",
+   "elsewhere": ""
+  },
+  "TEZPUR": {
+   "lat": 26.63,
+   "lng": 92.8,
+   "hq": "Tezpur",
+   "elsewhere": ""
+  },
+  "AGARTALA": {
+   "lat": 23.83,
+   "lng": 91.28,
+   "hq": "Agartala",
+   "elsewhere": "Tripura"
+  },
+  "AIZAWL": {
+   "lat": 23.73,
+   "lng": 92.72,
+   "hq": "Aizawl",
+   "elsewhere": "Mizoram"
+  },
+  "DIMAPUR": {
+   "lat": 25.91,
+   "lng": 93.73,
+   "hq": "Dimapur",
+   "elsewhere": "Nagaland"
+  },
+  "IMPHAL": {
+   "lat": 24.82,
+   "lng": 93.94,
+   "hq": "Imphal",
+   "elsewhere": "Manipur"
+  },
+  "SHILLONG": {
+   "lat": 25.58,
+   "lng": 91.89,
+   "hq": "Shillong",
+   "elsewhere": "Meghalaya"
+  },
+  "DAVANGERE": {
+   "lat": 14.47,
+   "lng": 75.92,
+   "hq": "Davanagere",
+   "elsewhere": ""
+  },
+  "AIZWAL": {
+   "lat": 23.73,
+   "lng": 92.72,
+   "hq": "Aizawl",
+   "elsewhere": "Mizoram"
+  },
+  "HOOGLY": {
+   "lat": 22.9,
+   "lng": 88.39,
+   "hq": "Hooghly",
+   "elsewhere": ""
+  },
+  "SANGLI": {
+   "lat": 16.85,
+   "lng": 74.58,
+   "hq": "Sangali",
+   "elsewhere": ""
+  },
+  "PURNEA": {
+   "lat": 25.78,
+   "lng": 87.47,
+   "hq": "Purnia",
+   "elsewhere": ""
+  },
+  "TIRUPATI": {
+   "lat": 13.63,
+   "lng": 79.42,
+   "hq": "Tirupathi",
+   "elsewhere": ""
+  },
+  "ANANTPUR": {
+   "lat": 14.68,
+   "lng": 77.6,
+   "hq": "Anantapur",
+   "elsewhere": ""
+  },
+  "SANGAMNER": {
+   "lat": 19.57,
+   "lng": 74.22,
+   "hq": "Sangmner",
+   "elsewhere": ""
+  },
+  "HUBLIPOOL": {
+   "lat": 15.36,
+   "lng": 75.12,
+   "hq": "Hubli",
+   "elsewhere": ""
+  },
+  "BEHARAMPORE": {
+   "lat": 24.1,
+   "lng": 88.25,
+   "hq": "Berhampore",
+   "elsewhere": ""
+  },
+  "ERNAKULUM": {
+   "lat": 9.98,
+   "lng": 76.28,
+   "hq": "Ernakulam",
+   "elsewhere": ""
+  },
+  "TRICHUR": {
+   "lat": 10.53,
+   "lng": 76.21,
+   "hq": "Thrissur",
+   "elsewhere": ""
+  },
+  "CALCUTTA": {
+   "lat": 22.57,
+   "lng": 88.36,
+   "hq": "Kolkata",
+   "elsewhere": ""
+  },
+  "BOMBAY": {
+   "lat": 19.08,
+   "lng": 72.88,
+   "hq": "Mumbai",
+   "elsewhere": ""
+  },
+  "MADRAS": {
+   "lat": 13.08,
+   "lng": 80.27,
+   "hq": "Chennai",
+   "elsewhere": ""
+  },
+  "BANGALURU": {
+   "lat": 12.97,
+   "lng": 77.59,
+   "hq": "Bangalore",
+   "elsewhere": ""
+  },
+  "BENGALURU": {
+   "lat": 12.97,
+   "lng": 77.59,
+   "hq": "Bangalore",
+   "elsewhere": ""
+  },
+  "PONDY": {
+   "lat": 11.94,
+   "lng": 79.83,
+   "hq": "Pondicherry",
+   "elsewhere": "Puducherry"
+  },
+  "VISAKHAPATNAM": {
+   "lat": 17.69,
+   "lng": 83.22,
+   "hq": "Vizag",
+   "elsewhere": ""
+  },
+  "NASIK": {
+   "lat": 20.0,
+   "lng": 73.79,
+   "hq": "Nashik",
+   "elsewhere": ""
+  },
+  "KASARAGOD": {
+   "lat": 12.5,
+   "lng": 74.99,
+   "hq": "Kasargood",
+   "elsewhere": ""
+  },
+  "NARSARAOPETA": {
+   "lat": 16.24,
+   "lng": 80.05,
+   "hq": "Narasaraopet",
+   "elsewhere": ""
+  },
+  "DINDIGUL": {
+   "lat": 10.37,
+   "lng": 77.98,
+   "hq": "Dindugul",
+   "elsewhere": ""
+  },
+  "TRICHI": {
+   "lat": 10.79,
+   "lng": 78.7,
+   "hq": "Trichy",
+   "elsewhere": ""
+  },
+  "TIRUCHIRAPALLI": {
+   "lat": 10.79,
+   "lng": 78.7,
+   "hq": "Trichy",
+   "elsewhere": ""
+  },
+  "VADODARA": {
+   "lat": 22.31,
+   "lng": 73.18,
+   "hq": "Baroda",
+   "elsewhere": ""
+  },
+  "GURUGRAM": {
+   "lat": 28.46,
+   "lng": 77.03,
+   "hq": "Gurgaon",
+   "elsewhere": ""
+  },
+  "PRAYAGRAJ": {
+   "lat": 25.44,
+   "lng": 81.85,
+   "hq": "Allahabad",
+   "elsewhere": ""
+  },
+  "VARANSI": {
+   "lat": 25.32,
+   "lng": 82.97,
+   "hq": "Varanasi",
+   "elsewhere": ""
+  },
+  "MYSURU": {
+   "lat": 12.3,
+   "lng": 76.64,
+   "hq": "Mysore",
+   "elsewhere": ""
+  },
+  "HUBBALLI": {
+   "lat": 15.36,
+   "lng": 75.12,
+   "hq": "Hubli",
+   "elsewhere": ""
+  },
+  "BELAGAVI": {
+   "lat": 15.85,
+   "lng": 74.5,
+   "hq": "Belgaum",
+   "elsewhere": ""
+  },
+  "KALABURAGI": {
+   "lat": 17.33,
+   "lng": 76.83,
+   "hq": "Gulbarga",
+   "elsewhere": ""
+  },
+  "SHIVAMOGGA": {
+   "lat": 13.93,
+   "lng": 75.57,
+   "hq": "Shimoga",
+   "elsewhere": ""
+  },
+  "VIJAYAPURA": {
+   "lat": 16.83,
+   "lng": 75.71,
+   "hq": "Bijapur",
+   "elsewhere": ""
+  },
+  "BALLARI": {
+   "lat": 15.14,
+   "lng": 76.92,
+   "hq": "Bellary",
+   "elsewhere": ""
+  },
+  "THENKASI": {
+   "lat": 8.96,
+   "lng": 77.31,
+   "hq": "Tenkasi",
+   "elsewhere": ""
+  },
+  "PUNEPMPC": {
+   "lat": 18.63,
+   "lng": 73.8,
+   "hq": "Pune Pcmc",
+   "elsewhere": ""
+  },
+  "PRABHANI": {
+   "lat": 19.27,
+   "lng": 76.77,
+   "hq": "Parbhani",
+   "elsewhere": ""
+  },
+  "PATHANAMTHITTA": {
+   "lat": 9.26,
+   "lng": 76.79,
+   "hq": "Pathanamthita",
+   "elsewhere": ""
+  },
+  "CHANGANASSERY": {
+   "lat": 9.45,
+   "lng": 76.54,
+   "hq": "Changanasserry",
+   "elsewhere": ""
+  },
+  "ERNAKULKAM": {
+   "lat": 9.98,
+   "lng": 76.28,
+   "hq": "Ernakulam",
+   "elsewhere": ""
+  },
+  "VYNAD": {
+   "lat": 11.69,
+   "lng": 76.08,
+   "hq": "Wayanad",
+   "elsewhere": ""
+  },
+  "SOUTHMUMBAI": {
+   "lat": 18.93,
+   "lng": 72.83,
+   "hq": "South Mumbai -1",
+   "elsewhere": ""
+  },
+  "WESTERNMUMBAI": {
+   "lat": 19.11,
+   "lng": 72.85,
+   "hq": "Western Mumbai -1",
+   "elsewhere": ""
+  },
+  "WESTRENMUMBAI": {
+   "lat": 19.18,
+   "lng": 72.84,
+   "hq": "Westren Mumbai -2",
+   "elsewhere": ""
+  }
+ },
+ "nepal": [
+  "Kathmandu",
+  "Butwal",
+  "Pokhara",
+  "Janakpur",
+  "Biratnagar",
+  "Birgunj"
+ ],
  "unplaced": [],
  "meta": {
   "placed": 310,

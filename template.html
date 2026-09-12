@@ -2097,6 +2097,34 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 .mapkey{display:inline-flex;align-items:center;gap:var(--cds-spacing-02);
   font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
 
+/* ---- map, sharpened (v67) ------------------------------------------------------ */
+.mapgrid2{display:grid;grid-template-columns:minmax(0,2.1fr) minmax(220px,1fr);
+  gap:var(--cds-spacing-05);align-items:start}
+@media (max-width:1055px){.mapgrid2{grid-template-columns:1fr}}
+.mapwrap{max-width:none;margin:0;background:var(--cds-layer-01)}
+.mapgrid{stroke:var(--cds-border-subtle-01);stroke-width:.8;
+  stroke-dasharray:3 5;opacity:.75}
+.mapgt{fill:var(--cds-text-placeholder);font-size:13px;
+  font-family:'IBM Plex Sans',system-ui,sans-serif}
+.mapdot{stroke:var(--cds-layer-01);stroke-width:1.4}
+.mapside{border-left:1px solid var(--cds-border-subtle-01);
+  padding-left:var(--cds-spacing-05);min-height:280px}
+@media (max-width:1055px){.mapside{border-left:0;border-top:1px solid
+  var(--cds-border-subtle-01);padding-left:0;padding-top:var(--cds-spacing-05)}}
+.msh{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
+  text-transform:uppercase;color:var(--cds-text-secondary);
+  margin-bottom:var(--cds-spacing-03)}
+.msrow{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  padding:var(--cds-spacing-02) 0;font-size:var(--cds-body-01-size)}
+.msk{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msv{font-variant-numeric:tabular-nums;color:var(--cds-text-secondary)}
+.msbar{flex:0 0 70px;height:6px;background:var(--cds-layer-02)}
+.msbar i{display:block;height:100%;background:var(--cds-interactive)}
+.msmeta{color:var(--cds-text-secondary);font-size:var(--cds-label-01-size);
+  margin-bottom:var(--cds-spacing-04)}
+.msnote{margin-top:var(--cds-spacing-05);color:var(--cds-text-secondary);
+  font-size:var(--cds-label-01-size);line-height:1.45}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2134,7 +2162,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v66 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v68 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2291,7 +2319,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v66 · 12 Sep 2026">
+<meta name="hfi-version" content="v68 · 12 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2313,7 +2341,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v66 · 12 Sep 2026';
+window.HFI_BUILD='v68 · 12 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -7911,6 +7939,40 @@ function mapClamp(){
 }
 
 function mapHqGeo(){const g=(typeof D!=='undefined'&&D.hqgeo)?D.hqgeo:{};return g.hq||{};}
+/* The normalised index, built by hq_gazetteer.py. One key per place, whichever system
+   spelled it — see the header of _mapsharp.py for why an exact match lost 138 HQs. */
+function mapHqIndex(){const g=(typeof D!=='undefined'&&D.hqgeo)?D.hqgeo:{};return g.index||{};}
+function mapNepal(){const g=(typeof D!=='undefined'&&D.hqgeo)?D.hqgeo:{};return g.nepal||[];}
+/* Strip the division prefix and EVERY role suffix. 'BBS HUBLI POOL BO' carries two, so
+   a single pass left 'HUBLIPOOL' and missed Hubli entirely. */
+function mapHqKey(s){
+ let t=String(s||'').trim().toUpperCase();
+ t=t.replace(/^(BBPT|BBS|BBN|BB)\s+/,'');
+ let prev;
+ do{prev=t;t=t.replace(/\s+(BO|SBO|HQ|ABM|RBM|POOL)$/,'');}while(t!==prev);
+ return t.replace(/[^A-Z0-9]/g,'');
+}
+/* The number-stripped form, used ONLY as a last resort. Dropping a trailing number is
+   how 'BB TRICHY-02' finds Trichy — but it also merges 'South Mumbai -1' with '-2', and
+   in testing it collapsed twelve distinct fixture HQs onto a single key. So the exact
+   key is tried first and this is the fallback, never the primary. */
+function mapHqKeyLoose(hq){
+ return mapHqKey(String(hq||'').replace(/\s*-?\s*\d+\s*$/,''));
+}
+function mapLookup(hq){
+ const idx=mapHqIndex(), direct=mapHqGeo()[hq];
+ if(direct&&typeof direct.lat==='number')return direct;
+ const strict=idx[mapHqKey(hq)];
+ if(strict)return strict;
+ const loose=mapHqKeyLoose(hq);
+ return (loose&&loose!==mapHqKey(hq))?(idx[loose]||null):null;
+}
+/* Nepal is a country, not a missing coordinate. Keeping it in the "could not place"
+   bucket made a deliberate exclusion look like a failure. */
+function mapIsNepal(hq){
+ const k=mapHqKey(hq);
+ return mapNepal().some(n=>mapHqKey(n)===k)||/^BBN\s/i.test(String(hq||''));
+}
 function mapHqMeta(){const g=(typeof D!=='undefined'&&D.hqgeo)?D.hqgeo:{};return g.meta||{};}
 /* An EMPTY object is truthy. D.mapgeo is {} when no geometry file is present, so the
    first version of this reported borders as loaded and suppressed the caption saying
@@ -7924,22 +7986,58 @@ function mapTopo(){
    what the eye compares — scaling the radius linearly makes a 30-person HQ look nine
    times a 10-person one. */
 function mapPoints(P){
- const geo=mapHqGeo(), rows=hgRoll(P,p=>p.hq||'');
- const placed=[], missing=[];
+ const rows=hgRoll(P,p=>p.hq||'');
+ const placed=[], missing=[], nepal=[];
  rows.forEach(a=>{
-  const g=geo[a.key];
+  if(mapIsNepal(a.key)){nepal.push(a);return;}
+  const g=mapLookup(a.key);
   if(!g||typeof g.lat!=='number'){missing.push(a);return;}
   const xy=mapProject(g.lat,g.lng);
   placed.push({key:a.key,x:xy[0],y:xy[1],lat:g.lat,lng:g.lng,
     people:a.heads+a.vac,rung:a.rung,zone:a.zone,state:a.state,
     onfl:a.onfl,reporting:a.reporting,rx:a.rx,perHead:a.perHead,
-    elsewhere:g.elsewhere||''});
+    elsewhere:g.elsewhere||'', shared:0});
+ });
+ /* Spread points that land on the same spot. Thane, Vashi, Panvel, Kalyan, Virar and
+    six Mumbai sectors are all one pixel apart at national zoom; stacked, only the last
+    was clickable. The ring is a deliberate small lie about position, so it is only
+    applied where points actually collide and the label says the place is shared. */
+ const bucket={};
+ placed.forEach(p=>{const k=Math.round(p.x/6)+':'+Math.round(p.y/6);
+   (bucket[k]=bucket[k]||[]).push(p);});
+ Object.keys(bucket).forEach(k=>{
+  const g=bucket[k]; if(g.length<2)return;
+  const r=Math.min(18,5+2.2*g.length);
+  g.forEach((p,i)=>{const th=(2*Math.PI*i)/g.length-Math.PI/2;
+    p.x+=r*Math.cos(th); p.y+=r*Math.sin(th); p.shared=g.length;});
  });
  /* Biggest drawn first so small markers land on top and stay clickable. */
  placed.sort((u,v)=>v.people-u.people);
- return {placed:placed,missing:missing};
+ return {placed:placed,missing:missing,nepal:nepal};
 }
 function mapR(people){return Math.max(3.2,Math.min(26,2.6*Math.sqrt(people||1)));}
+
+/* Meridians and parallels. These are facts about the globe, not claims about anybody's
+   border, so they give the eye a frame without asserting a single boundary — which is
+   exactly what this map is not allowed to do until licensed geometry arrives. */
+function mapGrid(){
+ const out=[];
+ for(let lat=10;lat<=35;lat+=5){
+  const a=mapProject(lat,MAP_BBOX.lng0), b=mapProject(lat,MAP_BBOX.lng1);
+  out.push('<line class="mapgrid" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+
+    '" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
+  out.push('<text class="mapgt" x="'+(a[0]+4).toFixed(1)+'" y="'+(a[1]-4).toFixed(1)+
+    '">'+lat+'\u00b0N</text>');
+ }
+ for(let lng=70;lng<=95;lng+=5){
+  const a=mapProject(MAP_BBOX.lat1,lng), b=mapProject(MAP_BBOX.lat0,lng);
+  out.push('<line class="mapgrid" x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+
+    '" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'"/>');
+  out.push('<text class="mapgt" x="'+a[0].toFixed(1)+'" y="'+(b[1]-6).toFixed(1)+
+    '" text-anchor="middle">'+lng+'\u00b0E</text>');
+ }
+ return '<g aria-hidden="true">'+out.join('')+'</g>';
+}
 
 function mapSvg(P){
  const pts=mapPoints(P);
@@ -7948,7 +8046,9 @@ function mapSvg(P){
   const t=p.key+' — '+p.people+' '+(p.people===1?'person':'people')+
           (p.state?', '+p.state:'')+'. '+hgRungLabel(p.rung)+'.'+
           (p.onfl?(' '+p.reporting+' reporting, '+fmt(p.rx)+' Rx.'):'')+
-          (p.elsewhere?(' Filed under '+p.state+', actually in '+p.elsewhere+'.'):'');
+          (p.elsewhere?(' Filed under '+p.state+', actually in '+p.elsewhere+'.'):'')+
+          (p.shared?(' Drawn slightly off-centre: '+p.shared+' headquarters share this '+
+                     'place. Zoom in to separate them.'):'');
   return '<circle class="mapdot" data-hq="'+esc(p.key)+'" data-rung="'+p.rung+'"'+
     (p.elsewhere?' data-elsewhere="1"':'')+
     (mapSel===p.key?' data-sel="1"':'')+
@@ -7961,14 +8061,49 @@ function mapSvg(P){
   '<g id="mapg" transform="translate('+mapTX.toFixed(2)+','+mapTY.toFixed(2)+') '+
    'scale('+mapK.toFixed(3)+')">'+
    '<g id="mapland" aria-hidden="true">'+(topo?'':'')+'</g>'+
+   mapGrid()+
    '<g id="mappts">'+body+'</g>'+
   '</g></svg>';
+}
+/* The right-hand third used to be white space. It now answers "what am I looking at"
+   before you point at anything, and "what is this" the moment you do. */
+function mapSideDefault(P){
+ const zs=hgRoll(P,p=>p.zone||'(not recorded)');
+ const top=hgRoll(P,p=>p.hq||'').slice(0,6);
+ return '<div class="msh">Rollout by zone</div>'+
+  zs.map(a=>{const on=a.heads?Math.round(100*a.onfl/a.heads):0;
+   return '<div class="msrow"><span class="msk">'+esc(a.key)+'</span>'+
+    '<span class="msbar"><i style="width:'+on+'%"></i></span>'+
+    '<span class="msv">'+on+'%</span></div>';}).join('')+
+  '<div class="msh" style="margin-top:18px">Largest headquarters</div>'+
+  top.map(a=>'<div class="msrow"><span class="hgdot" data-rung="'+a.rung+'"></span>'+
+    '<span class="msk">'+esc(a.key)+'</span><span class="msv">'+
+    fmt(a.heads+a.vac)+'</span></div>').join('')+
+  '<div class="msnote">Point at a place on the map to see it here.</div>';
+}
+function mapSideFor(p){
+ if(!p)return '';
+ const row=[['People',fmt(p.people)],['On Frontline',fmt(p.onfl)],
+   ['Reporting',fmt(p.reporting)],['Rx',fmt(p.rx)],
+   ['Rx per reporting head',p.reporting?fmt(p.perHead):'\u2014']];
+ return '<div class="msh">'+esc(p.key)+'</div>'+
+  '<div class="msrow"><span class="hgdot" data-rung="'+p.rung+'"></span>'+
+   '<span class="msk">'+esc(hgRungLabel(p.rung))+'</span></div>'+
+  '<div class="msmeta">'+esc([p.state,p.zone].filter(Boolean).join(' \u00b7 '))+'</div>'+
+  row.map(r=>'<div class="msrow"><span class="msk">'+r[0]+'</span>'+
+    '<span class="msv">'+r[1]+'</span></div>').join('')+
+  (p.elsewhere?('<div class="msnote">Filed under '+esc(p.state)+', but the town is in '+
+    esc(p.elsewhere)+'. The marker sits at the real place.</div>'):'')+
+  (p.shared?('<div class="msnote">'+p.shared+' headquarters share this place, so markers '+
+    'are drawn in a small ring. Zoom in to separate them.</div>'):'')+
+  '<div class="msnote">Click the marker to filter the whole screen to this place.</div>';
 }
 
 function mapCard(P){
  const pts=mapPoints(P), m=mapHqMeta();
  const miss=pts.missing.reduce((s,a)=>s+a.heads+a.vac,0);
  const odd=pts.placed.filter(p=>p.elsewhere).length;
+ const nep=pts.nepal.reduce((s,a)=>s+a.heads+a.vac,0);
  return '<div class="card"><div class="ch"><div><h3>Where the company is</h3>'+
   '<div class="cs">Every headquarters in the HR roster, at its own place on the map. '+
   'Circle area is headcount; colour is the same six conditions as the table below. '+
@@ -7979,7 +8114,10 @@ function mapCard(P){
    '<button class="icon-btn" id="mapout" type="button" title="Zoom out" aria-label="Zoom out">−</button>'+
    '<button class="icon-btn" id="mapfit" type="button" title="Reset the view" aria-label="Reset the view">↻</button>'+
   '</div></div>'+
-  '<div class="mapwrap" id="mapwrap">'+mapSvg(P)+'</div>'+
+  '<div class="mapgrid2">'+
+    '<div class="mapwrap" id="mapwrap">'+mapSvg(P)+'</div>'+
+    '<div class="mapside" id="mapside">'+mapSideDefault(P)+'</div>'+
+  '</div>'+
   '<div class="maplegend">'+HG_RUNGS.map(r=>
     '<span class="mapkey"><i class="hgdot" data-rung="'+r[0]+'"></i>'+esc(r[1])+'</span>').join('')+
   '</div>'+
@@ -7989,6 +8127,8 @@ function mapCard(P){
           ' people — they are in the tables below but not on the map.'):'.')+
    (odd?(' '+odd+' are filed under a state they are not in; each marker sits at the real '+
          'town and says so.'):'')+
+   (pts.nepal.length?(' '+pts.nepal.length+' headquarters and '+nep+' people are in '+
+     'Nepal and are deliberately not drawn on a map of India.'):'')+
    ' Coordinates are city-centre approximations'+
    (m.src==='pin'?'':' written for this report, not read from a published source')+
    ', accurate enough to place a town, not a building.'+
@@ -8036,8 +8176,23 @@ function mapWire(){
  const pick=hq=>{ F.hq=(F.hq===hq)?'':hq; mapSel=F.hq;
    try{syncFilterUI();}catch(_){}
    try{render();}catch(_){ hgView(); mapWire(); } };
+ /* Hover and keyboard focus both feed the side panel, so the map is usable without a
+    mouse — the markers are already focusable, and this is what makes that worth doing. */
+ const side=$('mapside');
+ const show=el=>{ if(!side)return;
+   const hq=el&&el.getAttribute?el.getAttribute('data-hq'):'';
+   const p=hq?mapPoints(hgPeople()).placed.filter(q=>q.key===hq)[0]:null;
+   side.innerHTML=p?mapSideFor(p):mapSideDefault(hgPeople());
+ };
  const svg=$('mapsvg');
  if(svg){
+  svg.addEventListener('mouseover',e=>{
+   const t=e.target&&e.target.closest?e.target.closest('.mapdot'):null;
+   if(t)show(t);});
+  svg.addEventListener('mouseleave',()=>show(null));
+  svg.addEventListener('focusin',e=>{
+   const t=e.target&&e.target.closest?e.target.closest('.mapdot'):null;
+   if(t)show(t);});
   svg.addEventListener('click',e=>{
    const t=e.target&&e.target.closest?e.target.closest('.mapdot'):null;
    if(t&&(!drag||drag.moved<6))pick(t.getAttribute('data-hq'));});
