@@ -2147,14 +2147,15 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
   paint-order:stroke;stroke:var(--cds-layer-01);stroke-width:3px;stroke-linejoin:round;
   pointer-events:none;dominant-baseline:middle}
 
-/* ---- the filter bar folds away (v71) ------------------------------------------- */
-.fbar .fhead{color:var(--cds-text-secondary)}
-.fbar .fhead .fhead-t{font-size:var(--cds-body-compact-01-size);
+/* ---- the filter bar, one row (v71, corrected v75) ------------------------------ */
+/* The v71 header was a second row repeating the sentence in the first. Gone; its two
+   buttons now sit in the row that already existed. */
+.fbar #fpanel.closed .fbody{display:none}
+.fbar #fpanel.closed .chev{transform:rotate(180deg)}
+.fbar .fstate .fcper{font-size:var(--cds-body-compact-01-size);
   color:var(--cds-text-primary);white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;min-width:0;flex:1 1 auto}
-.fbar .fhead .fbtn{margin-left:auto;flex:0 0 auto}
-.fbar .fhead .icon-btn{flex:0 0 auto;margin-left:var(--cds-spacing-02)}
-.fbar #fpanel.closed .fhead .chev{transform:rotate(180deg)}
+  text-overflow:ellipsis;margin-right:var(--cds-spacing-03)}
+.fbar .fstate #fstate:empty{display:none}
 /* "All filters" reveals the ten that were always behind it, plus the two that used to
    sit in the strip by accident of markup order. */
 .fbar #fpanel.allf .fbody .fitem.more{display:block}
@@ -2208,23 +2209,12 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v74 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v76 · 12 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
   <div class="gradbar"></div>
   <div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
- <div class="fhead">
-  <svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="filter">
-   <path d="M18 28h-4a2 2 0 01-2-2v-7.59L4.59 11A2 2 0 014 9.59V6a2 2 0 012-2h20a2 2 0 012 2v3.59a2 2 0 01-.59 1.41L20 18.41V26a2 2 0 01-2 2zM6 6v3.59l8 8V26h4v-8.41l8-8V6z"/></svg>
-  <span class="fhead-t" id="fheadt">Scope</span>
-  <button class="fbtn" id="fall" type="button" aria-expanded="false">All filters</button>
-  <button class="icon-btn" id="fmin" type="button" aria-expanded="true"
-    title="Hide the filter bar" aria-label="Hide the filter bar" aria-controls="fpanel">
-   <svg class="chev" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true"
-     data-icon="chevron-up"><path d="M16 10l10 10-1.4 1.4L16 12.8l-8.6 8.6L6 20z"/></svg>
-  </button>
- </div>
  <div class="fnote" id="fdropped"></div>
 
 <div class="fbody">
@@ -2263,7 +2253,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <div class="fitem"><label>Performance</label><select id="fpf"><option value="">All performance</option><option value="pi80">Top index (80+)</option><option value="pi40">Low index (&lt;40)</option><option value="cov60">High coverage (60%+)</option><option value="cov25">Low coverage (&lt;25%)</option><option value="cv40">High conv (40%+)</option><option value="cv15">Low conv (&lt;15%)</option></select></div>
 <div class="fitem"><label>Onboarded</label><select id="fob"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
 <div class="fitem"><label>Rx</label><select id="frx"><option value="">All</option><option value="zero">Zero-Rx (active)</option><option value="has">Rx producers</option></select></div>
-</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><span class="stamp" id="stamp"></span><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear</button></span></div></div>
+</div></div><div class="fstate"><span id="fstate"></span><span class="acts"><span class="stamp" id="stamp"></span><span class="fcper" id="fcper"></span><button class="dlbtn" id="reset" type="button"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" focusable="false"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg>Clear</button><button class="fbtn" id="fall" type="button" aria-expanded="false">All filters</button><button class="icon-btn" id="fmin" type="button" aria-expanded="true" title="Hide the filter bar" aria-label="Hide the filter bar" aria-controls="fpanel"><svg class="chev" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="chevron-up"><path d="M16 10l10 10-1.4 1.4L16 12.8l-8.6 8.6L6 20z"/></svg></button></span></div></div>
   <div class="topbar">
     <button class="burger" id="burger" title="Open menu" aria-label="Open menu">&#9776;</button>
     <div style="display:flex;align-items:center;gap:14px"></div><div style="border-left:1px solid var(--line);padding-left:14px"><h1 id="ttl">Field Rx Intelligence</h1><div class="sub" id="sub"></div></div>
@@ -2375,7 +2365,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v74 · 12 Sep 2026">
+<meta name="hfi-version" content="v76 · 12 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2397,7 +2387,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v74 · 12 Sep 2026';
+window.HFI_BUILD='v76 · 12 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ov';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -2432,20 +2422,22 @@ function fbarSync(){
  const p=$('fpanel'); if(!p)return;
  p.classList.toggle('closed',!fbarOpen);
  p.classList.toggle('allf',fbarAll);
- const m=$('fmin'), a=$('fall'), t=$('fheadt');
+ const m=$('fmin'), a=$('fall'), t=$('fcper');
  if(m){m.setAttribute('aria-expanded',String(fbarOpen));
    const lab=fbarOpen?'Hide the filter bar':'Show the filter bar';
    m.setAttribute('title',lab); m.setAttribute('aria-label',lab);}
  if(a){a.setAttribute('aria-expanded',String(fbarAll));
    a.textContent=fbarAll?'Fewer filters':'All filters';}
- /* With the bar folded away, the header line is the only thing left saying what is being
-    counted. It must therefore carry the scope, not the word "Scope". */
- /* Reuse what the collapsed scope control already computes — #fstate is the existing
-    one-line summary of what is filtered. Inventing a second sentence would give the
-    reader two descriptions of one scope, free to disagree. */
- if(t){try{const s=$('fstate');
-   t.textContent=(s&&s.textContent.trim())||((D&&D.label)?D.label:'Scope');
-  }catch(e){t.textContent='Scope';}}
+ /* Folded, the period is the one thing that must not disappear: every figure below
+    depends on the window. It is read from the period control rather than restated, so
+    there is one source for it and no second version free to drift. */
+ if(t){try{
+   const sel=$('fpr');
+   let txt='';
+   if(sel&&sel.selectedIndex>=0)txt=(sel.options[sel.selectedIndex].textContent||'').trim();
+   if(!txt&&typeof D!=='undefined'&&D&&D.label)txt=D.label;
+   t.textContent=fbarOpen?'':txt;
+  }catch(e){t.textContent='';}}
 }
 function fbarWire(){
  const m=$('fmin'), a=$('fall');
@@ -2754,9 +2746,10 @@ function fcount(){
  const s=$('fstate');
  if(s){
   const names=(typeof activeFilterNames==='function')?activeFilterNames():[];
-  s.textContent=names.length
-   ? 'Filtered to '+names.join(', ')+'.'
-   : 'No filters applied \u2014 every figure covers the full captured history.';
+  /* Silence when nothing is filtered. The old default sentence was true, permanent,
+     and told the reader nothing they could act on — while occupying the most-visible
+     strip in the product. A filter that IS on still announces itself, loudly. */
+  s.textContent=names.length?('Filtered to '+names.join(', ')+'.'):'';
  }
 }
 function render(){
