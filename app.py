@@ -25,7 +25,32 @@ PASSWORD = os.environ.get("REPORT_PASSWORD", "")
 EVERY    = int(os.environ.get("REFRESH_EVERY_MIN", "60"))
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET", "dev-secret-change-me")
+# FAIL CLOSED, NOT OPEN. A default secret means anyone can forge a signed session
+# cookie containing {"user": ...} and walk straight past require_auth. There is no
+# safe default for this, so there is no default: refuse to start instead.
+_SECRET = os.environ.get("FLASK_SECRET", "")
+if not _SECRET or _SECRET in ("dev-secret-change-me", "change-me"):
+    if os.environ.get("RENDER") or os.environ.get("PORT"):
+        raise SystemExit("FLASK_SECRET is unset or still the placeholder. Set a random "
+                         "value in the Render dashboard before this can serve anyone.")
+    _SECRET = "dev-only-" + os.urandom(8).hex()
+    print("[auth] FLASK_SECRET unset — using a random per-process value (local only)")
+app.secret_key = _SECRET
+
+# Microsoft sign-in, if configured, must be restricted to ONE tenant AND one domain.
+# MS_TENANT_ID defaulted to "common" and the domain check was skipped when
+# ALLOWED_EMAIL_DOMAIN was unset — so a half-configured deploy accepted any Microsoft
+# account on earth. Both are entered by hand in the dashboard, which is exactly where
+# one gets missed.
+if MS_CID and MS_SEC:
+    if MS_TEN == "common" or not DOMAIN:
+        raise SystemExit("Microsoft sign-in needs BOTH MS_TENANT_ID (not 'common') and "
+                         "ALLOWED_EMAIL_DOMAIN. Refusing to start half-configured: the "
+                         "result would accept any Microsoft account.")
+
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
+                  SESSION_COOKIE_SECURE=bool(os.environ.get("RENDER")),
+                  PERMANENT_SESSION_LIFETIME=datetime.timedelta(hours=12))
 
 # ------------------------------------------------------------------ auth
 oauth = None
@@ -546,8 +571,13 @@ b.onclick=function(){
 @require_auth
 def index():
     if not os.path.exists(REPORT):
-        # first boot before any ETL finished
-        threading.Thread(target=_refresh_bg, daemon=True).start()
+        # FIRST BOOT — and only ONE backfill, ever. This used to start a thread with no
+        # _running check (unlike /refresh, which has one) while the page below tells the
+        # reader to reload. Ten impatient reloads meant ten concurrent ETL children on a
+        # 512 MB instance, all writing the same SQLite file; that is the most likely
+        # cause of the out-of-memory kills.
+        if not _running["v"]:
+            threading.Thread(target=_refresh_bg, daemon=True).start()
         return ("<h2 style='font-family:sans-serif'>Building the report for the first time…</h2>"
                 "<p style='font-family:sans-serif'>The initial lifetime backfill is running. "
                 "Refresh this page in a few minutes.</p>"), 200
@@ -620,9 +650,14 @@ def _run_etl_subprocess(*args):
                            capture_output=True, text=True, timeout=3600)
         if p.returncode != 0:
             try:
+                print("[etl child] " + (p.stderr or "")[-2000:])   # to the log, not the page
                 with open(META, "w") as fh:
                     json.dump({"ok": False,
-                               "error": (p.stderr or "")[-800:] or f"etl exited {p.returncode}",
+                               # The tail of a Python traceback contains internal paths
+                               # and, via Api.login, part of the login response body.
+                               # /status is unauthenticated, so it gets the exit code
+                               # only; the traceback stays in the service log.
+                               "error": f"etl exited {p.returncode}",
                                "at": datetime.datetime.utcnow().isoformat() + "Z"}, fh)
             except Exception: pass
     except subprocess.TimeoutExpired:

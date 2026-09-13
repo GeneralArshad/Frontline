@@ -156,6 +156,47 @@ class Api:
         except Exception:
             return r.status_code, None
 
+def _safe_err(e):
+    """A publishable description of a failure: the exception TYPE and nothing else.
+
+    meta.json is served verbatim by the unauthenticated /status endpoint. str(e) on a
+    requests error contains the full internal URL; on Api.login it contains the first
+    200 characters of the login response body. Neither belongs on the open internet,
+    and neither helps anyone reading a status page.
+    """
+    try:
+        print("[etl] failed: %r" % (e,))          # the detail goes to the log
+    except Exception:
+        pass
+    return type(e).__name__
+
+
+def _att_pct(days, wd):
+    """Attendance as a percentage, with the old silent cap replaced by a loud one.
+
+    min(100.0, ...) used to absorb a numerator/denominator mismatch without saying so.
+    Sundays are now excluded from the numerator, so the only remaining way to exceed
+    100 is a joining date that postdates recorded activity — a real data problem worth
+    a line in the log rather than a quiet clamp.
+    """
+    if not wd:
+        return 0.0
+    pct = 100.0 * days / wd
+    if pct > 100.0:
+        print("[attendance] %d days against %d working days available (%.0f%%) — "
+              "clamped; check the joining date" % (days, wd, pct))
+        return 100.0
+    return pct
+
+
+# Every task failure that pool() swallows, counted. Without this a run in which a
+# third of the requests returned 502 produced a complete-looking report claiming
+# ok:true — missing employees became reps with no geography, missing day-plans became
+# quiet days, and nothing anywhere said a single call had failed. A silent fallback is
+# only acceptable if somebody counts it.
+FAILS = {"n": 0, "first": ""}
+
+
 def pool(items, fn, n=CONC, report=False):
     """as_completed rather than submission order: results land in the same slots
     either way, but progress then reflects work actually finished instead of
@@ -168,8 +209,13 @@ def pool(items, fn, n=CONC, report=False):
         futs = {ex.submit(fn, it): i for i, it in enumerate(items)}
         for f in as_completed(futs):
             i = futs[f]
-            try: out[i] = f.result()
-            except Exception: out[i] = None
+            try:
+                out[i] = f.result()
+            except Exception as e:                      # noqa: BLE001
+                out[i] = None
+                FAILS["n"] += 1
+                if not FAILS["first"]:
+                    FAILS["first"] = type(e).__name__
             done += 1
             if report: prog(done=done)
     if report: prog(done=total, force=True)
@@ -552,7 +598,14 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
             a2 += datetime.timedelta(days=1)
         return max(1, n)
 
-    wd = workdays_between(data_start, win_end)
+    # THE DENOMINATOR STOPS WHERE THE DATA STOPS. This read win_end (today), while every
+    # numerator stops at data_end. If the API goes quiet for ten days — an outage, an
+    # expired credential, a schema change that silently empties the rows — the
+    # denominators keep growing while the numerators freeze, attendance decays across
+    # the whole company, and "Low attendance <50%" starts firing at people who did
+    # nothing wrong. An upstream failure was being rendered as a field-force collapse,
+    # with meta.ok still true.
+    wd = workdays_between(data_start, data_end)
     span_days = max(1, (d0 - datetime.date.fromisoformat(data_start)).days + 1)
 
     # ---- org & territory (optional enrichment) ----------------------------------
@@ -574,7 +627,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     AGG = {}; DAILY = {}; PROD = {}; SPEC = {}; CAT = {}; REACT = {}
     def A(i):
         if i not in AGG:
-            AGG[i] = dict(v=0,dv=0,cv=0,uniq=set(),rxd=set(),rx=0,sm=0,pq=0,days=set(),dc={},last="",
+            AGG[i] = dict(v=0,dv=0,cv=0,uniq=set(),rxd=set(),rx=0,sm=0,pq=0,days=set(),sundays=set(),dc={},last="",
                           cluster=0,dcDate={},dcRx={},rxL7=0,spanSum=0,spanDays=0,reactPos=0,reactAny=0,
                           firstSum=0,firstDays=0,scDoc=0,legSum=0)
         return AGG[i]
@@ -582,7 +635,21 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     q = con.execute("SELECT empId, empCode, date, visits_json FROM dayplan WHERE date>=? AND date<=?", (win_start, win_end))
     for empId, empCode, date, vj in q:
         visits = json.loads(vj)
-        ag = A(empId); ag["days"].add(date)
+        ag = A(empId)
+        # THE NUMERATOR MUST COUNT THE SAME KIND OF DAY AS THE DENOMINATOR.
+        # workdays_between() excludes Sundays, so a Sunday in this set made the ratio
+        # exceed 100% — which the min(100.0, ...) below then silently absorbed, hiding a
+        # definitional mismatch rather than surfacing it. Sundays are still recorded, in
+        # their own set, so the effort is not erased: it is just not counted against a
+        # denominator that never offered those days.
+        try:
+            _isSun = datetime.date.fromisoformat(date).weekday() == 6
+        except Exception:
+            _isSun = False
+        if _isSun:
+            ag["sundays"].add(date)
+        else:
+            ag["days"].add(date)
         if date > ag["last"]: ag["last"] = date
         day = DAILY.setdefault(date, dict(v=0,rx=0,dv=0,cv=0)); times = []
         for v in visits:
@@ -675,14 +742,14 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         for _cand in (_doj, _first):
             if _cand and _cand > _from: _from = _cand
         if _from > data_end: _from = data_end
-        _wd = workdays_between(_from, win_end)
+        _wd = workdays_between(_from, data_end)   # see above: stop where the data stops
         # The denominator that does NOT move when someone underreports. DOJ still
         # clamps it — a July joiner is not accountable for April — but first activity
         # does not, because "I started using the app last week" is not a shorter month.
         _from_all = data_start
         if _doj and _doj > _from_all: _from_all = _doj
         if _from_all > data_end: _from_all = data_end
-        _wd_all = workdays_between(_from_all, win_end)
+        _wd_all = workdays_between(_from_all, data_end)  # same anchor as _wd
         _att_src = "doj" if (_doj and _doj >= data_start and _doj == _from) else (
                    "first activity" if (_first and _first == _from and _from > data_start)
                    else "window")
@@ -694,7 +761,7 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
                "s2r":r2(a_["sm"]/a_["rx"]) if a_["rx"] else (99 if a_["sm"]>0 else 0),"sm":a_["sm"],"pq":a_["pq"],
                "tp":"None","ob":1 if days>0 else 0,
                "zeroRx":1 if (role_of(e)=="BO" and a_["v"]>0 and a_["rx"]==0) else 0,
-               "att":r1(min(100.0, 100*days/_wd)),"attFrom":_from,"attWd":_wd,"attSrc":_att_src,
+               "att":r1(_att_pct(days,_wd)),"sun":len(a_["sundays"]),"attFrom":_from,"attWd":_wd,"attSrc":_att_src,
                "doj":_doj,"attWdAll":_wd_all,"attFromAll":_from_all,"attDays":days,
                "repc":r1(100*repeat/uniq) if uniq else 0,"cl":a_["cluster"],"rec":rec,
                "newd":newd,"mom":(round(a_["rxL7"]/(a_["rx"]*7/span_days)*100) if a_["rx"]>0 else ""),
@@ -781,15 +848,25 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         x["fl"]=f
 
     # rollups
-    def by_state():
+    def by_state(met_by_state, rxd_by_state):
+        """Per-state totals, with doctor counts taken from the DEDUPLICATED maps.
+
+        r["ud"] and r["rxD"] are PER-REP unique doctors. Summing them counts one doctor
+        once per rep who saw them, so a doctor covered by three reps was counted three
+        times — and `conv` was a ratio of two separately inflated numbers. The maps
+        passed in here are built from `docm`, which is keyed on the doctor, so each
+        doctor appears exactly once.
+        """
         st={}
         for r in R:
             if r["r"]!="BO": continue
             s=st.setdefault(r["st"],dict(state=r["st"],reps=0,active=0,visits=0,rx=0,docMet=0,rxDoctors=0,samples=0))
             s["reps"]+=1; s["active"]+=1 if r["vis"]>0 else 0; s["visits"]+=r["vis"]; s["rx"]+=r["rx"]
-            s["docMet"]+=r["ud"]; s["rxDoctors"]+=r["rxD"]; s["samples"]+=r["sm"]
+            s["samples"]+=r["sm"]
+        for k in st:
+            st[k]["docMet"]=met_by_state.get(k,0)
+            st[k]["rxDoctors"]=rxd_by_state.get(k,0)
         return sorted(({**s,"conv":round(100*s["rxDoctors"]/s["docMet"],1) if s["docMet"] else 0} for s in st.values()), key=lambda x:-x["rx"])
-    STATES=by_state()
     PRODUCTS=sorted(({"name":n,"rx":v["rx"],"qty":v["q"]} for n,v in PROD.items()), key=lambda x:-x["rx"])
     SPECS=sorted(([n,v] for n,v in SPEC.items()), key=lambda x:-x[1])
     CATS=sorted(([n,v] for n,v in CAT.items()), key=lambda x:-x[1])
@@ -829,9 +906,33 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
     for d in D_docs:
         if d[9]: dsb[d[9]]=dsb.get(d[9],0)+1
     D_docsByState=sorted(dsb.items(), key=lambda x:-x[1])
+
+    # ---- DEDUPLICATED doctor counts -------------------------------------------
+    # docm is keyed on the doctor, and is populated only from real doctor visits, so
+    # len(docm) is exactly "doctors met at least once" with each doctor counted once.
+    # The old figures summed r["ud"] and r["rxD"] across reps — per-rep uniques — which
+    # inflated both by the average number of reps covering a doctor. The template has
+    # carried a comment for several versions asserting that metDoctors WAS deduplicated;
+    # it was not, and the guard that hid the percentage when it exceeded the doctor
+    # universe was the symptom of exactly this.
+    MET_TOTAL = len(docm)
+    RXD_TOTAL = sum(1 for dc, _ in docArr if dc["rx"] > 0)
+    MET_BY_STATE, RXD_BY_STATE = {}, {}
+    for dc, best in docArr:
+        _s = st_by_code.get(best, "")
+        MET_BY_STATE[_s] = MET_BY_STATE.get(_s, 0) + 1
+        if dc["rx"] > 0:
+            RXD_BY_STATE[_s] = RXD_BY_STATE.get(_s, 0) + 1
+    _met_naive = sum(r["ud"] for r in R)
+    print("[docs] %d doctors met (deduplicated); summing per-rep uniques would have said "
+          "%d — a factor of %.2f" % (MET_TOTAL, _met_naive,
+                                     (_met_naive / MET_TOTAL) if MET_TOTAL else 0))
+    assert MET_TOTAL <= len(D_docs), "more doctors met than exist in the doctor master"
+    assert RXD_TOTAL <= MET_TOTAL, "more prescribers than doctors met"
+    STATES=by_state(MET_BY_STATE, RXD_BY_STATE)
     abo=sorted([x for x in R if x["r"]=="BO" and x["vis"]>0], key=lambda x:-x["rx"])
     n20=max(1,round(len(abo)*0.2)); t20=sum(x["rx"] for x in abo[:n20]); boRx=sum(x["rx"] for x in abo)
-    totRx=sum(r["rx"] for r in R); docMet=sum(r["ud"] for r in R); rxDoctors=sum(r["rxD"] for r in R)
+    totRx=sum(r["rx"] for r in R); docMet=MET_TOTAL; rxDoctors=RXD_TOTAL
     D_rx=dict(totRx=totRx,metDoctors=docMet,rxDoctors=rxDoctors,pareto=round(100*t20/boRx) if boRx else 0,
               paretoN=n20,bySpec=[[x[0],x[1]] for x in SPECS],prod=[[p["name"],p["qty"],p["rx"]] for p in PRODUCTS],
               byCat=[[x[0],x[1]] for x in CATS],topDocs=D_topDocs)
@@ -945,7 +1046,8 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
              rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
              hr=hr_used, org=ORG_OUT, hrgeo=HRGEO_OUT,
-             hqgeo=HQGEO, mapgeo=MAPGEO)
+             hqgeo=HQGEO, mapgeo=MAPGEO,
+             fetchFails=dict(n=FAILS["n"], first=FAILS["first"]))
     # ---- memory-frugal encode ----------------------------------------------
     # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
     # bytes, the final HTML string) which OOM-kills a small instance on lifetime data.
@@ -1004,7 +1106,11 @@ def rerender_only():
         with open(META, "w") as fh: json.dump(meta, fh)
         return meta
     except Exception as e:
-        return {"ok": False, "error": str(e)}
+        # NEVER the raw exception. /status is unauthenticated, and Api.login raises
+        # with the first 200 characters of the login RESPONSE BODY — publishing that to
+        # the open internet is how a credential or an internal URL escapes. The type is
+        # enough to triage from; the detail belongs in the logs.
+        return {"ok": False, "error": _safe_err(e)}
     finally:
         _LOCK.release()
 
@@ -1040,13 +1146,16 @@ def run_etl():
                 "dayPlansInWindow": seen, "dayPlansFetchedThisRun": fetched,
                 # counts only: /status is unauthenticated, so no employee codes here.
                 "rosterFill": roster_fill,
+                # A run that swallowed failures is not a clean run. /status is polled by
+                # the toolbar, so this is the one place the reader can find out.
+                "fetchFails": FAILS["n"], "fetchFailKind": FAILS["first"],
                 "phaseMs": dict(_PROG.get("phaseMs") or {}), **stats}
         prog_end(True)
         meta["phaseMs"] = dict(_PROG.get("phaseMs") or {})
         with open(META, "w") as fh: json.dump(meta, fh)
         return meta
     except Exception as e:
-        meta = {"ok": False, "error": str(e), "at": datetime.datetime.utcnow().isoformat() + "Z"}
+        meta = {"ok": False, "error": _safe_err(e), "at": datetime.datetime.utcnow().isoformat() + "Z"}
         try:
             with open(META, "w") as fh: json.dump(meta, fh)
         except Exception: pass
