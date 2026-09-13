@@ -2205,6 +2205,68 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 .navan-h[aria-expanded="false"] svg{transform:rotate(-90deg)}
 .navan-h[aria-expanded="false"]+.navan-b{display:none}
 
+/* ---- the scope row, on the page it belongs to (v87) ---------------------------- */
+.scoperow{display:flex;align-items:center;gap:var(--cds-spacing-03);flex-wrap:wrap;
+  margin:0 0 var(--cds-spacing-05)}
+.scoperow[hidden]{display:none}
+.scchip{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);
+  background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);
+  color:var(--cds-text-primary);font:inherit;
+  font-size:var(--cds-body-compact-01-size);
+  padding:var(--cds-spacing-02) var(--cds-spacing-04);cursor:pointer;white-space:nowrap}
+.scchip:hover{background:var(--cds-layer-hover-01)}
+.scchip svg{fill:currentColor;opacity:.7}
+.scchip .scn{background:var(--cds-interactive);color:var(--cds-text-on-color);
+  padding:0 var(--cds-spacing-03);font-size:var(--cds-label-01-size);
+  font-variant-numeric:tabular-nums}
+.scpills{display:flex;gap:var(--cds-spacing-02);flex-wrap:wrap}
+/* An active filter is ALWAYS on screen, on every page it changes. The drawer being shut
+   must never be able to hide the reason a number looks wrong. */
+.scpill{display:inline-flex;align-items:center;gap:var(--cds-spacing-02);
+  background:var(--cds-layer-accent-01);border:1px solid transparent;
+  color:var(--cds-text-primary);font:inherit;font-size:var(--cds-label-01-size);
+  padding:var(--cds-spacing-02) var(--cds-spacing-03);cursor:pointer}
+.scpill:hover{border-color:var(--cds-border-subtle-01)}
+.scpill span{opacity:.6;font-size:1.1em;line-height:1}
+.sclink{background:none;border:0;color:var(--cds-link-primary);font:inherit;
+  font-size:var(--cds-label-01-size);cursor:pointer;text-decoration:underline}
+.scnote{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+
+/* ---- both containers are now one drawer ---------------------------------------- */
+/* These rules come after the originals in the sheet, so they win at equal specificity.
+   Every id inside is untouched — only where they sit has changed. */
+.scopedrawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,92vw);z-index:70;
+  background:var(--cds-layer-01);border-left:1px solid var(--cds-border-subtle-01);
+  box-shadow:var(--cds-shadow);display:flex;flex-direction:column;
+  transform:translateX(101%);transition:transform var(--cds-duration-moderate-01,240ms)
+  cubic-bezier(.2,0,.38,.9);overflow-y:auto;overscroll-behavior:contain}
+.scopedrawer[hidden]{display:none}
+body.scopeopen .scopedrawer{transform:none}
+/* Inside the drawer neither container is a strip or a dropdown any more: they are two
+   plain blocks in one scrolling column. */
+.scopedrawer #perband,.scopedrawer .fbar{position:static;transform:none;inset:auto;
+  width:auto;max-width:none;margin:0;border:0;box-shadow:none;background:none;
+  display:block}
+.scopedrawer #perband[hidden]{display:block}
+/* "All filters" opened the dropdown that no longer exists; the drawer shows them all. */
+.scopedrawer #fall{display:none}
+.scopebd{position:fixed;inset:0;z-index:69;background:var(--cds-overlay)}
+.scopebd[hidden]{display:none}
+.fdrawh{display:flex;align-items:center;justify-content:space-between;
+  padding:var(--cds-spacing-05);border-bottom:1px solid var(--cds-border-subtle-01);
+  font-size:var(--cds-body-compact-01-size);font-weight:600;
+  position:sticky;top:0;background:var(--cds-layer-01);z-index:1}
+/* In a drawer the controls stack; the horizontal row was the whole problem. */
+.fbar .fbody{display:block;padding:var(--cds-spacing-05)}
+.fbar .fitem{display:block;margin-bottom:var(--cds-spacing-05)}
+.fbar .fitem select,.fbar .fitem input{width:100%}
+.fbar .fstate{display:flex;flex-wrap:wrap;gap:var(--cds-spacing-04);align-items:center;
+  padding:var(--cds-spacing-05);border-top:1px solid var(--cds-border-subtle-01)}
+/* The fold control and the folded-period label were chrome for a strip that no longer
+   exists. Left in the DOM — fbarSync() addresses them by id — but never shown. */
+.scopedrawer #fmin,.scopedrawer #fcper{display:none}
+@media (prefers-reduced-motion: reduce){.scopedrawer{transition:none}}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2247,7 +2309,10 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 </aside>
 <div class="main">
   <div class="gradbar"></div>
-  <div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
+  <div class="scopebd" id="scopebd" hidden></div>
+<div class="scopedrawer" id="scopedrawer" role="dialog" aria-modal="false"
+  aria-label="Filters and period" hidden>
+<div class="fdrawh"><span>Filters and period</span><button class="icon-btn" id="scclose" type="button" aria-label="Close filters"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div></div><div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
  <div class="fnote" id="fdropped"></div>
 
 <div class="fbody">
@@ -2296,6 +2361,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <div class="wrap">
 <div class="pagehead" id="pagehead"></div>
 <div id="pbarw"></div>
+<div class="scoperow" id="scoperow"></div>
 <section class="sec" id="sec_rx">
 <div class="secttl"><div class="eye">Core metric</div><div class="big">The prescription engine</div><div class="d">Rx is what the field exists to generate. Everything here answers: are visits turning into prescriptions? Click any chart to expand.</div></div>
 <div class="kpis" id="rxkpis"></div>
@@ -2312,7 +2378,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <div class="card"><div class="ch"><div><h3>Rx performance <span id="rpcnt" class="sub"></span></h3><div class="cs">Sortable · hover headers for definitions · zero-Rx reps flagged</div></div></div><div class="tablewrap"><table><thead><tr id="rph"></tr></thead><tbody id="rpb"></tbody></table></div></div>
 <div class="card" id="mgrcard" style="margin-top:18px;display:none"><div class="ch"><div><h3>Team performance <span id="mgcnt" class="sub"></span></h3><div class="cs">Every field rep underneath each manager, rolled up &middot; own joint-work activity shown separately</div></div></div><div class="tablewrap"><table><thead><tr id="mgh2"></tr></thead><tbody id="mgb2"></tbody></table></div></div>
 </section>
-<section class="sec on" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
+<section class="sec" id="sec_ov"><div class="secttl"><div class="eye">Snapshot</div><div class="big">Key metrics for the current view</div></div>
 <div class="kpis" id="kpis"></div>
 <div class="grid" id="ovcharts" style="margin-top:18px"></div>
 <div class="card" style="margin-top:18px"><div class="ch"><div><h3>Employees <span id="cnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="eh"></tr></thead><tbody id="eb"></tbody></table></div></div></section>
@@ -2356,7 +2422,7 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec" id="sec_ppl"><div class="secttl"><div class="eye">Field force</div><div class="big">People</div><div class="d">Everyone in the roster, for the period and filters above. Sort any column, choose which columns you want, and click a row for the full profile. Your choices are remembered in this browser.</div></div><div id="pplbody"></div></section>
+<section class="sec on" id="sec_ppl"><div class="secttl"><div class="eye">Field force</div><div class="big">People</div><div class="d">Everyone in the roster, for the period and filters above. Sort any column, choose which columns you want, and click a row for the full profile. Your choices are remembered in this browser.</div></div><div id="pplbody"></div></section>
 <section class="sec" id="sec_hgeo"><div class="secttl"><div class="eye">Reference</div><div class="big">Geography</div><div class="d">Zones, states and headquarters from the HR roster, and how far Hive Frontline reached in each. Headcount is a roster fact and does not change with the period; reporting and Rx do.</div></div><div id="hgbody"></div></section>
 <section class="sec" id="sec_adopt"><div class="secttl"><div class="eye">Action</div><div class="big">App adoption</div><div class="d">Who is reporting their work through Hive Frontline, month by month, since the app started capturing. Filters and period above apply to who is listed; the monthly figures always read the full history.</div></div><div id="adoptbody"></div></section>
 <section class="sec" id="sec_nrep"><div class="secttl"><div class="eye">Action</div><div class="big">Not reporting</div><div class="d">Everyone the ranking drops before it reaches a tier, and where the rest of the field falls out. Filters and period above apply.</div></div><div id="nrepbody"></div></section>
@@ -2488,6 +2554,94 @@ function navanWire(){
  const h=$('navanh');
  if(h)h.onclick=()=>{navanOpen=!navanOpen;navanSync();};
  navanSync();
+}
+
+/* ---- the scope row, and the drawer behind it (v87) ----------------------------- */
+/* Screens that filter nothing get no row. Offering a filter that changes nothing is
+   worse than offering none: the reader sets it, the numbers do not move, and now they
+   distrust the numbers rather than the control. */
+const SCOPE_NONE = ['guide','notes'];
+/* Doctors filters doctors, through its own controls, which already live in its section. */
+const SCOPE_DOCS = ['docs'];
+
+const FLABEL = {q:'Search', di:'Division', zn:'Zone', st:'State', hq:'HQ', rl:'Role',
+                mg:'Manager', te:'Territory', sp:'Specialization', ac:'Activity',
+                pf:'Performance', ob:'Onboarded', rx:'Rx'};
+const FCTRL  = {q:'q', di:'fdi', zn:'fzn', st:'fst', hq:'fhq', rl:'frl', mg:'fmg',
+                te:'fte', sp:'fsp', ac:'fac', pf:'fpf', ob:'fob', rx:'frx'};
+
+function scopeActive(){
+ return Object.keys(FLABEL).filter(k=>F[k]!==''&&F[k]!=null);
+}
+
+/* The period, read from the control rather than restated, so there is one source for it
+   and no second version free to drift out of step. */
+function scopePeriodText(){
+ try{
+  const sel=$('fpr');
+  if(sel&&sel.selectedIndex>=0){
+   const t=(sel.options[sel.selectedIndex].textContent||'').trim();
+   if(t)return t;
+  }
+ }catch(e){}
+ return (typeof D!=='undefined'&&D&&D.label)?D.label:'All time';
+}
+
+function scopeRow(){
+ const host=$('scoperow');
+ if(!host)return;
+ if(SCOPE_NONE.indexOf(TAB)>=0){host.innerHTML='';host.hidden=true;return;}
+ host.hidden=false;
+
+ const isDocs=SCOPE_DOCS.indexOf(TAB)>=0;
+ const act=isDocs?[]:scopeActive();
+
+ const pills=act.map(k=>'<button class="scpill" type="button" data-clear="'+k+'" '+
+   'title="Clear this filter">'+esc(FLABEL[k])+': <b>'+esc(String(F[k]))+'</b>'+
+   '<span aria-hidden="true">&times;</span></button>').join('');
+
+ host.innerHTML=
+  '<button class="scchip scper" id="scper" type="button" '+
+    'title="Change the period — this applies to every screen">'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="calendar">'+
+   '<path d="M26 4h-4V2h-2v2h-8V2h-2v2H6a2 2 0 00-2 2v20a2 2 0 002 2h20a2 2 0 002-2V6a2 '+
+   '2 0 00-2-2zm0 22H6V12h20zm0-16H6V6h4v2h2V6h8v2h2V6h4z"/></svg>'+
+   esc(scopePeriodText())+'</button>'+
+  '<button class="scchip" id="scfil" type="button" aria-haspopup="dialog">'+
+   'Filters'+(act.length?' <span class="scn">'+act.length+'</span>':'')+'</button>'+
+  (pills?'<span class="scpills">'+pills+'</span>':'')+
+  (act.length>1?'<button class="sclink" id="scclr" type="button">Clear all</button>':'')+
+  (isDocs?'<span class="scnote">Doctor filters are on this screen, below.</span>':'');
+}
+
+let SCOPE_OPEN=false;
+function scopeOpen(on){
+ SCOPE_OPEN=(on!==false);
+ document.body.classList.toggle('scopeopen',SCOPE_OPEN);
+ const bd=$('scopebd'); if(bd)bd.hidden=!SCOPE_OPEN;
+ const b=$('scfil'); if(b)b.setAttribute('aria-expanded',String(SCOPE_OPEN));
+ if(SCOPE_OPEN){
+  /* focus the first control so the drawer is usable from the keyboard alone */
+  try{const f=$('scopedrawer').querySelector('select,input');if(f)f.focus();}catch(e){}
+ }
+}
+
+function scopeWire(){
+ const f=$('scfil'), p=$('scper'), c=$('scclr');
+ if(f)f.onclick=()=>scopeOpen(!SCOPE_OPEN);
+ /* The period lives in the same drawer; opening it there keeps ONE place where scope is
+    changed, rather than a second popover that could disagree with the first. */
+ if(p)p.onclick=()=>{scopeOpen(true);try{$('fpr').focus();}catch(e){}};
+ if(c)c.onclick=()=>{Object.keys(FLABEL).forEach(k=>{F[k]='';});
+   Object.keys(FCTRL).forEach(k=>{const el=$(FCTRL[k]);if(el)el.value='';});
+   render();};
+ const host=$('scoperow');
+ if(host)host.querySelectorAll('[data-clear]').forEach(b=>{
+  b.onclick=()=>{const k=b.getAttribute('data-clear');
+   F[k]='';
+   const el=$(FCTRL[k]); if(el)el.value='';
+   render();};
+ });
 }
 
 function fbarWire(){
@@ -3060,7 +3214,31 @@ function fcount(){
   s.textContent=names.length?('Filtered to '+names.join(', ')+'.'):'';
  }
 }
+/* THE ONLY THING THAT DECIDES WHICH SECTION IS VISIBLE. It used to be decided in two
+   places that could disagree: the `class="sec on"` written into the markup, and the nav
+   click handler. At boot only the markup spoke, so v79's change of landing tab left the
+   DOM showing Pulse's body under People's heading. Now TAB decides, every render. */
+const SEC_IDS=['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide','inc','nrep','adopt','hgeo','ppl'];
+function secSync(){
+ let seen=0;
+ SEC_IDS.forEach(s=>{
+  const el=$('sec_'+s);
+  if(!el){console.warn('no section for tab',s);return;}
+  const on=(s===TAB);
+  el.classList.toggle('on',on);
+  if(on)seen++;
+ });
+ /* A tab naming no section would hide everything and leave a blank page. Fall back to
+    the landing screen rather than showing the reader nothing at all. */
+ if(!seen){
+  const el=$('sec_ppl');
+  if(el){el.classList.add('on');console.warn('tab',TAB,'has no section; showed People');}
+ }
+}
+
 function render(){
+ try{secSync();}catch(e){console.warn('sections',e);}
+ try{scopeRow();scopeWire();}catch(e){console.warn('scope row',e);}
  /* refill BEFORE fr(): it may clear a selection that can no longer match anything,
     and the rows must be filtered by the surviving set, not the stale one. */
  try{refill();}catch(e){console.warn('refill',e);}
@@ -3149,12 +3327,9 @@ function init(){
     /* a nav click always leaves the panel: the section it hosts may be the one we
        are about to show, and it cannot be in two places at once */
     if(typeof drillKey!=='undefined'&&drillKey)drillClose(true);
-    TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button[data-t]').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide','inc','nrep','adopt','hgeo','ppl'].forEach(s=>{const el=$('sec_'+s);
-      /* A nav click must never be able to leave the report with no section showing.
-         If a tab names a section that does not exist, skip it rather than throwing
-         half-way through the loop and stranding the reader on a blank page. */
-      if(el)el.classList.toggle('on',s===TAB);
-      else console.warn('no section for tab',s);});
+    TAB=b.dataset.t;if(window.innerWidth<=1000)$('side').classList.remove('open');$('tabs').querySelectorAll('button[data-t]').forEach(x=>x.classList.toggle('on',x===b));['rx','ov','prod','mgr','exc','daily','trend','docs','calls','roster','org','notes','guide','inc','nrep','adopt','hgeo','ppl'];
+    /* the list above is now vestigial — secSync() inside render() is what shows the
+       section, so a nav click only has to set TAB and re-render */
     render();});});
   S('rep filter handlers',()=>{const map={fdi:'di',fzn:'zn',fst:'st',fhq:'hq',frl:'rl',fmg:'mg',fob:'ob',frx:'rx',fsp:'sp',fac:'ac',fpf:'pf',fte:'te'};Object.keys(map).forEach(id=>$(id).onchange=e=>{F[map[id]]=e.target.value;render();});});
   S('search handlers',()=>{$('q').oninput=e=>{F.q=e.target.value;render();};$('dq').oninput=e=>{DF.q=e.target.value;docsView();};});
@@ -9158,6 +9333,29 @@ boot();
 try{fbarWire();}catch(e){console.warn('filter bar',e);}
 try{pplLoad();}catch(e){console.warn('people prefs',e);}
 try{navanWire();}catch(e){console.warn('analysis nav',e);}
+/* Dismissal: the backdrop, the close button and Escape. A drawer you can only close by
+   finding one small button again is the reason people leave panels open forever. */
+try{
+ /* Adopt both scope containers into the one drawer. Moving a node keeps its id, its
+    value and any handler already attached, so every filter still works; what changes is
+    only where on screen it is. Guarded because a half-moved drawer is worse than none. */
+ const dr=$('scopedrawer');
+ if(dr){
+  const pb=$('perband'), fb=$('fbar');
+  if(pb)dr.appendChild(pb);
+  if(fb)dr.appendChild(fb);
+  /* inside the drawer the period panel is simply part of the column, not a dropdown */
+  if(pb)pb.hidden=false;
+  dr.hidden=false;
+ }
+}catch(e){console.warn('scope drawer',e);}
+try{
+ const bd=$('scopebd'); if(bd)bd.onclick=()=>scopeOpen(false);
+ const x=$('scclose'); if(x)x.onclick=()=>scopeOpen(false);
+ document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&SCOPE_OPEN){e.preventDefault();scopeOpen(false);}
+ });
+}catch(e){console.warn('scope dismiss',e);}
 </script><div class="drillscrim" id="drillscrim"></div>
 <aside class="drill" id="drill" role="dialog" aria-modal="true" aria-labelledby="drilltitle"
        aria-hidden="true">
