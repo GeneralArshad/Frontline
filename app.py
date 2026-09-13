@@ -42,11 +42,26 @@ app.secret_key = _SECRET
 # ALLOWED_EMAIL_DOMAIN was unset — so a half-configured deploy accepted any Microsoft
 # account on earth. Both are entered by hand in the dashboard, which is exactly where
 # one gets missed.
-if MS_CID and MS_SEC:
-    if MS_TEN == "common" or not DOMAIN:
-        raise SystemExit("Microsoft sign-in needs BOTH MS_TENANT_ID (not 'common') and "
-                         "ALLOWED_EMAIL_DOMAIN. Refusing to start half-configured: the "
-                         "result would accept any Microsoft account.")
+#
+# THE GUARD KEYS ON MS_CID, the same thing that turns the button on. It used to require
+# MS_CID *and* MS_SEC, which left a gap: with a client id and no secret, the login page
+# offered Microsoft sign-in, the OAuth client registered with an empty secret, and the
+# guard stayed quiet. Nobody could actually get in — the token exchange needs the secret
+# — but "the sign-in button is there and silently cannot work" is a broken deploy that
+# should announce itself at boot rather than in a support message from the field.
+if MS_CID:
+    missing = []
+    if not MS_SEC:
+        missing.append("MS_CLIENT_SECRET")
+    if MS_TEN == "common":
+        missing.append("MS_TENANT_ID (not 'common')")
+    if not DOMAIN:
+        missing.append("ALLOWED_EMAIL_DOMAIN")
+    if missing:
+        raise SystemExit("Microsoft sign-in is half-configured — missing " +
+                         ", ".join(missing) + ". Refusing to start: without the tenant "
+                         "and domain it would accept any Microsoft account, and without "
+                         "the secret the button cannot work at all.")
 
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
                   SESSION_COOKIE_SECURE=bool(os.environ.get("RENDER")),
