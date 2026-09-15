@@ -10,7 +10,10 @@ Binding spec for every screen of this app. Values come from `carbon-tokens.css`;
 4. **Spacing on the 8px scale only**: 2 / 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64.
 5. **No shadows except overlays and sticky bars.** Menus, modals, the drill panel and the sticky filter strip get `0 2px 6px var(--cds-shadow)`. Tiles and cards are flat, no border, no shadow — separation comes from 1px grid gaps over `--cds-border-subtle-00`.
 6. **No gradients, no background images, no textures beyond the sanctioned set below, no emoji.**
-7. **Motion 70–240ms**, `cubic-bezier(0.2,0,0.38,0.9)`. Fades and slides. Nothing scales, springs or bounces.
+7. **Motion: GSAP, 70–320ms, ease `power2.out` or Carbon's `cubic-bezier(0.2,0,0.38,0.9)`.** Relaxed from "70–240ms, fades and slides, nothing scales, springs or bounces" at Arshad's decision, v101. Scale and spring are now permitted where they carry meaning; gratuitous motion still is not, and **numbers must not move while someone is reading them**. Three binding constraints remain:
+   - **GSAP is a progressive enhancement.** It loads deferred from cdnjs. Every animation goes through `fx()` / `fxIn()`, which apply the end state synchronously when `window.gsap` is absent. Nothing's visibility, position or content may depend on an animation having run — the jsdom suite runs without GSAP on every pass and asserts exactly this.
+   - **`prefers-reduced-motion` wins over everything**, including this rule.
+   - **One motion vocabulary**: arriving content rises 6px and fades in, staggered 12ms. Anything else needs a reason written down.
 8. **Hairlines are `--cds-border-subtle-01`.** `--cds-border-strong-01` (#8d8d8d) is for input underlines and chart axes, not for dividing rows — at list density it reads as noise. Any surface should have single-digit hairlines, not one per row.
 
 ## Type
@@ -106,7 +109,7 @@ Rules:
 | Clear, dismiss, close | `close` |
 | Export | `download` |
 | Expand a chart | `maximize` |
-| Sorted column | `sort--descending` |
+| Sorted column | `arrows` unsorted (on hover), `arrow--up` ascending, `arrow--down` descending |
 | Forward navigation on a button | `arrow--right` |
 | Up / down / flat | `arrow--up` / `arrow--down` / `subtract` |
 | Info, helper | `information` |
@@ -154,7 +157,10 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Every chart title is a question, has a bold answer line, and a `maximize` button.
 - [ ] Multi-series charts share one zero-anchored scale, and every line chart has a labelled value scale on round numbers.
 - [ ] Tabular figures on every table, metric and axis label; display figures carry negative tracking.
-- [ ] Tables: 48px rows, accent-01 header, sorted column marked, footer with range and one paging action, no zebra, no vertical rules, numeric columns right-aligned, identifier column at 600.
+- [ ] Tables: 48px rows, accent-01 header, sorted column marked with the DIRECTION icon, pagination bar (items per page, range, prev/next) rather than a cap, no zebra, no vertical rules, numeric columns right-aligned **header included**, identifier column at 600, data cells `--cds-text-primary` (a zero drops one step to secondary; only missing data is placeholder).
+- [ ] A table that brings its own toolbar and pagination sets `data-furniture="off"`, and both `tableFurniture()` and `expWire()` leave it alone.
+- [ ] Buttons use the `.btn` component (`--primary` / `--secondary` / `--tertiary` / `--ghost`, `--sm` / `--lg` / `--icon`). Never an unstyled `<button>`: `.fbtn` had no unscoped rule for months and rendered as the browser default.
+- [ ] Work that takes longer than `BUSY_AFTER` (120ms) shows a skeleton of the right shape, for at least `BUSY_MIN` (300ms). Shorter work shows nothing.
 - [ ] Every fetch shows page progress plus skeletons; every in-flight action shows a spinner or a disabled label; nothing blocks reading.
 - [ ] Every interactive element shows the 2px Blue 60 focus ring on keyboard focus.
 - [ ] Every icon-only control has `title` and `aria-label`.

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — Field Rx intelligence</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><style>
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><!-- GSAP, deferred and optional. Nothing on this page waits for it or breaks without it: every animation runs through fx(), which sets the final state synchronously when window.gsap is absent. See _motion.py. --><script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — Field Rx intelligence</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><style>
 /* ===================== IBM Carbon v11 tokens =====================
    Verbatim from carbon-tokens.css in this repo (kept there for provenance and
    for the lint gate). Inlined because the report ships as one file. */
@@ -2373,11 +2373,13 @@ th.pplck,td.pplck{width:48px;padding:0 0 0 var(--cds-spacing-05)}
 .pplbatch[hidden]{display:none}
 .pplbn{font-size:var(--cds-body-compact-01-size);font-variant-numeric:tabular-nums}
 .pplbsp{flex:1 1 auto}
-.pplba{background:none;border:0;color:var(--cds-text-on-color);font:inherit;
+.pplba{display:inline-flex;align-items:center;gap:var(--cds-spacing-05);
+  background:none;border:0;color:var(--cds-text-on-color);font:inherit;
   font-size:var(--cds-body-compact-01-size);height:48px;
   padding:0 var(--cds-spacing-05);cursor:pointer}
 .pplba:hover{background:var(--cds-button-primary-hover)}
-.pplba:focus{outline:2px solid var(--cds-text-on-color);outline-offset:-2px}
+.pplba:focus-visible{outline:2px solid var(--cds-text-on-color);outline-offset:-2px}
+.pplba svg{width:16px;height:16px;fill:currentColor}
 
 /* ---- row actions ---------------------------------------------------------------- */
 th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
@@ -2397,6 +2399,101 @@ th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
 /* a label kept for screen readers and out of the layout */
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
   white-space:nowrap}
+
+/* ---- buttons: the component this app never had (v97) --------------------------- */
+/* Every .fbtn in the report was an unstyled native <button>: the only matching rule was
+   scoped to .filters, which is display:none. This is the component, from tokens, in
+   Carbon's four variants. */
+.btn{display:inline-flex;align-items:center;gap:var(--cds-spacing-05);
+  height:40px;padding:0 var(--cds-spacing-05);
+  border:1px solid transparent;background:none;border-radius:0;
+  font:var(--cds-font-weight-regular) var(--cds-body-compact-01-size)/1.29 inherit;
+  letter-spacing:0.16px;text-align:left;white-space:nowrap;cursor:pointer;
+  transition:background var(--cds-duration-fast-02) var(--cds-easing-standard-productive),
+             border-color var(--cds-duration-fast-02) var(--cds-easing-standard-productive)}
+.btn svg{flex:0 0 auto;width:16px;height:16px;fill:currentColor;stroke:none}
+/* :focus-visible, not :focus — a ring that stays after a mouse click is noise. */
+.btn:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.btn:disabled{cursor:not-allowed;background:var(--cds-button-disabled);
+  color:var(--cds-text-disabled);border-color:transparent}
+.btn:disabled svg{fill:var(--cds-text-disabled)}
+.btn--primary{background:var(--cds-button-primary);color:var(--cds-text-on-color)}
+.btn--primary:hover:not(:disabled){background:var(--cds-button-primary-hover)}
+.btn--primary:active:not(:disabled){background:var(--cds-button-primary-active)}
+.btn--secondary{background:var(--cds-button-secondary);color:var(--cds-text-on-color)}
+.btn--tertiary{border-color:var(--cds-button-tertiary);color:var(--cds-button-tertiary)}
+.btn--tertiary:hover:not(:disabled){background:var(--cds-button-tertiary);
+  color:var(--cds-text-on-color)}
+.btn--ghost{color:var(--cds-link-primary)}
+.btn--ghost:hover:not(:disabled){background:var(--cds-layer-hover-01);
+  color:var(--cds-link-primary-hover)}
+.btn--sm{height:32px}
+.btn--lg{height:48px}
+/* icon-only: square, the icon centred, the label carried by title and aria-label */
+.btn--icon{width:40px;padding:0;justify-content:center;color:var(--cds-icon-primary)}
+.btn--icon.btn--sm{width:32px}
+.btn--icon.btn--lg{width:48px}
+.btn--icon:hover:not(:disabled){background:var(--cds-layer-hover-01)}
+
+/* .fbtn is an alias rather than a rename, so none of its twelve call sites can be
+   missed. It was the browser's default button everywhere outside .filters. */
+.fbtn{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);height:32px;
+  padding:0 var(--cds-spacing-05);border:1px solid transparent;border-radius:0;
+  background:none;color:var(--cds-link-primary);cursor:pointer;
+  font:var(--cds-font-weight-regular) var(--cds-body-compact-01-size)/1.29 inherit;
+  letter-spacing:0.16px;white-space:nowrap;
+  transition:background var(--cds-duration-fast-02) var(--cds-easing-standard-productive)}
+.fbtn:hover{background:var(--cds-layer-hover-01);color:var(--cds-link-primary-hover)}
+.fbtn:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.fbtn svg{width:16px;height:16px;fill:currentColor;stroke:none}
+
+/* Carbon icons are FILLED paths. Two rules disagreed about this and the outline one was
+   winning, so every download glyph in the app rendered as an outline of a solid shape. */
+.dlbtn svg{fill:currentColor;stroke:none;width:16px;height:16px}
+.icon-btn:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+
+/* ---- the drawer, with a spine (v99) --------------------------------------------- */
+.scopedrawer{padding-bottom:64px}          /* room for the sticky footer */
+.fgrp{border-top:1px solid var(--cds-border-subtle-01)}
+.fgrph{display:flex;align-items:center;gap:var(--cds-spacing-03);width:100%;
+  height:48px;padding:0 var(--cds-spacing-05);background:none;border:0;cursor:pointer;
+  color:var(--cds-text-primary);font:inherit;
+  font-size:var(--cds-body-compact-01-size);text-align:left}
+.fgrph:hover{background:var(--cds-layer-hover-01)}
+.fgrph:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.fgrph span:nth-of-type(1){flex:1 1 auto}
+.fgrph .chev{fill:var(--cds-icon-primary);
+  transition:transform var(--cds-duration-fast-02) var(--cds-easing-standard-productive)}
+.fgrph[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.fgrph[aria-expanded="false"]+.fgrpb{display:none}
+.fgrpn{background:var(--cds-interactive);color:var(--cds-text-on-color);
+  font-size:var(--cds-label-01-size);padding:0 var(--cds-spacing-03);
+  font-variant-numeric:tabular-nums}
+.fgrpn[hidden]{display:none}
+.fgrpb{padding:0 var(--cds-spacing-05) var(--cds-spacing-05)}
+.fgrpb .fitem{margin-bottom:var(--cds-spacing-05)}
+.fgrpb .fitem[hidden]{display:none}
+.fdrawf{position:sticky;bottom:0;order:99;display:flex;gap:1px;
+  background:var(--cds-border-subtle-01);
+  border-top:1px solid var(--cds-border-subtle-01);z-index:2}
+.fdrawf .btn{flex:1 1 50%;justify-content:space-between;height:64px;
+  padding:0 var(--cds-spacing-05)}
+
+/* ---- skeleton rows and motion (v101) --------------------------------------------- */
+/* Sized to the row it replaces, so nothing reflows when the data lands. */
+#pplb tr.skrow td{height:48px}
+.sk{display:block;height:12px;width:70%;background:var(--cds-skeleton-element);
+  animation:cdsSkel 1500ms ease-in-out infinite}
+#pplb tr.skrow td:nth-child(3) .sk{width:45%}
+#pplb tr.skrow td.n .sk{margin-left:auto;width:36%}
+[aria-busy="true"]{cursor:progress}
+.btn[aria-busy="true"],.dlbtn[aria-busy="true"]{opacity:.7}
+/* A relaxed motion rule is not a licence to move things for someone whose system has
+   asked us not to. This wins over everything above. */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;transition-duration:0.001ms !important}
+}
 
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
@@ -2442,8 +2539,9 @@ th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
   <div class="gradbar"></div>
   <div class="scopebd" id="scopebd" hidden></div>
 <div class="scopedrawer" id="scopedrawer" role="dialog" aria-modal="false"
-  aria-label="Filters and period" hidden>
-<div class="fdrawh"><span>Filters and period</span><button class="icon-btn" id="scclose" type="button" aria-label="Close filters"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div></div><div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
+  aria-label="Advanced filters" hidden>
+<div class="fdrawf" id="fdrawf"></div>
+<div class="fdrawh"><span>Advanced filters</span><button class="icon-btn" id="scclose" type="button" aria-label="Close filters"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div></div><div class="periodband" id="perband" hidden></div><div class="fbar" id="fbar"><div class="fpanel" id="fpanel">
  <div class="fnote" id="fdropped"></div>
 
 <div class="fbody">
@@ -2702,7 +2800,10 @@ const FCTRL  = {q:'q', di:'fdi', zn:'fzn', st:'fst', hq:'fhq', rl:'frl', mg:'fmg
                 te:'fte', sp:'fsp', ac:'fac', pf:'fpf', ob:'fob', rx:'frx'};
 
 function scopeActive(){
- return Object.keys(FLABEL).filter(k=>F[k]!==''&&F[k]!=null);
+ /* a filter that has been taken out cannot be active, so it cannot appear as a pill or
+    in the count — belt and braces beside filtersOff() clearing the values */
+ return Object.keys(FLABEL).filter(k=>
+   F[k]!==''&&F[k]!=null&&!(k in FILTERS_OFF));
 }
 
 /* The period, read from the control rather than restated, so there is one source for it
@@ -2716,6 +2817,104 @@ function scopePeriodText(){
   }
  }catch(e){}
  return (typeof D!=='undefined'&&D&&D.label)?D.label:'All time';
+}
+
+/* ---- filters that no longer earn their place (v99) ----------------------------- */
+/* REMOVED MEANS REMOVED. Each value is cleared as the control is hidden: a filter that
+   is still applied but no longer visible silently changes every figure on the screen,
+   which is the precise failure the scope row exists to prevent. The elements stay in
+   the DOM because refill() and the reset handler address them by id. */
+const FILTERS_OFF={di:'fdi', sp:'fsp'};
+function filtersOff(){
+ try{
+  Object.keys(FILTERS_OFF).forEach(k=>{
+   F[k]='';
+   const el=$(FILTERS_OFF[k]);
+   if(el){el.value='';
+     const item=el.closest('.fitem');
+     if(item){item.hidden=true;item.setAttribute('aria-hidden','true');}}
+  });
+  /* Days of week scopes the PERIOD, so it is cleared through the period engine. */
+  if(typeof PR!=='undefined')PR.wd='';
+  const wd=$('fwd');
+  if(wd){wd.value='';
+    const box=wd.parentElement;
+    if(box)box.hidden=true;}
+ }catch(e){console.warn('filters off',e);}
+}
+
+/* The period dropdown listed every captured month alongside the quick ranges, and grew
+   by one entry a month. The quick ranges and a custom range reach the same windows. */
+function periodMonthsOff(){
+ try{
+  const sel=$('fpr'); if(!sel)return;
+  const keep=[];
+  [...sel.options].forEach(o=>{
+   if(/^\d{4}-\d{2}$/.test(o.value))keep.push(o);
+  });
+  keep.forEach(o=>o.remove());
+  /* if a month was the active window, fall back to the full range rather than leaving
+     the select pointing at an option that no longer exists */
+  if(sel.selectedIndex<0||!sel.value){
+   sel.value='all';
+   if(typeof PR!=='undefined')PR.mode='all';
+   if(typeof applyPeriod==='function')applyPeriod();
+  }
+ }catch(e){console.warn('period months',e);}
+}
+
+/* ---- the drawer's spine: three groups, each with its own active count (v99) ----- */
+const FGROUPS=[
+ {t:'Where', ids:['fzn','fst','fhq','fte'], keys:['zn','st','hq','te']},
+ {t:'Who',   ids:['frl','fmg'],             keys:['rl','mg']},
+ {t:'Performance', ids:['fac','fpf','frx','fob'], keys:['ac','pf','rx','ob']}
+];
+let FGOPEN={};
+function drawerGroups(){
+ /* NOT '.scopedrawer .fbody'. This runs at boot, and the drawer does not adopt #fbar
+    until a later step in the same sequence — so scoping the selector to the drawer found
+    nothing and the groups were silently never built. Address the panel itself; it is the
+    same element wherever it currently hangs. */
+ const body=document.querySelector('#fpanel .fbody')||document.querySelector('.fbody');
+ if(!body||body.dataset.grouped==='1')return;
+ FGROUPS.forEach((g,i)=>{
+  const sec=document.createElement('div');
+  sec.className='fgrp';
+  sec.dataset.g=String(i);
+  const h=document.createElement('button');
+  h.type='button'; h.className='fgrph';
+  h.setAttribute('aria-expanded','true');
+  h.innerHTML='<svg class="chev" viewBox="0 0 32 32" width="16" height="16" '+
+    'aria-hidden="true"><path d="M16 22 6 12l1.4-1.4L16 19.2l8.6-8.6L26 12z"/></svg>'+
+    '<span>'+esc(g.t)+'</span><span class="fgrpn" data-n="'+i+'"></span>';
+  const wrap=document.createElement('div');
+  wrap.className='fgrpb';
+  g.ids.forEach(id=>{
+   const el=$(id);
+   const item=el&&el.closest('.fitem');
+   if(item)wrap.appendChild(item);
+  });
+  sec.appendChild(h); sec.appendChild(wrap);
+  body.appendChild(sec);
+  h.onclick=()=>{
+   const open=h.getAttribute('aria-expanded')==='true';
+   h.setAttribute('aria-expanded',String(!open));
+   FGOPEN[i]=!open;
+  };
+ });
+ body.dataset.grouped='1';
+}
+
+/* Each group states how many of ITS filters are set, so you can see where something is
+   applied without opening all three. */
+function drawerCounts(){
+ try{
+  FGROUPS.forEach((g,i)=>{
+   const n=g.keys.filter(k=>F[k]!==''&&F[k]!=null).length;
+   const el=document.querySelector('.fgrpn[data-n="'+i+'"]');
+   if(el){el.textContent=n?String(n):'';el.hidden=!n;}
+  });
+ }catch(e){}
 }
 
 function scopeRow(){
@@ -2739,7 +2938,12 @@ function scopeRow(){
    '2 0 00-2-2zm0 22H6V12h20zm0-16H6V6h4v2h2V6h8v2h2V6h4z"/></svg>'+
    esc(scopePeriodText())+'</button>'+
   '<button class="scchip" id="scfil" type="button" aria-haspopup="dialog">'+
-   'Filters'+(act.length?' <span class="scn">'+act.length+'</span>':'')+'</button>'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+   'data-icon="filter"><path d="M18 28h-4a2 2 0 0 1-2-2v-7.59L4.59 11A2 2 0 0 1 4 '+
+   '9.59V6a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v3.59a2 2 0 0 1-.59 1.41L20 18.41V26a2 2 0 0 '+
+   '1-2 2zM6 6v3.59l8 8V26h4v-8.41l8-8V6z"/></svg>'+
+   'Advanced filters'+(act.length?' <span class="scn">'+act.length+'</span>':'')+
+   '</button>'+
   (pills?'<span class="scpills">'+pills+'</span>':'')+
   (act.length>1?'<button class="sclink" id="scclr" type="button">Clear all</button>':'')+
   (isDocs?'<span class="scnote">Doctor filters are on this screen, below.</span>':'');
@@ -2755,6 +2959,25 @@ function scopeOpen(on){
   /* focus the first control so the drawer is usable from the keyboard alone */
   try{const f=$('scopedrawer').querySelector('select,input');if(f)f.focus();}catch(e){}
  }
+}
+
+/* The footer is sticky so Clear and Done never require scrolling back up a column of
+   filters to reach — which, with eleven controls, they did. */
+function drawerFoot(){
+ const f=$('fdrawf'); if(!f)return;
+ const n=scopeActive().length;
+ f.innerHTML=
+  '<button class="btn btn--tertiary" id="fdclr" type="button"'+(n?'':' disabled')+'>'+
+   'Clear '+(n?('('+n+')'):'all')+'</button>'+
+  '<button class="btn btn--primary" id="fddone" type="button">Done</button>';
+ const c=$('fdclr');
+ if(c)c.onclick=()=>{
+  Object.keys(FLABEL).forEach(k=>{F[k]='';});
+  Object.keys(FCTRL).forEach(k=>{const el=$(FCTRL[k]);if(el)el.value='';});
+  render();
+ };
+ const dn=$('fddone');
+ if(dn)dn.onclick=()=>scopeOpen(false);
 }
 
 function scopeWire(){
@@ -3161,8 +3384,16 @@ function pplBatch(){
  if(!n)return;
  bar.innerHTML='<span class="pplbn">'+fmt(n)+' selected</span>'+
   '<span class="pplbsp"></span>'+
-  '<button class="pplba" id="pplbex" type="button">Export selected</button>'+
-  '<button class="pplba" id="pplbcl" type="button">Cancel</button>';
+  '<button class="pplba" id="pplbex" type="button">Export selected'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+   'data-icon="download"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 '+
+   '2-2v-4zM26 14l-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10z"/></svg>'+
+   '</button>'+
+  '<button class="pplba" id="pplbcl" type="button">Cancel'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+   'data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 '+
+   '9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/>'+
+   '</svg></button>';
  const ex=$('pplbex');
  if(ex)ex.onclick=()=>pplExport(pplSelRows(),'selected');
  const cl=$('pplbcl');
@@ -3185,6 +3416,117 @@ function pplMenuHtml(r){
   '</div>';
 }
 
+/* ---- motion (v101) --------------------------------------------------------------- */
+/* ONE GATE FOR EVERY ANIMATION IN THE APP. It answers three questions before anything
+   moves: has the reader asked for reduced motion, did GSAP actually load, and is this
+   element still on screen. If the answer to either of the first two is no, the final
+   state is applied immediately and nothing is animated — so the report is identical,
+   just still. */
+const MOTION={ok:false, reduced:false};
+try{
+ MOTION.reduced=!!(window.matchMedia&&
+   window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}catch(e){}
+function gsapReady(){
+ try{return !!(window.gsap&&typeof window.gsap.to==='function');}catch(e){return false;}
+}
+
+/* fx(targets, vars) — animate if we can, otherwise land on the end state at once.
+   `vars.set` carries the final CSS so the no-GSAP path has something to apply. */
+function fx(targets, vars){
+ const els=(typeof targets==='string')
+   ? [...document.querySelectorAll(targets)]
+   : (targets&&targets.length!==undefined?[...targets]:(targets?[targets]:[]));
+ if(!els.length)return null;
+ const end=vars&&vars.set?vars.set:null;
+ if(MOTION.reduced||!gsapReady()){
+  if(end)els.forEach(el=>{Object.keys(end).forEach(k=>{el.style[k]=end[k];});});
+  if(vars&&typeof vars.onComplete==='function'){try{vars.onComplete();}catch(e){}}
+  return null;
+ }
+ const v=Object.assign({},vars);
+ delete v.set;
+ try{return window.gsap.to(els,v);}catch(e){
+  if(end)els.forEach(el=>{Object.keys(end).forEach(k=>{el.style[k]=end[k];});});
+  return null;
+ }
+}
+
+/* fxIn(targets) — the one motion this app uses for arriving content: a short rise and
+   fade, staggered. Everything else stays still, because a report whose numbers move
+   while you are reading them is harder to read, not nicer. */
+function fxIn(targets, stagger){
+ if(MOTION.reduced||!gsapReady())return null;
+ const els=(typeof targets==='string')?[...document.querySelectorAll(targets)]:[...targets||[]];
+ if(!els.length)return null;
+ try{
+  window.gsap.set(els,{opacity:0,y:6});
+  return window.gsap.to(els,{opacity:1,y:0,duration:0.24,ease:'power2.out',
+    stagger:stagger||0.012,overwrite:'auto',clearProps:'transform'});
+ }catch(e){
+  els.forEach(el=>{el.style.opacity='';el.style.transform='';});
+  return null;
+ }
+}
+
+/* ---- short-wait loading states (v101) -------------------------------------------- */
+/* THE THRESHOLD IS THE WHOLE DESIGN. A spinner that flashes for 80ms reads as a glitch
+   and makes the screen feel slower; a wait with no feedback at 900ms reads as broken.
+   So nothing is shown below BUSY_AFTER, and anything shown stays at least BUSY_MIN. */
+const BUSY_AFTER=120, BUSY_MIN=300;
+let BUSY_T=null, BUSY_SHOWN=0;
+
+function pplSkeleton(rows, cols){
+ let h='';
+ for(let i=0;i<rows;i++){
+  h+='<tr class="skrow"><td class="pplck"></td>';
+  for(let c=0;c<cols;c++)h+='<td><span class="sk"></span></td>';
+  h+='<td class="pplovf"></td></tr>';
+ }
+ return h;
+}
+
+/* busy(work) — run `work`, and if it has not finished by BUSY_AFTER, show the table's
+   skeleton at the size the real content will be, so nothing reflows when it lands. */
+function pplBusy(work){
+ const wrap=$('pplwrap');
+ const cols=pplShown().length;
+ const rows=Math.min(pplSize, Math.max(1, pplPageRows().length||pplSize));
+ let shown=false;
+ if(BUSY_T)clearTimeout(BUSY_T);
+ BUSY_T=setTimeout(()=>{
+  const tb=$('pplb');
+  if(tb){tb.innerHTML=pplSkeleton(rows,cols);shown=true;BUSY_SHOWN=Date.now();}
+  if(wrap)wrap.setAttribute('aria-busy','true');
+ },BUSY_AFTER);
+
+ const finish=()=>{
+  clearTimeout(BUSY_T); BUSY_T=null;
+  const wait=shown?Math.max(0,BUSY_MIN-(Date.now()-BUSY_SHOWN)):0;
+  setTimeout(()=>{
+   try{work();}catch(e){console.warn('busy work',e);}
+   if(wrap)wrap.setAttribute('aria-busy','false');
+   /* the rows that just arrived are the only thing that moves */
+   try{fxIn('#pplb tr[data-code]');}catch(e){}
+  },wait);
+ };
+ /* the work itself is synchronous here; the frame gives the skeleton a chance to paint */
+ requestAnimationFrame(()=>requestAnimationFrame(finish));
+}
+
+/* A control that is doing something says so, rather than looking dead. */
+function btnBusy(el, on, label){
+ if(!el)return;
+ if(on){
+  if(!el.dataset.label)el.dataset.label=el.textContent;
+  el.disabled=true; el.setAttribute('aria-busy','true');
+  if(label)el.textContent=label;
+ }else{
+  el.disabled=false; el.removeAttribute('aria-busy');
+  if(el.dataset.label){el.textContent=el.dataset.label;delete el.dataset.label;}
+ }
+}
+
 function pplChrome(){
  const host=$('pplbody');
  if(!host||$('ppltb'))return;
@@ -3200,8 +3542,20 @@ function pplChrome(){
    '</div>'+
    '<span class="ppltbsp"></span>'+
    '<span class="pplcount" id="pplcount"></span>'+
-   '<button class="fbtn" id="pplcols" type="button" aria-expanded="false">Columns</button>'+
-   '<button class="dlbtn" id="ppldl" type="button">'+DLICO+'Export CSV</button>'+
+   '<button class="btn btn--ghost btn--lg" id="pplcols" type="button" '+
+     'aria-expanded="false" title="Choose which columns to show">'+
+     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+     'data-icon="settings"><path d="M27 16.76v-1.53l1.92-1.68A2 2 0 0 0 29.3 11l-2.36-4a2 '+
+     '2 0 0 0-1.73-1 2 2 0 0 0-.64.1l-2.43.82a11.35 11.35 0 0 0-1.31-.75l-.51-2.52a2 2 0 '+
+     '0 0-2-1.6h-4.68a2 2 0 0 0-2 1.61l-.51 2.51a11.48 11.48 0 0 0-1.32.75l-2.38-.86A2 2 '+
+     '0 0 0 6.79 6a2 2 0 0 0-1.73 1L2.7 11a2 2 0 0 0 .38 2.52L5 15.24v1.53l-1.92 1.68A2 2 '+
+     '0 0 0 2.7 21l2.36 4a2 2 0 0 0 1.73 1 2 2 0 0 0 .64-.1l2.43-.82a11.35 11.35 0 0 0 '+
+     '1.31.75l.51 2.52a2 2 0 0 0 2 1.6h4.72a2 2 0 0 0 2-1.61l.51-2.51a11.48 11.48 0 0 0 '+
+     '1.32-.75l2.42.82a2 2 0 0 0 .64.1 2 2 0 0 0 1.73-1l2.28-4a2 2 0 0 0-.38-2.52zM16 '+
+     '22a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/></svg>'+
+     '<span id="pplcolsl">Columns</span></button>'+
+   '<button class="btn btn--ghost btn--lg" id="ppldl" type="button" '+
+     'title="Download this table exactly as shown">'+DLICO+'Export CSV</button>'+
   '</div>'+
   '<div class="pplbatch" id="pplbatch" role="toolbar" '+
     'aria-label="Actions for the selected people" hidden></div>'+
@@ -3263,7 +3617,10 @@ function pplView(rows){
  const cnt=$('pplcount');
  if(cnt)cnt.textContent=fmt(total)+' '+(total===1?'person':'people');
  const cb=$('pplcols');
- if(cb){cb.textContent='Columns ('+cols.length+')';
+ /* set the LABEL, not the button: textContent on the button would delete its icon */
+ const cbl=$('pplcolsl');
+ if(cbl)cbl.textContent='Columns ('+cols.length+')';
+ if(cb){
         cb.setAttribute('aria-expanded',pplPick?'true':'false');}
  const pk=$('pplpickw'); if(pk)pk.innerHTML=pplPicker();
 
@@ -3312,11 +3669,13 @@ function pplView(rows){
   '<button class="pgbtn" id="pplprev" type="button" aria-label="Previous page"'+
    (pplPage<=1?' disabled':'')+'>'+
    '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
-   'data-icon="chevron--left"><path d="M20 24 10 16 20 8z"/></svg></button>'+
+   'data-icon="chevron--left"><path d="M10 16 20 6l1.4 1.4L12.8 16l8.6 8.6L20 26z"/>'+
+   '</svg></button>'+
   '<button class="pgbtn" id="pplnext" type="button" aria-label="Next page"'+
    (pplPage>=pages?' disabled':'')+'>'+
    '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
-   'data-icon="chevron--right"><path d="M12 8 22 16 12 24z"/></svg></button>';
+   'data-icon="chevron--right"><path d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"/>'+
+   '</svg></button>';
 }
 
 function pplExport(rows,what){
@@ -3340,9 +3699,18 @@ function pplExport(rows,what){
        ? 'One person, selected from the row menu.'
        : 'Every matching row is included, not only the page on screen.'),
    'Build '+(window.HFI_BUILD||'')];
- expDownload('frontline-people.csv',expCSV([head].concat(body),ctx),
-   'text/csv;charset=utf-8');
- const dl=$('ppldl'); if(dl)expFlash(dl,'SAVED');
+ const dl=$('ppldl');
+ btnBusy(dl,true,'Preparing export');
+ /* let the disabled label paint before the main thread goes to work on the CSV */
+ requestAnimationFrame(()=>{
+  try{
+   expDownload('frontline-people.csv',expCSV([head].concat(body),ctx),
+     'text/csv;charset=utf-8');
+  }finally{
+   btnBusy(dl,false);
+   if(dl)expFlash(dl,'SAVED');
+  }
+ });
 }
 
 function pplWire(){
@@ -3350,9 +3718,9 @@ function pplWire(){
  const sz=$('pplsz');
  if(sz)sz.onchange=()=>{pplSize=+sz.value||25;pplPage=1;pplSave();pplView(fr());pplWire();};
  const pv=$('pplprev');
- if(pv)pv.onclick=()=>{if(pplPage>1){pplPage--;pplView(fr());pplWire();}};
+ if(pv)pv.onclick=()=>{if(pplPage>1){pplPage--;pplBusy(()=>{pplView(fr());pplWire();});}};
  const nx=$('pplnext');
- if(nx)nx.onclick=()=>{pplPage++;pplView(fr());pplWire();};
+ if(nx)nx.onclick=()=>{pplPage++;pplBusy(()=>{pplView(fr());pplWire();});};
  /* selection */
  const all=$('pplall');
  if(all)all.onchange=()=>{
@@ -3399,7 +3767,7 @@ function pplWire(){
   const go=()=>{const k=t.dataset.k;
    if(k===pplS)pplA=!pplA; else {pplS=k;pplA=(k==='n'||k==='c'||k==='hq'||k==='st'||
      k==='mg'||k==='r'||k==='te'||k==='doj');}
-   pplPage=1; pplSave(); pplView(fr()); pplWire();};
+   pplPage=1; pplSave(); pplBusy(()=>{pplView(fr());pplWire();});};
   t.onclick=go;
   t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
  });
@@ -3618,6 +3986,7 @@ function secSync(){
 function render(){
  try{secSync();}catch(e){console.warn('sections',e);}
  try{scopeRow();scopeWire();}catch(e){console.warn('scope row',e);}
+ try{drawerCounts();drawerFoot();}catch(e){console.warn('drawer counts',e);}
  /* refill BEFORE fr(): it may clear a selection that can no longer match anything,
     and the rows must be filtered by the surviving set, not the stale one. */
  try{refill();}catch(e){console.warn('refill',e);}
@@ -9724,6 +10093,7 @@ $('pscrim').onclick=e=>{if(e.target===$('pscrim'))closeProfile();};
 boot();
 try{fbarWire();}catch(e){console.warn('filter bar',e);}
 try{pplLoad();}catch(e){console.warn('people prefs',e);}
+try{filtersOff();periodMonthsOff();}catch(e){console.warn('filters off',e);}
 try{navanWire();}catch(e){console.warn('analysis nav',e);}
 /* Dismissal: the backdrop, the close button and Escape. A drawer you can only close by
    finding one small button again is the reason people leave panels open forever. */
@@ -9745,6 +10115,7 @@ try{
   if(pb)pb.hidden=false;
   dr.hidden=false;
  }
+ try{drawerGroups();}catch(e){console.warn('drawer groups',e);}
 }catch(e){console.warn('scope drawer',e);}
 try{
  const bd=$('scopebd'); if(bd)bd.onclick=()=>scopeOpen(false);
