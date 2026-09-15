@@ -2244,9 +2244,15 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 body.scopeopen .scopedrawer{transform:none}
 /* Inside the drawer neither container is a strip or a dropdown any more: they are two
    plain blocks in one scrolling column. */
-.scopedrawer #perband,.scopedrawer .fbar{position:static;transform:none;inset:auto;
+.scopedrawer #pband,.scopedrawer #perband,.scopedrawer .fbar{
+  position:static;transform:none;inset:auto;
   width:auto;max-width:none;margin:0;border:0;box-shadow:none;background:none;
   display:block}
+/* The band lays itself out as three columns across a full-width strip. In a 420px drawer
+   that has to become one column, or the three cells crush each other to nothing. */
+.scopedrawer #pband>*{display:block;width:auto;max-width:none}
+.scopedrawer #pband{padding:var(--cds-spacing-05);
+  border-bottom:1px solid var(--cds-border-subtle-01)}
 .scopedrawer #perband[hidden]{display:block}
 /* "All filters" opened the dropdown that no longer exists; the drawer shows them all. */
 .scopedrawer #fall{display:none}
@@ -2322,6 +2328,75 @@ thead th .sortmk.rest svg{fill:var(--cds-icon-secondary)}
 .pgbtn:disabled{cursor:not-allowed}
 .pgbtn:disabled svg{fill:var(--cds-icon-disabled)}
 .pgbtn:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+
+/* ---- hierarchy (v95) ------------------------------------------------------------ */
+/* DATA IS PRIMARY TEXT. Every cell was text-secondary, so the whole table sat one step
+   down and nothing could be at the top of the hierarchy. Carbon reserves grey for
+   supporting content, not for the content itself. */
+tbody td{color:var(--cds-text-primary)}
+/* A ZERO IS A FACT, NOT AN ABSENCE. A rep with 0 visits reported no visits; the
+   incentive engine counts that as real. So a zero drops ONE step — quieter to scan
+   past, still perfectly legible — and only genuinely missing data goes to placeholder. */
+tbody td.z{color:var(--cds-text-secondary)}
+tbody td.na{color:var(--cds-text-placeholder)}
+/* Rule 1: radius 0 on everything except tags, the toggle knob and the spinner. */
+.tablewrap{border-radius:0}
+
+/* the identity cell: one anchor per row, primary over secondary */
+.pplid{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);min-width:0}
+.pplidt{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.pplidn{font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary);
+  overflow:hidden;text-overflow:ellipsis}
+.pplidc{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  font-variant-numeric:tabular-nums}
+tbody td.idc{font-weight:var(--cds-font-weight-regular)}
+
+/* ---- selection ------------------------------------------------------------------ */
+th.pplck,td.pplck{width:48px;padding:0 0 0 var(--cds-spacing-05)}
+.pplcb{display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;border:1px solid var(--cds-icon-primary);
+  cursor:pointer;position:relative;background:var(--cds-field-01)}
+.pplcb input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.pplcb svg{fill:var(--cds-text-on-color);visibility:hidden}
+.pplcb.on{background:var(--cds-interactive);border-color:var(--cds-interactive)}
+.pplcb.on svg{visibility:visible}
+/* Carbon's indeterminate state: some of this page selected, not all. */
+.pplcb.mixed{background:var(--cds-interactive);border-color:var(--cds-interactive)}
+.pplcb.mixed::after{content:"";position:absolute;left:3px;right:3px;height:2px;
+  background:var(--cds-text-on-color)}
+.pplcb input:focus{outline:2px solid var(--cds-focus);outline-offset:2px}
+#pplb tr.sel td{background:var(--cds-layer-selected-01)}
+
+.pplbatch{display:flex;align-items:center;gap:var(--cds-spacing-04);height:48px;
+  padding:0 var(--cds-spacing-05);background:var(--cds-interactive);
+  color:var(--cds-text-on-color)}
+.pplbatch[hidden]{display:none}
+.pplbn{font-size:var(--cds-body-compact-01-size);font-variant-numeric:tabular-nums}
+.pplbsp{flex:1 1 auto}
+.pplba{background:none;border:0;color:var(--cds-text-on-color);font:inherit;
+  font-size:var(--cds-body-compact-01-size);height:48px;
+  padding:0 var(--cds-spacing-05);cursor:pointer}
+.pplba:hover{background:var(--cds-button-primary-hover)}
+.pplba:focus{outline:2px solid var(--cds-text-on-color);outline-offset:-2px}
+
+/* ---- row actions ---------------------------------------------------------------- */
+th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
+.pplovb{width:48px;height:48px;border:0;background:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center}
+.pplovb svg{fill:var(--cds-icon-primary)}
+.pplovb:hover{background:var(--cds-layer-hover-01)}
+.pplovb:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.pplmenu{position:absolute;right:0;top:48px;z-index:20;min-width:200px;
+  background:var(--cds-layer-02);box-shadow:var(--cds-shadow);
+  border:1px solid var(--cds-border-subtle-01);display:flex;flex-direction:column}
+.pplmenu button{height:40px;padding:0 var(--cds-spacing-05);border:0;background:none;
+  text-align:left;font:inherit;font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-primary);cursor:pointer;white-space:nowrap}
+.pplmenu button:hover{background:var(--cds-layer-hover-01)}
+.pplmenu button:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+/* a label kept for screen readers and out of the layout */
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+  white-space:nowrap}
 
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
@@ -2950,7 +3025,13 @@ const EC=[['c','Code'],['n','Name'],['r','Role'],['di','Div'],['zn','Zone'],['st
    failure mode worse than a crash. */
 const PPL_COLS=[
  {k:'c',   t:'Code',        get:r=>esc(r.c||'')},
- {k:'n',   t:'Name',        get:r=>pl(r), pin:1},
+ /* ONE anchor per row, not two competing ones. Carbon's primary/secondary pairing:
+    the name is what you scan, the code is what you quote. Code remains its own column
+    in the picker for anyone who sorts by it. */
+ {k:'n',   t:'Name',        pin:1, get:r=>
+    '<span class="pplid">'+av(r.n,r.c)+
+    '<span class="pplidt"><span class="pplidn">'+esc(r.n||'')+'</span>'+
+    '<span class="pplidc">'+esc(r.c||'')+'</span></span></span>'},
  {k:'r',   t:'Role',        get:r=>esc(r.r||'')},
  {k:'hq',  t:'HQ',          get:r=>esc(r.hq||'')},
  {k:'st',  t:'State',       get:r=>esc(r.st||'')},
@@ -2976,7 +3057,9 @@ const PPL_COLS=[
 ];
 /* Ten columns, chosen to answer "who is this person and are they working" without
    scrolling sideways. Everything else is one click away in the column picker. */
-const PPL_DEF=['c','n','r','hq','st','mg','att','vis','rx','rec'];
+/* 'c' comes off the default set: the code now rides in the identity cell. It is one
+   tick away in the picker for anyone who wants it sortable on its own. */
+const PPL_DEF=['n','r','hq','st','mg','att','vis','rx','rec'];
 
 let pplCols=PPL_DEF.slice(), pplS='n', pplA=true, pplPick=false;
 
@@ -3046,6 +3129,62 @@ function pplTotalPages(n){return Math.max(1,Math.ceil(n/pplSize));}
 /* Built ONCE. The search field lives here, and rebuilding it on every keystroke would
    move the caret out from under the reader — which is exactly what the old
    rewrite-everything render would have done. */
+/* ---- selection, batch actions and row actions (v95) ---------------------------- */
+/* Selection is keyed on employee code and SURVIVES PAGING. Selecting eleven people,
+   paging on to find the twelfth and discovering the first eleven forgotten is how a
+   reader learns not to trust a selection. */
+let PPL_SEL=Object.create(null);
+function pplSelCount(){return Object.keys(PPL_SEL).length;}
+function pplSelRows(){
+ const all=sortRows(fr(),pplS,pplA);
+ return all.filter(r=>PPL_SEL[r.c]);
+}
+function pplPageRows(){
+ const sorted=sortRows(fr(),pplS,pplA);
+ const from=(pplPage-1)*pplSize;
+ return sorted.slice(from,Math.min(sorted.length,from+pplSize));
+}
+function pplSelClear(){PPL_SEL=Object.create(null);}
+
+const PPL_CHK='<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+ 'data-icon="checkmark"><path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9z"/></svg>';
+const PPL_OVF='<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+ 'data-icon="overflow-menu--vertical"><circle cx="16" cy="8" r="2"/>'+
+ '<circle cx="16" cy="16" r="2"/><circle cx="16" cy="24" r="2"/></svg>';
+
+/* Carbon's batch action bar: it replaces the toolbar while a selection exists, states
+   the count, and offers the actions that apply to it. */
+function pplBatch(){
+ const bar=$('pplbatch'); if(!bar)return;
+ const n=pplSelCount();
+ bar.hidden=(n===0);
+ if(!n)return;
+ bar.innerHTML='<span class="pplbn">'+fmt(n)+' selected</span>'+
+  '<span class="pplbsp"></span>'+
+  '<button class="pplba" id="pplbex" type="button">Export selected</button>'+
+  '<button class="pplba" id="pplbcl" type="button">Cancel</button>';
+ const ex=$('pplbex');
+ if(ex)ex.onclick=()=>pplExport(pplSelRows(),'selected');
+ const cl=$('pplbcl');
+ if(cl)cl.onclick=()=>{pplSelClear();pplView(fr());pplWire();};
+}
+
+/* The row menu. Row-click already opened the profile, but nothing on screen said so —
+   an affordance nobody can see is not an affordance. */
+let PPL_MENU='';
+function pplMenu(code){
+ if(PPL_MENU===code){PPL_MENU='';return;}
+ PPL_MENU=code;
+}
+function pplMenuHtml(r){
+ if(PPL_MENU!==r.c)return '';
+ return '<div class="pplmenu" role="menu">'+
+  '<button role="menuitem" type="button" data-act="open">Open profile</button>'+
+  '<button role="menuitem" type="button" data-act="copy">Copy code</button>'+
+  '<button role="menuitem" type="button" data-act="one">Export this person</button>'+
+  '</div>';
+}
+
 function pplChrome(){
  const host=$('pplbody');
  if(!host||$('ppltb'))return;
@@ -3064,6 +3203,8 @@ function pplChrome(){
    '<button class="fbtn" id="pplcols" type="button" aria-expanded="false">Columns</button>'+
    '<button class="dlbtn" id="ppldl" type="button">'+DLICO+'Export CSV</button>'+
   '</div>'+
+  '<div class="pplbatch" id="pplbatch" role="toolbar" '+
+    'aria-label="Actions for the selected people" hidden></div>'+
   '<div id="pplpickw"></div>'+
   '<div class="card pplcard" data-furniture="off">'+
    '<div class="tablewrap" id="pplwrap"></div>'+
@@ -3086,14 +3227,23 @@ function pplChromeWire(){
 }
 
 function pplHead(cols){
- return '<tr id="pplh">'+cols.map(c=>{
+ const page=pplPageRows();
+ const on=page.filter(r=>PPL_SEL[r.c]).length;
+ const state=(on===0)?'none':(on===page.length?'all':'some');
+ return '<tr id="pplh">'+
+  '<th class="pplck" scope="col">'+
+   '<label class="pplcb'+(state==='all'?' on':'')+(state==='some'?' mixed':'')+'">'+
+    '<input type="checkbox" id="pplall" '+(state==='all'?'checked ':'')+
+      'aria-label="Select every person on this page">'+PPL_CHK+'</label></th>'+
+  cols.map(c=>{
   const on=(pplS===c.k);
   const state=on?(pplA?'asc':'desc'):'none';
   return '<th data-k="'+c.k+'"'+(c.n?' class="n"':'')+
     ' aria-sort="'+(on?(pplA?'ascending':'descending'):'none')+'"'+
     ' tabindex="0" role="columnheader" title="'+esc(c.t)+'">'+
     esc(c.t)+sortIco(state)+'</th>';
- }).join('')+'</tr>';
+ }).join('')+
+ '<th class="pplovf" scope="col"><span class="vh">Actions</span></th></tr>';
 }
 
 function pplView(rows){
@@ -3119,10 +3269,30 @@ function pplView(rows){
 
  $('pplwrap').innerHTML=
   '<table class="ppltable"><thead>'+pplHead(cols)+'</thead><tbody id="pplb">'+
-  (shown.length?shown.map(r=>'<tr data-code="'+esc(r.c||'')+'">'+
-    cols.map(c=>'<td'+(c.n?' class="n"':'')+(c.k==='n'?' class="idc"':'')+'>'+
-      c.get(r)+'</td>').join('')+'</tr>').join('')
-   :'<tr><td colspan="'+cols.length+'" class="pplempty">'+
+  (shown.length?shown.map(r=>'<tr data-code="'+esc(r.c||'')+'"'+
+    (PPL_SEL[r.c]?' class="sel"':'')+'>'+
+    '<td class="pplck"><label class="pplcb'+(PPL_SEL[r.c]?' on':'')+'">'+
+     '<input type="checkbox" data-sel="'+esc(r.c||'')+'"'+
+      (PPL_SEL[r.c]?' checked':'')+' aria-label="Select '+esc(r.n||r.c||'')+'">'+
+     PPL_CHK+'</label></td>'+
+    cols.map(c=>{
+      const v=c.get(r);
+      /* three levels, each meaning something: a real value, a real zero, no data */
+      let cls=(c.n?'n':'');
+      if(c.k==='n')cls+=' idc';
+      else if(c.n){
+       const raw=r[c.k];
+       if(raw===''||raw===null||raw===undefined)cls+=' na';
+       else if(+raw===0)cls+=' z';
+      }
+      return '<td'+(cls?' class="'+cls.trim()+'"':'')+'>'+v+'</td>';
+     }).join('')+
+    '<td class="pplovf"><button class="pplovb" type="button" data-menu="'+
+     esc(r.c||'')+'" aria-haspopup="menu" aria-expanded="'+
+     (PPL_MENU===r.c?'true':'false')+'" aria-label="Actions for '+
+     esc(r.n||r.c||'')+'">'+PPL_OVF+'</button>'+pplMenuHtml(r)+'</td>'+
+    '</tr>').join('')
+   :'<tr><td colspan="'+(cols.length+2)+'" class="pplempty">'+
     'No one matches the current filters. Clear a filter, or widen the period.'+
     '</td></tr>')+
   '</tbody></table>';
@@ -3149,8 +3319,9 @@ function pplView(rows){
    'data-icon="chevron--right"><path d="M12 8 22 16 12 24z"/></svg></button>';
 }
 
-function pplExport(){
- const cols=pplShown(), rows=sortRows(fr(),pplS,pplA);
+function pplExport(rows,what){
+ const cols=pplShown();
+ rows=rows||sortRows(fr(),pplS,pplA);
  /* The export carries exactly the columns on screen — and EVERY row, not just this
     page. A file that silently matched the page would be a different answer to the same
     question depending on where you happened to be paging. */
@@ -3163,7 +3334,11 @@ function pplExport(){
  const ctx=['Hive Frontline — people',
    (typeof D!=='undefined'&&D.label)?D.label:'',
    'These are the columns shown on screen, in the same order, for the same filters.',
-   'Every matching row is included, not only the page on screen.',
+   (what==='selected'
+     ? 'Only the rows selected on screen are included.'
+     : what==='one person'
+       ? 'One person, selected from the row menu.'
+       : 'Every matching row is included, not only the page on screen.'),
    'Build '+(window.HFI_BUILD||'')];
  expDownload('frontline-people.csv',expCSV([head].concat(body),ctx),
    'text/csv;charset=utf-8');
@@ -3178,8 +3353,49 @@ function pplWire(){
  if(pv)pv.onclick=()=>{if(pplPage>1){pplPage--;pplView(fr());pplWire();}};
  const nx=$('pplnext');
  if(nx)nx.onclick=()=>{pplPage++;pplView(fr());pplWire();};
+ /* selection */
+ const all=$('pplall');
+ if(all)all.onchange=()=>{
+  const page=pplPageRows();
+  if(all.checked)page.forEach(r=>{PPL_SEL[r.c]=1;});
+  else page.forEach(r=>{delete PPL_SEL[r.c];});
+  pplView(fr()); pplWire();
+ };
+ const body0=$('pplb');
+ if(body0)body0.querySelectorAll('input[data-sel]').forEach(cb=>{
+  cb.onchange=()=>{
+   const c=cb.getAttribute('data-sel');
+   if(cb.checked)PPL_SEL[c]=1; else delete PPL_SEL[c];
+   pplView(fr()); pplWire();
+  };
+  /* a click on the checkbox must not also open the profile behind it */
+  cb.onclick=e=>{e.stopPropagation();};
+ });
+ if(body0)body0.querySelectorAll('.pplovb').forEach(b=>{
+  b.onclick=e=>{
+   e.stopPropagation();
+   pplMenu(b.getAttribute('data-menu'));
+   pplView(fr()); pplWire();
+  };
+ });
+ if(body0)body0.querySelectorAll('.pplmenu button').forEach(b=>{
+  b.onclick=e=>{
+   e.stopPropagation();
+   const code=PPL_MENU, act=b.getAttribute('data-act');
+   PPL_MENU='';
+   const row=fr().filter(r=>r.c===code)[0];
+   if(act==='open'&&typeof openProfile==='function')openProfile(code);
+   else if(act==='copy'){
+    try{navigator.clipboard.writeText(code);}catch(_){}
+   }
+   else if(act==='one'&&row)pplExport([row],'one person');
+   pplView(fr()); pplWire();
+  };
+ });
+ try{pplBatch();}catch(e){console.warn('batch bar',e);}
+
  const head=$('pplh');
- if(head)head.querySelectorAll('th').forEach(t=>{
+ if(head)head.querySelectorAll('th[data-k]').forEach(t=>{
   const go=()=>{const k=t.dataset.k;
    if(k===pplS)pplA=!pplA; else {pplS=k;pplA=(k==='n'||k==='c'||k==='hq'||k==='st'||
      k==='mg'||k==='r'||k==='te'||k==='doj');}
@@ -9517,7 +9733,12 @@ try{
     only where on screen it is. Guarded because a half-moved drawer is worse than none. */
  const dr=$('scopedrawer');
  if(dr){
-  const pb=$('perband'), fb=$('fbar');
+  /* THREE elements, not two. #pband is the REPORTING PERIOD / QUICK RANGE / COMPARE
+     AGAINST band that periodBand() writes; it is a direct child of .main and was never
+     part of the v87 move, so it stayed on the page while I reported it gone. Order in
+     the drawer reads top-down: the period, then the range picker, then the filters. */
+  const bd2=$('pband'), pb=$('perband'), fb=$('fbar');
+  if(bd2)dr.appendChild(bd2);
   if(pb)dr.appendChild(pb);
   if(fb)dr.appendChild(fb);
   /* inside the drawer the period panel is simply part of the column, not a dropdown */
