@@ -2299,7 +2299,13 @@ thead th .sortmk.rest svg{fill:var(--cds-icon-secondary)}
 .pplcard{margin-top:0}
 
 /* ---- the pagination bar, at the bottom of the table, as Carbon places it -------- */
-.pplpg{display:flex;align-items:center;gap:var(--cds-spacing-05);flex-wrap:wrap}
+/* It used to also carry .tfoot for this styling, which is how tableFurniture() found it
+   and overwrote it. The rules it needs are repeated here rather than borrowed. */
+.pplpg{display:flex;align-items:center;height:48px;
+  border-top:1px solid var(--cds-border-subtle-01);
+  padding:0 0 0 var(--cds-spacing-05);
+  background:var(--cds-layer-01);
+  gap:var(--cds-spacing-05);flex-wrap:wrap}
 .pplpg .pgsp{flex:1 1 auto}
 .pplpg .pgsz{display:flex;align-items:center;gap:var(--cds-spacing-03);
   font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary)}
@@ -3059,8 +3065,9 @@ function pplChrome(){
    '<button class="dlbtn" id="ppldl" type="button">'+DLICO+'Export CSV</button>'+
   '</div>'+
   '<div id="pplpickw"></div>'+
-  '<div class="card pplcard"><div class="tablewrap" id="pplwrap"></div>'+
-   '<div class="tfoot pplpg" id="pplpg"></div></div>';
+  '<div class="card pplcard" data-furniture="off">'+
+   '<div class="tablewrap" id="pplwrap"></div>'+
+   '<div class="pplpg" id="pplpg"></div></div>';
  pplChromeWire();
 }
 
@@ -5703,6 +5710,8 @@ function expWire(){
    /* the chart drill-down modal has a table too, but it is a transient breakdown
       inside a dialog, not a view worth a download button */
    const card=tbl.closest('.card');if(!card)return;
+   /* the same opt-out tableFurniture() honours: this table brings its own toolbar */
+   if(card.dataset.furniture==='off')return;
    let ch=card.querySelector('.ch');
    if(!ch){ch=document.createElement('div');ch.className='ch';card.insertBefore(ch,card.firstChild);}
    if(ch.querySelector('.dlbtn[data-x="csv"]'))return;
@@ -6822,6 +6831,13 @@ function tableFurniture(){
   if(tbl.closest('tbody'))return;
   const wrap=tbl.closest('.tablewrap'), card=tbl.closest('.card');
   if(!wrap||!card)return;
+  /* A table that brings its own toolbar and its own pagination says so, and this
+     decorator leaves every part of it alone. Without this, two components both believed
+     they owned the footer: this one found the People pagination bar by its .tfoot class
+     and overwrote it with a row count of the page on screen — "25 of 25 rows" under 878
+     people. An opt-out rather than a name check, so the next self-managed table does not
+     have to be added here. */
+  if(card.dataset.furniture==='off')return;
   const body=tbl.querySelector('tbody');
   const shown=body?[...body.children].filter(tr=>!tr.querySelector('.emptyc')).length:0;
   /* the sorted column, marked where the data is actually sorted */
