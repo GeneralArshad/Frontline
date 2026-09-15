@@ -2495,6 +2495,68 @@ th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
     animation-iteration-count:1 !important;transition-duration:0.001ms !important}
 }
 
+/* ---- what the component audit found (v105) -------------------------------------- */
+
+/* 1. THE FOCUS RING, FOR EVERYTHING. CARBON_RULES 13 requires it on every interactive
+   element; forty-one clickable things did not have one, so keyboard users could not see
+   where they were on most of the report. :focus-visible, so it appears for keyboard
+   navigation and not after a mouse click. This is last in the sheet deliberately — it
+   should win over anything that forgot. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible,
+[role="menuitem"]:focus-visible,
+[role="columnheader"]:focus-visible{
+  outline:2px solid var(--cds-focus);
+  outline-offset:-2px}
+/* Anything that is clickable but is not a native control still needs it. */
+.card.click:focus-visible,.kpi.clik:focus-visible,.pers:focus-visible,
+.dcrrow:focus-visible,.mapdot:focus-visible,.erow:focus-visible{
+  outline:2px solid var(--cds-focus);outline-offset:-2px}
+/* A row that opens a profile is a click target; give it the ring too. */
+#pplb tr[data-code]:focus-visible{outline:2px solid var(--cds-focus);
+  outline-offset:-2px}
+
+/* 2. THE SIX CLASSES WITH NO RULE AT ALL — the .fbtn defect, six more times.
+   .icon-16/20/24 were used sixteen times to size icons and had never sized anything:
+   the SVGs carry width/height attributes, so nothing looked wrong and the class was
+   pure decoration. Now they do what their names say. */
+.icon-16{width:16px;height:16px;flex:0 0 auto}
+.icon-20{width:20px;height:20px;flex:0 0 auto}
+.icon-24{width:24px;height:24px;flex:0 0 auto}
+/* Layout containers that were relying on the browser's defaults. */
+.nav-section{display:block}
+.nav-section+.nav-section{border-top:1px solid var(--cds-border-subtle-01)}
+.navan{display:block;border-top:1px solid var(--cds-border-subtle-01)}
+.orgmodebar{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  flex-wrap:wrap;margin-bottom:var(--cds-spacing-05)}
+
+/* 3. NINE CLASSES STYLED ONLY UNDER A display:none ANCESTOR. Their markup outlived the
+   passes that retired their styling, so they render as bare text inside live screens.
+   Given reachable rules at the sizes and colours their context expects. */
+.navm{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  font-variant-numeric:tabular-nums}
+.navtag{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+.badge{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  font-variant-numeric:tabular-nums}
+.lbl{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  letter-spacing:var(--cds-label-01-ls)}
+.who{color:var(--cds-text-primary)}
+.prod{color:var(--cds-text-primary)}
+.right{margin-left:auto;text-align:right}
+.link{color:var(--cds-link-primary);text-decoration:none;cursor:pointer}
+.link:hover{text-decoration:underline;color:var(--cds-link-primary-hover)}
+.sbtn{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);height:32px;
+  padding:0 var(--cds-spacing-05);border:1px solid transparent;background:none;
+  color:var(--cds-link-primary);cursor:pointer;font:inherit;
+  font-size:var(--cds-body-compact-01-size)}
+.sbtn:hover{background:var(--cds-layer-hover-01)}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2858,7 +2920,11 @@ function periodMonthsOff(){
   if(sel.selectedIndex<0||!sel.value){
    sel.value='all';
    if(typeof PR!=='undefined')PR.mode='all';
-   if(typeof applyPeriod==='function')applyPeriod();
+   /* NOT at boot. applyPeriod() runs periodNote(), which reads D.dataStart, and D is
+      still null while this runs — the throw was swallowed by the caller's try/catch, so
+      the page worked while logging an error on every load and leaving this half-done.
+      There is nothing to re-scope until there is data. */
+   if(typeof D!=='undefined'&&D&&typeof applyPeriod==='function')applyPeriod();
   }
  }catch(e){console.warn('period months',e);}
 }
@@ -3577,7 +3643,10 @@ function pplChromeWire(){
  const b=$('pplcols');
  if(b)b.onclick=()=>{pplPick=!pplPick;pplView(fr());};
  const dl=$('ppldl');
- if(dl)dl.onclick=pplExport;
+ /* NOT `dl.onclick=pplExport`. pplExport's first argument is a row set, and a click
+    hands the handler a MouseEvent — which is truthy, so `rows||default` kept it and
+    rows.map threw. Wrap it, so the button passes nothing and gets the default set. */
+ if(dl)dl.onclick=()=>pplExport();
 }
 
 function pplHead(cols){
@@ -3680,6 +3749,9 @@ function pplView(rows){
 
 function pplExport(rows,what){
  const cols=pplShown();
+ /* Belt and braces: an Event is truthy, so `rows||default` was never enough. Anything
+    that is not an array is not a row set, whatever its truthiness. */
+ if(!Array.isArray(rows))rows=null;
  rows=rows||sortRows(fr(),pplS,pplA);
  /* The export carries exactly the columns on screen — and EVERY row, not just this
     page. A file that silently matched the page would be a different answer to the same

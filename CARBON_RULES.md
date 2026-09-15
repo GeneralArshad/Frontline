@@ -162,7 +162,13 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Buttons use the `.btn` component (`--primary` / `--secondary` / `--tertiary` / `--ghost`, `--sm` / `--lg` / `--icon`). Never an unstyled `<button>`: `.fbtn` had no unscoped rule for months and rendered as the browser default.
 - [ ] Work that takes longer than `BUSY_AFTER` (120ms) shows a skeleton of the right shape, for at least `BUSY_MIN` (300ms). Shorter work shows nothing.
 - [ ] Every fetch shows page progress plus skeletons; every in-flight action shows a spinner or a disabled label; nothing blocks reading.
-- [ ] Every interactive element shows the 2px Blue 60 focus ring on keyboard focus.
+- [ ] Every interactive element shows the 2px Blue 60 focus ring on keyboard focus, via `:focus-visible`. Enforced by a catch-all block at the end of the sheet — v105 found **41 clickable elements with no ring**, because the conformance check asks whether a focus rule EXISTS, not whether every clickable element has one.
+- [ ] **No class renders unstyled.** `python3 _uiaudit.py --strict` gates the build: it enumerates every class the app uses and fails if any has no rule, or only rules under a `display:none` ancestor. `.fbtn` was in that state for months and twelve buttons rendered as the browser default.
+
+### Known debt, written down so it is not rediscovered
+
+- **54 live rules set a font size below 12px**, against the type rule's floor — some at 8px. Not fixed in v105 on purpose: raising 54 sizes changes the layout of ten screens, and doing it blind is how working screens break. Next typographic pass. Run `python3 _uiaudit.py` for the current list.
+- **68 dead CSS rules** (`.nav`, `.navsec`, `.fhead`, the pre-v39 sidebar and the old filter strip). Harmless weight, but they make the audit noisier than it should be.
 - [ ] Every icon-only control has `title` and `aria-label`.
 - [ ] Renders correctly in both `:root` and `[data-carbon-theme="g100"]`.
 - [ ] Period and filters are reflected in the URL; the active scope is visible as tags and as a sentence.
