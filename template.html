@@ -2267,6 +2267,56 @@ body.scopeopen .scopedrawer{transform:none}
 .scopedrawer #fmin,.scopedrawer #fcper{display:none}
 @media (prefers-reduced-motion: reduce){.scopedrawer{transition:none}}
 
+/* ---- Carbon data table corrections (v89) --------------------------------------- */
+/* CARBON_RULES: "Numeric columns are right-aligned, header included." td.n had this
+   rule; th.n never did, in any table in this app. */
+thead th.n{text-align:right}
+/* CARBON_RULES: "The identifier column is weight 600." */
+tbody td.idc{font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary)}
+/* CARBON_RULES: set tabular figures on the TABLE so every cell inherits, rather than
+   per-column where the next column added forgets. */
+table.ppltable{font-variant-numeric:tabular-nums}
+
+/* Carbon: only the sorted column shows an icon at rest; unsorted shows on hover. */
+thead th .sortmk.rest{visibility:hidden}
+thead th:hover .sortmk.rest,thead th:focus .sortmk.rest{visibility:visible}
+thead th .sortmk.rest svg{fill:var(--cds-icon-secondary)}
+
+/* ---- the table toolbar (Carbon anatomy: title, TOOLBAR, header, rows, pagination) */
+.ppltb{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  height:48px;background:var(--cds-layer-01);
+  border-bottom:1px solid var(--cds-border-subtle-01);padding:0 var(--cds-spacing-05)}
+.ppltbsp{flex:1 1 auto}
+.pplsrch{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  flex:0 1 320px;min-width:0;height:100%}
+.pplsrch svg{fill:var(--cds-icon-secondary);flex:0 0 auto}
+.pplsrch input{flex:1 1 auto;min-width:0;height:32px;border:0;background:none;
+  border-bottom:1px solid var(--cds-border-strong-01);
+  color:var(--cds-text-primary);font:inherit;font-size:var(--cds-body-compact-01-size)}
+.pplsrch input:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.pplcount{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.pplcard{margin-top:0}
+
+/* ---- the pagination bar, at the bottom of the table, as Carbon places it -------- */
+.pplpg{display:flex;align-items:center;gap:var(--cds-spacing-05);flex-wrap:wrap}
+.pplpg .pgsp{flex:1 1 auto}
+.pplpg .pgsz{display:flex;align-items:center;gap:var(--cds-spacing-03);
+  font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary)}
+.pplpg .pgsz select{height:32px;background:var(--cds-field-01);border:0;
+  border-bottom:1px solid var(--cds-border-strong-01);color:var(--cds-text-primary);
+  font:inherit;font-size:var(--cds-body-compact-01-size)}
+.pplpg .pgrange,.pplpg .pgpage{font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-secondary);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pgbtn{width:48px;height:48px;border:0;background:none;cursor:pointer;
+  border-left:1px solid var(--cds-border-subtle-01);
+  display:inline-flex;align-items:center;justify-content:center}
+.pgbtn svg{fill:var(--cds-icon-primary)}
+.pgbtn:hover:not(:disabled){background:var(--cds-layer-hover-01)}
+.pgbtn:disabled{cursor:not-allowed}
+.pgbtn:disabled svg{fill:var(--cds-icon-disabled)}
+.pgbtn:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2304,7 +2354,7 @@ body.scopeopen .scopedrawer{transform:none}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v80 · 14 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v80 · 15 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2422,7 +2472,7 @@ body.scopeopen .scopedrawer{transform:none}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec on" id="sec_ppl"><div class="secttl"><div class="eye">Field force</div><div class="big">People</div><div class="d">Everyone in the roster, for the period and filters above. Sort any column, choose which columns you want, and click a row for the full profile. Your choices are remembered in this browser.</div></div><div id="pplbody"></div></section>
+<section class="sec on" id="sec_ppl"><div class="secttl"><div class="eye">Field force</div><div class="big">People</div><div class="d">Everyone in the roster. Sort any column, choose which columns you want, search by name or code, and click a row for the full profile. Your choices are remembered in this browser.</div></div><div id="pplbody"></div></section>
 <section class="sec" id="sec_hgeo"><div class="secttl"><div class="eye">Reference</div><div class="big">Geography</div><div class="d">Zones, states and headquarters from the HR roster, and how far Hive Frontline reached in each. Headcount is a roster fact and does not change with the period; reporting and Rx do.</div></div><div id="hgbody"></div></section>
 <section class="sec" id="sec_adopt"><div class="secttl"><div class="eye">Action</div><div class="big">App adoption</div><div class="d">Who is reporting their work through Hive Frontline, month by month, since the app started capturing. Filters and period above apply to who is listed; the monthly figures always read the full history.</div></div><div id="adoptbody"></div></section>
 <section class="sec" id="sec_nrep"><div class="secttl"><div class="eye">Action</div><div class="big">Not reporting</div><div class="d">Everyone the ranking drops before it reaches a tier, and where the rest of the field falls out. Filters and period above apply.</div></div><div id="nrepbody"></div></section>
@@ -2465,7 +2515,7 @@ body.scopeopen .scopedrawer{transform:none}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v80 · 14 Sep 2026">
+<meta name="hfi-version" content="v80 · 15 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2487,7 +2537,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v80 · 14 Sep 2026';
+window.HFI_BUILD='v80 · 15 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -2938,11 +2988,12 @@ function pplLoad(){
   }
   if(s&&typeof s.sort==='string')pplS=s.sort;
   if(s&&typeof s.asc==='boolean')pplA=s.asc;
+  if(s&&PPL_SIZES.indexOf(+s.size)>=0)pplSize=+s.size;
  }catch(e){/* defaults are a fine outcome */}
 }
 function pplSave(){
  try{window.localStorage.setItem('hfi.people',
-   JSON.stringify({cols:pplCols,sort:pplS,asc:pplA}));}catch(e){}
+   JSON.stringify({cols:pplCols,sort:pplS,asc:pplA,size:pplSize}));}catch(e){}
 }
 function pplShown(){
  /* Name is pinned: a table of people with no names is not a table of people. */
@@ -2960,49 +3011,175 @@ function pplPicker(){
   'Reset to default</button></div></div>';
 }
 
-function pplView(rows){
- const cols=pplShown();
- const sorted=sortRows(rows,pplS,pplA);
- const cap=1000, shown=sorted.slice(0,cap);
- $('pplbody').innerHTML=
-  '<div class="pplbar">'+
-   '<span class="pplcount" id="pplcount">'+fmt(rows.length)+' '+
-     (rows.length===1?'person':'people')+
-     (rows.length>cap?(' · showing the first '+fmt(cap)):'')+'</span>'+
-   '<span class="pplsp"></span>'+
-   '<button class="fbtn" id="pplcols" type="button" aria-expanded="'+
-     (pplPick?'true':'false')+'">Columns ('+cols.length+')</button>'+
+/* Carbon's sorted-column states. Three icons, not one: `arrows` while unsorted (shown
+   on hover only), `arrow--up` ascending, `arrow--down` descending. The app previously
+   drew `sort--descending` for BOTH directions, so an ascending column claimed to be
+   descending, and the People table drew literal '↑'/'↓' characters — a unicode glyph
+   where the rules require a Carbon icon. */
+const SORT_ICO={
+ none:'<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="arrows">'+
+  '<path d="M10 4 4 10 5.4 11.4 9 7.8 9 28 11 28 11 7.8 14.6 11.4z"/>'+
+  '<path d="M26.6 20.6 23 24.2 23 4 21 4 21 24.2 17.4 20.6 16 22 22 28 28 22z"/></svg>',
+ asc:'<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="arrow--up">'+
+  '<path d="M16 4 6 14 7.41 15.41 15 7.83 15 28 17 28 17 7.83 24.59 15.41 26 14z"/></svg>',
+ desc:'<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="arrow--down">'+
+  '<path d="M24.59 16.59 17 24.17 17 4 15 4 15 24.17 7.41 16.59 6 18 16 28 26 18z"/></svg>'
+};
+function sortIco(state){
+ return '<span class="sortmk'+(state==='none'?' rest':'')+'" data-sort="'+state+'">'+
+   SORT_ICO[state]+'</span>';
+}
+
+/* ---- Carbon data table: toolbar, header, rows, pagination (v89) ---------------- */
+/* Carbon's page sizes. 25 is the default because 878 people over 10 is 88 pages. */
+const PPL_SIZES=[25,50,100,200];
+let pplPage=1, pplSize=25;
+
+function pplTotalPages(n){return Math.max(1,Math.ceil(n/pplSize));}
+
+/* Built ONCE. The search field lives here, and rebuilding it on every keystroke would
+   move the caret out from under the reader — which is exactly what the old
+   rewrite-everything render would have done. */
+function pplChrome(){
+ const host=$('pplbody');
+ if(!host||$('ppltb'))return;
+ host.innerHTML=
+  '<div class="ppltb" id="ppltb" role="toolbar" aria-label="Table actions">'+
+   '<div class="pplsrch">'+
+    '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="search">'+
+    '<path d="M29 27.586 22.158 20.744A11.943 11.943 0 0 0 25 13 12 12 0 1 0 13 25a11.943 '+
+    '11.943 0 0 0 7.744-2.842L27.586 29zM13 23a10 10 0 1 1 10-10A10.011 10.011 0 0 1 13 '+
+    '23z"/></svg>'+
+    '<input id="pplq" type="search" placeholder="Search people by name or code" '+
+      'aria-label="Search people by name or code">'+
+   '</div>'+
+   '<span class="ppltbsp"></span>'+
+   '<span class="pplcount" id="pplcount"></span>'+
+   '<button class="fbtn" id="pplcols" type="button" aria-expanded="false">Columns</button>'+
    '<button class="dlbtn" id="ppldl" type="button">'+DLICO+'Export CSV</button>'+
   '</div>'+
-  pplPicker()+
-  '<div class="card"><div class="tablewrap"><table><thead><tr id="pplh">'+
-   cols.map(c=>'<th data-k="'+c.k+'"'+(c.n?' class="n"':'')+
-     ' aria-sort="'+(pplS===c.k?(pplA?'ascending':'descending'):'none')+'"'+
-     ' tabindex="0" role="columnheader">'+esc(c.t)+
-     (pplS===c.k?'<span class="pplsort">'+(pplA?'↑':'↓')+'</span>':'')+
-     '</th>').join('')+
-  '</tr></thead><tbody id="pplb">'+
-   (shown.length?shown.map(r=>'<tr data-code="'+esc(r.c||'')+'">'+
-     cols.map(c=>'<td'+(c.n?' class="n"':'')+'>'+c.get(r)+'</td>').join('')+
-     '</tr>').join('')
-    :'<tr><td colspan="'+cols.length+'" class="pplempty">'+
-     'No one matches the current filters. Clear a filter, or widen the period.'+
-     '</td></tr>')+
-  '</tbody></table></div></div>';
+  '<div id="pplpickw"></div>'+
+  '<div class="card pplcard"><div class="tablewrap" id="pplwrap"></div>'+
+   '<div class="tfoot pplpg" id="pplpg"></div></div>';
+ pplChromeWire();
+}
+
+function pplChromeWire(){
+ const q=$('pplq');
+ if(q)q.oninput=()=>{
+  F.q=q.value;
+  const g=$('q'); if(g)g.value=q.value;      /* one value, two views, kept in step */
+  pplPage=1;
+  render();
+ };
+ const b=$('pplcols');
+ if(b)b.onclick=()=>{pplPick=!pplPick;pplView(fr());};
+ const dl=$('ppldl');
+ if(dl)dl.onclick=pplExport;
+}
+
+function pplHead(cols){
+ return '<tr id="pplh">'+cols.map(c=>{
+  const on=(pplS===c.k);
+  const state=on?(pplA?'asc':'desc'):'none';
+  return '<th data-k="'+c.k+'"'+(c.n?' class="n"':'')+
+    ' aria-sort="'+(on?(pplA?'ascending':'descending'):'none')+'"'+
+    ' tabindex="0" role="columnheader" title="'+esc(c.t)+'">'+
+    esc(c.t)+sortIco(state)+'</th>';
+ }).join('')+'</tr>';
+}
+
+function pplView(rows){
+ pplChrome();
+ const cols=pplShown();
+ const sorted=sortRows(rows,pplS,pplA);
+ const total=sorted.length;
+ const pages=pplTotalPages(total);
+ if(pplPage>pages)pplPage=pages;
+ const from=(pplPage-1)*pplSize, to=Math.min(total,from+pplSize);
+ const shown=sorted.slice(from,to);
+
+ /* the search box is authoritative while it has focus; never write over a live caret */
+ const q=$('pplq');
+ if(q&&document.activeElement!==q&&q.value!==(F.q||''))q.value=F.q||'';
+
+ const cnt=$('pplcount');
+ if(cnt)cnt.textContent=fmt(total)+' '+(total===1?'person':'people');
+ const cb=$('pplcols');
+ if(cb){cb.textContent='Columns ('+cols.length+')';
+        cb.setAttribute('aria-expanded',pplPick?'true':'false');}
+ const pk=$('pplpickw'); if(pk)pk.innerHTML=pplPicker();
+
+ $('pplwrap').innerHTML=
+  '<table class="ppltable"><thead>'+pplHead(cols)+'</thead><tbody id="pplb">'+
+  (shown.length?shown.map(r=>'<tr data-code="'+esc(r.c||'')+'">'+
+    cols.map(c=>'<td'+(c.n?' class="n"':'')+(c.k==='n'?' class="idc"':'')+'>'+
+      c.get(r)+'</td>').join('')+'</tr>').join('')
+   :'<tr><td colspan="'+cols.length+'" class="pplempty">'+
+    'No one matches the current filters. Clear a filter, or widen the period.'+
+    '</td></tr>')+
+  '</tbody></table>';
+
+ /* Carbon puts a pagination bar at the bottom of the table. It replaces a silent cap:
+    every row is reachable, and the bar says which ones you are looking at. */
+ $('pplpg').innerHTML=
+  '<label class="pgsz">Items per page'+
+   '<select id="pplsz" aria-label="Items per page">'+
+    PPL_SIZES.map(n=>'<option value="'+n+'"'+(n===pplSize?' selected':'')+'>'+n+
+      '</option>').join('')+
+   '</select></label>'+
+  '<span class="pgrange">'+(total?fmt(from+1)+'–'+fmt(to):'0')+' of '+fmt(total)+
+   ' '+(total===1?'item':'items')+'</span>'+
+  '<span class="pgsp"></span>'+
+  '<span class="pgpage">Page '+fmt(pplPage)+' of '+fmt(pages)+'</span>'+
+  '<button class="pgbtn" id="pplprev" type="button" aria-label="Previous page"'+
+   (pplPage<=1?' disabled':'')+'>'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+   'data-icon="chevron--left"><path d="M20 24 10 16 20 8z"/></svg></button>'+
+  '<button class="pgbtn" id="pplnext" type="button" aria-label="Next page"'+
+   (pplPage>=pages?' disabled':'')+'>'+
+   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+   'data-icon="chevron--right"><path d="M12 8 22 16 12 24z"/></svg></button>';
+}
+
+function pplExport(){
+ const cols=pplShown(), rows=sortRows(fr(),pplS,pplA);
+ /* The export carries exactly the columns on screen — and EVERY row, not just this
+    page. A file that silently matched the page would be a different answer to the same
+    question depending on where you happened to be paging. */
+ const head=cols.map(c=>c.t);
+ const body=rows.map(r=>cols.map(c=>{
+  const raw=r[c.k];
+  if(c.k==='n')return r.n||'';
+  return (raw===null||raw===undefined)?'':raw;
+ }));
+ const ctx=['Hive Frontline — people',
+   (typeof D!=='undefined'&&D.label)?D.label:'',
+   'These are the columns shown on screen, in the same order, for the same filters.',
+   'Every matching row is included, not only the page on screen.',
+   'Build '+(window.HFI_BUILD||'')];
+ expDownload('frontline-people.csv',expCSV([head].concat(body),ctx),
+   'text/csv;charset=utf-8');
+ const dl=$('ppldl'); if(dl)expFlash(dl,'SAVED');
 }
 
 function pplWire(){
+ /* pagination */
+ const sz=$('pplsz');
+ if(sz)sz.onchange=()=>{pplSize=+sz.value||25;pplPage=1;pplSave();pplView(fr());pplWire();};
+ const pv=$('pplprev');
+ if(pv)pv.onclick=()=>{if(pplPage>1){pplPage--;pplView(fr());pplWire();}};
+ const nx=$('pplnext');
+ if(nx)nx.onclick=()=>{pplPage++;pplView(fr());pplWire();};
  const head=$('pplh');
  if(head)head.querySelectorAll('th').forEach(t=>{
   const go=()=>{const k=t.dataset.k;
    if(k===pplS)pplA=!pplA; else {pplS=k;pplA=(k==='n'||k==='c'||k==='hq'||k==='st'||
      k==='mg'||k==='r'||k==='te'||k==='doj');}
-   pplSave(); pplView(fr()); pplWire();};
+   pplPage=1; pplSave(); pplView(fr()); pplWire();};
   t.onclick=go;
   t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
  });
- const b=$('pplcols');
- if(b)b.onclick=()=>{pplPick=!pplPick;pplView(fr());pplWire();};
  const pick=$('pplpick');
  if(pick)pick.querySelectorAll('input[data-col]').forEach(inp=>{
   inp.onchange=()=>{
@@ -3026,27 +3203,6 @@ function pplWire(){
    const c=tr.getAttribute('data-code');
    if(c)openProfile(c);
   }
- };
- const dl=$('ppldl');
- if(dl)dl.onclick=()=>{
-  const cols=pplShown(), rows=sortRows(fr(),pplS,pplA);
-  /* The export carries exactly the columns on screen. A file that silently contains
-     more or fewer columns than the table it came from is how a spreadsheet ends up
-     disagreeing with the report it was exported from. */
-  const head=cols.map(c=>c.t);
-  const body=rows.map(r=>cols.map(c=>{
-   const raw=r[c.k];
-   if(c.k==='n')return r.n||'';
-   if(c.k==='rec')return (raw===''||raw==null)?'':raw;
-   return (raw===null||raw===undefined)?'':raw;
-  }));
-  const ctx=['Hive Frontline — people',
-    (typeof D!=='undefined'&&D.label)?D.label:'',
-    'These are the columns shown on screen, in the same order, for the same filters.',
-    'Build '+(window.HFI_BUILD||'')];
-  expDownload('frontline-people.csv',expCSV([head].concat(body),ctx),
-    'text/csv;charset=utf-8');
-  expFlash(dl,'SAVED');
  };
 }
 
@@ -6153,9 +6309,9 @@ const SCREENS={
     sub:zero?(zero+' active reps logged visits and generated no Rx at all.'):'',
     cta:zero?{l:'See the '+zero+' zero-Rx reps',f:()=>{F.rx='zero';go('exc');}}:null};}},
 
- ppl:{eye:'Field force',t:'People',
-  d:'Everyone in the roster, for the period and filters above. Sort any column, choose '+
-    'which columns you want, and click a row for the full profile.',
+ ppl:{eye:'Field force',t:'People',noHero:1,
+  d:'Everyone in the roster. Sort any column, choose which columns you want, '+
+    'search by name or code, and click a row for the full profile.',
   lead:rows=>{
    const act=rows.filter(r=>r.vis>0).length;
    if(!rows.length)return {v:'0',cap:'people in this view',
@@ -6363,8 +6519,10 @@ function pageHead(rows){
   '<div class="eyebrow">'+esc(s.eye)+'</div>'+
   '<h1>'+esc(s.t)+'</h1>'+
   (s.d?'<div class="desc">'+esc(s.d)+'</div>':'')+
-  (tags?'<div class="tags">'+tags+'</div>':'')+
-  (lead?('<div class="headline"><div><div class="num">'+lead.v+'</div>'+
+  /* The scope tags are gone: the v87 scope row states the period and every active
+     filter, on the page, with a control to clear each one. This row restated the same
+     scope as dead chips a few pixels away. One statement of scope, not two. */
+  ((lead&&!s.noHero)?('<div class="headline"><div><div class="num">'+lead.v+'</div>'+
     '<div class="cap">'+esc(lead.cap)+'</div></div><div>'+
     (lead.say?'<div class="say">'+esc(lead.say)+'</div>':'')+
     (lead.sub?'<div class="sub">'+esc(lead.sub)+'</div>':'')+
@@ -6656,6 +6814,8 @@ function chartAnswers(rows){
 }
 
 /* ---- table footer and sorted-column marker (CONFORMANCE #11) ------------------ */
+/* Superseded by sortIco(); kept because tableFurniture() inserts it by name. It now
+   reflects DIRECTION rather than always drawing the descending glyph. */
 const SORTMK='<span class="sortmk" data-icon="sort--descending"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="sort--descending"><path d="M18 22 19.414 20.586 23 24.172 23 4 25 4 25 24.172 28.586 20.586 30 22 24 28 18 22z"/><path d="M2 6H16V8H2z"/><path d="M6 12H16V14H6z"/><path d="M10 18H16V20H10z"/></svg></span>';
 function tableFurniture(){
  document.querySelectorAll('.sec.on .card .tablewrap table').forEach(tbl=>{
