@@ -654,6 +654,8 @@ td.n{text-align:right;font-variant-numeric:tabular-nums}
 .idle.bad{color:var(--bad);font-weight:700}
 
 /* ------------- sticky identity columns (horizontal scroll) ------------- */
+/* Untouched, but restated here so the next person sees what `.sk` means before
+   reaching for the name: it is the STICKY IDENTITY COLUMN, not a skeleton. */
 table.stk th.sk,table.stk td.sk{position:sticky;z-index:3;background:var(--surface)}
 table.stk thead th.sk{z-index:6;background:var(--surface2)}
 table.stk tbody tr:hover td.sk{background:var(--hover-solid)}
@@ -2482,10 +2484,14 @@ th.pplovf,td.pplovf{width:48px;padding:0;position:relative;text-align:right}
 /* ---- skeleton rows and motion (v101) --------------------------------------------- */
 /* Sized to the row it replaces, so nothing reflows when the data lands. */
 #pplb tr.skrow td{height:48px}
-.sk{display:block;height:12px;width:70%;background:var(--cds-skeleton-element);
+/* `.sk` BELONGS TO THE STICKY COLUMN. table.stk th.sk / td.sk has used it since the
+   horizontal-scroll work, so this rule — added with the skeleton in v101 — turned every
+   sticky identity cell in the app into a 12px pulsing grey bar. Two letters, one global
+   sheet, 1,200 rules. */
+.pplsk{display:block;height:12px;width:70%;background:var(--cds-skeleton-element);
   animation:cdsSkel 1500ms ease-in-out infinite}
-#pplb tr.skrow td:nth-child(3) .sk{width:45%}
-#pplb tr.skrow td.n .sk{margin-left:auto;width:36%}
+#pplb tr.skrow td:nth-child(3) .pplsk{width:45%}
+#pplb tr.skrow td.n .pplsk{margin-left:auto;width:36%}
 [aria-busy="true"]{cursor:progress}
 .btn[aria-busy="true"],.dlbtn[aria-busy="true"]{opacity:.7}
 /* A relaxed motion rule is not a licence to move things for someone whose system has
@@ -2598,6 +2604,42 @@ summary:focus-visible,
 /* the bar is a supporting mark, not a second reading of the number beside it */
 table.rep-reports .barcell{width:88px}
 
+/* ---- nested tables: Carbon's small ROW, not small type (v111) -------------------- */
+/* .dcrd is the day-detail table inside an expanded row, and the doctor and product
+   tables inside the profile. They were 11px body and 9px uppercase headers — under the
+   12px floor these rules set, and under Carbon's smallest type token. Carbon's answer to
+   "this table is subordinate" is a shorter ROW (sm, 32px), which these already use. The
+   type goes back to the same size as every other table in the report. */
+.dcrd table{font-size:var(--cds-body-compact-01-size);
+  font-variant-numeric:tabular-nums}
+.dcrd th{font-size:var(--cds-heading-compact-01-size);
+  font-weight:var(--cds-heading-compact-01-weight);
+  letter-spacing:0;text-transform:none;
+  color:var(--cds-text-primary);background:var(--cds-layer-accent-01);
+  height:32px;padding:0 var(--cds-spacing-05);white-space:nowrap}
+.dcrd td{height:32px;padding:0 var(--cds-spacing-05);
+  color:var(--cds-text-primary)}
+.dcrd th.n,.dcrd td.n{text-align:right}
+
+/* The same for any table inside the profile dialog that has not been given a size of its
+   own: inherit the report's table type rather than shrinking to fit more columns. */
+.pcard table{font-size:var(--cds-body-compact-01-size)}
+.pcard thead th{font-size:var(--cds-heading-compact-01-size);
+  letter-spacing:0;text-transform:none}
+/* a nested table scrolls sideways rather than crushing its columns */
+.pcard .tablewrap{overflow-x:auto}
+
+/* THE FOUR THAT MADE THE PROFILE'S TABLES UNREADABLE, measured rather than guessed:
+   569 elements inside those tables computed under 12px, and they come from four rules.
+   .dcrhead is the biggest by far — its <b> and <span> children inherit 10.5px, which is
+   462 of them on its own. Fixed globally, not scoped to the dialog: an 8px chevron is
+   the wrong size on the Call detail screen too, and four rules is a small enough blast
+   radius to be honest about. The other 50 sub-12px rules stay recorded as debt. */
+.dcrhead{font-size:var(--cds-label-01-size)}
+.dcrrow .cv{font-size:var(--cds-label-01-size);width:16px}
+.av{font-size:var(--cds-label-01-size)}
+.bxh .c{font-size:var(--cds-label-01-size)}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2635,7 +2677,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v107 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v111 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2797,7 +2839,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v107 · 16 Sep 2026">
+<meta name="hfi-version" content="v111 · 16 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2819,7 +2861,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v107 · 16 Sep 2026';
+window.HFI_BUILD='v111 · 16 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -3587,7 +3629,9 @@ function pplSkeleton(rows, cols){
  let h='';
  for(let i=0;i<rows;i++){
   h+='<tr class="skrow"><td class="pplck"></td>';
-  for(let c=0;c<cols;c++)h+='<td><span class="sk"></span></td>';
+  /* NOT "sk" — that is the sticky identity column class, and this rule painted a
+     pulsing skeleton bar over every sticky Code, Name and doctor cell in the report. */
+  for(let c=0;c<cols;c++)h+='<td><span class="pplsk"></span></td>';
   h+='<td class="pplovf"></td></tr>';
  }
  return h;
