@@ -2180,16 +2180,6 @@ tr.tot td{border-top:1px solid var(--cds-border-strong-01);font-weight:600}
 .pplsp{flex:1 1 auto}
 .pplcount{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary);
   font-variant-numeric:tabular-nums}
-.pplpick{display:none;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
-  gap:var(--cds-spacing-03) var(--cds-spacing-05);padding:var(--cds-spacing-05);
-  background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-01);
-  margin-bottom:var(--cds-spacing-05)}
-.pplpick.open{display:grid}
-.pplopt{display:flex;align-items:center;gap:var(--cds-spacing-03);
-  font-size:var(--cds-body-compact-01-size);cursor:pointer}
-.pplpin{color:var(--cds-text-placeholder);font-size:var(--cds-label-01-size)}
-.pplactions{grid-column:1/-1;display:flex;justify-content:flex-end;
-  border-top:1px solid var(--cds-border-subtle-01);padding-top:var(--cds-spacing-04)}
 #pplh th{cursor:pointer;white-space:nowrap;user-select:none}
 #pplh th:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
 .pplsort{margin-left:var(--cds-spacing-02);color:var(--cds-text-secondary)}
@@ -2671,6 +2661,16 @@ table.rep-reports .barcell{width:88px}
    the right. Only the People section gets it; `.secttl` is shared with nine screens. */
 .secttl.pplhdr{display:flex;align-items:flex-end;justify-content:space-between;
   gap:var(--cds-spacing-06);flex-wrap:wrap}
+/* THE PAGE TITLE, to the design's scale. `.secttl .big` is heading-05 (32px) and is
+   shared with nine other screens, so this is scoped rather than changed: the People
+   page is 28px/36px/400. */
+.pplhdr .big{font-size:var(--cds-heading-04-size);line-height:36px;
+  font-weight:var(--cds-font-weight-regular);letter-spacing:0}
+/* and the eyebrow is sentence case in secondary, not shouted in the accent colour —
+   "Field force" is where you are, not a heading competing with the title under it */
+.pplhdr .eye{text-transform:none;color:var(--cds-text-secondary);
+  font-weight:var(--cds-font-weight-regular);letter-spacing:.32px}
+.pplhdr .d{max-width:62ch;font-size:var(--cds-body-01-size);line-height:20px}
 .pplhl{min-width:0;flex:1 1 auto}
 .pplhba{display:flex;align-items:center;gap:var(--cds-spacing-03);flex:none}
 
@@ -2908,6 +2908,75 @@ table.rep-reports .barcell{width:88px}
   color:var(--cds-text-secondary)}
 .rpstep .ppllink{margin-top:8px;font-size:13px}
 
+/* ---- the column registry's cell types and its selector (v119) -------------------- */
+/* THE WRAPPER SCROLLS ONLY WHEN THE CHOSEN COLUMNS ARE WIDER THAN THE SCREEN. The
+   min-width is set per render from the sum of the visible tracks, because with a
+   reader-chosen column set there is no single right number to type here. */
+.pplgrid{min-width:var(--pplminw,1180px)}
+
+/* one rule per cell TYPE, so a new column needs no new CSS */
+.pplgrid td.pplc-person{gap:10px;padding-left:17px !important;
+  flex-direction:column;align-items:flex-start;justify-content:center}
+.pplgrid td.pplc-mono{font-family:var(--cds-font-mono);
+  font-size:var(--cds-label-01-size);color:var(--cds-text-primary)}
+.pplgrid td.pplc-text{font-size:13px;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;display:block;line-height:44px}
+.pplgrid td.pplc-num{font-size:13px;font-variant-numeric:tabular-nums}
+.pplgrid td.pplc-bar{gap:8px}
+.pplgrid td.pplc-tag{overflow:visible}
+.pplgrid td.pplc-spark{padding:0 10px}
+/* the code moves into the name cell when its own column is off: the only two-line cell
+   on the row, and it still has to sit inside 44px */
+.pplc-person .pplpn{line-height:16px}
+.pplpc2{font-family:var(--cds-font-mono);font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary);line-height:14px}
+
+/* THE COLUMNS CONTROL — the toolbar's last cell, and a member of the same family as the
+   status segments beside it: same height, same fill, same 2px blue underline when on. */
+.pplcolsb{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);height:48px;
+  padding:0 var(--cds-spacing-05);border:0;cursor:pointer;flex:none;white-space:nowrap;
+  background:var(--cds-field-01);color:var(--cds-text-primary);
+  font:400 var(--cds-body-compact-01-size)/1 var(--cds-font-sans)}
+.pplcolsb:hover{background:var(--cds-layer-hover-01)}
+.pplcolsb.on{background:var(--cds-background);
+  box-shadow:inset 0 -2px 0 var(--cds-interactive)}
+.pplcolsb svg{width:16px;height:16px;fill:var(--cds-icon-primary);flex:none}
+.pplcolsb:focus-visible{outline:2px solid var(--cds-focus);outline-offset:-2px}
+
+/* THE PANEL, INLINE. A floating popover at this width would cover the data the reader
+   is deciding about, which is the one thing it must not do. */
+.pplpan{padding:20px 20px 16px;background:var(--cds-layer-01);
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.pplpre{display:flex;align-items:center;gap:var(--cds-spacing-03);flex-wrap:wrap;
+  margin-bottom:var(--cds-spacing-05)}
+.pplprel{font-size:var(--cds-label-01-size);letter-spacing:.32px;
+  color:var(--cds-text-secondary);margin-right:var(--cds-spacing-02)}
+/* a preset chip reads ACTIVE when the current selection is exactly that preset — not
+   when it was the last one clicked, because one tick after clicking it the label would
+   be describing a set the reader no longer has */
+.pplchip{height:24px;padding:0 12px;border:0;border-radius:12px;cursor:pointer;
+  background:var(--cds-layer-accent-01);color:var(--cds-text-primary);
+  font:400 var(--cds-label-01-size)/24px var(--cds-font-sans)}
+.pplchip:hover{background:var(--cds-layer-hover-01)}
+.pplchip.on{background:var(--cds-text-primary);color:var(--cds-text-inverse)}
+.pplchip:focus-visible{outline:2px solid var(--cds-focus);outline-offset:2px}
+.pplreset{margin-left:auto;font-size:13px}
+.pplgrp{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px}
+.pplg{min-width:0}
+.pplgh{font-size:var(--cds-label-01-size);letter-spacing:.32px;
+  color:var(--cds-text-secondary);padding-bottom:var(--cds-spacing-02);
+  border-bottom:1px solid var(--cds-border-subtle-01);margin-bottom:var(--cds-spacing-02)}
+.pplopt{display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer;
+  font-size:var(--cds-body-compact-01-size);color:var(--cds-text-primary);min-width:0}
+.pplopt .pplottl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+/* Name is checked and disabled: it is the row's identity, so it is not a choice */
+.pplopt.fixed{cursor:default;color:var(--cds-text-secondary)}
+.pplcb.dis{background:var(--cds-layer-accent-01);
+  border-color:var(--cds-border-subtle-01)}
+.pplcb.dis svg{fill:var(--cds-icon-disabled);visibility:visible}
+.pplalw{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);flex:none}
+@media (max-width:1100px){.pplgrp{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2945,7 +3014,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v117 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v119 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -3107,7 +3176,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v117 · 16 Sep 2026">
+<meta name="hfi-version" content="v119 · 16 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -3129,7 +3198,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v117 · 16 Sep 2026';
+window.HFI_BUILD='v119 · 16 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -3661,11 +3730,12 @@ function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
  const rv={};rows.forEach(r=>{if(r.r)rv[r.r]=(rv[r.r]||0)+r.vis;});const rr=Object.entries(rv).sort((a,b)=>b[1]-a[1]);
  chart('ch_role',{type:'bar',data:{labels:rr.map(x=>x[0]),datasets:[{data:rr.map(x=>x[1]),backgroundColor:CDS('--cds-chart-01'),borderRadius:4}]},options:gopt()},{title:'Visits by role',def:'Visits by designation.',type:'bar',labels:rr.map(x=>x[0]),values:rr.map(x=>x[1])});}
 const EC=[['c','Code'],['n','Name'],['r','Role'],['di','Div'],['zn','Zone'],['st','State'],['hq','HQ'],['mg','Manager'],['da','Drs'],['vis','Visits'],['ud','Met'],['cov','Cov%'],['cpd','Calls/Day'],['rx','Rx'],['rpc','Rx/Call'],['pi','PI'],['tp','Tour'],['newd','New Drs'],['mom','Mom'],['chsh','Chem%'],['fhrs','Fld Hrs'],['tdc','TopDoc%'],['ob','Onb']];
-/* ---- People: the front door (v79, columns fixed v115) ------------------------- */
-/* The 22-column set and its picker are gone. What replaced them is PFLAT, further
-   down: nine columns chosen to answer "who is this and are they working" with no
-   horizontal scrolling, over a grid the header and the rows share. The full roster
-   record is still one click away — in the CSV export, and in the profile. */
+/* ---- People: the front door (v79, registry v119) ------------------------------ */
+/* The 22-column set is now PCOLS, further down — 29 columns declared once, with the
+   grid template, the header, the rows and the selector panel all derived from that one
+   declaration. The picker came back because the complaint was never that it existed:
+   it was that reaching a useful set took eight clicks through twenty-two unlabelled
+   boxes. It is grouped now, and it has presets. */
 /* Default sort is code ascending — the roster's own order, so the first screen a
    reader sees is stable between visits and between periods. */
 let pplS='c', pplA=true;
@@ -3679,14 +3749,23 @@ function pplLoad(){
   const s=JSON.parse(raw);
   /* A sort key that no longer exists would leave the table sorted by nothing and the
      header claiming otherwise, so a stored key is only honoured if a column offers it. */
-  const keys=PFLAT.filter(c=>c.s).map(c=>c.s).concat(['c']);
+  const keys=PCOLS.filter(c=>c.s).map(c=>c.s);
   if(s&&typeof s.sort==='string'&&keys.indexOf(s.sort)>=0)pplS=s.sort;
   if(s&&typeof s.asc==='boolean')pplA=s.asc;
+  /* A STORED COLUMN THAT NO LONGER EXISTS MUST NOT SURVIVE. It would widen the grid by
+     a track the header has no cell for, which is the drift this registry exists to
+     make impossible — so the stored list is filtered against the registry, kept in
+     registry order, and ignored entirely if nothing in it is recognised. */
+  if(s&&Array.isArray(s.cols)){
+   const known=PCOLS.filter(c=>!c.always).map(c=>c.k);
+   const keep=known.filter(k=>s.cols.indexOf(k)>=0);
+   if(keep.length)pplCols=keep;
+  }
  }catch(e){/* defaults are a fine outcome */}
 }
 function pplSave(){
  try{window.localStorage.setItem('hfi.people',
-   JSON.stringify({sort:pplS,asc:pplA}));}catch(e){}
+   JSON.stringify({sort:pplS,asc:pplA,cols:pplCols}));}catch(e){}
 }
 /* The column picker is gone with the 22 columns it existed to manage. A fixed grid
    is what lets the header and the row agree; a reader-chosen column set cannot have
@@ -3827,7 +3906,7 @@ let BUSY_T=null, BUSY_SHOWN=0;
 
 function pplSkeleton(rows, cols){
  let h='';
- const g=(typeof PFLAT_GRID!=='undefined')?PFLAT_GRID:'';
+ const g=(typeof pplGrid==='function')?pplGrid():'';
  for(let i=0;i<rows;i++){
   h+='<tr class="skrow" role="row"'+(g?' style="grid-template-columns:'+g+'"':'')+
      '><td class="pplck" role="cell"></td>';
@@ -3843,7 +3922,7 @@ function pplSkeleton(rows, cols){
    skeleton at the size the real content will be, so nothing reflows when it lands. */
 function pplBusy(work){
  const wrap=$('pplwrap');
- const cols=(typeof PFLAT!=='undefined')?PFLAT.length:6;
+ const cols=(typeof pplVis==='function')?pplVis().length:6;
  const rows=Math.min(12, Math.max(1, (typeof pplShownRows==='function'
    ? pplShownRows().length : 0)||12));
  let shown=false;
@@ -3898,27 +3977,120 @@ function btnBusy(el, on, label){
 }
 
 /* ---- the flat People table (v115) ------------------------------------------------ */
-/* ONE GRID, TWO USERS. The header row and every body row are laid out from this single
-   string. The one real defect design review found was a header and a row that had
-   drifted apart by one track, so the header labelled a doctor count "Silent". Two
-   copies of a column list is how that happens; there is now one copy. */
-const PFLAT_GRID='40px minmax(190px,1.3fr) 118px 56px minmax(120px,1fr) 88px '+
-  '94px 92px 130px 104px 36px';
+/* ONE REGISTRY, FOUR CONSUMERS (v119). Every column is declared once, here, and the
+   grid template, the header cells, the row cells and the selector panel are all derived
+   from it. Neither the header nor the rows are written down anywhere, so they cannot
+   drift apart — which is the failure design review caught in the team view, and the
+   failure this codebase has shipped twice before that.
 
-/* The nine columns between the checkbox and the chevron. `s` is the sort key when the
-   column is sortable; a column with no `s` is not clickable, and its header says so by
-   not taking a pointer cursor. */
-const PFLAT=[
- {k:'n',    t:'Person',    s:'n'},
- {k:'stat', t:'Status'},
- {k:'r',    t:'Role'},
- {k:'terr', t:'Territory'},
- {k:'tr',   t:'Trend'},
- {k:'days', t:'Days',      n:1, s:'days'},
- {k:'cpd',  t:'Calls/day', n:1, s:'cpd'},
- {k:'cov',  t:'Coverage',  n:1, s:'cov'},
- {k:'rx',   t:'Rx',        n:1, s:'rx'}
+     k       the rep field this column reads, and its key in the visible-column list
+     t       the header label
+     w       the grid track. Only Name and Territory flex; everything else is a fixed
+             pixel width sized to its widest realistic value plus 28px of padding
+     ty      one of the seven cell types below. A new column picks one; there is no
+             eighth, and a column that needs one is a column that needs rethinking
+     s       the sort key. A column with one gets the pointer, the arrow and the
+             keyboard handler for free; a column without one is not sortable
+     g       which group it appears under in the selector
+     v       how to turn a rep into this cell's value. The TYPE decides the styling,
+             the value function decides the content; nothing else is per-column */
+const PGROUPS=[['id','Identity'],['pl','Placement'],['ac','Activity'],
+               ['rx','Prescription'],['lf','Lifecycle']];
+
+/* THE INDIAN MONEY FORMAT, defined for the day a rupee field exists. Nothing in the
+   registry uses it yet: `rx` is prescriptions generated, a count in the hundreds, and
+   printing 867 as "₹0.0 L" would be a false statement about the business. */
+function fmtINR(v){
+ if(!v)return '\u2014';
+ return (v>=1e7)?('\u20b9'+(v/1e7).toFixed(2)+' Cr'):('\u20b9'+(v/1e5).toFixed(1)+' L');
+}
+/* A date the way this report writes dates everywhere else: "12 Sep 2026". */
+function pplDate(s){return s?dlabel(s):'\u2014';}
+/* Last active is stored as days-since, because that is what every other screen asks
+   for. The column wants the date, so turn it back into one against the window's end. */
+function pplLast(r){
+ if(r.rec===''||r.rec===null||r.rec===undefined)return '\u2014';
+ try{return dlabel(addDays(perRange()[1],-(+r.rec||0)));}catch(e){return '\u2014';}
+}
+
+const PCOLS=[
+ /* --- Identity ------------------------------------------------------------- */
+ {k:'n',   t:'Name',         w:'minmax(190px,1.3fr)', ty:'person', s:'n',   g:'id',
+  always:1, v:r=>r.n||''},
+ {k:'c',   t:'Code',         w:'104px', ty:'mono', s:'c',    g:'id', v:r=>r.c||''},
+ {k:'stat',t:'Status',       w:'118px', ty:'tag',            g:'id', v:r=>pplStat(r)},
+ {k:'r',   t:'Role',         w:'64px',  ty:'mono', s:'r',    g:'id', v:r=>r.r||''},
+ {k:'tr',  t:'Trend',        w:'88px',  ty:'spark',          g:'id', v:r=>r},
+ /* --- Placement ------------------------------------------------------------ */
+ {k:'hq',  t:'HQ',           w:'136px', ty:'text', s:'hq',   g:'pl', v:r=>r.hq},
+ {k:'st',  t:'State',        w:'124px', ty:'text', s:'st',   g:'pl', v:r=>r.st},
+ {k:'zn',  t:'Zone',         w:'88px',  ty:'text', s:'zn',   g:'pl', v:r=>r.zn},
+ {k:'di',  t:'Division',     w:'112px', ty:'text', s:'di',   g:'pl', v:r=>r.di},
+ {k:'mg',  t:'Reports to',   w:'152px', ty:'text', s:'mg',   g:'pl', v:r=>r.mg},
+ {k:'terr',t:'Territory',    w:'minmax(120px,1fr)', ty:'text', s:'terr', g:'pl',
+  v:r=>r.terr},
+ /* --- Activity ------------------------------------------------------------- */
+ {k:'att', t:'Attendance %', w:'124px', ty:'bar',  s:'att',  g:'ac',
+  v:r=>Math.round(+r.att||0)},
+ /* reported over the denominator, because "121" alone is not an answer to
+    "are they reporting" without the number it is out of */
+ {k:'days',t:'Days',         w:'94px',  ty:'num',  s:'days', g:'ac',
+  v:r=>fmt(+r.days||0)+'/'+fmt(pplWd(r)), raw:r=>1},
+ {k:'vis', t:'Visits',       w:'80px',  ty:'num',  s:'vis',  g:'ac', v:r=>r.vis},
+ {k:'dv',  t:'Doctor calls', w:'108px', ty:'num',  s:'dv',   g:'ac', v:r=>r.dv},
+ {k:'ud',  t:'Doctors met',  w:'110px', ty:'num',  s:'ud',   g:'ac', v:r=>r.ud},
+ {k:'cv',  t:'Chemist calls',w:'116px', ty:'num',  s:'cv',   g:'ac', v:r=>r.cv},
+ {k:'cpd', t:'Calls/day',    w:'92px',  ty:'num',  s:'cpd',  g:'ac', v:r=>r.cpd},
+ {k:'cov', t:'Coverage %',   w:'130px', ty:'bar',  s:'cov',  g:'ac',
+  /* NO DOCTOR LIST IS NOT ZERO COVERAGE. It is an absent denominator, which is the
+     missing-master-data case, not the measured-zero case. */
+  v:r=>(+r.da||0)?Math.round(+r.cov||0):''},
+ /* --- Prescription --------------------------------------------------------- */
+ {k:'rx',  t:'Rx',           w:'104px', ty:'num',  s:'rx',   g:'rx', v:r=>r.rx},
+ {k:'rpc', t:'Rx / call',    w:'96px',  ty:'num',  s:'rpc',  g:'rx', v:r=>r.rpc},
+ {k:'rxD', t:'Prescribers',  w:'108px', ty:'num',  s:'rxD',  g:'rx', v:r=>r.rxD},
+ {k:'sm',  t:'Samples',      w:'96px',  ty:'num',  s:'sm',   g:'rx', v:r=>r.sm},
+ {k:'pi',  t:'Index',        w:'116px', ty:'bar',  s:'pi',   g:'rx', v:r=>r.pi},
+ /* --- Lifecycle ------------------------------------------------------------ */
+ {k:'newd',t:'New doctors',  w:'112px', ty:'num',  s:'newd', g:'lf', v:r=>r.newd},
+ {k:'rec', t:'Last active',  w:'116px', ty:'text', s:'rec',  g:'lf', v:r=>pplLast(r)},
+ {k:'doj', t:'Joined',       w:'116px', ty:'text', s:'doj',  g:'lf', v:r=>pplDate(r.doj)},
+ {k:'ob',  t:'Onboarded',    w:'104px', ty:'text', s:'ob',   g:'lf',
+  v:r=>r.ob?'Yes':'No'},
+ {k:'da',  t:'Doctors on list',w:'124px',ty:'num', s:'da',   g:'lf', v:r=>r.da}
 ];
+
+/* THE PRESETS. Default stays at ten optional columns: the point of a default is that it
+   fits, and the moment it grows to fourteen it is just Everything with extra steps. */
+const PPRESETS=[
+ ['def','Default',     ['c','stat','r','tr','terr','att','cpd','cov','rx','pi']],
+ ['pl','Placement',    ['c','stat','r','hq','st','zn','di','mg','terr']],
+ ['ac','Activity',     ['c','stat','tr','att','days','vis','dv','ud','cv','cpd','cov']],
+ ['rx','Prescription', ['c','stat','rx','rpc','rxD','sm','pi']],
+ ['all','Everything',  PCOLS.filter(c=>!c.always).map(c=>c.k)]
+];
+const PPL_DEFCOLS=PPRESETS[0][2];
+
+/* Name is implicit and always first; everything else is the reader's choice, kept in
+   REGISTRY order rather than click order so the table never reshuffles itself. */
+let pplCols=PPL_DEFCOLS.slice(), pplPanel=false;
+function pplVis(){
+ return PCOLS.filter(c=>c.always||pplCols.indexOf(c.k)>=0);
+}
+/* (a) the grid template — one track per visible column, with the checkbox and the
+   chevron outside the registry at the two ends, where they are not columns. */
+function pplGrid(){
+ return '40px '+pplVis().map(c=>c.w).join(' ')+' 36px';
+}
+/* (c) and the wrapper's min-width, so only a WIDE selection scrolls sideways. Computed
+   from the same widths, because a hand-maintained 1180px was wrong the moment the
+   column set became the reader's to choose. */
+function pplMinW(){
+ return pplVis().reduce((a,c)=>{
+   const m=/(\d+)px/.exec(c.w);          /* minmax(190px,1.3fr) -> 190 */
+   return a+(m?+m[1]:120);
+ },40+36);
+}
 
 /* THE STATUS RULE, verbatim from the spec. It drives three things that must never
    disagree: the pill, the 3px row edge, and the toolbar counts — so all three read it
@@ -3981,17 +4153,56 @@ function pplTrend(r){
  const m=pplMonthly();
  return m.by[r.c]||m.months.map(()=>0);
 }
-/* The sparkline. Seven points in 72x22, an end dot so the last month is findable, and
-   a colour that answers the only question a sparkline is asked here: is this getting
-   better or worse. The last month is partial, hence the doubling in the rising test. */
+/* WORKING DAYS PER MONTH, for the sparkline's colour. Raw counts cannot be compared
+   across months: September is half a month and March is one working day, so "12 then 6"
+   can mean a rep who improved. Memoised with the series itself. */
+function pplMonthWd(){
+ const m=pplMonthly();
+ if(m.wd)return m.wd;
+ m.wd=m.months.map(mk=>{
+  let from=mk+'-01', to=monthEnd(mk);
+  if(from<BASE.dataStart)from=BASE.dataStart;
+  if(to>BASE.dataEnd)to=BASE.dataEnd;
+  return (from<=to)?Math.max(0,calWdPlain(from,to)):0;
+ });
+ return m.wd;
+}
+/* THE SPARKLINE'S COLOUR IS THE ONLY TREND SIGNAL IN A DENSE ROW, so it must not read
+   "good" for somebody who is declining, or simply low. Two failures to avoid:
+
+     - comparing the last two raw counts. 0 against 0 is "not falling", so a rep who
+       went to zero in July and stayed there scored GREEN under the v115 rule. That is
+       the single worst thing this column could say.
+     - comparing raw counts at all. Each month is normalised by its own working days,
+       so a half-month September is not a collapse and a one-day March is not a spike.
+
+   The level is then allowed to override the slope: somebody reporting on 40% of days is
+   not "improving", whatever the gradient, so attendance forces red or yellow first. */
+function pplSparkColor(r,stat,t){
+ if(stat==='Silent'||!(+r.days||0))return '--cds-support-error';
+ const wd=pplMonthWd(), n=t.length;
+ const rate=t.map((v,i)=>wd[i]>0?v/wd[i]:null);
+ const mean=a=>{const x=a.filter(v=>v!==null&&v===v);
+   return x.length?x.reduce((p,q)=>p+q,0)/x.length:null;};
+ /* the last two months against everything before them EXCEPT the first, which is a
+    stub month at either end of the window and too noisy to average into a baseline */
+ const recent=mean(rate.slice(Math.max(0,n-2)));
+ const early=mean(rate.slice(1,Math.max(1,n-2)));
+ const slope=(recent===null||early===null)?0:(recent-early);
+ const att=+r.att||0;
+ if(att<55||slope<-0.15)return '--cds-support-error';
+ if(att<85||slope<-0.05)return '--cds-support-warning';
+ return '--cds-support-success';
+}
+/* The sparkline itself. Seven points in 72x22, an end dot so the last month is
+   findable, and the colour rule above. */
 function pplSpark(r,stat){
  const t=pplTrend(r), n=t.length;
  if(!n)return '';
  const max=Math.max(27,...t);
  const step=n>1?72/(n-1):0;
  const pts=t.map((v,i)=>(i*step).toFixed(1)+','+(20-(v/max)*18).toFixed(1));
- const col=(stat==='Silent')?CDS('--cds-support-error')
-   :((n<2||t[n-1]*2>=t[n-2])?CDS('--cds-support-success'):CDS('--cds-support-warning'));
+ const col=CDS(pplSparkColor(r,stat,t));
  const last=pts[n-1].split(',');
  return '<svg class="pplspk" viewBox="0 0 72 22" width="72" height="22" '+
   'aria-hidden="true" focusable="false">'+
@@ -4000,27 +4211,70 @@ function pplSpark(r,stat){
   '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2" fill="'+col+'"/></svg>';
 }
 
-/* Coverage: a 44x4 track with a fill, then the number. The bar is what you scan and
-   the number is what you quote, which is why both are here and neither is enough. */
-function pplCovCell(r){
- const v=+r.cov||0;
- const col=CDS(v>=80?'--cds-support-success':v>=50?'--cds-support-warning'
+/* ---- the seven cell types (v119) ------------------------------------------------- */
+/* A bar: a 44x4 track with a fill, then the number. The bar is what you scan and the
+   number is what you quote, which is why both are here and neither is enough. A
+   measured percentage ALWAYS prints, 0% included — a dash there would say "unknown"
+   when the truth is "nothing". An empty value means there was nothing to measure. */
+function pplBarCell(v){
+ if(v===''||v===null||v===undefined)return '<span class="pplna">&mdash;</span>';
+ const n=Math.max(0,Math.min(100,+v||0));
+ const col=CDS(n>=80?'--cds-support-success':n>=50?'--cds-support-warning'
                     :'--cds-support-error');
- if(!r.du)return '<span class="pplna">&mdash;</span>';
  return '<span class="pplbar"><span class="pplbarf" style="width:'+
-   Math.max(2,Math.min(100,v))+'%;background:'+col+'"></span></span>'+
-   '<span class="pplbarv">'+v+'%</span>';
+   Math.max(2,n)+'%;background:'+col+'"></span></span>'+
+   '<span class="pplbarv">'+n+'%</span>';
+}
+/* A count or a money figure. Zero is an em dash: 318 people at zero is 318 rows of
+   numerals saying nothing, and the eye stops seeing the ones that are not zero. */
+function pplNumCell(v){
+ if(v===''||v===null||v===undefined)return '<span class="pplna">&mdash;</span>';
+ if(typeof v==='number')
+  return v?fmt(v):'<span class="pplna">&mdash;</span>';
+ return esc(String(v));                 /* already formatted, e.g. "121/146" */
+}
+/* Free text, master data and dates. A value that is absent, "No" or "Unassigned" is a
+   DEFECT — an unassigned territory is why a rep has no target — so it is drawn in the
+   error colour rather than in the same grey as everything that is fine. */
+function pplTextCell(v){
+ const s=String(v===undefined||v===null?'':v).trim();
+ if(PPL_GAP[s])return '<span class="pplgap">'+esc(s||'\u2014')+'</span>';
+ return esc(s);
+}
+/* EACH TYPE'S CLASS, WRITTEN OUT IN FULL. Concatenating 'pplc-'+c.ty would be shorter
+   and would defeat the component audit, which reads literal class strings out of the
+   markup: it saw the prefix, found no rule for ".pplc-", and failed the build. It was
+   right to — a class name assembled at runtime is a class name nothing can check. */
+const PCLS={person:'pplc-person',tag:'pplc-tag',mono:'pplc-mono',text:'pplc-text',
+            num:'pplc-num',bar:'pplc-bar',spark:'pplc-spark'};
+
+/* The dispatcher. One switch, seven arms, no eighth — a column that cannot be drawn by
+   one of these is a column that has not been thought through. */
+function pplCell(col,r,stat){
+ switch(col.ty){
+  case 'person':{
+   /* the code moves INTO the name cell when its own column is hidden, so the
+      identifier is never lost — that is the only two-line cell on the row */
+   const solo=(pplCols.indexOf('c')<0);
+   return '<span class="pplpn">'+esc(r.n||'')+'</span>'+
+     (solo?'<span class="pplpc2">'+esc(r.c||'')+'</span>'
+          :'');
+  }
+  case 'tag':   return pplTag(stat);
+  case 'mono':  return esc(String(col.v(r)||''));
+  case 'text':  return pplTextCell(col.v(r));
+  case 'num':   return pplNumCell(col.v(r));
+  case 'bar':   return pplBarCell(col.v(r));
+  case 'spark': return pplSpark(r,stat);
+ }
+ return '';
 }
 
 /* MISSING MASTER DATA IS A DEFECT, NOT FILLER. A territory nobody assigned is the
    reason a rep has no target; printing it in the same grey as everything else is how
-   878 of those go unnoticed for a year. */
+   878 of those go unnoticed for a year. ONE definition of "missing", read by the `text`
+   cell type, so all six master-data columns agree about it. */
 const PPL_GAP={'':1,'—':1,'-':1,'No':1,'Unassigned':1,'NA':1,'N/A':1};
-function pplTerr(r){
- const v=(r.terr||'').trim();
- if(PPL_GAP[v])return '<span class="pplgap">Unassigned</span>';
- return esc(v);
-}
 
 /* How many rows are on screen. 100 at a time; the footer says how many of how many. */
 const PPL_STEP=100;
@@ -4065,7 +4319,24 @@ function pplChrome(){
    '</div>'+
    '<div class="pplseg" id="pplseg" role="group" '+
      'aria-label="Filter by reporting status"></div>'+
+   /* the last cell of the toolbar, matching the segments beside it: the same 48px
+      height, the same field fill, and the same 2px blue underline when it is on */
+   '<button class="pplcolsb" id="pplcolsb" type="button" aria-expanded="false" '+
+     'aria-controls="pplpanw" title="Choose which columns to show">'+
+     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+     'data-icon="settings"><path d="M27 16.76v-1.53l1.92-1.68A2 2 0 0 0 29.3 11l-2.36-4a2 '+
+     '2 0 0 0-1.73-1 2 2 0 0 0-.64.1l-2.43.82a11.35 11.35 0 0 0-1.31-.75l-.51-2.52a2 2 0 '+
+     '0 0-2-1.6h-4.68a2 2 0 0 0-2 1.61l-.51 2.51a11.48 11.48 0 0 0-1.32.75l-2.38-.86A2 2 '+
+     '0 0 0 6.79 6a2 2 0 0 0-1.73 1L2.7 11a2 2 0 0 0 .38 2.52L5 15.24v1.53l-1.92 1.68A2 2 '+
+     '0 0 0 2.7 21l2.36 4a2 2 0 0 0 1.73 1 2 2 0 0 0 .64-.1l2.43-.82a11.35 11.35 0 0 0 '+
+     '1.31.75l.51 2.52a2 2 0 0 0 2 1.6h4.72a2 2 0 0 0 2-1.61l.51-2.51a11.48 11.48 0 0 0 '+
+     '1.32-.75l2.42.82a2 2 0 0 0 .64.1 2 2 0 0 0 1.73-1l2.28-4a2 2 0 0 0-.38-2.52zM16 '+
+     '22a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/></svg>'+
+     '<span id="pplcolsl">Columns</span></button>'+
   '</div>'+
+  /* THE PANEL OPENS INLINE, NOT AS A POPOVER. At this width a popover would cover the
+     data the reader is deciding about, which is the one thing it must not do. */
+  '<div id="pplpanw"></div>'+
   '<div class="pplbatch" id="pplbatch" role="toolbar" '+
     'aria-label="Actions for the selected people" hidden></div>'+
   '<div class="card pplcard" data-furniture="off">'+
@@ -4091,27 +4362,60 @@ function pplChromeWire(){
 
 /* THE HEADER CHECKBOX TAKES THE WHOLE FILTERED SET. Not the loaded slice: a reader
    who sees "878 match", ticks the box and gets 100 has been told something false. */
+/* (b) the header, from the same registry. Right-aligned by type rather than by a
+   per-column flag: every num and every bar is right-aligned, always. */
+function pplRight(c){return c.ty==='num'||c.ty==='bar';}
 function pplHead(){
  const all=pplRows(), on=all.filter(r=>PPL_SEL[r.c]).length;
  const state=(on===0)?'none':(on===all.length&&all.length?'all':'some');
- return '<tr id="pplh" role="row" style="grid-template-columns:'+PFLAT_GRID+'">'+
+ return '<tr id="pplh" role="row" style="grid-template-columns:'+pplGrid()+'">'+
   '<th class="pplck" role="columnheader">'+
    '<label class="pplcb'+(state==='all'?' on':'')+(state==='some'?' mixed':'')+'">'+
     '<input type="checkbox" id="pplall" '+(state==='all'?'checked ':'')+
       'aria-label="Select every person that matches these filters">'+PPL_CHK+
     '</label></th>'+
-  PFLAT.map(c=>{
-   const act=(pplS===c.s);
+  pplVis().map(c=>{
+   const act=(pplS===c.s), num=pplRight(c);
    const st=act?(pplA?'asc':'desc'):'none';
    return '<th data-k="'+c.k+(c.s?'" data-s="'+c.s:'')+'"'+
-    ' class="'+(c.n?'n ':'')+(c.s?'srt':'')+'"'+
+    ' class="'+(num?'n ':'')+(c.s?'srt':'')+'"'+
     ' role="columnheader" aria-sort="'+(act?(pplA?'ascending':'descending'):'none')+'"'+
-    (c.s?' tabindex="0"':'')+'>'+
+    (c.s?' tabindex="0"':'')+' title="'+esc(c.t)+'">'+
     /* the arrow goes BEFORE a right-aligned number column so it stays beside the
        numerals rather than drifting off to the left edge of the cell */
-    (c.n&&c.s?sortIco(st):'')+esc(c.t)+((!c.n&&c.s)?sortIco(st):'')+'</th>';
+    (num&&c.s?sortIco(st):'')+esc(c.t)+((!num&&c.s)?sortIco(st):'')+'</th>';
   }).join('')+
   '<th class="pplchv" role="columnheader"><span class="vh">Open</span></th></tr>';
+}
+
+/* (d) the selector. Grouped, with presets, because the complaint about the old one was
+   never that it existed — it was that reaching a useful set took eight clicks through
+   twenty-two unlabelled boxes. */
+function pplPresetOn(id){
+ const want=(PPRESETS.filter(p=>p[0]===id)[0]||[0,0,[]])[2];
+ return want.length===pplCols.length&&want.every(k=>pplCols.indexOf(k)>=0);
+}
+function pplPanelHtml(){
+ if(!pplPanel)return '';
+ return '<div class="pplpan" id="pplpan">'+
+  '<div class="pplpre"><span class="pplprel">Presets</span>'+
+   PPRESETS.map(p=>'<button class="pplchip'+(pplPresetOn(p[0])?' on':'')+
+     '" type="button" data-preset="'+p[0]+'" aria-pressed="'+
+     (pplPresetOn(p[0])?'true':'false')+'">'+esc(p[1])+'</button>').join('')+
+   '<button class="ppllink pplreset" id="pplreset" type="button">Reset to default'+
+   '</button></div>'+
+  '<div class="pplgrp">'+PGROUPS.map(g=>
+   '<div class="pplg"><div class="pplgh">'+esc(g[1])+'</div>'+
+    PCOLS.filter(c=>c.g===g[0]).map(c=>{
+     const on=c.always||pplCols.indexOf(c.k)>=0;
+     return '<label class="pplopt'+(c.always?' fixed':'')+'">'+
+      '<span class="pplcb'+(on?' on':'')+(c.always?' dis':'')+'">'+
+       '<input type="checkbox" data-col="'+c.k+'"'+(on?' checked':'')+
+        (c.always?' disabled':'')+'>'+PPL_CHK+'</span>'+
+      '<span class="pplottl">'+esc(c.t)+'</span>'+
+      (c.always?'<span class="pplalw">always</span>':'')+'</label>';
+    }).join('')+'</div>').join('')+
+  '</div></div>';
 }
 
 /* The five status segments, with counts taken before the segment filter applies. */
@@ -4149,6 +4453,18 @@ function pplView(rows){
    'below, or search by name or code. Select a row to open the profile.';
  pplSeg();
 
+ const vis=pplVis(), grid=pplGrid();
+ /* the wrapper scrolls sideways only when the CHOSEN columns are wider than the screen,
+    which is a different number for every selection — so it is computed, not typed */
+ $('pplwrap').style.setProperty('--pplminw',pplMinW()+'px');
+ const pan=$('pplpanw'); if(pan)pan.innerHTML=pplPanelHtml();
+ const cb=$('pplcolsb');
+ if(cb){
+  cb.classList.toggle('on',pplPanel);
+  cb.setAttribute('aria-expanded',pplPanel?'true':'false');
+  const lab=$('pplcolsl');
+  if(lab)lab.textContent='Columns ('+vis.length+' of '+PCOLS.length+')';
+ }
  $('pplwrap').innerHTML=
   '<table class="ppltable pplgrid" role="table"><thead role="rowgroup">'+pplHead()+
   '</thead><tbody id="pplb" role="rowgroup">'+
@@ -4156,26 +4472,18 @@ function pplView(rows){
     const st=pplStat(r), col=pplStatColor(st), sel=!!PPL_SEL[r.c];
     const open=(typeof CURP!=='undefined'&&CURP&&CURP.c===r.c);
     return '<tr data-code="'+esc(r.c||'')+'" role="row"'+
-     ' style="grid-template-columns:'+PFLAT_GRID+'"'+
+     ' style="grid-template-columns:'+grid+'"'+
      (sel||open?' class="'+(sel?'sel':'')+(open?(sel?' cur':'cur'):'')+'"':'')+'>'+
      '<td class="pplck" role="cell"><label class="pplcb'+(sel?' on':'')+'">'+
       '<input type="checkbox" data-sel="'+esc(r.c||'')+'"'+(sel?' checked':'')+
        ' aria-label="Select '+esc(r.n||r.c||'')+'">'+PPL_CHK+'</label></td>'+
-     /* THE ROW'S SIGNAL IS ON ITS EDGE. 3px, the status colour, against the name —
-        the one mark that makes 878 identical rows scannable. */
-     '<td class="pplp" role="cell" style="box-shadow:inset 3px 0 0 '+col+'">'+
-      '<span class="pplpn">'+esc(r.n||'')+'</span>'+
-      '<span class="pplpc">'+esc(r.c||'')+'</span></td>'+
-     '<td class="pplst" role="cell">'+pplTag(st)+'</td>'+
-     '<td class="pplrl" role="cell">'+esc(r.r||'')+'</td>'+
-     '<td class="pplte" role="cell">'+pplTerr(r)+'</td>'+
-     '<td class="ppltr" role="cell">'+pplSpark(r,st)+'</td>'+
-     '<td class="n" role="cell">'+fmt(r.days||0)+'/'+fmt(pplWd(r))+'</td>'+
-     '<td class="n'+((+r.cpd||0)?'':' z')+'" role="cell">'+
-       ((+r.cpd||0)?r.cpd:'<span class="pplna">&mdash;</span>')+'</td>'+
-     '<td class="n pplcov" role="cell">'+pplCovCell(r)+'</td>'+
-     '<td class="n'+((+r.rx||0)?'':' z')+'" role="cell">'+
-       ((+r.rx||0)?fmt(r.rx):'<span class="pplna">&mdash;</span>')+'</td>'+
+     /* (c) THE ROW'S CELLS, from the same registry as the header. The type decides the
+        class, so there is no per-column styling to keep in step — and the row's signal
+        is the 3px status edge on the person cell, the one mark that makes 878
+        otherwise identical rows scannable. */
+     vis.map(c=>'<td class="'+(PCLS[c.ty]||'')+(pplRight(c)?' n':'')+'" role="cell"'+
+       (c.ty==='person'?' style="box-shadow:inset 3px 0 0 '+col+'"':'')+'>'+
+       pplCell(c,r,st)+'</td>').join('')+
      '<td class="pplchv" role="cell">'+PPL_CHV+'</td></tr>';
    }).join('')
    :'<tr class="pplemptyr" role="row"><td class="pplempty" role="cell">'+
@@ -4198,15 +4506,13 @@ function pplView(rows){
 /* The columns the CSV carries. The screen shows nine; a spreadsheet is where the
    rest of the roster record belongs, so the export keeps the identity and master-data
    fields the picker used to offer. Nobody scrolls a CSV sideways by accident. */
-const PFLAT_CSV=[
- {k:'c',t:'Code'},{k:'n',t:'Name'},{k:'stat',t:'Status'},{k:'r',t:'Role'},
- {k:'di',t:'Division'},{k:'zn',t:'Zone'},{k:'st',t:'State'},{k:'hq',t:'HQ'},
- {k:'terr',t:'Territory'},{k:'mg',t:'Reports to'},
- {k:'days',t:'Days reported'},{k:'attWd',t:'Working days'},{k:'att',t:'Reporting %'},
- {k:'cpd',t:'Calls/day'},{k:'da',t:'Doctors on list'},{k:'ud',t:'Doctors met'},
- {k:'cov',t:'Coverage %'},{k:'rx',t:'Rx'},{k:'rpc',t:'Rx/call'},
- {k:'rec',t:'Days since last visit'},{k:'doj',t:'Joined'}
-];
+/* THE EXPORT CARRIES EVERY COLUMN IN THE REGISTRY, not the ones on screen. A
+   spreadsheet is where the whole roster record belongs — nobody scrolls a CSV sideways
+   by accident — and a file that changed shape depending on which boxes happened to be
+   ticked would be a different answer to the same question every time. */
+const PFLAT_CSV=[{k:'c',t:'Code'},{k:'n',t:'Name'},{k:'stat',t:'Status'},
+  {k:'attWd',t:'Working days'}].concat(
+  PCOLS.filter(c=>['n','c','stat','tr'].indexOf(c.k)<0).map(c=>({k:c.k,t:c.t})));
 function pplExport(rows,what){
  const cols=PFLAT_CSV;
  /* Belt and braces: an Event is truthy, so `rows||default` was never enough. Anything
@@ -4270,6 +4576,34 @@ function pplWire(){
   pplLoaded+=PPL_STEP;
   pplBusy(()=>{pplRedraw();window.scrollTo(0,y);});
  };
+ /* the columns control, its presets and its checkboxes */
+ const cb2=$('pplcolsb');
+ if(cb2)cb2.onclick=()=>{pplPanel=!pplPanel;pplRedraw();};
+ const pan2=$('pplpan');
+ if(pan2){
+  pan2.querySelectorAll('button[data-preset]').forEach(b=>{
+   b.onclick=()=>{
+    const p=PPRESETS.filter(x=>x[0]===b.dataset.preset)[0];
+    if(p)pplCols=p[2].slice();
+    pplSave(); pplRedraw();
+   };
+  });
+  pan2.querySelectorAll('input[data-col]').forEach(inp=>{
+   inp.onchange=()=>{
+    const k=inp.getAttribute('data-col');
+    const at=pplCols.indexOf(k);
+    if(inp.checked&&at<0)pplCols.push(k);
+    if(!inp.checked&&at>=0)pplCols.splice(at,1);
+    /* REGISTRY ORDER, NOT CLICK ORDER. Otherwise the table reshuffles itself every
+       time somebody ticks a box, and a reader loses the column they were reading. */
+    pplCols=PCOLS.map(c=>c.k).filter(k2=>!PCOLS.filter(c=>c.k===k2)[0].always&&
+      pplCols.indexOf(k2)>=0);
+    pplSave(); pplRedraw();
+   };
+  });
+  const rs=$('pplreset');
+  if(rs)rs.onclick=()=>{pplCols=PPL_DEFCOLS.slice();pplSave();pplRedraw();};
+ }
  const cl0=$('pplclear');
  if(cl0)cl0.onclick=()=>{
   pplStatF=null; F.q='';

@@ -7,7 +7,8 @@ Binding spec for every screen of this app. Values come from `carbon-tokens.css`;
 1. **Radius 0** on everything except tags/pills (fully rounded), the toggle knob and
    the loading spinner. From v115 the audit checks the SELECTOR as well as the value,
    so the exceptions are named rather than allowed by shape: `.ppltag` may be `11px`
-   (Carbon's tag height ÷ 2) and `.pplsgd`, the 8px status dot, may be `50%`. A `24px`
+   (Carbon's tag height ÷ 2), `.pplchip`, the 24px preset chip, may be `12px`, and
+   `.pplsgd`, the 8px status dot, may be `50%`. A `24px`
    radius on `.ppltag`, or `11px` on `.card`, still fails.
 1b. **No colour literal below the tokens**, with one named exception: the four status
    tints `.ppltag--err/--warn/--ok/--neu` are deliberately TRANSLUCENT rgba. A token is
@@ -157,7 +158,7 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Zero hex, `rgb()` or `rgba()` literals outside `carbon-tokens.css`.
 - [ ] Zero undefined tokens: every `var(--cds-*)` used resolves to a non-empty computed value.
 - [ ] Every icon mount renders non-zero (numeric `size`, mask URL resolves).
-- [ ] Every border radius is 0, except `.ppltag` (11px) and `.pplsgd` (50%), the
+- [ ] Every border radius is 0, except `.ppltag` (11px), `.pplchip` (12px) and `.pplsgd` (50%), the
       toggle knob and the spinner — checked by selector, not by value alone.
 - [ ] Content resolves to the grid: hero 6/10, tile rows in fours, 16px page margins, flex-wrap wherever a row can leave a remainder.
 - [ ] No orphaned grid cells: no gap-background visible as a slab anywhere.
