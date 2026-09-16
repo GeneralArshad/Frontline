@@ -4,7 +4,15 @@ Binding spec for every screen of this app. Values come from `carbon-tokens.css`;
 
 ## Absolute rules
 
-1. **Radius 0** on everything except tags/pills (fully rounded), the toggle knob and the loading spinner.
+1. **Radius 0** on everything except tags/pills (fully rounded), the toggle knob and
+   the loading spinner. From v115 the audit checks the SELECTOR as well as the value,
+   so the exceptions are named rather than allowed by shape: `.ppltag` may be `11px`
+   (Carbon's tag height ÷ 2) and `.pplsgd`, the 8px status dot, may be `50%`. A `24px`
+   radius on `.ppltag`, or `11px` on `.card`, still fails.
+1b. **No colour literal below the tokens**, with one named exception: the four status
+   tints `.ppltag--err/--warn/--ok/--neu` are deliberately TRANSLUCENT rgba. A token is
+   opaque, and an opaque pink behind red text is a g100 contrast failure — which design
+   review caught. Any rgba() on any other selector fails.
 2. **Blue 60 `--cds-interactive` is the only interactive colour.** Links, focus, selection, primary buttons, active nav, chart series 1. If something is blue it is interactive or it is data.
 3. **Colour carries meaning or it is absent.** A tile gets a coloured left border only in error or warning. Neutral tiles get `--cds-border-subtle-00`. No decorative accent bars.
 4. **Spacing on the 8px scale only**: 2 / 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64.
@@ -149,7 +157,8 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Zero hex, `rgb()` or `rgba()` literals outside `carbon-tokens.css`.
 - [ ] Zero undefined tokens: every `var(--cds-*)` used resolves to a non-empty computed value.
 - [ ] Every icon mount renders non-zero (numeric `size`, mask URL resolves).
-- [ ] Every border radius is 0, except tags, the toggle knob and the spinner.
+- [ ] Every border radius is 0, except `.ppltag` (11px) and `.pplsgd` (50%), the
+      toggle knob and the spinner — checked by selector, not by value alone.
 - [ ] Content resolves to the grid: hero 6/10, tile rows in fours, 16px page margins, flex-wrap wherever a row can leave a remainder.
 - [ ] No orphaned grid cells: no gap-background visible as a slab anywhere.
 - [ ] Exactly one headline metric on the screen.

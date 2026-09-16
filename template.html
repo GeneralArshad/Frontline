@@ -2666,6 +2666,124 @@ table.rep-reports .barcell{width:88px}
 /* the drill panel has the same shape, so it gets the same treatment */
 .drill .tablewrap{max-height:none}
 
+/* ---- People, flat list (v115) ---------------------------------------------------- */
+/* THE PAGE HEADER is a two-column row: identity on the left, the page's own actions on
+   the right. Only the People section gets it; `.secttl` is shared with nine screens. */
+.secttl.pplhdr{display:flex;align-items:flex-end;justify-content:space-between;
+  gap:var(--cds-spacing-06);flex-wrap:wrap}
+.pplhl{min-width:0;flex:1 1 auto}
+.pplhba{display:flex;align-items:center;gap:var(--cds-spacing-03);flex:none}
+
+/* THE TOOLBAR. Carbon's divider trick: a 1px gap over a border-coloured background,
+   so the gaps between cells read as rules without a border on each cell. */
+.ppltb{display:flex;align-items:stretch;gap:1px;height:48px;padding:0;
+  background:var(--cds-border-subtle-01);
+  border-top:1px solid var(--cds-border-subtle-01);
+  border-bottom:1px solid var(--cds-border-subtle-01);
+  margin-bottom:0;overflow-x:auto}
+.ppltb .pplsrch{flex:1 1 340px;min-width:200px;display:flex;align-items:center;
+  gap:var(--cds-spacing-03);padding:0 var(--cds-spacing-05);
+  background:var(--cds-field-01)}
+.ppltb .pplsrch svg{width:15px;height:15px;fill:var(--cds-text-secondary);flex:none}
+.ppltb .pplsrch input{flex:1 1 auto;min-width:0;height:46px;border:0;outline-offset:-2px;
+  background:transparent;color:var(--cds-text-primary);
+  font:400 var(--cds-body-compact-01-size)/1.3 var(--cds-font-sans)}
+.pplseg{display:flex;align-items:stretch;gap:1px;flex:none}
+.pplsg{display:inline-flex;align-items:center;gap:var(--cds-spacing-03);height:48px;
+  padding:0 var(--cds-spacing-05);border:0;cursor:pointer;
+  background:var(--cds-field-01);color:var(--cds-text-primary);
+  font:400 var(--cds-body-compact-01-size)/1 var(--cds-font-sans);white-space:nowrap}
+.pplsg:hover{background:var(--cds-layer-hover-01)}
+/* the selected segment: Carbon's 2px inset underline, the same mark the profile tabs
+   use, so "this one is on" means one thing across the whole report */
+.pplsg.on{background:var(--cds-background);box-shadow:inset 0 -2px 0 var(--cds-interactive)}
+.pplsgd{width:8px;height:8px;flex:none;border-radius:50%}
+.pplsgl{color:inherit}
+.pplsgn{color:var(--cds-text-secondary);font-variant-numeric:tabular-nums}
+.pplsg.on .pplsgn{color:var(--cds-text-primary)}
+
+/* THE GRID. Header and rows both take their track list from PFLAT_GRID inline, so
+   this rule only says "be a grid" — it never names a width, which is the only way the
+   two can be guaranteed to agree. */
+.pplgrid{display:block;min-width:1180px;border-collapse:collapse}
+.pplgrid thead,.pplgrid tbody{display:block}
+.pplgrid tr{display:grid;align-items:center}
+.pplgrid thead tr{height:40px;background:var(--cds-layer-accent-01)}
+.pplgrid th{display:flex;align-items:center;gap:var(--cds-spacing-02);
+  height:40px;padding:0 14px;border:0;background:transparent;
+  font:var(--cds-font-weight-semibold) var(--cds-label-01-size)/1
+    var(--cds-font-sans);letter-spacing:.16px;color:var(--cds-text-primary);
+  white-space:nowrap;overflow:hidden;text-align:left}
+.pplgrid th.n{justify-content:flex-end;text-align:right}
+.pplgrid th.srt{cursor:pointer;user-select:none}
+.pplgrid th.srt:hover{background:var(--cds-layer-hover-01)}
+.pplgrid tbody tr{height:44px;cursor:pointer;
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.pplgrid tbody tr:hover{background:var(--cds-layer-hover-01)}
+.pplgrid tbody tr.sel{background:var(--cds-layer-selected-01)}
+/* the person whose profile is open keeps the selected tint, so closing the profile
+   puts you back where you were rather than in a list of identical rows */
+.pplgrid tbody tr.cur{background:var(--cds-layer-selected-01)}
+.pplgrid td{display:flex;align-items:center;height:44px;padding:0 14px;border:0;
+  min-width:0;overflow:hidden;
+  font:400 var(--cds-body-compact-01-size)/1.2 var(--cds-font-sans);
+  color:var(--cds-text-primary)}
+.pplgrid td.n{justify-content:flex-end;text-align:right;
+  font-size:13px;font-variant-numeric:tabular-nums}
+.pplgrid td.z{color:var(--cds-text-secondary)}
+.pplgrid td.pplck,.pplgrid th.pplck{padding:0 0 0 16px;justify-content:flex-start}
+.pplgrid td.pplchv,.pplgrid th.pplchv{padding:0;justify-content:flex-end;
+  padding-right:var(--cds-spacing-03)}
+.pplgrid td.pplchv svg{width:15px;height:15px;fill:var(--cds-text-secondary)}
+
+/* THE IDENTITY CELL and its 3px status edge — the row's primary signal. */
+.pplp{gap:10px;padding-left:17px !important}
+.pplpn{font-weight:var(--cds-font-weight-semibold);color:var(--cds-text-primary);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pplpc{flex:none;font-family:var(--cds-font-mono);
+  font-size:var(--cds-label-01-size);color:var(--cds-text-secondary)}
+/* the tag cell clips nothing: a status that says "Not onboar…" is worse than a
+   column one pixel wider */
+.pplst{overflow:visible}
+.pplrl{font-family:var(--cds-font-mono);font-size:var(--cds-label-01-size)}
+.pplte{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* MISSING MASTER DATA READS AS A DEFECT. An unassigned territory is why a rep has no
+   target; in the same grey as everything else nobody ever sees it. */
+.pplgap{color:var(--cds-support-error)}
+.pplna{color:var(--cds-text-placeholder)}
+.ppltr{padding:0 10px}
+.pplspk{display:block;overflow:visible}
+.pplcov{gap:8px}
+.pplbar{display:inline-block;width:44px;height:4px;flex:none;
+  background:var(--cds-border-subtle-01)}
+.pplbarf{display:block;height:4px}
+.pplbarv{font-variant-numeric:tabular-nums}
+
+/* pill tags. The one place radius is not 0 — Carbon's tag is a pill, and a tag that
+   looks like every other rectangle on the screen is not a tag. */
+.ppltag{display:inline-flex;align-items:center;height:22px;padding:0 10px;
+  border-radius:11px;white-space:nowrap;
+  font:400 var(--cds-label-01-size)/1 var(--cds-font-sans)}
+.ppltag--err{background:rgba(218,30,40,.12);color:var(--cds-support-error)}
+.ppltag--warn{background:rgba(241,194,27,.22);color:var(--cds-text-primary)}
+.ppltag--ok{background:rgba(36,161,72,.14);color:var(--cds-support-success)}
+.ppltag--neu{background:rgba(141,141,141,.16);color:var(--cds-text-secondary)}
+
+/* THE FOOTER. No page numbers, no items-per-page: "how many of how many, and more". */
+.pplfoot{display:flex;align-items:center;justify-content:center;gap:var(--cds-spacing-05);
+  height:56px;background:var(--cds-layer-01);
+  border-top:1px solid var(--cds-border-subtle-01)}
+.pplfc{font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary)}
+
+.pplemptyr{display:block !important;height:auto !important}
+.pplgrid td.pplempty{display:block;height:auto;padding:64px 16px;text-align:center}
+.pplemptyt{font-size:var(--cds-body-01-size);color:var(--cds-text-primary);
+  margin-bottom:var(--cds-spacing-04)}
+.ppllink{border:0;background:none;padding:0;cursor:pointer;
+  color:var(--cds-link-primary);text-decoration:underline;
+  font:400 var(--cds-body-compact-01-size)/1 var(--cds-font-sans)}
+.ppllink:hover{color:var(--cds-link-primary-hover)}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2703,7 +2821,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v113 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v115 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2822,7 +2940,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_docs"><div class="secttl"><div class="eye">Universe</div><div class="big">Doctor master</div><div class="d">Every doctor visited in this window, with what each one has actually produced. Rep filters in the sidebar apply here too.</div></div>
 <div class="filters"><div class="wide"><label>Doctor search</label><input id="dq" placeholder="name, clinic or code…"></div><div><label>State</label><select id="dfst"></select></div><div><label>Specialization</label><select id="dfsp"></select></div><div><label>Category</label><select id="dfca"></select></div><div><label>Prescriber</label><select id="dfpr"><option value="">All doctors</option><option value="y">Prescribers only</option><option value="n">Never prescribed</option></select></div><div><label>Activity</label><select id="dfid"><option value="">Any last-seen</option><option value="30">Idle 30+ days</option><option value="60">Idle 60+ days</option><option value="90">Idle 90+ days</option></select></div><span class="spacer"></span><button class="fbtn" id="dreset">Reset</button></div><div class="fstats" id="dstats"></div>
 <div class="card"><div class="ch"><div><h3>Doctor Master <span id="doccnt" class="sub"></span></h3></div></div><div class="tablewrap"><table><thead><tr id="mmh"></tr></thead><tbody id="mmb"></tbody></table></div></div></section>
-<section class="sec on" id="sec_ppl"><div class="secttl"><div class="eye">Field force</div><div class="big">People</div><div class="d">Everyone in the roster. Sort any column, choose which columns you want, search by name or code, and click a row for the full profile. Your choices are remembered in this browser.</div></div><div id="pplbody"></div></section>
+<section class="sec on" id="sec_ppl"><div class="secttl pplhdr"><div class="pplhl"><div class="eye">Field force</div><div class="big">People</div><div class="d" id="pplsub">Start from a signal below, or search by name or code. Select a row to open the profile.</div></div><div class="pplhba" id="pplhba"></div></div><div id="pplbody"></div></section>
 <section class="sec" id="sec_hgeo"><div class="secttl"><div class="eye">Reference</div><div class="big">Geography</div><div class="d">Zones, states and headquarters from the HR roster, and how far Hive Frontline reached in each. Headcount is a roster fact and does not change with the period; reporting and Rx do.</div></div><div id="hgbody"></div></section>
 <section class="sec" id="sec_adopt"><div class="secttl"><div class="eye">Action</div><div class="big">App adoption</div><div class="d">Who is reporting their work through Hive Frontline, month by month, since the app started capturing. Filters and period above apply to who is listed; the monthly figures always read the full history.</div></div><div id="adoptbody"></div></section>
 <section class="sec" id="sec_nrep"><div class="secttl"><div class="eye">Action</div><div class="big">Not reporting</div><div class="d">Everyone the ranking drops before it reaches a tier, and where the rest of the field falls out. Filters and period above apply.</div></div><div id="nrepbody"></div></section>
@@ -2865,7 +2983,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v113 · 16 Sep 2026">
+<meta name="hfi-version" content="v115 · 16 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -2887,7 +3005,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v113 · 16 Sep 2026';
+window.HFI_BUILD='v115 · 16 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -3192,7 +3310,10 @@ async function boot(){const b=$('d').textContent.trim();const bin=atob(b);const 
  try{const m=/^#rep=(.+)$/.exec(location.hash||''); if(m)openProfile(decodeURIComponent(m[1]),{});}catch(_){}}
 function uniq(k){return [...new Set(D.reps.map(r=>r[k]).filter(x=>x&&x!=='—'))].sort();}
 function fill(id,v,l){const e=$(id); if(!e){console.warn('fill: missing #'+id);return;}e.innerHTML='<option value="">'+l+'</option>'+v.map(x=>'<option>'+x+'</option>').join('');}
-function pass(r){if(F.q){const q=F.q.toLowerCase();if(!(r.n.toLowerCase().includes(q)||r.c.toLowerCase().includes(q)))return false;}
+function pass(r){if(F.q){const q=F.q.toLowerCase();
+ /* name + code + HQ + territory + manager, which is what the placeholder promises */
+ const hay=[r.n,r.c,r.hq,r.terr,r.mg].map(x=>(x||'').toLowerCase());
+ if(!hay.some(h=>h.includes(q)))return false;}
  if(F.di&&r.di!==F.di)return false;if(F.zn&&r.zn!==F.zn)return false;if(F.st&&r.st!==F.st)return false;if(F.hq&&r.hq!==F.hq)return false;if(F.rl&&r.r!==F.rl)return false;if(F.mg&&r.mg!==F.mg)return false;
  if(F.ob!==''&&r.ob!==+F.ob)return false;
  if(F.rx==='zero'&&!r.zeroRx)return false;if(F.rx==='has'&&!(r.rx>0))return false;
@@ -3416,50 +3537,14 @@ function ovCharts(rows){const codes=new Set(rows.map(r=>r.c));
  const rv={};rows.forEach(r=>{if(r.r)rv[r.r]=(rv[r.r]||0)+r.vis;});const rr=Object.entries(rv).sort((a,b)=>b[1]-a[1]);
  chart('ch_role',{type:'bar',data:{labels:rr.map(x=>x[0]),datasets:[{data:rr.map(x=>x[1]),backgroundColor:CDS('--cds-chart-01'),borderRadius:4}]},options:gopt()},{title:'Visits by role',def:'Visits by designation.',type:'bar',labels:rr.map(x=>x[0]),values:rr.map(x=>x[1])});}
 const EC=[['c','Code'],['n','Name'],['r','Role'],['di','Div'],['zn','Zone'],['st','State'],['hq','HQ'],['mg','Manager'],['da','Drs'],['vis','Visits'],['ud','Met'],['cov','Cov%'],['cpd','Calls/Day'],['rx','Rx'],['rpc','Rx/Call'],['pi','PI'],['tp','Tour'],['newd','New Drs'],['mom','Mom'],['chsh','Chem%'],['fhrs','Fld Hrs'],['tdc','TopDoc%'],['ob','Onb']];
-/* ---- People: the front door (v79) --------------------------------------------- */
-/* Every column carries its own accessor. The old rep table mapped 23 headers onto 23
-   hand-written cells by position, which has silently shifted the whole table twice in
-   this codebase; a table showing the right headers over the wrong values is the one
-   failure mode worse than a crash. */
-const PPL_COLS=[
- {k:'c',   t:'Code',        get:r=>esc(r.c||'')},
- /* ONE anchor per row, not two competing ones. Carbon's primary/secondary pairing:
-    the name is what you scan, the code is what you quote. Code remains its own column
-    in the picker for anyone who sorts by it. */
- {k:'n',   t:'Name',        pin:1, get:r=>
-    '<span class="pplid">'+av(r.n,r.c)+
-    '<span class="pplidt"><span class="pplidn">'+esc(r.n||'')+'</span>'+
-    '<span class="pplidc">'+esc(r.c||'')+'</span></span></span>'},
- {k:'r',   t:'Role',        get:r=>esc(r.r||'')},
- {k:'hq',  t:'HQ',          get:r=>esc(r.hq||'')},
- {k:'st',  t:'State',       get:r=>esc(r.st||'')},
- {k:'zn',  t:'Zone',        get:r=>esc(r.zn||'')},
- {k:'mg',  t:'Reports to',  get:r=>esc(r.mg||'')},
- {k:'te',  t:'Territory',   get:r=>esc(r.terr||'')},
- {k:'att', t:'Attendance %',n:1,get:r=>fmt(r.att)},
- {k:'vis', t:'Visits',      n:1,get:r=>fmt(r.vis)},
- {k:'dv',  t:'Doctor calls',n:1,get:r=>fmt(r.dv)},
- {k:'ud',  t:'Doctors met', n:1,get:r=>fmt(r.ud)},
- {k:'cov', t:'Coverage %',  n:1,get:r=>fmt(r.cov)},
- {k:'cpd', t:'Calls/day',   n:1,get:r=>fmt(r.cpd)},
- {k:'rx',  t:'Rx',          n:1,get:r=>'<b>'+fmt(r.rx)+'</b>'},
- {k:'rpc', t:'Rx/call',     n:1,get:r=>fmt(r.rpc)},
- {k:'rxD', t:'Prescribers', n:1,get:r=>fmt(r.rxD)},
- {k:'sm',  t:'Samples',     n:1,get:r=>fmt(r.sm)},
- {k:'pi',  t:'Index',       n:1,get:r=>r.pi!==''&&r.pi!=null
-    ?'<span class="pi" style="background:'+piColor(r.pi)+'">'+r.pi+'</span>':''},
- {k:'rec', t:'Last active', n:1,get:r=>r.rec===''||r.rec==null?'—'
-    :(r.rec===0?'today':r.rec+'d ago')},
- {k:'newd',t:'New doctors', n:1,get:r=>fmt(r.newd)},
- {k:'doj', t:'Joined',      get:r=>esc(r.doj||'')}
-];
-/* Ten columns, chosen to answer "who is this person and are they working" without
-   scrolling sideways. Everything else is one click away in the column picker. */
-/* 'c' comes off the default set: the code now rides in the identity cell. It is one
-   tick away in the picker for anyone who wants it sortable on its own. */
-const PPL_DEF=['n','r','hq','st','mg','att','vis','rx','rec'];
-
-let pplCols=PPL_DEF.slice(), pplS='n', pplA=true, pplPick=false;
+/* ---- People: the front door (v79, columns fixed v115) ------------------------- */
+/* The 22-column set and its picker are gone. What replaced them is PFLAT, further
+   down: nine columns chosen to answer "who is this and are they working" with no
+   horizontal scrolling, over a grid the header and the rows share. The full roster
+   record is still one click away — in the CSV export, and in the profile. */
+/* Default sort is code ascending — the roster's own order, so the first screen a
+   reader sees is stable between visits and between periods. */
+let pplS='c', pplA=true;
 
 /* localStorage throws in private mode, with storage disabled, and over quota. A reader
    with cookies locked down must get the defaults, not a blank screen. */
@@ -3468,35 +3553,20 @@ function pplLoad(){
   const raw=window.localStorage.getItem('hfi.people');
   if(!raw)return;
   const s=JSON.parse(raw);
-  if(s&&Array.isArray(s.cols)&&s.cols.length){
-   const known=PPL_COLS.map(c=>c.k);
-   const keep=s.cols.filter(k=>known.indexOf(k)>=0);
-   if(keep.length)pplCols=keep;
-  }
-  if(s&&typeof s.sort==='string')pplS=s.sort;
+  /* A sort key that no longer exists would leave the table sorted by nothing and the
+     header claiming otherwise, so a stored key is only honoured if a column offers it. */
+  const keys=PFLAT.filter(c=>c.s).map(c=>c.s).concat(['c']);
+  if(s&&typeof s.sort==='string'&&keys.indexOf(s.sort)>=0)pplS=s.sort;
   if(s&&typeof s.asc==='boolean')pplA=s.asc;
-  if(s&&PPL_SIZES.indexOf(+s.size)>=0)pplSize=+s.size;
  }catch(e){/* defaults are a fine outcome */}
 }
 function pplSave(){
  try{window.localStorage.setItem('hfi.people',
-   JSON.stringify({cols:pplCols,sort:pplS,asc:pplA,size:pplSize}));}catch(e){}
+   JSON.stringify({sort:pplS,asc:pplA}));}catch(e){}
 }
-function pplShown(){
- /* Name is pinned: a table of people with no names is not a table of people. */
- const out=PPL_COLS.filter(c=>c.pin||pplCols.indexOf(c.k)>=0);
- return out.length?out:PPL_COLS.filter(c=>PPL_DEF.indexOf(c.k)>=0);
-}
-
-function pplPicker(){
- return '<div class="pplpick'+(pplPick?' open':'')+'" id="pplpick" role="group" '+
-  'aria-label="Choose columns">'+
-  PPL_COLS.map(c=>'<label class="pplopt"><input type="checkbox" data-col="'+c.k+'"'+
-   (c.pin?' checked disabled':(pplCols.indexOf(c.k)>=0?' checked':''))+'> '+
-   esc(c.t)+(c.pin?' <span class="pplpin">always</span>':'')+'</label>').join('')+
-  '<div class="pplactions"><button class="fbtn" id="pplreset" type="button">'+
-  'Reset to default</button></div></div>';
-}
+/* The column picker is gone with the 22 columns it existed to manage. A fixed grid
+   is what lets the header and the row agree; a reader-chosen column set cannot have
+   one. Everything it offered is in the CSV export and in the profile. */
 
 /* Carbon's sorted-column states. Three icons, not one: `arrows` while unsorted (shown
    on hover only), `arrow--up` ascending, `arrow--down` descending. The app previously
@@ -3517,12 +3587,8 @@ function sortIco(state){
    SORT_ICO[state]+'</span>';
 }
 
-/* ---- Carbon data table: toolbar, header, rows, pagination (v89) ---------------- */
-/* Carbon's page sizes. 25 is the default because 878 people over 10 is 88 pages. */
-const PPL_SIZES=[25,50,100,200];
-let pplPage=1, pplSize=25;
-
-function pplTotalPages(n){return Math.max(1,Math.ceil(n/pplSize));}
+/* ---- Carbon data table: toolbar, header, rows (v89, rows reworked v115) -------- */
+/* Page numbers and the items-per-page select are gone: see the footer in pplView. */
 
 /* Built ONCE. The search field lives here, and rebuilding it on every keystroke would
    move the caret out from under the reader — which is exactly what the old
@@ -3536,11 +3602,6 @@ function pplSelCount(){return Object.keys(PPL_SEL).length;}
 function pplSelRows(){
  const all=sortRows(fr(),pplS,pplA);
  return all.filter(r=>PPL_SEL[r.c]);
-}
-function pplPageRows(){
- const sorted=sortRows(fr(),pplS,pplA);
- const from=(pplPage-1)*pplSize;
- return sorted.slice(from,Math.min(sorted.length,from+pplSize));
 }
 function pplSelClear(){PPL_SEL=Object.create(null);}
 
@@ -3575,21 +3636,10 @@ function pplBatch(){
  if(cl)cl.onclick=()=>{pplSelClear();pplView(fr());pplWire();};
 }
 
-/* The row menu. Row-click already opened the profile, but nothing on screen said so —
-   an affordance nobody can see is not an affordance. */
-let PPL_MENU='';
-function pplMenu(code){
- if(PPL_MENU===code){PPL_MENU='';return;}
- PPL_MENU=code;
-}
-function pplMenuHtml(r){
- if(PPL_MENU!==r.c)return '';
- return '<div class="pplmenu" role="menu">'+
-  '<button role="menuitem" type="button" data-act="open">Open profile</button>'+
-  '<button role="menuitem" type="button" data-act="copy">Copy code</button>'+
-  '<button role="menuitem" type="button" data-act="one">Export this person</button>'+
-  '</div>';
-}
+/* The per-row overflow menu is gone: the design gives the last 36px track to a
+   chevron, which is what says "this row opens" without a second click to find out.
+   Its three items survive elsewhere — Open profile is the row itself, Export this
+   person is the batch bar with one row ticked, and Copy code is on the profile. */
 
 /* ---- motion (v101) --------------------------------------------------------------- */
 /* ONE GATE FOR EVERY ANIMATION IN THE APP. It answers three questions before anything
@@ -3653,12 +3703,14 @@ let BUSY_T=null, BUSY_SHOWN=0;
 
 function pplSkeleton(rows, cols){
  let h='';
+ const g=(typeof PFLAT_GRID!=='undefined')?PFLAT_GRID:'';
  for(let i=0;i<rows;i++){
-  h+='<tr class="skrow"><td class="pplck"></td>';
+  h+='<tr class="skrow" role="row"'+(g?' style="grid-template-columns:'+g+'"':'')+
+     '><td class="pplck" role="cell"></td>';
   /* NOT "sk" — that is the sticky identity column class, and this rule painted a
      pulsing skeleton bar over every sticky Code, Name and doctor cell in the report. */
-  for(let c=0;c<cols;c++)h+='<td><span class="pplsk"></span></td>';
-  h+='<td class="pplovf"></td></tr>';
+  for(let c=0;c<cols;c++)h+='<td role="cell"><span class="pplsk"></span></td>';
+  h+='<td class="pplchv" role="cell"></td></tr>';
  }
  return h;
 }
@@ -3667,8 +3719,9 @@ function pplSkeleton(rows, cols){
    skeleton at the size the real content will be, so nothing reflows when it lands. */
 function pplBusy(work){
  const wrap=$('pplwrap');
- const cols=pplShown().length;
- const rows=Math.min(pplSize, Math.max(1, pplPageRows().length||pplSize));
+ const cols=(typeof PFLAT!=='undefined')?PFLAT.length:6;
+ const rows=Math.min(12, Math.max(1, (typeof pplShownRows==='function'
+   ? pplShownRows().length : 0)||12));
  let shown=false;
  if(BUSY_T)clearTimeout(BUSY_T);
  BUSY_T=setTimeout(()=>{
@@ -3692,54 +3745,208 @@ function pplBusy(work){
 }
 
 /* A control that is doing something says so, rather than looking dead. */
+/* THE LABEL IS A TEXT NODE, NOT THE BUTTON'S CONTENTS. `el.textContent = x` replaces
+   every child, so on a button built as `<svg/> Export CSV` it deletes the icon and
+   never puts it back. Swap the last text node instead, and if there isn't one, append
+   one — the icon and any other element child are left exactly where they were. */
+function btnLabelNode(el){
+ for(let i=el.childNodes.length-1;i>=0;i--){
+  const n=el.childNodes[i];
+  if(n.nodeType===3&&n.nodeValue.trim())return n;
+ }
+ const n=el.ownerDocument.createTextNode('');
+ el.appendChild(n);
+ return n;
+}
 function btnBusy(el, on, label){
  if(!el)return;
+ const t=btnLabelNode(el);
  if(on){
-  if(!el.dataset.label)el.dataset.label=el.textContent;
+  if(!el.dataset.label)el.dataset.label=t.nodeValue;
   el.disabled=true; el.setAttribute('aria-busy','true');
-  if(label)el.textContent=label;
+  if(label)t.nodeValue=label;
  }else{
   el.disabled=false; el.removeAttribute('aria-busy');
-  if(el.dataset.label){el.textContent=el.dataset.label;delete el.dataset.label;}
+  if(el.dataset.label!==undefined&&el.dataset.label!==null&&el.dataset.label!==''){
+   t.nodeValue=el.dataset.label; delete el.dataset.label;
+  }
  }
+}
+
+/* ---- the flat People table (v115) ------------------------------------------------ */
+/* ONE GRID, TWO USERS. The header row and every body row are laid out from this single
+   string. The one real defect design review found was a header and a row that had
+   drifted apart by one track, so the header labelled a doctor count "Silent". Two
+   copies of a column list is how that happens; there is now one copy. */
+const PFLAT_GRID='40px minmax(190px,1.3fr) 118px 56px minmax(120px,1fr) 88px '+
+  '94px 92px 130px 104px 36px';
+
+/* The nine columns between the checkbox and the chevron. `s` is the sort key when the
+   column is sortable; a column with no `s` is not clickable, and its header says so by
+   not taking a pointer cursor. */
+const PFLAT=[
+ {k:'n',    t:'Person',    s:'n'},
+ {k:'stat', t:'Status'},
+ {k:'r',    t:'Role'},
+ {k:'terr', t:'Territory'},
+ {k:'tr',   t:'Trend'},
+ {k:'days', t:'Days',      n:1, s:'days'},
+ {k:'cpd',  t:'Calls/day', n:1, s:'cpd'},
+ {k:'cov',  t:'Coverage',  n:1, s:'cov'},
+ {k:'rx',   t:'Rx',        n:1, s:'rx'}
+];
+
+/* THE STATUS RULE, verbatim from the spec. It drives three things that must never
+   disagree: the pill, the 3px row edge, and the toolbar counts — so all three read it
+   from here rather than each deciding for itself. */
+const PSTAT={
+ 'Silent':        {c:'--cds-support-error',      t:'err'},
+ 'Not onboarded': {c:'--cds-text-placeholder',   t:'neu'},
+ 'At risk':       {c:'--cds-support-error',      t:'err'},
+ 'Watch':         {c:'--cds-support-warning',    t:'warn'},
+ 'On track':      {c:'--cds-support-success',    t:'ok'}
+};
+/* The four the toolbar offers, in the order it offers them. 'Not onboarded' is not a
+   segment: with the current ETL it cannot occur (see the header comment), and a
+   segment that always reads 0 is a control that teaches the reader to ignore controls. */
+const PSTAT_SEG=['Silent','At risk','Watch','On track'];
+
+/* A rep's own working-day denominator, not the window's: somebody who joined in July
+   is not absent for April. rebuildReps already computed it as attWd. */
+function pplWd(r){return Math.max(1,+r.attWd||+((typeof D!=='undefined'&&D.workDays)||0)||1);}
+function pplStat(r){
+ const days=+r.days||0;
+ if(days===0)return 'Silent';
+ if(!r.ob)return 'Not onboarded';
+ const share=days/pplWd(r);
+ if(share<0.55||(+r.cov||0)<45)return 'At risk';
+ if(share<0.85)return 'Watch';
+ return 'On track';
+}
+function pplStatColor(s){const o=PSTAT[s];return CDS(o?o.c:'--cds-text-placeholder');}
+function pplTag(s){
+ const o=PSTAT[s]||PSTAT['Not onboarded'];
+ return '<span class="ppltag ppltag--'+o.t+'">'+esc(s)+'</span>';
+}
+
+/* Days reported per month, for the sparkline. Built for EVERY rep in one pass over the
+   call log and memoised on the period, because doing it per row per render is 878
+   scans of 200,000 visits every time somebody types a letter. */
+let _PMKEY='', _PM=null;
+function pplMonthly(){
+ const key=(typeof pKey==='function'?pKey():'')+'|'+((BASE&&BASE.dataStart)||'');
+ if(key===_PMKEY&&_PM)return _PM;
+ const months=calMonths(BASE.dataStart,BASE.dataEnd);
+ const idx=Object.create(null); months.forEach((m,i)=>{idx[m]=i;});
+ const OK=dayOK(), by=Object.create(null);
+ for(const code in (BASE.calls||{})){
+  const vs=BASE.calls[code]||[], seen=Object.create(null), arr=months.map(()=>0);
+  for(let i=0;i<vs.length;i++){
+   const dt=vs[i][0];
+   if(!OK[dt]||seen[dt])continue;            /* a DAY reported, not a visit logged */
+   seen[dt]=1;
+   const j=idx[dt.slice(0,7)];
+   if(j!==undefined)arr[j]++;
+  }
+  by[code]=arr;
+ }
+ _PMKEY=key; _PM={months:months,by:by};
+ return _PM;
+}
+function pplTrend(r){
+ const m=pplMonthly();
+ return m.by[r.c]||m.months.map(()=>0);
+}
+/* The sparkline. Seven points in 72x22, an end dot so the last month is findable, and
+   a colour that answers the only question a sparkline is asked here: is this getting
+   better or worse. The last month is partial, hence the doubling in the rising test. */
+function pplSpark(r,stat){
+ const t=pplTrend(r), n=t.length;
+ if(!n)return '';
+ const max=Math.max(27,...t);
+ const step=n>1?72/(n-1):0;
+ const pts=t.map((v,i)=>(i*step).toFixed(1)+','+(20-(v/max)*18).toFixed(1));
+ const col=(stat==='Silent')?CDS('--cds-support-error')
+   :((n<2||t[n-1]*2>=t[n-2])?CDS('--cds-support-success'):CDS('--cds-support-warning'));
+ const last=pts[n-1].split(',');
+ return '<svg class="pplspk" viewBox="0 0 72 22" width="72" height="22" '+
+  'aria-hidden="true" focusable="false">'+
+  '<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+col+
+   '" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>'+
+  '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2" fill="'+col+'"/></svg>';
+}
+
+/* Coverage: a 44x4 track with a fill, then the number. The bar is what you scan and
+   the number is what you quote, which is why both are here and neither is enough. */
+function pplCovCell(r){
+ const v=+r.cov||0;
+ const col=CDS(v>=80?'--cds-support-success':v>=50?'--cds-support-warning'
+                    :'--cds-support-error');
+ if(!r.du)return '<span class="pplna">&mdash;</span>';
+ return '<span class="pplbar"><span class="pplbarf" style="width:'+
+   Math.max(2,Math.min(100,v))+'%;background:'+col+'"></span></span>'+
+   '<span class="pplbarv">'+v+'%</span>';
+}
+
+/* MISSING MASTER DATA IS A DEFECT, NOT FILLER. A territory nobody assigned is the
+   reason a rep has no target; printing it in the same grey as everything else is how
+   878 of those go unnoticed for a year. */
+const PPL_GAP={'':1,'—':1,'-':1,'No':1,'Unassigned':1,'NA':1,'N/A':1};
+function pplTerr(r){
+ const v=(r.terr||'').trim();
+ if(PPL_GAP[v])return '<span class="pplgap">Unassigned</span>';
+ return esc(v);
+}
+
+/* How many rows are on screen. 100 at a time; the footer says how many of how many. */
+const PPL_STEP=100;
+let pplLoaded=PPL_STEP, pplStatF=null;
+
+/* The rows the screen is about: the global filters, then the status segment. The
+   segment counts are taken BEFORE the segment filter, or clicking one would set every
+   other count to zero. */
+function pplBase(){return fr();}
+function pplRows(){
+ const b=pplBase();
+ return pplStatF?b.filter(r=>pplStat(r)===pplStatF):b;
+}
+function pplSorted(){return sortRows(pplRows(),pplS,pplA);}
+function pplShownRows(){return pplSorted().slice(0,pplLoaded);}
+function pplCounts(){
+ const c={all:0};
+ PSTAT_SEG.forEach(s=>{c[s]=0;});
+ pplBase().forEach(r=>{c.all++;const s=pplStat(r);if(c[s]!==undefined)c[s]++;});
+ return c;
 }
 
 function pplChrome(){
  const host=$('pplbody');
  if(!host||$('ppltb'))return;
+ /* The two page actions belong to the page header, beside the title, not to the
+    table toolbar — the toolbar is for acting on the table's contents. */
+ const acts=$('pplhba');
+ if(acts)acts.innerHTML=
+   '<button class="btn btn--ghost btn--lg" id="ppldl" type="button" '+
+     'title="Download this table exactly as shown">'+DLICO+'Export CSV</button>';
  host.innerHTML=
-  '<div class="ppltb" id="ppltb" role="toolbar" aria-label="Table actions">'+
+  '<div class="ppltb" id="ppltb" role="toolbar" aria-label="Find and filter people">'+
    '<div class="pplsrch">'+
     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="search">'+
     '<path d="M29 27.586 22.158 20.744A11.943 11.943 0 0 0 25 13 12 12 0 1 0 13 25a11.943 '+
     '11.943 0 0 0 7.744-2.842L27.586 29zM13 23a10 10 0 1 1 10-10A10.011 10.011 0 0 1 13 '+
     '23z"/></svg>'+
-    '<input id="pplq" type="search" placeholder="Search people by name or code" '+
-      'aria-label="Search people by name or code">'+
+    '<input id="pplq" type="search" '+
+      'placeholder="Search name, code, HQ, territory or manager" '+
+      'aria-label="Search name, code, HQ, territory or manager">'+
    '</div>'+
-   '<span class="ppltbsp"></span>'+
-   '<span class="pplcount" id="pplcount"></span>'+
-   '<button class="btn btn--ghost btn--lg" id="pplcols" type="button" '+
-     'aria-expanded="false" title="Choose which columns to show">'+
-     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
-     'data-icon="settings"><path d="M27 16.76v-1.53l1.92-1.68A2 2 0 0 0 29.3 11l-2.36-4a2 '+
-     '2 0 0 0-1.73-1 2 2 0 0 0-.64.1l-2.43.82a11.35 11.35 0 0 0-1.31-.75l-.51-2.52a2 2 0 '+
-     '0 0-2-1.6h-4.68a2 2 0 0 0-2 1.61l-.51 2.51a11.48 11.48 0 0 0-1.32.75l-2.38-.86A2 2 '+
-     '0 0 0 6.79 6a2 2 0 0 0-1.73 1L2.7 11a2 2 0 0 0 .38 2.52L5 15.24v1.53l-1.92 1.68A2 2 '+
-     '0 0 0 2.7 21l2.36 4a2 2 0 0 0 1.73 1 2 2 0 0 0 .64-.1l2.43-.82a11.35 11.35 0 0 0 '+
-     '1.31.75l.51 2.52a2 2 0 0 0 2 1.6h4.72a2 2 0 0 0 2-1.61l.51-2.51a11.48 11.48 0 0 0 '+
-     '1.32-.75l2.42.82a2 2 0 0 0 .64.1 2 2 0 0 0 1.73-1l2.28-4a2 2 0 0 0-.38-2.52zM16 '+
-     '22a6 6 0 1 1 6-6 6 6 0 0 1-6 6z"/></svg>'+
-     '<span id="pplcolsl">Columns</span></button>'+
-   '<button class="btn btn--ghost btn--lg" id="ppldl" type="button" '+
-     'title="Download this table exactly as shown">'+DLICO+'Export CSV</button>'+
+   '<div class="pplseg" id="pplseg" role="group" '+
+     'aria-label="Filter by reporting status"></div>'+
   '</div>'+
   '<div class="pplbatch" id="pplbatch" role="toolbar" '+
     'aria-label="Actions for the selected people" hidden></div>'+
-  '<div id="pplpickw"></div>'+
   '<div class="card pplcard" data-furniture="off">'+
    '<div class="tablewrap" id="pplwrap"></div>'+
-   '<div class="pplpg" id="pplpg"></div></div>';
+   '<div class="pplfoot" id="pplfoot"></div></div>';
  pplChromeWire();
 }
 
@@ -3748,11 +3955,9 @@ function pplChromeWire(){
  if(q)q.oninput=()=>{
   F.q=q.value;
   const g=$('q'); if(g)g.value=q.value;      /* one value, two views, kept in step */
-  pplPage=1;
+  pplLoaded=PPL_STEP;
   render();
  };
- const b=$('pplcols');
- if(b)b.onclick=()=>{pplPick=!pplPick;pplView(fr());};
  const dl=$('ppldl');
  /* NOT `dl.onclick=pplExport`. pplExport's first argument is a row set, and a click
     hands the handler a MouseEvent — which is truthy, so `rows||default` kept it and
@@ -3760,106 +3965,126 @@ function pplChromeWire(){
  if(dl)dl.onclick=()=>pplExport();
 }
 
-function pplHead(cols){
- const page=pplPageRows();
- const on=page.filter(r=>PPL_SEL[r.c]).length;
- const state=(on===0)?'none':(on===page.length?'all':'some');
- return '<tr id="pplh">'+
-  '<th class="pplck" scope="col">'+
+/* THE HEADER CHECKBOX TAKES THE WHOLE FILTERED SET. Not the loaded slice: a reader
+   who sees "878 match", ticks the box and gets 100 has been told something false. */
+function pplHead(){
+ const all=pplRows(), on=all.filter(r=>PPL_SEL[r.c]).length;
+ const state=(on===0)?'none':(on===all.length&&all.length?'all':'some');
+ return '<tr id="pplh" role="row" style="grid-template-columns:'+PFLAT_GRID+'">'+
+  '<th class="pplck" role="columnheader">'+
    '<label class="pplcb'+(state==='all'?' on':'')+(state==='some'?' mixed':'')+'">'+
     '<input type="checkbox" id="pplall" '+(state==='all'?'checked ':'')+
-      'aria-label="Select every person on this page">'+PPL_CHK+'</label></th>'+
-  cols.map(c=>{
-  const on=(pplS===c.k);
-  const state=on?(pplA?'asc':'desc'):'none';
-  return '<th data-k="'+c.k+'"'+(c.n?' class="n"':'')+
-    ' aria-sort="'+(on?(pplA?'ascending':'descending'):'none')+'"'+
-    ' tabindex="0" role="columnheader" title="'+esc(c.t)+'">'+
-    esc(c.t)+sortIco(state)+'</th>';
- }).join('')+
- '<th class="pplovf" scope="col"><span class="vh">Actions</span></th></tr>';
+      'aria-label="Select every person that matches these filters">'+PPL_CHK+
+    '</label></th>'+
+  PFLAT.map(c=>{
+   const act=(pplS===c.s);
+   const st=act?(pplA?'asc':'desc'):'none';
+   return '<th data-k="'+c.k+(c.s?'" data-s="'+c.s:'')+'"'+
+    ' class="'+(c.n?'n ':'')+(c.s?'srt':'')+'"'+
+    ' role="columnheader" aria-sort="'+(act?(pplA?'ascending':'descending'):'none')+'"'+
+    (c.s?' tabindex="0"':'')+'>'+
+    /* the arrow goes BEFORE a right-aligned number column so it stays beside the
+       numerals rather than drifting off to the left edge of the cell */
+    (c.n&&c.s?sortIco(st):'')+esc(c.t)+((!c.n&&c.s)?sortIco(st):'')+'</th>';
+  }).join('')+
+  '<th class="pplchv" role="columnheader"><span class="vh">Open</span></th></tr>';
 }
+
+/* The five status segments, with counts taken before the segment filter applies. */
+function pplSeg(){
+ const host=$('pplseg'); if(!host)return;
+ const c=pplCounts();
+ const one=(label,key,colour)=>{
+  const on=(key===null)?(pplStatF===null):(pplStatF===key);
+  return '<button class="pplsg'+(on?' on':'')+'" type="button" data-seg="'+
+   (key===null?'':esc(key))+'" aria-pressed="'+(on?'true':'false')+'">'+
+   (colour?'<span class="pplsgd" style="background:'+colour+'"></span>':'')+
+   '<span class="pplsgl">'+esc(label)+'</span>'+
+   '<span class="pplsgn">'+fmt(key===null?c.all:(c[key]||0))+'</span></button>';
+ };
+ host.innerHTML=one('Everyone',null,'')+
+   PSTAT_SEG.map(s=>one(s,s,pplStatColor(s))).join('');
+}
+
+const PPL_CHV='<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+ 'data-icon="chevron--right"><path d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"/>'+
+ '</svg>';
 
 function pplView(rows){
  pplChrome();
- const cols=pplShown();
- const sorted=sortRows(rows,pplS,pplA);
- const total=sorted.length;
- const pages=pplTotalPages(total);
- if(pplPage>pages)pplPage=pages;
- const from=(pplPage-1)*pplSize, to=Math.min(total,from+pplSize);
- const shown=sorted.slice(from,to);
+ const total=pplRows().length, roster=pplBase().length;
+ if(pplLoaded<PPL_STEP)pplLoaded=PPL_STEP;
+ const shown=pplShownRows();
 
  /* the search box is authoritative while it has focus; never write over a live caret */
  const q=$('pplq');
  if(q&&document.activeElement!==q&&q.value!==(F.q||''))q.value=F.q||'';
 
- const cnt=$('pplcount');
- if(cnt)cnt.textContent=fmt(total)+' '+(total===1?'person':'people');
- const cb=$('pplcols');
- /* set the LABEL, not the button: textContent on the button would delete its icon */
- const cbl=$('pplcolsl');
- if(cbl)cbl.textContent='Columns ('+cols.length+')';
- if(cb){
-        cb.setAttribute('aria-expanded',pplPick?'true':'false');}
- const pk=$('pplpickw'); if(pk)pk.innerHTML=pplPicker();
+ const sub=$('pplsub');
+ if(sub)sub.textContent=fmt(roster)+' people in the roster. Start from a signal '+
+   'below, or search by name or code. Select a row to open the profile.';
+ pplSeg();
 
  $('pplwrap').innerHTML=
-  '<table class="ppltable"><thead>'+pplHead(cols)+'</thead><tbody id="pplb">'+
-  (shown.length?shown.map(r=>'<tr data-code="'+esc(r.c||'')+'"'+
-    (PPL_SEL[r.c]?' class="sel"':'')+'>'+
-    '<td class="pplck"><label class="pplcb'+(PPL_SEL[r.c]?' on':'')+'">'+
-     '<input type="checkbox" data-sel="'+esc(r.c||'')+'"'+
-      (PPL_SEL[r.c]?' checked':'')+' aria-label="Select '+esc(r.n||r.c||'')+'">'+
-     PPL_CHK+'</label></td>'+
-    cols.map(c=>{
-      const v=c.get(r);
-      /* three levels, each meaning something: a real value, a real zero, no data */
-      let cls=(c.n?'n':'');
-      if(c.k==='n')cls+=' idc';
-      else if(c.n){
-       const raw=r[c.k];
-       if(raw===''||raw===null||raw===undefined)cls+=' na';
-       else if(+raw===0)cls+=' z';
-      }
-      return '<td'+(cls?' class="'+cls.trim()+'"':'')+'>'+v+'</td>';
-     }).join('')+
-    '<td class="pplovf"><button class="pplovb" type="button" data-menu="'+
-     esc(r.c||'')+'" aria-haspopup="menu" aria-expanded="'+
-     (PPL_MENU===r.c?'true':'false')+'" aria-label="Actions for '+
-     esc(r.n||r.c||'')+'">'+PPL_OVF+'</button>'+pplMenuHtml(r)+'</td>'+
-    '</tr>').join('')
-   :'<tr><td colspan="'+(cols.length+2)+'" class="pplempty">'+
-    'No one matches the current filters. Clear a filter, or widen the period.'+
+  '<table class="ppltable pplgrid" role="table"><thead role="rowgroup">'+pplHead()+
+  '</thead><tbody id="pplb" role="rowgroup">'+
+  (shown.length?shown.map(r=>{
+    const st=pplStat(r), col=pplStatColor(st), sel=!!PPL_SEL[r.c];
+    const open=(typeof CURP!=='undefined'&&CURP&&CURP.c===r.c);
+    return '<tr data-code="'+esc(r.c||'')+'" role="row"'+
+     ' style="grid-template-columns:'+PFLAT_GRID+'"'+
+     (sel||open?' class="'+(sel?'sel':'')+(open?(sel?' cur':'cur'):'')+'"':'')+'>'+
+     '<td class="pplck" role="cell"><label class="pplcb'+(sel?' on':'')+'">'+
+      '<input type="checkbox" data-sel="'+esc(r.c||'')+'"'+(sel?' checked':'')+
+       ' aria-label="Select '+esc(r.n||r.c||'')+'">'+PPL_CHK+'</label></td>'+
+     /* THE ROW'S SIGNAL IS ON ITS EDGE. 3px, the status colour, against the name —
+        the one mark that makes 878 identical rows scannable. */
+     '<td class="pplp" role="cell" style="box-shadow:inset 3px 0 0 '+col+'">'+
+      '<span class="pplpn">'+esc(r.n||'')+'</span>'+
+      '<span class="pplpc">'+esc(r.c||'')+'</span></td>'+
+     '<td class="pplst" role="cell">'+pplTag(st)+'</td>'+
+     '<td class="pplrl" role="cell">'+esc(r.r||'')+'</td>'+
+     '<td class="pplte" role="cell">'+pplTerr(r)+'</td>'+
+     '<td class="ppltr" role="cell">'+pplSpark(r,st)+'</td>'+
+     '<td class="n" role="cell">'+fmt(r.days||0)+'/'+fmt(pplWd(r))+'</td>'+
+     '<td class="n'+((+r.cpd||0)?'':' z')+'" role="cell">'+
+       ((+r.cpd||0)?r.cpd:'<span class="pplna">&mdash;</span>')+'</td>'+
+     '<td class="n pplcov" role="cell">'+pplCovCell(r)+'</td>'+
+     '<td class="n'+((+r.rx||0)?'':' z')+'" role="cell">'+
+       ((+r.rx||0)?fmt(r.rx):'<span class="pplna">&mdash;</span>')+'</td>'+
+     '<td class="pplchv" role="cell">'+PPL_CHV+'</td></tr>';
+   }).join('')
+   :'<tr class="pplemptyr" role="row"><td class="pplempty" role="cell">'+
+    '<div class="pplemptyt">No people match these filters.</div>'+
+    '<button class="ppllink" id="pplclear" type="button">Clear all filters</button>'+
     '</td></tr>')+
   '</tbody></table>';
 
- /* Carbon puts a pagination bar at the bottom of the table. It replaces a silent cap:
-    every row is reachable, and the bar says which ones you are looking at. */
- $('pplpg').innerHTML=
-  '<label class="pgsz">Items per page'+
-   '<select id="pplsz" aria-label="Items per page">'+
-    PPL_SIZES.map(n=>'<option value="'+n+'"'+(n===pplSize?' selected':'')+'>'+n+
-      '</option>').join('')+
-   '</select></label>'+
-  '<span class="pgrange">'+(total?fmt(from+1)+'–'+fmt(to):'0')+' of '+fmt(total)+
-   ' '+(total===1?'item':'items')+'</span>'+
-  '<span class="pgsp"></span>'+
-  '<span class="pgpage">Page '+fmt(pplPage)+' of '+fmt(pages)+'</span>'+
-  '<button class="pgbtn" id="pplprev" type="button" aria-label="Previous page"'+
-   (pplPage<=1?' disabled':'')+'>'+
-   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
-   'data-icon="chevron--left"><path d="M10 16 20 6l1.4 1.4L12.8 16l8.6 8.6L20 26z"/>'+
-   '</svg></button>'+
-  '<button class="pgbtn" id="pplnext" type="button" aria-label="Next page"'+
-   (pplPage>=pages?' disabled':'')+'>'+
-   '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
-   'data-icon="chevron--right"><path d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"/>'+
-   '</svg></button>';
+ /* NO PAGE NUMBERS. The reader's question is "show me more", never "take me to page
+    19 of 36" — and a page number is also a promise that the row you saw yesterday is
+    still on the page it was on, which sorting breaks every time. */
+ const more=Math.max(0,total-shown.length);
+ $('pplfoot').innerHTML=
+  '<span class="pplfc">'+fmt(shown.length)+' of '+fmt(total)+' '+
+   (total===1?'person':'people')+' loaded</span>'+
+  (more?'<button class="btn btn--ghost" id="pplmore" type="button">Load '+
+    fmt(Math.min(PPL_STEP,more))+' more</button>':'');
 }
 
+/* The columns the CSV carries. The screen shows nine; a spreadsheet is where the
+   rest of the roster record belongs, so the export keeps the identity and master-data
+   fields the picker used to offer. Nobody scrolls a CSV sideways by accident. */
+const PFLAT_CSV=[
+ {k:'c',t:'Code'},{k:'n',t:'Name'},{k:'stat',t:'Status'},{k:'r',t:'Role'},
+ {k:'di',t:'Division'},{k:'zn',t:'Zone'},{k:'st',t:'State'},{k:'hq',t:'HQ'},
+ {k:'terr',t:'Territory'},{k:'mg',t:'Reports to'},
+ {k:'days',t:'Days reported'},{k:'attWd',t:'Working days'},{k:'att',t:'Reporting %'},
+ {k:'cpd',t:'Calls/day'},{k:'da',t:'Doctors on list'},{k:'ud',t:'Doctors met'},
+ {k:'cov',t:'Coverage %'},{k:'rx',t:'Rx'},{k:'rpc',t:'Rx/call'},
+ {k:'rec',t:'Days since last visit'},{k:'doj',t:'Joined'}
+];
 function pplExport(rows,what){
- const cols=pplShown();
+ const cols=PFLAT_CSV;
  /* Belt and braces: an Event is truthy, so `rows||default` was never enough. Anything
     that is not an array is not a row set, whatever its truthiness. */
  if(!Array.isArray(rows))rows=null;
@@ -3869,8 +4094,9 @@ function pplExport(rows,what){
     question depending on where you happened to be paging. */
  const head=cols.map(c=>c.t);
  const body=rows.map(r=>cols.map(c=>{
+  if(c.k==='stat')return pplStat(r);
+  if(c.k==='attWd')return pplWd(r);
   const raw=r[c.k];
-  if(c.k==='n')return r.n||'';
   return (raw===null||raw===undefined)?'':raw;
  }));
  const ctx=['Hive Frontline — people',
@@ -3896,80 +4122,70 @@ function pplExport(rows,what){
  });
 }
 
+function pplRedraw(){pplView(fr());pplWire();}
+
 function pplWire(){
- /* pagination */
- const sz=$('pplsz');
- if(sz)sz.onchange=()=>{pplSize=+sz.value||25;pplPage=1;pplSave();pplView(fr());pplWire();};
- const pv=$('pplprev');
- if(pv)pv.onclick=()=>{if(pplPage>1){pplPage--;pplBusy(()=>{pplView(fr());pplWire();});}};
- const nx=$('pplnext');
- if(nx)nx.onclick=()=>{pplPage++;pplBusy(()=>{pplView(fr());pplWire();});};
- /* selection */
+ /* THE SEGMENTS. Clicking the active one clears it — a filter you cannot turn off
+    from the control that turned it on is a trap. */
+ const seg=$('pplseg');
+ if(seg)seg.querySelectorAll('button[data-seg]').forEach(b=>{
+  b.onclick=()=>{
+   const v=b.getAttribute('data-seg')||null;
+   pplStatF=(v&&pplStatF!==v)?v:null;
+   pplLoaded=PPL_STEP;
+   pplBusy(pplRedraw);
+  };
+ });
+ /* LOAD MORE. Scroll position, filters, sort and selection all survive, because the
+    only thing that changes is how many rows are appended below the ones you are
+    already looking at. */
+ const mo=$('pplmore');
+ if(mo)mo.onclick=()=>{
+  const y=window.scrollY;
+  btnBusy(mo,true,'Loading');
+  pplLoaded+=PPL_STEP;
+  pplBusy(()=>{pplRedraw();window.scrollTo(0,y);});
+ };
+ const cl0=$('pplclear');
+ if(cl0)cl0.onclick=()=>{
+  pplStatF=null; F.q='';
+  const q=$('pplq'); if(q)q.value='';
+  const g=$('q'); if(g)g.value='';
+  pplLoaded=PPL_STEP;
+  if(typeof filtersOff==='function'){try{filtersOff();}catch(e){}}
+  render();
+ };
+ /* selection — the header box takes every row that matches, not the loaded slice */
  const all=$('pplall');
  if(all)all.onchange=()=>{
-  const page=pplPageRows();
-  if(all.checked)page.forEach(r=>{PPL_SEL[r.c]=1;});
-  else page.forEach(r=>{delete PPL_SEL[r.c];});
-  pplView(fr()); pplWire();
+  const set=pplRows();
+  if(all.checked)set.forEach(r=>{PPL_SEL[r.c]=1;});
+  else set.forEach(r=>{delete PPL_SEL[r.c];});
+  pplRedraw();
  };
  const body0=$('pplb');
  if(body0)body0.querySelectorAll('input[data-sel]').forEach(cb=>{
   cb.onchange=()=>{
    const c=cb.getAttribute('data-sel');
    if(cb.checked)PPL_SEL[c]=1; else delete PPL_SEL[c];
-   pplView(fr()); pplWire();
+   pplRedraw();
   };
   /* a click on the checkbox must not also open the profile behind it */
   cb.onclick=e=>{e.stopPropagation();};
  });
- if(body0)body0.querySelectorAll('.pplovb').forEach(b=>{
-  b.onclick=e=>{
-   e.stopPropagation();
-   pplMenu(b.getAttribute('data-menu'));
-   pplView(fr()); pplWire();
-  };
- });
- if(body0)body0.querySelectorAll('.pplmenu button').forEach(b=>{
-  b.onclick=e=>{
-   e.stopPropagation();
-   const code=PPL_MENU, act=b.getAttribute('data-act');
-   PPL_MENU='';
-   const row=fr().filter(r=>r.c===code)[0];
-   if(act==='open'&&typeof openProfile==='function')openProfile(code);
-   else if(act==='copy'){
-    try{navigator.clipboard.writeText(code);}catch(_){}
-   }
-   else if(act==='one'&&row)pplExport([row],'one person');
-   pplView(fr()); pplWire();
-  };
- });
  try{pplBatch();}catch(e){console.warn('batch bar',e);}
 
  const head=$('pplh');
- if(head)head.querySelectorAll('th[data-k]').forEach(t=>{
-  const go=()=>{const k=t.dataset.k;
-   if(k===pplS)pplA=!pplA; else {pplS=k;pplA=(k==='n'||k==='c'||k==='hq'||k==='st'||
-     k==='mg'||k==='r'||k==='te'||k==='doj');}
-   pplPage=1; pplSave(); pplBusy(()=>{pplView(fr());pplWire();});};
+ if(head)head.querySelectorAll('th[data-s]').forEach(t=>{
+  const go=()=>{const k=t.getAttribute('data-s');
+   /* first click on a number sorts DESCENDING (the biggest is the interesting one),
+      first click on a name sorts ascending. Clicking the active key flips it. */
+   if(k===pplS)pplA=!pplA;
+   else {pplS=k;pplA=(k==='n'||k==='c'||k==='r'||k==='terr');}
+   pplSave(); pplBusy(pplRedraw);};
   t.onclick=go;
   t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
  });
- const pick=$('pplpick');
- if(pick)pick.querySelectorAll('input[data-col]').forEach(inp=>{
-  inp.onchange=()=>{
-   const k=inp.getAttribute('data-col');
-   const at=pplCols.indexOf(k);
-   if(inp.checked&&at<0)pplCols.push(k);
-   if(!inp.checked&&at>=0)pplCols.splice(at,1);
-   /* Keep the declared order rather than click order, so the table does not reshuffle
-      itself every time somebody ticks a box. */
-   pplCols=PPL_COLS.map(c=>c.k).filter(k2=>pplCols.indexOf(k2)>=0);
-   pplSave(); pplView(fr()); pplWire();
-  };
- });
- const rs=$('pplreset');
- if(rs)rs.onclick=()=>{pplCols=PPL_DEF.slice();pplS='n';pplA=true;
-   pplSave();pplView(fr());pplWire();};
  const body=$('pplb');
  if(body)body.onclick=e=>{
   const tr=e.target&&e.target.closest?e.target.closest('tr[data-code]'):null;
@@ -6487,8 +6703,9 @@ function expTabXLSX(btn){
  expFlash(btn,'SAVED');
 }
 
-const DLICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/>'+
- '<path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>';
+const DLICO='<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+ 'data-icon="download"><path d="M26 24v4H6v-4H4v4a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2v-4z'+
+ 'M26 14l-1.41-1.41L17 20.17V2h-2v18.17l-7.59-7.58L6 14l10 10z"/></svg>';
 
 /* Inject the buttons after every render. Idempotent — a table already wearing one
    is skipped, so this can run as often as it likes. */
