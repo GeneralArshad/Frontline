@@ -2784,6 +2784,130 @@ table.rep-reports .barcell{width:88px}
   font:400 var(--cds-body-compact-01-size)/1 var(--cds-font-sans)}
 .ppllink:hover{color:var(--cds-link-primary-hover)}
 
+/* ---- the rep profile as a page (v117) ------------------------------------------- */
+/* IT IS THE SURFACE, NOT A DIALOG ON IT. The scrim keeps doing the work it already did
+   — Escape, the background scroll lock, the deep link — but it no longer centres a
+   760px card inside a dimmed page. The profile IS the page. */
+.pscrim.open{padding:0;align-items:stretch;justify-content:stretch;
+  background:var(--cds-background)}
+/* max-height:none IS LOAD-BEARING. The dialog rule sets max-height:calc(100vh - 64px)
+   — the 32px of breathing room a centred card needs — and a max-height clamps a height,
+   so height:100vh alone would leave a 64px strip of scrim showing under the page. */
+.pcard{width:100%;max-width:none;height:100vh;max-height:none;border:0;box-shadow:none}
+
+/* the breadcrumb bar: back by name on the left, movement and actions on the right */
+.rpcrumb{display:flex;align-items:center;justify-content:space-between;
+  gap:var(--cds-spacing-05);padding:var(--cds-spacing-05) var(--cds-spacing-07);
+  border-bottom:1px solid var(--cds-border-subtle-01);flex:0 0 auto}
+.rpcl{display:flex;align-items:center;gap:var(--cds-spacing-03);min-width:0;
+  font-size:var(--cds-body-compact-01-size)}
+.rpback{border:0;background:none;padding:0;cursor:pointer;
+  color:var(--cds-link-primary);text-decoration:underline;font:inherit}
+.rpback:hover{color:var(--cds-link-primary-hover)}
+.rpsep{color:var(--cds-text-secondary)}
+.rpwho{color:var(--cds-text-primary);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+.rpcr{display:flex;align-items:center;gap:var(--cds-spacing-02);flex:none}
+.rpnavl{font-size:var(--cds-label-01-size);color:var(--cds-text-secondary);
+  font-variant-numeric:tabular-nums;margin-right:var(--cds-spacing-03)}
+.rpcr .icon-btn[disabled]{opacity:.35;cursor:not-allowed}
+
+/* THE VERDICT BAND. The 3px bottom border is the same status colour the row carried in
+   the list, so arriving here from a red row lands on a red band. */
+.rpband{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:var(--cds-spacing-07);padding:var(--cds-spacing-06) var(--cds-spacing-07);
+  background:var(--cds-layer-01);border-bottom:3px solid var(--cds-border-subtle-01);
+  flex:0 0 auto;flex-wrap:wrap}
+.rpbl{display:flex;align-items:flex-start;gap:var(--cds-spacing-05);min-width:0}
+.rpav{width:64px;height:64px;flex:none;display:inline-flex;align-items:center;
+  justify-content:center;color:var(--cds-text-on-color);
+  font:var(--cds-font-weight-semibold) 22px/1 var(--cds-font-sans)}
+.rpid{min-width:0}
+.rpeye{font-size:var(--cds-label-01-size);letter-spacing:.32px;
+  color:var(--cds-text-secondary)}
+.rpname{margin:var(--cds-spacing-02) 0 0;font:400 32px/40px var(--cds-font-sans);
+  color:var(--cds-text-primary)}
+.rpplace{margin-top:var(--cds-spacing-02);font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-secondary)}
+.rpbr{display:flex;flex-direction:column;align-items:flex-end;max-width:420px;
+  text-align:right;flex:0 1 auto}
+.rpverdict{margin:10px 0 0;font:400 16px/24px var(--cds-font-sans);
+  color:var(--cds-text-primary);text-wrap:pretty}
+
+/* the body: main column and a rail that stays put while the main column scrolls */
+.pcard .pbody{display:grid;grid-template-columns:1fr 336px;align-items:start}
+.rpmain{padding:var(--cds-spacing-06) var(--cds-spacing-07);min-width:0;
+  border-right:1px solid var(--cds-border-subtle-01)}
+.rprail{padding:var(--cds-spacing-06) var(--cds-spacing-06);
+  background:var(--cds-layer-01);min-width:0;align-self:stretch}
+@media (max-width:900px){
+ .pcard .pbody{grid-template-columns:1fr}
+ .rpmain{border-right:0;border-bottom:1px solid var(--cds-border-subtle-01)}
+}
+
+/* every section is a question with its answer under it */
+.rph{margin:var(--cds-spacing-07) 0 0;font:400 20px/28px var(--cds-font-sans);
+  color:var(--cds-text-primary)}
+.rpkpi+.rph{margin-top:0}
+.rphs{margin-top:var(--cds-spacing-02);font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-secondary);margin-bottom:var(--cds-spacing-05)}
+
+/* the KPI strip: Carbon's 1px-gap tile row over a border-coloured background */
+.rpkpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;
+  background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01);
+  margin-bottom:var(--cds-spacing-07)}
+.rpk{background:var(--cds-background);padding:14px 16px;min-width:0}
+.rpkl{font-size:var(--cds-label-01-size);letter-spacing:.32px;
+  color:var(--cds-text-secondary)}
+.rpkv{font:300 26px/34px var(--cds-font-sans);color:var(--cds-text-primary);
+  font-variant-numeric:tabular-nums;margin-top:2px}
+.rpkd{font-size:var(--cds-label-01-size);margin-top:2px}
+
+/* coverage rows: label over evidence, a bar, the figure */
+.rpcovs2{margin-top:var(--cds-spacing-03)}
+.rpcov{display:grid;grid-template-columns:1fr 120px 92px;align-items:center;
+  gap:var(--cds-spacing-05);padding:11px 0;
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.rpcovl{min-width:0}
+.rpcovt{display:block;font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-primary)}
+.rpcovs{display:block;font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary)}
+.rpcovb{display:block;height:6px;background:var(--cds-layer-accent-01)}
+.rpcovf{display:block;height:6px}
+.rpcovv{text-align:right;font-size:var(--cds-body-compact-01-size);
+  font-variant-numeric:tabular-nums;color:var(--cds-text-primary)}
+.rpcovv.zero{color:var(--cds-support-error)}
+.rpnone{padding:var(--cds-spacing-05);background:var(--cds-layer-01);
+  font-size:var(--cds-body-compact-01-size);color:var(--cds-text-secondary);
+  max-width:62ch}
+
+/* the rail */
+.rpsec{margin-bottom:var(--cds-spacing-07)}
+.rpeye2{font-size:var(--cds-label-01-size);letter-spacing:.32px;
+  color:var(--cds-text-secondary);margin-bottom:var(--cds-spacing-03)}
+.rprline{margin:0 0 var(--cds-spacing-05);font-size:var(--cds-body-compact-01-size);
+  color:var(--cds-text-primary);text-wrap:pretty}
+.rprline.gap{color:var(--cds-support-error)}
+.rpfacts{border-top:1px solid var(--cds-border-subtle-01)}
+.rpf{display:flex;align-items:baseline;justify-content:space-between;
+  gap:var(--cds-spacing-05);padding:9px 0;
+  border-bottom:1px solid var(--cds-border-subtle-01)}
+.rpfk{font-size:13px;color:var(--cds-text-secondary);flex:none}
+.rpfv{font-size:13px;color:var(--cds-text-primary);text-align:right;min-width:0;
+  overflow:hidden;text-overflow:ellipsis}
+/* A MISSING FIELD IS A DEFECT. An em dash in the same grey as a real value is how a
+   roster stays broken for a year; in the error colour at 600 it is a to-do. */
+.rpfv.gap{color:var(--cds-support-error);font-weight:var(--cds-font-weight-semibold)}
+.rpfix{width:100%;justify-content:center;margin-top:var(--cds-spacing-05)}
+.rpstep{background:var(--cds-background);border-left:3px solid var(--cds-border-subtle-01);
+  padding:12px 14px;margin-bottom:var(--cds-spacing-03)}
+.rpstept{font:400 13px/19px var(--cds-font-sans);color:var(--cds-text-primary);
+  text-wrap:pretty}
+.rpstepe{margin-top:2px;font-size:var(--cds-label-01-size);
+  color:var(--cds-text-secondary)}
+.rpstep .ppllink{margin-top:8px;font-size:13px}
+
 /* ---- build stamp -------------------------------------------------------- */
 .nav-ver{font-size:var(--cds-label-01-size);letter-spacing:var(--cds-label-01-ls);
   color:var(--cds-text-placeholder);font-variant-numeric:tabular-nums;
@@ -2821,7 +2945,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v115 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v117 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -2983,7 +3107,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v115 · 16 Sep 2026">
+<meta name="hfi-version" content="v117 · 16 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -3005,7 +3129,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v115 · 16 Sep 2026';
+window.HFI_BUILD='v117 · 16 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -4706,7 +4830,54 @@ function attCal(r){
   '<div class="calday" id="calday" hidden></div></div>';
 }
 
-/* ---- rep profile modal (MODULES_SPEC pass 3) --------------------------------- */
+/* ---- the rep profile, full page (v117) ------------------------------------------ */
+/* MEDIANS PER ROLE, COMPUTED, MEMOISED ON THE PERIOD. "Below the median" against a
+   population somebody was never part of is not a finding — a regional manager making
+   six calls a day is not underperforming against a business officer's eleven. So the
+   comparison set is: same role, active in this window. */
+let _MEDKEY='', _MED=null;
+function repMedians(){
+ const key=(typeof pKey==='function'?pKey():'');
+ if(key===_MEDKEY&&_MED)return _MED;
+ const out=Object.create(null);
+ const mid=a=>{ if(!a.length)return 0;
+   const s=a.slice().sort((x,y)=>x-y), h=s.length>>1;
+   return s.length%2?s[h]:Math.round(((s[h-1]+s[h])/2)*10)/10; };
+ const byRole=Object.create(null);
+ D.reps.forEach(r=>{ if(!(+r.days))return;
+   (byRole[r.r]||(byRole[r.r]=[])).push(r); });
+ Object.keys(byRole).forEach(role=>{
+  const g=byRole[role];
+  out[role]={ n:g.length,
+    att:mid(g.map(x=>+x.att||0)),
+    cpd:mid(g.map(x=>+x.cpd||0)),
+    cov:mid(g.map(x=>+x.cov||0)),
+    rx:mid(g.map(x=>+x.rx||0)),
+    da:mid(g.map(x=>+x.da||0)) };
+ });
+ _MEDKEY=key; _MED=out;
+ return out;
+}
+function repMed(r){
+ const m=repMedians()[r.r];
+ return m||{n:0,att:0,cpd:0,cov:0,rx:0,da:0};
+}
+/* First name only, because the headings address the person: "Is Nagesha reporting?"
+   reads as a question a manager would ask; "Is Nagesha K S reporting?" does not. */
+function repFirst(r){return String(r.n||'').trim().split(/\s+/)[0]||(r.c||'this person');}
+/* The real minus sign, not a hyphen. A hyphen in front of a number in a tabular column
+   is a different width from a plus and the column stops lining up. */
+function repDelta(v,med,unit,better){
+ if(!med)return {t:'no median yet',c:'--cds-text-secondary'};
+ const diff=Math.round((v-med)*10)/10;
+ if(!diff)return {t:'at median',c:'--cds-text-secondary'};
+ const good=(better==='low')?(diff<0):(diff>0);
+ const sign=diff<0?'\u2212':'+';
+ return {t:sign+Math.abs(diff)+(unit||'')+' vs median',
+         c:good?'--cds-support-success':'--cds-support-error'};
+}
+
+/* ---- rep profile chrome (MODULES_SPEC pass 3, rebuilt v117) ------------------- */
 /* Icons are declared beside the only thing that draws them, as scopeIcon() and RAILICO
    already are, rather than in a registry nobody reads. */
 function repIcoLink(){
@@ -4736,42 +4907,243 @@ function repIcoSev(sev){
   ' data-icon="'+sev+'"><path d="'+(P[sev]||P.info)+'"/></svg>';
 }
 
-/* THE VERDICT. A ranked ruleset: most severe first, first match wins. The point of the
-   strip is that nobody should have to derive the story from six numbers, so the rule that
-   fires is the one naming the lever — not the one restating the largest figure. */
-function repVerdict(r,mgr,team,reports){
- const zero=reports?reports.filter(x=>x.zeroRx).length:0;
- const days=(typeof incDays==='function')?incDays(r):0;
- const avail=(typeof incAvail==='function')?incAvail(r):0;
- const share=avail?Math.round(100*days/avail):0;
- if(!r.vis)
-  return {sev:'error',b:'No activity recorded in this window.',
-   s:'Nothing here can be assessed until they report. Start with whether they are '+
-     'reporting at all, not with what they reported.'};
- if(mgr&&team&&team.rx>0&&!r.rx)
-  return {sev:'warning',b:'Their team prescribes; they write none of their own.',
-   s:fmt(r.vis)+' personal visits produced no Rx'+
-     (zero?(', and '+zero+' of their reps are also at zero'):'')+
-     '. Coaching, not attendance, is the lever here.'};
- if(mgr&&zero)
-  return {sev:'warning',b:zero+' of '+reports.length+' direct reports produced no Rx.',
-   s:'The team total hides them. Coverage is not the gap; conversion is. Their names '+
-     'are on the Team tab.'};
- if(!r.rx)
-  return {sev:'error',b:fmt(r.vis)+' visits and not one prescription.',
-   s:'They are meeting doctors. Converting the meetings they already make is the lever, '+
-     'not making more of them.'};
- if(avail&&share<50)
-  return {sev:'warning',b:'Reported on '+share+'% of the working days available to them.',
-   s:days+' of '+avail+' days. Approved leave is not in this data yet, so check it '+
-     'before treating this as absence.'};
- if(r.rxConv<20)
-  return {sev:'warning',b:'Only '+r.rxConv+'% of the doctors they met wrote anything.',
-   s:fmt(r.ud)+' doctors met, '+fmt(r.rxD)+' of them prescribing. Volume is not the '+
-     'problem here.'};
- return {sev:'info',b:fmt(r.rx)+' Rx from '+fmt(r.ud)+' doctors met.',
-  s:r.rxConv+'% of the doctors they met prescribed'+
-    (avail?(', on '+share+'% of their available working days'):'')+'.'};
+/* THE VERDICT SENTENCE. Three cases, chosen by pplStat() — the same function that
+   colours the row edge in the table, fills the pill, and counts the toolbar segments.
+   A band that says "reporting steadily" beside a pill that says "At risk" is worse than
+   no band at all, and one rule for both is the only way to make that impossible.
+
+   The old ruleset had seven branches and led with prescriptions. It is gone because the
+   design's whole argument is that attendance comes first: a rep who has reported nothing
+   has no numbers worth ranking, and six of those seven branches ranked numbers. */
+function repVerdict(r,stat){
+ const first=repFirst(r), med=repMed(r), th=rth(r.r);
+ const pct=Math.round(+r.att||0);
+ const cov=Math.round(+r.cov||0), da=+r.da||0;
+ const role=String(th&&th.n?th.n:(r.r||'peer')).toLowerCase();
+ if(stat==='Silent'){
+  /* the last day they reported, if they ever did in the whole dataset — "since 31 Mar"
+     is a fact a manager can act on; "0 days" is not */
+  let last='';
+  try{ const all=(BASE&&BASE.calls&&BASE.calls[r.c])||[];
+    for(let i=0;i<all.length;i++)if(all[i][0]>last)last=all[i][0]; }catch(e){}
+  return last
+   ? 'Nothing has been reported since '+dlabel(last)+'. Confirm whether '+first+
+     ' is still in the field before reviewing any numbers.'
+   : 'Nothing has ever been reported from this account. Confirm whether '+first+
+     ' is still in the field before reviewing any numbers.';
+ }
+ if(stat==='Not onboarded')
+  return first+' has never used the app, so none of the figures below describe their '+
+   'work. Start with the app, not with the numbers.';
+ const covPart=da
+  ? ' Coverage is '+cov+'% of a '+fmt(da)+'-doctor list.'
+  : ' No doctor list is on record, so coverage cannot be assessed.';
+ if(stat==='On track')
+  return 'Reporting steadily on '+pct+'% of working days'+
+   (da?(' and covering '+cov+'% of a '+fmt(da)+'-doctor list'):'')+
+   '. Review call quality, not attendance.';
+ return 'Reporting on '+pct+'% of working days, below the '+role+' median of '+
+  Math.round(med.att)+'%.'+covPart;
+}
+
+/* ---- the four pieces of the 1c page (v117) ------------------------------------- */
+/* 1. THE BREADCRUMB BAR. It is what makes this a page rather than a dialog: a way back
+   to the list by name, and prev/next through the list's CURRENT order, which is the
+   whole reason triaging 637 people is viable. */
+function repCrumb(r){
+ return '<div class="rpcrumb">'+
+  '<div class="rpcl"><button class="rpback" id="rpback" type="button">People</button>'+
+   '<span class="rpsep">/</span><span class="rpwho">'+esc(r.n||'')+'</span></div>'+
+  '<div class="rpcr">'+
+   '<span class="rpnavl" id="rpnavl"></span>'+
+   '<button class="icon-btn" id="rpprev" type="button" title="Previous person" '+
+     'aria-label="Previous person">'+
+     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+     'data-icon="chevron--up"><path d="M16 10 6 20l1.4 1.4 8.6-8.6 8.6 8.6L26 20z"/>'+
+     '</svg></button>'+
+   '<button class="icon-btn" id="rpnext" type="button" title="Next person" '+
+     'aria-label="Next person">'+
+     '<svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" '+
+     'data-icon="chevron--down"><path d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"/>'+
+     '</svg></button>'+
+   '<button class="icon-btn" id="pshare" type="button" title="Copy link" '+
+     'aria-label="Copy link">'+repIcoLink()+'</button>'+
+   '<button class="icon-btn" id="pclose" type="button" title="Close profile" '+
+     'aria-label="Close profile">'+repIcoClose()+'</button></div></div>';
+}
+
+/* 2. THE VERDICT BAND. Identity on the left, finding on the right, and a 3px bottom
+   border in the status colour — the same mark the row carried in the list, so arriving
+   here from a red row lands on a red band. */
+function repBand(r,stat){
+ const th=rth(r.r), col=pplStatColor(stat);
+ const eyebrow=[th&&th.n?th.n:'', (r.r&&String(r.r).length<=4)?r.r:'', r.c]
+   .filter(Boolean).map(esc).join(' &middot; ');
+ /* ABSENT IS NOT BROKEN. A placement line of "— · — · — · reports to —" reads as data
+    that failed to load. Say what is known; if nothing is, say that instead. */
+ const mc=mgrCode(r);
+ const mgrTxt=(!r.mg||r.mg==='\u2014')?'':(mc
+   ?'<a class="mlink" data-go="'+esc(mc)+'">'+esc(r.mg)+'</a>':esc(r.mg));
+ const where=[r.hq,r.st,r.terr].filter(x=>x&&x!=='\u2014').map(esc);
+ const place=(where.length?where.join(' &middot; ')
+   :'No HQ, state or territory on record')+
+   (mgrTxt?(' &middot; reports to '+mgrTxt):' &middot; reports to Unassigned');
+ return '<div class="rpband" style="border-bottom-color:'+col+'">'+
+  '<div class="rpbl">'+
+   '<span class="rpav" style="background:'+avc(r.c||r.n)+'">'+esc(ini(r.n))+'</span>'+
+   '<div class="rpid"><div class="rpeye">'+eyebrow+'</div>'+
+    '<h2 class="rpname">'+esc(r.n||'')+'</h2>'+
+    '<div class="rpplace">'+place+'</div></div></div>'+
+  '<div class="rpbr">'+pplTag(stat)+
+   '<p class="rpverdict">'+esc(repVerdict(r,stat))+'</p></div></div>';
+}
+
+/* 3. THE KPI STRIP. Four tiles, each with the figure and how it sits against the median
+   for that role. A number with no comparison is a number nobody can act on. */
+function repKpi(label,value,delta){
+ return '<div class="rpk"><div class="rpkl">'+label+'</div>'+
+  '<div class="rpkv">'+value+'</div>'+
+  '<div class="rpkd" style="color:var('+delta.c+')">'+delta.t+'</div></div>';
+}
+function repKpis(r){
+ const med=repMed(r), wd=pplWd(r), days=+r.days||0;
+ const none={t:'no data',c:'--cds-text-secondary'};
+ return '<div class="rpkpi">'+
+  repKpi('Days reported',fmt(days)+'/'+fmt(wd),
+    days?repDelta(Math.round(+r.att||0),Math.round(med.att),'%'):none)+
+  repKpi('Calls / day',(+r.cpd||0)?String(r.cpd):'&mdash;',
+    (+r.cpd||0)?repDelta(+r.cpd,med.cpd,''):none)+
+  repKpi('Coverage',(+r.da||0)?(Math.round(+r.cov||0)+'%'):'&mdash;',
+    (+r.da||0)?repDelta(Math.round(+r.cov||0),Math.round(med.cov),'%'):none)+
+  /* NOT "Rx value", and no rupee sign: in this report rx is prescriptions generated,
+     a count. The design's rupee figures come from its synthetic fixture. */
+  repKpi('Prescriptions',(+r.rx||0)?fmt(r.rx):'&mdash;',
+    (+r.rx||0)?{t:(r.rx>=med.rx?'above':'below')+' median '+fmt(med.rx),
+                c:r.rx>=med.rx?'--cds-support-success':'--cds-support-error'}:none)+
+  '</div>';
+}
+
+/* 4. COVERAGE. One row per question, each a label over its evidence, a bar, and the
+   figure. Two of the five have no "good" direction — a chemist share is a mix, not a
+   score — so their bars are drawn in the neutral colour rather than being given a
+   traffic light that would invent a judgement the data does not support. */
+function repCovRow(label,sub,pct,value,dir){
+ const v=Math.max(0,Math.min(100,+pct||0));
+ const col=(dir==='none')?CDS('--cds-interactive')
+   :CDS(v>=68?'--cds-support-success':v>=40?'--cds-support-warning'
+             :'--cds-support-error');
+ return '<div class="rpcov"><div class="rpcovl"><span class="rpcovt">'+label+'</span>'+
+  '<span class="rpcovs">'+sub+'</span></div>'+
+  '<span class="rpcovb"><span class="rpcovf" style="width:'+Math.max(1,v)+
+   '%;background:'+col+'"></span></span>'+
+  '<span class="rpcovv'+(value==='0%'?' zero':'')+'">'+value+'</span></div>';
+}
+function repCoverage(r){
+ const da=+r.da||0, ud=+r.ud||0;
+ if(!da&&!ud)
+  return '<div class="rpnone">No doctor list is on record for '+esc(repFirst(r))+
+   ', so there is nothing to cover and no coverage to measure. That is a roster gap, '+
+   'not a performance one &mdash; the rail says which fields are missing.</div>';
+ return repCovRow('Doctors visited',
+    fmt(ud)+' of '+fmt(da)+' listed',r.cov,Math.round(+r.cov||0)+'%')+
+  repCovRow('Repeat coverage','Listed doctors seen more than once',
+    r.repc,Math.round(+r.repc||0)+'%')+
+  repCovRow('Rx conversion','Doctors met who prescribed at least once',
+    r.rxConv,Math.round(+r.rxConv||0)+'%')+
+  repCovRow('Top-doctor concentration','Share of prescriptions from one doctor',
+    r.tdc,Math.round(+r.tdc||0)+'%','none')+
+  repCovRow('Chemist share','Share of calls to chemists rather than doctors',
+    r.chsh,Math.round(+r.chsh||0)+'%','none');
+}
+
+/* 5. THE ROSTER RECORD, on the rail. Seven fields decide whether a territory target can
+   apply at all, so the completeness sentence comes before the list — and every missing
+   value is drawn in the error colour, because a blank in the same grey as everything
+   else is how 878 of them went unnoticed for a year. */
+const RP_REQ=[['hq','HQ'],['st','State'],['zn','Zone'],['terr','Territory'],
+              ['di','Division'],['mg','Reporting manager'],['ob','Onboarded']];
+function repGap(v){
+ const s=String(v===undefined||v===null?'':v).trim();
+ return !s||s==='\u2014'||s==='-'||s==='No'||s==='Unassigned'||s==='NA'||s==='N/A';
+}
+function repMissing(r){
+ return RP_REQ.filter(f=>f[0]==='ob'?!r.ob:repGap(r[f[0]]));
+}
+function repFact(k,v,bad){
+ return '<div class="rpf"><span class="rpfk">'+k+'</span>'+
+  '<span class="rpfv'+(bad?' gap':'')+'">'+v+'</span></div>';
+}
+function repRoster(r){
+ const miss=repMissing(r), th=rth(r.r);
+ const line=miss.length
+  ? fmt(miss.length)+' of 7 required fields are missing, so no territory target applies.'
+  : 'Complete. All 7 required fields are on record.';
+ const val=(v)=>repGap(v)?'&mdash;':esc(String(v));
+ const bad=(v)=>repGap(v);
+ return '<div class="rpsec"><div class="rpeye2">Roster record</div>'+
+  '<p class="rprline'+(miss.length?' gap':'')+'">'+line+'</p>'+
+  '<div class="rpfacts">'+
+   repFact('Employee code',esc(r.c||''),false)+
+   repFact('Role',esc((th&&th.n?th.n:r.r)||''),false)+
+   repFact('Division',val(r.di),bad(r.di))+
+   repFact('Zone',val(r.zn),bad(r.zn))+
+   repFact('State',val(r.st),bad(r.st))+
+   repFact('HQ',val(r.hq),bad(r.hq))+
+   repFact('Territory',val(r.terr),bad(r.terr))+
+   repFact('Reporting manager',val(r.mg),bad(r.mg))+
+   repFact('Onboarded on app',r.ob?'Yes':'No',!r.ob)+
+   repFact('Doctors on list',(+r.da||0)?fmt(r.da):'&mdash;',!(+r.da||0))+
+  '</div>'+
+  '<button class="btn btn--ghost rpfix" id="rpfix" type="button">Fix roster record</button>'+
+  '</div>';
+}
+
+/* 6. NEXT STEP. An instruction, the evidence for it, and the control that acts on it.
+   Two cards at most: a rail of six suggestions is a rail nobody reads. */
+function repStep(text,evidence,link,id){
+ return '<div class="rpstep"><div class="rpstept">'+text+'</div>'+
+  '<div class="rpstepe">'+evidence+'</div>'+
+  '<button class="ppllink" type="button" data-step="'+id+'">'+link+'</button></div>';
+}
+function repNextStep(r,stat){
+ const med=repMed(r), wd=pplWd(r), days=+r.days||0, miss=repMissing(r);
+ const first=repFirst(r), out=[];
+ if(stat==='Silent'||stat==='Not onboarded'){
+  out.push(repStep('Confirm whether '+esc(first)+' is still active in the field.',
+    fmt(days)+' of '+fmt(wd)+' working days reported','Flag to manager','coach'));
+  if(miss.length)
+   out.push(repStep('Complete the roster record so a territory target can apply.',
+     fmt(miss.length)+' required field'+(miss.length===1?'':'s')+' missing',
+     'Fix roster','roster'));
+ }else{
+  const pct=Math.round(+r.att||0);
+  out.push(pct<85
+   ? repStep('Set a weekly reporting minimum with '+
+       (repGap(r.mg)?'their manager':esc(r.mg))+'.',
+       fmt(days)+' of '+fmt(wd)+' days reported &middot; median '+
+         Math.round(med.att)+'%','Open day list','days')
+   : repStep('Reporting is steady. Review call quality in the next one-to-one.',
+       fmt(days)+' of '+fmt(wd)+' days reported &middot; median '+
+         Math.round(med.att)+'%','Open day list','days'));
+  const cov=Math.round(+r.cov||0), da=+r.da||0;
+  if(!da)
+   out.push(repStep('No doctor list is on record, so coverage cannot be assessed.',
+     'Upload the list before judging anything below it','Fix roster','roster'));
+  else if(cov<Math.round(med.cov))
+   out.push(repStep(fmt(Math.max(0,da-(+r.ud||0)))+
+     ' listed doctors were never visited in this window.',
+     fmt(da)+' doctors listed &middot; '+cov+'% covered','See doctors','docs'));
+  else
+   out.push(repStep('Coverage is ahead of median. Check the top-doctor mix.',
+     fmt(da)+' doctors listed &middot; '+cov+'% covered','See doctors','docs'));
+ }
+ return '<div class="rpsec"><div class="rpeye2">Next step</div>'+out.join('')+'</div>';
+}
+
+/* A heading and its one-line answer. Every section on this page is a question somebody
+   asked, which is the rule the chart cards already follow. */
+function repH(q,sub){
+ return '<h3 class="rph">'+q+'</h3>'+(sub?'<div class="rphs">'+sub+'</div>':'');
 }
 
 /* FOUR TILES, not six. data-alert tints the value and puts an error edge on the tile, so
@@ -4841,22 +5213,11 @@ function repZeroState(docs){
   'its sequence.</div></div>';
 }
 
-const REP_TABS=[['perf','Performance'],['team','Team'],['days','Days worked'],
-                ['prof','Profile']];
-function repTabBar(active,show){
- return '<div class="rep-tabs" role="tablist">'+REP_TABS.filter(t=>show.indexOf(t[0])>=0)
-  .map(t=>'<button role="tab" type="button" data-rt="'+t[0]+'" aria-selected="'+
-    (t[0]===active)+'">'+t[1]+'</button>').join('')+'</div>';
-}
-function repTabTo(k){
- const card=$('pcard'); if(!card)return;
- card.querySelectorAll('.rep-tabs button').forEach(b=>
-   b.setAttribute('aria-selected',b.dataset.rt===k?'true':'false'));
- card.querySelectorAll('.rep-panel').forEach(p=>{p.hidden=(p.dataset.rp!==k);});
- const body=$('pbody'); if(body)body.scrollTop=0;
- /* a chart cannot measure itself inside a display:none panel; resize once it has a box */
- try{ if(k==='perf'&&CH.pTrend&&CH.pTrend.resize)CH.pTrend.resize(); }catch(e){}
-}
+/* THE TABS ARE GONE. Performance / Team / Days worked / Profile split one question
+   across four screens: the reporting percentage, the calendar that explains it and the
+   roster record that explains why there is no target were each somewhere else. The page
+   asks them in order instead, and the rail holds the roster record in view the whole
+   time. What the tabs used to hide is all still on the page, further down. */
 /* THE DIALOG TAKES FOCUS, NOT A TAB. A ring on a tab competes with — and shouts over
    — the selected tab's own 2px underline, so the profile opened looking as though the
    focus ring were the selection. Focusing the dialog itself is also what a dialog should
@@ -4870,11 +5231,6 @@ function repFocus(){
   card.setAttribute('aria-modal','true');
   card.focus({preventScroll:true});
  }catch(e){}
-}
-
-function repWireTabs(){
- const card=$('pcard'); if(!card)return;
- card.querySelectorAll('.rep-tabs button').forEach(b=>{b.onclick=()=>repTabTo(b.dataset.rt);});
 }
 
 function openProfile(code,opts){
@@ -4914,33 +5270,8 @@ function openProfile(code,opts){
    '">&#10094; Back</button>':'';
  /* Light, untextured. The dark hatched plate was not a Carbon surface, and the inner
    white highlight it relied on vanishes on Gray 100. */
-const V=repVerdict(r,mgr,team,reports);
-const SHOW=['perf'].concat(reports.length?['team']:[]).concat(['days','prof']);
-const head='<div class="rep-modal-header">'+
-  '<div class="rep-id">'+back+
-   '<span class="rep-plate" style="background:'+avc(r.c||r.n)+'">'+ini(r.n)+'</span>'+
-   '<div class="rep-idtext">'+
-     '<div class="rep-eyebrow"><span>'+esc(th.n)+
-       ((r.r&&r.r.length<=4&&r.r.toUpperCase()!==th.n.toUpperCase())?' · '+esc(r.r):'')+
-       '</span>'+chips.join('')+'</div>'+
-     '<h2>'+esc(r.n)+'</h2>'+
-     /* ABSENT IS NOT THE SAME AS BROKEN. This printed 'EC9424 · — · — · reports to …'
-   for anyone without an HQ or a state — two placeholder dashes with separators around
-   them, which reads as data that failed to load rather than data that does not apply.
-   Drop the empty segments; say what is known. */
- '<div class="rep-meta">'+[esc(r.c),r.hq?esc(r.hq):'',r.st?esc(r.st):'']
-   .filter(Boolean).join(' · ')+
-       (mgrTxt?' · reports to '+mgrTxt:'')+(reports.length?' · '+reports.length+' direct reports':'')+'</div>'+
-   '</div>'+
-   '<div class="rep-acts">'+
-     '<button class="icon-btn" id="pshare" type="button" title="Copy link" '+
-       'aria-label="Copy link">'+repIcoLink()+'</button>'+
-     '<button class="icon-btn" id="pclose" type="button" title="Close profile" '+
-       'aria-label="Close profile">'+repIcoClose()+'</button></div>'+
-  '</div>'+
-  '<div class="rep-verdict" data-sev="'+V.sev+'">'+repIcoSev(V.sev)+
-   '<div><b>'+V.b+'</b> <span>'+V.s+'</span></div></div>'+
-  repTabBar('perf',SHOW)+'</div>';
+const STAT=pplStat(r);
+const head=repCrumb(r)+repBand(r,STAT);
 
  /* --- tiles: team-first for managers, personal for field roles --- */
  let tiles='';
@@ -5050,32 +5381,58 @@ const head='<div class="rep-modal-header">'+
  /* Every panel is in the DOM from the first paint and only [hidden] moves. dcrWire(),
     the notes block and the trend chart all run below and address elements by id — a tab
     that rebuilt its panel would leave those wires pointing at detached nodes. */
+ /* THE PAGE, IN THE ORDER A MANAGER ASKS THE QUESTIONS. Reporting before performance
+    is the whole argument of this redesign: for 318 of 878 people every performance
+    figure is zero, and leading with four zeroes above a banner explaining why they are
+    zero is what the old dialog did. Nothing has been dropped — the doctor table, the day
+    table, the top lists, the HR record and the behaviour signals are all still here,
+    below the two questions that decide whether any of them mean anything. */
  const noRx=repZeroRx(docs,prods);
+ const mgrSection=reports.length
+  ? repH('How is '+esc(repFirst(r))+'&rsquo;s team doing?',
+      reports.length+' direct report'+(reports.length===1?'':'s')+
+      (team&&team.zero?(' &middot; '+team.zero+' at zero Rx'):''))+
+    repReportsTable(reports)
+  : '';
  $('pcard').innerHTML=head+'<div class="pbody" id="pbody">'+
-
-  '<div class="rep-panel" data-rp="perf">'+
-   '<div class="rep-tiles">'+repTiles(r,mgr,team,reports)+'</div>'+
-   '<div class="bento" style="margin-top:var(--s4)">'+trend+side+
-     (noRx?repZeroState(docs):(docBox+prodBox))+docTable+'</div>'+
+  '<div class="rpmain">'+
+   repKpis(r)+
+   repH('Is '+esc(repFirst(r))+' reporting?',
+     fmt(+r.days||0)+' of '+fmt(pplWd(r))+' working days reported &middot; '+
+     Math.round(+r.att||0)+'%')+
+   attCal(r)+
+   repH('Who and where does '+esc(repFirst(r))+' cover?',
+     (+r.da||0)
+       ? (fmt(r.da)+' doctors on the list &middot; '+fmt(+r.ud||0)+
+          ' met in this window')
+       : 'No doctors are on the list yet.')+
+   '<div class="rpcovs2">'+repCoverage(r)+'</div>'+
+   mgrSection+
+   repH('Where are the prescriptions coming from?',
+     (+r.rx||0)?(fmt(r.rx)+' prescriptions &middot; '+fmt(rxd)+
+       ' of '+fmt(docs.length)+' doctors covered wrote one')
+      :'No prescriptions were recorded in this window.')+
+   /* the month-by-month chart comes with them. It is not in the design's 1c, and
+      dropping it would have left `chart('pTrend',...)` mounting onto a null element —
+      harmless in jsdom, a throw in a real browser. Kept because it answers a question
+      the calendar does not: not "did they turn up" but "is the output moving". */
+   '<div class="bento">'+trend+(noRx?repZeroState(docs):(docBox+prodBox))+'</div>'+
+   repH('What happened, day by day?','')+
+   '<div class="bento">'+dayTable+docTable+'</div>'+
+   repH('What else is on record?','')+
+   '<div class="bento">'+hrBox+
+    (mgr?'':kvBox('s4','Behaviour signals',[
+      ['Field hrs / day',r.fhrs],['Day start',r.ds||'\u2014'],
+      ['Mins / call',r.mpc===''?'\u2014':r.mpc],['Samples / Rx',r.s2r],
+      ['Rx / call',r.rpc],['Rx / doctor met',r.rxPerDoc],
+      ['Days silent',r.rec===''?'\u2014':r.rec+'d'],
+      ['New doctors (7d)',r.newd]]))+
+    side+'</div>'+
   '</div>'+
-
-  /* conditional, so the panels and the tabs are the same set. Emitted unconditionally
-     it left a field rep with a hidden, unreachable, empty Team panel — invisible, but
-     it makes "every tab has a panel" and "every panel has a tab" stop being the same
-     statement, which is how an empty tab eventually ships. */
-  (reports.length?('<div class="rep-panel" data-rp="team" hidden><div class="bento">'+
-   repReportsTable(reports)+'</div></div>'):'')+
-
-  '<div class="rep-panel" data-rp="days" hidden><div class="bento">'+
-   attCal(r)+dayTable+'</div></div>'+
-
-  '<div class="rep-panel" data-rp="prof" hidden><div class="bento">'+idBox+hrBox+
-   (mgr?'':kvBox('s4','Behaviour',[
-     ['Field hrs / day',r.fhrs],['Day start',r.ds||'—'],['Mins / call',r.mpc===''?'—':r.mpc],
-     ['Samples / Rx',r.s2r],['Supercore focus',r.scf+'%'],['Chemist share',r.chsh+'%'],
-     ['Top-doctor concentration',r.tdc+'%'],['New doctors (7d)',r.newd]]))+
-   notesBox+'</div></div>'+
-
+  '<aside class="rprail">'+repRoster(r)+repNextStep(r,STAT)+
+   '<div class="rpsec"><div class="rpeye2">Team notes</div>'+
+   '<div id="pnotesbody"></div><span class="vh" id="pnc"></span></div>'+
+  '</aside>'+
   '</div>'+
   '<div class="rep-foot"><span class="per" id="repper"></span>'+
    '<button class="btn btn--ghost btn--sm" id="repxl" type="button" hidden>Export the day list</button>'+
@@ -5091,7 +5448,6 @@ const head='<div class="rep-modal-header">'+
   if(xl&&src){xl.hidden=false;xl.onclick=()=>src.click();}
   const co=$('repcoach');
   if(co)co.onclick=()=>{closeProfile();go('exc');};
-  repWireTabs();
  }catch(e){console.warn('profile chrome',e);}
 
  /* trend chart */
@@ -5119,7 +5475,55 @@ const head='<div class="rep-modal-header">'+
  const pc=$('pcard');
  $('pclose').onclick=closeProfile;
    try{repFocus();}catch(e){}
- const bk=$('pback'); if(bk)bk.onclick=()=>{const prev=PSTACK.pop(); if(prev)openProfile(prev.c,{back:true});};
+ /* THE BREADCRUMB GOES BACK TO THE LIST, not up a stack of profiles. Following a
+    manager into a report and wanting "People" to mean People is the common case; the
+    stack still works, it is just no longer what the word "People" does. */
+ const bk=$('rpback');
+ if(bk)bk.onclick=()=>{
+  const prev=PSTACK.length?PSTACK.pop():null;
+  if(prev)openProfile(prev.c,{back:true}); else closeProfile();
+ };
+ /* PREV / NEXT THROUGH THE LIST'S CURRENT ORDER. This is what makes triaging 637
+    exceptions viable: the filter and sort you set on the table are the sequence you
+    walk here, and it clamps at both ends rather than wrapping — wrapping past the last
+    person reads as a bug every time. */
+ try{
+  const order=(typeof pplSorted==='function')?pplSorted():[];
+  const at=order.findIndex(x=>x.c===code);
+  const lbl=$('rpnavl');
+  if(lbl)lbl.textContent=(at>=0&&order.length)
+    ? (fmt(at+1)+' of '+fmt(order.length)) : '';
+  const step=n=>{
+   if(at<0)return;
+   const t=order[at+n];
+   if(t)openProfile(t.c,{});
+  };
+  const pv=$('rpprev'), nx=$('rpnext');
+  if(pv){pv.disabled=(at<=0); pv.onclick=()=>step(-1);}
+  if(nx){nx.disabled=(at<0||at>=order.length-1); nx.onclick=()=>step(1);}
+  if(!pc.dataset.keys){
+   pc.dataset.keys='1';
+   pc.addEventListener('keydown',e=>{
+    if(e.key!=='ArrowUp'&&e.key!=='ArrowDown')return;
+    const t=e.target;
+    if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'))return;
+    e.preventDefault();
+    const b=$(e.key==='ArrowUp'?'rpprev':'rpnext');
+    if(b&&!b.disabled)b.click();
+   });
+  }
+ }catch(e){console.warn('profile nav',e);}
+ /* the rail's two links act rather than describe */
+ pc.querySelectorAll('[data-step]').forEach(b=>{b.onclick=()=>{
+   const k=b.dataset.step;
+   if(k==='coach'){closeProfile();go('exc');return;}
+   if(k==='roster'){closeProfile();go('hgeo');return;}
+   const sel=(k==='days')?'.dcrrow':'.rep-reports,.tablewrap';
+   const t=pc.querySelector(sel)||pc.querySelector('.bento');
+   if(t&&t.scrollIntoView)t.scrollIntoView({block:'center'});
+ };});
+ const fx=$('rpfix');
+ if(fx)fx.onclick=()=>{closeProfile();go('hgeo');};
  $('pshare').onclick=()=>shareProfile(code,$('pshare'));
  pc.querySelectorAll('[data-go]').forEach(el=>el.onclick=e=>{
    e.stopPropagation(); openProfile(el.dataset.go,{push:true}); });
@@ -5127,6 +5531,7 @@ const head='<div class="rep-modal-header">'+
  const body=$('pbody');
  if(body)body.onscroll=()=>{ pc.classList.toggle('cond',body.scrollTop>28); };
  pc.classList.remove('cond');
+ /* the notes count is a screen-reader line now; the rail heading carries the label */
  if(body)body.scrollTop=0;
  try{setTimeout(()=>{try{stickyCols(pc);}catch(_){}} ,0);}catch(_){}
  $('pscrim').classList.add('open'); document.body.style.overflow='hidden';
