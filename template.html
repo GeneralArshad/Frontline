@@ -2945,8 +2945,12 @@ table.rep-reports .barcell{width:88px}
 
 /* THE PANEL, INLINE. A floating popover at this width would cover the data the reader
    is deciding about, which is the one thing it must not do. */
-.pplpan{padding:20px 20px 16px;background:var(--cds-layer-01);
-  border-bottom:1px solid var(--cds-border-subtle-01)}
+/* overflow:hidden is what makes a height tween look like a reveal rather than a
+   clipped jumble; box-sizing so the 36px of vertical padding is inside the measured
+   height and the last row does not jump at the end of the tween */
+.pplpan{padding:20px 20px 16px;background:var(--cds-layer-01);box-sizing:border-box;
+  border-bottom:1px solid var(--cds-border-subtle-01);overflow:hidden}
+.pplpan[hidden]{display:none}
 .pplpre{display:flex;align-items:center;gap:var(--cds-spacing-03);flex-wrap:wrap;
   margin-bottom:var(--cds-spacing-05)}
 .pplprel{font-size:var(--cds-label-01-size);letter-spacing:.32px;
@@ -3014,7 +3018,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v119 · 16 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v123 · 17 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -3176,7 +3180,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v119 · 16 Sep 2026">
+<meta name="hfi-version" content="v123 · 17 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -3198,7 +3202,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v119 · 16 Sep 2026';
+window.HFI_BUILD='v123 · 17 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -3859,6 +3863,29 @@ function gsapReady(){
  try{return !!(window.gsap&&typeof window.gsap.to==='function');}catch(e){return false;}
 }
 
+/* CARBON'S CURVE, WITHOUT A PLUGIN. GSAP's core ships power/back/elastic and no
+   cubic-bezier; CustomEase, which would take one directly, is not in the free bundle.
+   So the curve is solved here: sample x by bisection to find the parameter t at which
+   the bezier's x equals the elapsed fraction, then return its y. Eighteen halvings is
+   exact to well under a pixel and costs nothing at 60fps.
+
+   This matters more than it sounds. Every other transition in this stylesheet uses
+   --cds-easing-standard-productive, which IS cubic-bezier(0.2,0,0.38,0.9); animating
+   one panel on GSAP's "power2.inOut" instead would make that panel the only thing on
+   the screen moving to a different rhythm. */
+function cubicBezierEase(x1,y1,x2,y2){
+ const cx=t=>3*(1-t)*(1-t)*t*x1+3*(1-t)*t*t*x2+t*t*t;
+ const cy=t=>3*(1-t)*(1-t)*t*y1+3*(1-t)*t*t*y2+t*t*t;
+ return p=>{
+  if(!(p>0))return 0;
+  if(p>=1)return 1;
+  let lo=0,hi=1,t=p;
+  for(let i=0;i<18;i++){t=(lo+hi)/2; if(cx(t)<p)lo=t; else hi=t;}
+  return cy(t);
+ };
+}
+const CDS_EASE=cubicBezierEase(0.2,0,0.38,0.9);
+
 /* fx(targets, vars) — animate if we can, otherwise land on the end state at once.
    `vars.set` carries the final CSS so the no-GSAP path has something to apply. */
 function fx(targets, vars){
@@ -4034,8 +4061,9 @@ const PCOLS=[
   v:r=>Math.round(+r.att||0)},
  /* reported over the denominator, because "121" alone is not an answer to
     "are they reporting" without the number it is out of */
+ /* sorts on whichever name the record carries, so the column and the sort agree */
  {k:'days',t:'Days',         w:'94px',  ty:'num',  s:'days', g:'ac',
-  v:r=>fmt(+r.days||0)+'/'+fmt(pplWd(r)), raw:r=>1},
+  v:r=>fmt(pplDays(r))+'/'+fmt(pplWd(r))},
  {k:'vis', t:'Visits',       w:'80px',  ty:'num',  s:'vis',  g:'ac', v:r=>r.vis},
  {k:'dv',  t:'Doctor calls', w:'108px', ty:'num',  s:'dv',   g:'ac', v:r=>r.dv},
  {k:'ud',  t:'Doctors met',  w:'110px', ty:'num',  s:'ud',   g:'ac', v:r=>r.ud},
@@ -4107,11 +4135,59 @@ const PSTAT={
    segment that always reads 0 is a control that teaches the reader to ignore controls. */
 const PSTAT_SEG=['Silent','At risk','Watch','On track'];
 
+/* DAYS REPORTED, WHICHEVER SHAPE THE REP RECORD IS IN. There are two, and the report
+   moves between them without saying so:
+
+     D = perActive() ? buildPeriod() : BASE
+
+   BASE is the ETL's own payload and names this figure `attDays`. rebuildReps(), which
+   only runs for a NON-default period, adds `days`. "All time" is the default, so the
+   screen every reader opens on is the one where `days` does not exist — and reading it
+   directly made all 878 people Silent. One accessor, and a build gate below that stops any
+   other call site from reading the raw field again. */
+function pplDays(r){
+ if(r&&r.days!==undefined&&r.days!==null&&r.days!=='')return +r.days||0;
+ if(r&&r.attDays!==undefined&&r.attDays!==null&&r.attDays!=='')return +r.attDays||0;
+ return 0;
+}
 /* A rep's own working-day denominator, not the window's: somebody who joined in July
-   is not absent for April. rebuildReps already computed it as attWd. */
+   is not absent for April. BOTH shapes carry attWd, which is why this one never broke —
+   and is exactly why the one beside it did, unnoticed. */
 function pplWd(r){return Math.max(1,+r.attWd||+((typeof D!=='undefined'&&D.workDays)||0)||1);}
+
+/* THE SHAPE CHECK. One field disagreed between the two paths and it cost a week of the
+   main screen being wrong. So: at boot, take a sample of rep records and report any
+   field the column registry reads that is not on them. It records rather than throws —
+   a missing column is a bad cell, not a reason to blank the report — but it records
+   LOUDLY, in the same place init failures go, because the failure mode being guarded
+   against is silence. */
+function pplShapeCheck(){
+ try{
+  const rows=(D&&D.reps)||[];
+  if(!rows.length)return [];
+  const sample=rows.slice(0,50);
+  const miss=[];
+  PCOLS.forEach(c=>{
+   /* derived columns read no field of their own */
+   if(c.k==='stat'||c.k==='tr'||c.k==='days')return;
+   const seen=sample.some(r=>r[c.k]!==undefined);
+   if(!seen)miss.push(c.k);
+  });
+  /* days is the one that broke, so it is checked through its accessor rather than by
+     name: either spelling is fine, neither is not */
+  if(!sample.some(r=>r.days!==undefined||r.attDays!==undefined))miss.push('days/attDays');
+  if(!sample.some(r=>r.attWd!==undefined))miss.push('attWd');
+  if(miss.length){
+   const msg='people table: rep records carry no '+miss.join(', ')+
+     ' — those columns will read as empty';
+   console.warn(msg);
+   try{(window.__initProblems=window.__initProblems||[]).push(msg);}catch(e){}
+  }
+  return miss;
+ }catch(e){return [];}
+}
 function pplStat(r){
- const days=+r.days||0;
+ const days=pplDays(r);
  if(days===0)return 'Silent';
  if(!r.ob)return 'Not onboarded';
  const share=days/pplWd(r);
@@ -4179,7 +4255,7 @@ function pplMonthWd(){
    The level is then allowed to override the slope: somebody reporting on 40% of days is
    not "improving", whatever the gradient, so attendance forces red or yellow first. */
 function pplSparkColor(r,stat,t){
- if(stat==='Silent'||!(+r.days||0))return '--cds-support-error';
+ if(stat==='Silent'||!pplDays(r))return '--cds-support-error';
  const wd=pplMonthWd(), n=t.length;
  const rate=t.map((v,i)=>wd[i]>0?v/wd[i]:null);
  const mean=a=>{const x=a.filter(v=>v!==null&&v===v);
@@ -4395,9 +4471,12 @@ function pplPresetOn(id){
  const want=(PPRESETS.filter(p=>p[0]===id)[0]||[0,0,[]])[2];
  return want.length===pplCols.length&&want.every(k=>pplCols.indexOf(k)>=0);
 }
+/* THE PANEL IS BUILT ONCE AND HIDDEN, NEVER REBUILT. It used to be re-created on every
+   redraw, which meant ticking a checkbox replaced the checkbox — so focus fell to the
+   body and a keyboard user could tick exactly one box before losing their place. Same
+   defect as the search caret in v89, same fix: build the node once, sync its state. */
 function pplPanelHtml(){
- if(!pplPanel)return '';
- return '<div class="pplpan" id="pplpan">'+
+ return '<div class="pplpan" id="pplpan"'+(pplPanel?'':' hidden')+'>'+
   '<div class="pplpre"><span class="pplprel">Presets</span>'+
    PPRESETS.map(p=>'<button class="pplchip'+(pplPresetOn(p[0])?' on':'')+
      '" type="button" data-preset="'+p[0]+'" aria-pressed="'+
@@ -4416,6 +4495,61 @@ function pplPanelHtml(){
       (c.always?'<span class="pplalw">always</span>':'')+'</label>';
     }).join('')+'</div>').join('')+
   '</div></div>';
+}
+
+/* SYNC, DO NOT REBUILD. Everything a redraw needs to change about this panel is which
+   boxes are ticked and which chip is lit — both of which are attributes on nodes that
+   are already there and may already have focus. */
+function pplPanelSync(){
+ const el=$('pplpan'); if(!el)return;
+ el.querySelectorAll('input[data-col]').forEach(inp=>{
+  const k=inp.getAttribute('data-col');
+  const col=PCOLS.filter(c=>c.k===k)[0];
+  const on=!!(col&&col.always)||pplCols.indexOf(k)>=0;
+  inp.checked=on;
+  const box=inp.parentNode;
+  if(box&&box.classList)box.classList.toggle('on',on);
+ });
+ el.querySelectorAll('button[data-preset]').forEach(b=>{
+  const on=pplPresetOn(b.getAttribute('data-preset'));
+  b.classList.toggle('on',on);
+  b.setAttribute('aria-pressed',on?'true':'false');
+ });
+}
+
+/* OPEN AND CLOSE, ON CARBON'S CURVE. 180ms out, 150ms back: an entrance is allowed to
+   be seen, an exit should get out of the way.
+
+   Not routed through fx(), and worth saying why — fx() animates to an end state it is
+   handed, and this has to MEASURE one first: the panel's height depends on the viewport
+   and on how many columns each group holds. It reads the same two predicates fx() does,
+   so the guarantee is identical: reduced motion or no GSAP means the panel simply
+   appears, with no half-collapsed state left behind. */
+const PPL_PAN_IN=0.18, PPL_PAN_OUT=0.15;
+function pplPanelSet(open){
+ const el=$('pplpan'); if(!el)return;
+ pplPanel=!!open;
+ const btn=$('pplcolsb');
+ if(btn){
+  btn.classList.toggle('on',pplPanel);
+  btn.setAttribute('aria-expanded',pplPanel?'true':'false');
+ }
+ const land=()=>{el.hidden=!pplPanel;el.style.height='';el.style.opacity='';};
+ if(MOTION.reduced||!gsapReady()){land();return;}
+ try{
+  window.gsap.killTweensOf(el);
+  if(pplPanel){
+   el.hidden=false;
+   /* measured while it is laid out but before it is painted at full height */
+   const h=el.scrollHeight;
+   window.gsap.fromTo(el,{height:0,opacity:0},
+     {height:h,opacity:1,duration:PPL_PAN_IN,ease:CDS_EASE,
+      onComplete:()=>{el.style.height='';el.style.opacity='';}});
+  }else{
+   window.gsap.to(el,{height:0,opacity:0,duration:PPL_PAN_OUT,ease:CDS_EASE,
+     onComplete:land});
+  }
+ }catch(e){land();}
 }
 
 /* The five status segments, with counts taken before the segment filter applies. */
@@ -4457,7 +4591,10 @@ function pplView(rows){
  /* the wrapper scrolls sideways only when the CHOSEN columns are wider than the screen,
     which is a different number for every selection — so it is computed, not typed */
  $('pplwrap').style.setProperty('--pplminw',pplMinW()+'px');
- const pan=$('pplpanw'); if(pan)pan.innerHTML=pplPanelHtml();
+ /* built once, then only synced — see pplPanelSync */
+ const pan=$('pplpanw');
+ if(pan&&!$('pplpan'))pan.innerHTML=pplPanelHtml();
+ pplPanelSync();
  const cb=$('pplcolsb');
  if(cb){
   cb.classList.toggle('on',pplPanel);
@@ -4526,6 +4663,7 @@ function pplExport(rows,what){
  const body=rows.map(r=>cols.map(c=>{
   if(c.k==='stat')return pplStat(r);
   if(c.k==='attWd')return pplWd(r);
+  if(c.k==='days')return pplDays(r);
   const raw=r[c.k];
   return (raw===null||raw===undefined)?'':raw;
  }));
@@ -4577,8 +4715,12 @@ function pplWire(){
   pplBusy(()=>{pplRedraw();window.scrollTo(0,y);});
  };
  /* the columns control, its presets and its checkboxes */
+ /* TOGGLING THE PANEL TOUCHES THE PANEL, NOT THE TABLE. It used to call pplRedraw(),
+    which rebuilt the header, a hundred rows and the footer in order to show a control
+    that sits above all of them — the visible stutter, and it would have got worse with
+    every press of Load more. */
  const cb2=$('pplcolsb');
- if(cb2)cb2.onclick=()=>{pplPanel=!pplPanel;pplRedraw();};
+ if(cb2)cb2.onclick=()=>{pplPanelSet(!pplPanel);};
  const pan2=$('pplpan');
  if(pan2){
   pan2.querySelectorAll('button[data-preset]').forEach(b=>{
@@ -4598,6 +4740,8 @@ function pplWire(){
        time somebody ticks a box, and a reader loses the column they were reading. */
     pplCols=PCOLS.map(c=>c.k).filter(k2=>!PCOLS.filter(c=>c.k===k2)[0].always&&
       pplCols.indexOf(k2)>=0);
+    /* the TABLE has to redraw — the columns changed — but the panel is a persistent
+       node now, so the box that was just clicked keeps focus through it */
     pplSave(); pplRedraw();
    };
   });
@@ -4955,6 +5099,10 @@ function init(){
   S('theme toggle',()=>{$('theme').addEventListener('click',()=>setTimeout(themeLabel,0));$('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');if(typeof themeLabel==='function')themeLabel();render();};});
   S('modal handlers',()=>{$('mscrim').onclick=e=>{if(e.target===$('mscrim'))cm();};document.addEventListener('keydown',e=>{if(e.key==='Escape')cm();});});
   S('footer',()=>{$('foot').textContent='Hive Frontline — July 2026 · prescription-first BI · '+D.gen;});
+ /* AFTER the first render, so D is settled and the registry exists. A field the
+    columns read but the data does not carry is reported here rather than drawn as 878
+    identical empty cells. */
+ S('data shape',()=>{pplShapeCheck();});
  try{render();}catch(e){PROB.push('render: '+((e&&e.message)||e));console.error('init[render]',e);}
  if(PROB.length)bootWarn(PROB);
 }
@@ -5178,7 +5326,10 @@ function repMedians(){
    const s=a.slice().sort((x,y)=>x-y), h=s.length>>1;
    return s.length%2?s[h]:Math.round(((s[h-1]+s[h])/2)*10)/10; };
  const byRole=Object.create(null);
- D.reps.forEach(r=>{ if(!(+r.days))return;
+ /* THE MEDIANS WERE ALL ZERO. Every role group was empty, because this line read the
+    field that does not exist on the default screen — so every delta on every profile
+    said "below median 0%". */
+ D.reps.forEach(r=>{ if(!pplDays(r))return;
    (byRole[r.r]||(byRole[r.r]=[])).push(r); });
  Object.keys(byRole).forEach(role=>{
   const g=byRole[role];
@@ -5340,7 +5491,7 @@ function repKpi(label,value,delta){
   '<div class="rpkd" style="color:var('+delta.c+')">'+delta.t+'</div></div>';
 }
 function repKpis(r){
- const med=repMed(r), wd=pplWd(r), days=+r.days||0;
+ const med=repMed(r), wd=pplWd(r), days=pplDays(r);
  const none={t:'no data',c:'--cds-text-secondary'};
  return '<div class="rpkpi">'+
   repKpi('Days reported',fmt(days)+'/'+fmt(wd),
@@ -5440,7 +5591,7 @@ function repStep(text,evidence,link,id){
   '<button class="ppllink" type="button" data-step="'+id+'">'+link+'</button></div>';
 }
 function repNextStep(r,stat){
- const med=repMed(r), wd=pplWd(r), days=+r.days||0, miss=repMissing(r);
+ const med=repMed(r), wd=pplWd(r), days=pplDays(r), miss=repMissing(r);
  const first=repFirst(r), out=[];
  if(stat==='Silent'||stat==='Not onboarded'){
   out.push(repStep('Confirm whether '+esc(first)+' is still active in the field.',
@@ -5732,7 +5883,7 @@ const head=repCrumb(r)+repBand(r,STAT);
   '<div class="rpmain">'+
    repKpis(r)+
    repH('Is '+esc(repFirst(r))+' reporting?',
-     fmt(+r.days||0)+' of '+fmt(pplWd(r))+' working days reported &middot; '+
+     fmt(pplDays(r))+' of '+fmt(pplWd(r))+' working days reported &middot; '+
      Math.round(+r.att||0)+'%')+
    attCal(r)+
    repH('Who and where does '+esc(repFirst(r))+' cover?',
