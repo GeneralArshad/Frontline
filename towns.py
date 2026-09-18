@@ -392,7 +392,23 @@ def _better(a, b):
 
 
 def resolve(town, division, ix):
-    """(HQ name or None, reason). Never guesses without saying so."""
+    """(HQ name or None, reason). Never guesses without saying so.
+
+    **A division's sales are never credited to another division's people.** British
+    Biologicals runs three forces on three product ranges, and the rule from the business
+    is that each is accounted for only on its own range. An earlier version of this
+    function, finding no speciality HQ in a town, credited the sale to the main HQ there
+    and said so in the reason. Labelled or not, that put a speciality rupee into a main
+    rep's denominator: it lifted main's productivity by the amount of a product main does
+    not sell, and it did it most where speciality is thinnest on the ground.
+
+    The size of it: 98.8% of Advanced Nutrition's billing — a range with no employees
+    onboarded at all — and 23.6% of speciality's landed on main HQs this way. So the
+    fallback is gone. Billing with no HQ of its own division behind it is returned
+    unresolved, with the division named, and `matrix()` reports it as its own figure.
+    That number is not a gap in the arithmetic; it is the business's white space, and it
+    is worth more on the page than buried in somebody else's PCPM.
+    """
     key = key_of(town)
     if not key:
         return None, 'no town on the sale'
@@ -400,15 +416,17 @@ def resolve(town, division, ix):
     by = ix['by']
     if div and key in by.get(div, {}):
         return by[div][key], 'matched on town and division'
-    # The division has no HQ in this town. Falling back to another division's HQ is a
-    # judgement, so it is made once, here, and reported in the reason — a specialty sale
-    # credited to the main HQ is defensible, but only if the report says it happened.
-    others = [d for d in by if key in by[d] and d != div]
-    if others:
-        pick = MAIN if MAIN in others else sorted(others)[0]
-        if div:
-            return by[pick][key], ('no %s HQ in this town — credited to the %s HQ'
-                                   % (div, pick))
+    here = [d for d in by if key in by[d] and d != div]
+    if div:
+        if here:
+            return None, ('no %s post in this town — %s sells here, but its people are '
+                          'not measured on %s products' % (div, ' and '.join(sorted(here)), div))
+        return None, 'no %s post in this town, and no other division either' % div
+    if here:
+        # No division on the sale at all. This is not a cross-division credit — there is
+        # no division to violate — and it only happens on the emergency path where every
+        # per-division fetch failed. `check()` raises it if it carries real money.
+        pick = MAIN if MAIN in here else sorted(here)[0]
         return by[pick][key], 'matched on town; division not stated on the sale'
     return None, 'town has no Frontline HQ in any division'
 

@@ -202,6 +202,19 @@ def load_hq_csv(path):
 
 
 # ------------------------------------------------------------------ the matrix
+def chr_slug(name):
+    """Channel Health's own report slug for a super stockist.
+
+    Copied from build_all.py's slugify() rather than imported, because the two apps
+    deploy separately and an import would couple their release cycles. If CHR ever
+    changes how it names a report URL, this drifts silently and the link 404s — which is
+    why the link says which super stockist it is going to, so a reader who lands on a
+    missing page knows what they were looking for.
+    """
+    out = re.sub(r'[^a-z0-9]+', '-', str(name or '').lower()).strip('-')
+    return out or 'report'
+
+
 def sibling_cities(ix):
     """Which HQs share a city with other HQs, so their denominator is incomplete.
 
@@ -270,6 +283,45 @@ def concentration(rows):
     return dict(out)
 
 
+def _by_division(rows, orphan):
+    """One summary per division, placed and unplaced billing kept apart.
+
+    Every division that appears anywhere gets a line, including one with billing and no
+    people. That case is the whole reason this exists: a division whose row is missing
+    looks like an omission, and a division reading `0 people` looks like a decision — and
+    it is one, because the advanced nutrition force has not been hired yet.
+    """
+    out = {}
+    for r in rows:
+        d = out.setdefault(r.get('division') or T.MAIN,
+                           {'division': r.get('division') or T.MAIN, 'sales': 0.0,
+                            'unplaced': 0.0, 'posts': 0.0, 'filled': 0.0, 'hqs': 0,
+                            'unplaced_towns': []})
+        d['sales'] += r['sales']
+        d['posts'] += r['posts']
+        d['filled'] += r['filled']
+        d['hqs'] += 1
+    for name, o in orphan['by_div'].items():
+        d = out.setdefault(name, {'division': name, 'sales': 0.0, 'unplaced': 0.0,
+                                  'posts': 0.0, 'filled': 0.0, 'hqs': 0,
+                                  'unplaced_towns': []})
+        d['unplaced'] += o['sales']
+        d['unplaced_towns'] = [{'town': t, 'sales': round(v, 2)} for t, v in
+                               sorted(o['towns'].items(), key=lambda x: -x[1])[:25]]
+    for d in out.values():
+        total = d['sales'] + d['unplaced']
+        d['sales'] = round(d['sales'], 2)
+        d['unplaced'] = round(d['unplaced'], 2)
+        d['total'] = round(total, 2)
+        # The headline of the line: how much of what this force sold landed somewhere it
+        # actually has people. A share rather than a rupee, because the divisions are
+        # three very different sizes and the shares are what compare.
+        d['placed_share'] = round(d['sales'] / total, 4) if total else None
+        d['pcpm_note'] = ('no one is posted to this division yet' if not d['filled']
+                          else None)
+    return [out[k] for k in sorted(out, key=lambda k: -out[k]['total'])]
+
+
 def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
     """Join sales to headcount and compute the grid.
 
@@ -297,17 +349,30 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
     # the HQ still shows zero, that is a real zero and belongs in the matrix. If no
     # super stockist has ever billed that town, the HQ cannot be measured on channel
     # sales and calling it RED would blame a headquarters for the network's shape.
-    covered = {T.key_of(r.get('town')) for r in src if amount(r) > 0}
+    # Keyed by division as well as town, because since resolve() stopped crediting across
+    # divisions the question "did the channel reach this HQ's town" has a different answer
+    # for each force. Speciality billing into Salem does not make Salem a covered town for
+    # the main HQ there: main's range was never sold, so main's zero is a real zero.
+    covered = {(T.division_of(r.get('division')) or T.MAIN, T.key_of(r.get('town')))
+               for r in src if amount(r) > 0}
     sibs = sibling_cities(ix)
+    # Which division each HQ belongs to, read the same way hq_index read it.
+    div_of_hq = {name: d for d, members in ix['by'].items() for name in members.values()}
     of_city = {}
     for city, members in sibs.items():
         for n in members:
             of_city[n] = city
 
     by_hq = defaultdict(lambda: {'sales': 0.0, 'towns': set(), 'ss': set(),
-                                 'invoices': 0, 'reasons': set()})
-    orphan = {'sales': 0.0, 'towns': defaultdict(float), 'reasons': set()}
+                                 'ssname': set(), 'invoices': 0, 'reasons': set()})
+    orphan = {'sales': 0.0, 'towns': defaultdict(float), 'reasons': set(),
+              # Per division, because that is the shape of the question it answers: how
+              # much did each force sell where it has nobody posted. Rolled into one
+              # figure it reads as a data problem; split by division it reads as a map of
+              # where the business is being served by somebody else's feet.
+              'by_div': defaultdict(lambda: {'sales': 0.0, 'towns': defaultdict(float)})}
     dropped_months = 0.0
+    placed_no_division = [0.0]
 
     for r in src:
         v = amount(r)
@@ -321,14 +386,24 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
             orphan['sales'] += v
             orphan['towns'][r.get('town')] += v
             orphan['reasons'].add(why)
+            d = orphan['by_div'][T.division_of(r.get('division')) or 'not stated']
+            d['sales'] += v
+            d['towns'][r.get('town')] += v
             continue
         b = by_hq[hq]
         b['sales'] += v
         b['towns'].add(r.get('town'))
         b['ss'].update(r.get('super_stockists')
                        or ([r['ss_name']] if r.get('ss_name') else ()))
+        if r.get('ss_name'):
+            b['ssname'].add(r['ss_name'])
         b['invoices'] += int(r.get('invoices') or 0)
         b['reasons'].add(why)
+        if not T.division_of(r.get('division')):
+            # Placed on the only HQ in the town because the sale named no division. Not a
+            # cross-division credit, but it is a guess, so it is counted and check() gates
+            # on the size of it rather than on its existence.
+            placed_no_division[0] += v
 
     n = len(months) or 1
     out = []
@@ -358,9 +433,16 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
                                  if x != name],
             'towns': sorted(s['towns']) if s else [],
             'super_stockists': sorted(s['ss']) if s else [],
+            # Where to go in Channel Health to see the invoices behind this row. One
+            # entry per super stockist that billed into this headquarters' town, because
+            # a town is often served by more than one and "the sales number" is the sum.
+            'chr': ([{'name': n, 'slug': chr_slug(n)} for n in sorted(s['ssname'])]
+                    if s else []),
             'invoices': s['invoices'] if s else 0,
             'merged_from': ix['merged'].get(name, []),
-            'town_covered': T.key_of(_HQ_PLACE.sub('', str(name))) in covered,
+            'division': div_of_hq.get(name, T.MAIN),
+            'town_covered': (div_of_hq.get(name, T.MAIN),
+                             T.key_of(_HQ_PLACE.sub('', str(name)))) in covered,
             # Printed on the row, not in a footnote. 0.85 means one town holds 85% of a
             # super stockist's billing, so this HQ's figure is a warehousing fact as much
             # as a selling one.
@@ -384,6 +466,12 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
                       for t, v in sorted(orphan['towns'].items(), key=lambda x: -x[1])],
             'why': sorted(orphan['reasons']),
         },
+        # One line per division: what it sold where it has people, what it sold where it
+        # has none, and how many people it has. Advanced Nutrition reads zero people and
+        # all of its billing unplaced, which is not a fault in the join — nobody has been
+        # onboarded to that range yet, and the figure is what that costs.
+        'divisions': _by_division(out, orphan),
+        'placed_without_division': round(placed_no_division[0], 2),
         'excluded_part_months': round(dropped_months, 2),
         'unlabelled_batch': {
             'sales': round(sum(amount(r) for r in unlabelled), 2),
@@ -410,6 +498,10 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
         'shared_cities': {c: {'hqs': v,
                               'posts': sum(T._num(ix['rows'][h].get('Posts')) for h in v)}
                           for c, v in sorted(sibs.items())},
+        # Where Channel Health lives, so the report can link back to the invoices
+        # rather than asking the reader to remember the URL.
+        'chr_url': (os.environ.get('CHR_URL')
+                    or 'https://channel-health.onrender.com').rstrip('/'),
         'source': {'layer': payload.get('layer'), 'built_with': payload.get('built_with'),
                    'aliases': payload.get('aliases', {})},
     }
@@ -420,6 +512,21 @@ def check(m):
     """Everything that must hold for the matrix to be worth printing."""
     p = []
     t = m['totals']
+    # The rule this whole pipeline exists to honour: a division's sales are divided by
+    # that division's people and nobody else's. resolve() enforces it, so a row saying
+    # otherwise means someone loosened it without reading why it was tight.
+    for r in m.get('rows', ()):
+        for note in r.get('notes') or ():
+            if 'credited to' in note:
+                p.append('%s carries billing from another division (%s)' % (r['hq'], note))
+    # Billing that reached us with no division on it is not a rule violation, but it does
+    # get placed on whichever HQ is in the town, so it must stay small enough to ignore.
+    # It is only produced when every per-division fetch failed — see fetch().
+    stray = m.get('placed_without_division') or 0
+    if stray > 0.01 * (t['payload_total'] or 1):
+        p.append('%.2f of billing arrived with no division stated (%.1f%% of the book) '
+                 'and was placed on whichever HQ was in the town'
+                 % (stray, 100 * stray / (t['payload_total'] or 1)))
     if abs(t['attributed'] + t['unattributed'] + m['excluded_part_months']
            + (0 if m['unlabelled_batch']['included'] else m['unlabelled_batch']['sales'])
            - t['payload_total']) > 1:
