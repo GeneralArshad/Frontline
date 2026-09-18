@@ -156,6 +156,12 @@ class Api:
         except Exception:
             return r.status_code, None
 
+def _fy_of(d):
+    """India's financial year for a date: 2026-04-01 -> '2026-27'."""
+    y = d.year if d.month >= 4 else d.year - 1
+    return "%d-%02d" % (y, (y + 1) % 100)
+
+
 def _safe_err(e):
     """A publishable description of a failure: the exception TYPE and nothing else.
 
@@ -1040,13 +1046,89 @@ def compute_and_render(con, emps, s1, role_map, win_start, win_end):
         print("[hrgeo] no hr_org.json — zone/state/HQ stay as Frontline reports them")
         for i in HRG_ISSUES[:3]: print("[hrgeo]  ", i)
 
+
+    # ---------------------------------------------------------------- productivity
+    # What each headquarters billed, per person, per month. The sales come from Channel
+    # Health over its read-only API; the people come from the same two registers the
+    # geography screen uses. See _pcpm_etl.py for why this is computed here rather than
+    # in the browser.
+    PCPM_OUT = {"unavailable": "not attempted"}
+    try:
+        import pcpm
+        # One entry per PERSON, matching hgPeople() exactly. A rep with an HR record is
+        # filed under the HR headquarters; Frontline's own name is the fallback for
+        # people HR has never heard of. HR-only posts and vacancies come from the block
+        # the geography screen reads, which excludes anyone already in the rep roster.
+        _heads = {}
+        for _r in R:
+            _hq = (_r.get("hhq") or _r.get("hq") or "").strip()
+            if not _hq or _hq == "\u2014":
+                continue
+            _a = _heads.setdefault(_hq, {"HQ": _hq, "Posts": 0, "Vacant": 0,
+                                         "Zone": _r.get("hzn") or _r.get("zn") or "",
+                                         "State": _r.get("hst") or _r.get("st") or ""})
+            _a["Posts"] += 1
+        for _o in (HRGEO_OUT.get("only") or []):
+            _hq = (_o[3] or "").strip()
+            if not _hq or _hq == "\u2014":
+                continue
+            _a = _heads.setdefault(_hq, {"HQ": _hq, "Posts": 0, "Vacant": 0,
+                                         "Zone": _o[7] or "", "State": _o[5] or ""})
+            _a["Posts"] += 1
+            if _o[9]:
+                _a["Vacant"] += 1
+
+        _tok = (os.environ.get("CHR_API_TOKEN") or "").strip()
+        _url = (os.environ.get("CHR_URL")
+                or "https://channel-health.onrender.com").rstrip("/")
+        _cache = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              "chr_sales_cache.json")
+        _fy = os.environ.get("CHR_FY") or _fy_of(datetime.date.today())
+        _pay = None
+        if _tok:
+            try:
+                _pay = pcpm.fetch(_url, _tok, _fy)
+                with open(_cache, "w", encoding="utf-8") as _fh:
+                    json.dump(_pay, _fh)
+                print("[pcpm] fetched %d town rows from Channel Health" %
+                      len(_pay.get("rows") or []))
+            except Exception as _e:                              # noqa: BLE001
+                print("[pcpm] Channel Health unreachable: %s" % _e)
+        else:
+            print("[pcpm] CHR_API_TOKEN is not set")
+        if _pay is None and os.path.exists(_cache):
+            # Stale beats absent, but only if it says it is stale.
+            _pay = json.load(open(_cache, encoding="utf-8"))
+            _pay["stale"] = True
+            print("[pcpm] using the cached Channel Health response")
+        if _pay is None:
+            PCPM_OUT = {"unavailable":
+                        "Channel Health could not be reached and nothing was cached"}
+        else:
+            PCPM_OUT = pcpm.matrix(_pay, list(_heads.values()), _fy)
+            PCPM_OUT["stale"] = bool(_pay.get("stale"))
+            _pr = pcpm.check(PCPM_OUT)
+            if _pr:
+                PCPM_OUT["problems"] = _pr
+                for _p in _pr:
+                    print("[pcpm] ! " + _p)
+            print("[pcpm] %d HQs scored over %d complete month(s), Rs %.2f Cr attributed"
+                  % (sum(1 for _x in PCPM_OUT["rows"] if _x["sales"] > 0),
+                     PCPM_OUT["month_count"],
+                     PCPM_OUT["totals"]["attributed"] / 1e7))
+    except Exception as _e:                                      # noqa: BLE001
+        # Any failure here costs one section. It must never cost the report.
+        import traceback
+        traceback.print_exc()
+        PCPM_OUT = {"unavailable": "the matrix could not be built: %s" % _e}
+
     label = f"{data_start} → {data_end} · {len(R)}-rep roster"
     D = dict(label=label, gen=datetime.date.today().isoformat(),
              dataStart=data_start, dataEnd=data_end, workDays=wd,
              rx=D_rx, reps=R, daily=D_daily, docs=D_docs,
              mgrScore=mgr_roll(), zoneScore=zone_roll(), docsByState=D_docsByState, calls=calls_by_code,
              hr=hr_used, org=ORG_OUT, hrgeo=HRGEO_OUT,
-             hqgeo=HQGEO, mapgeo=MAPGEO,
+             hqgeo=HQGEO, mapgeo=MAPGEO, pcpm=PCPM_OUT,
              fetchFails=dict(n=FAILS["n"], first=FAILS["first"]))
     # ---- memory-frugal encode ----------------------------------------------
     # Previously this held ~4 full copies at once (CALLS, the JSON string, the gzip
