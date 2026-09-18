@@ -430,6 +430,13 @@ def check(m):
     if not m['months']:
         p.append('no complete months in this financial year yet — every PCPM would be '
                  'a division by zero')
+    # A row that reaches the screen with no name is unreadable and unactionable, and
+    # nothing downstream would notice: the table would draw a blank cell and the reader
+    # would have no idea which headquarters they were being asked to fix. Caught here,
+    # at build time, where it fails a deploy rather than a decision.
+    for r in m['rows']:
+        if not str(r.get('hq') or '').strip():
+            p.append('a headquarters row has no name: %r' % (r,))
     for r in m['rows']:
         if r['filled'] > r['posts']:
             p.append('%s: %g filled of %g sanctioned' % (r['hq'], r['filled'], r['posts']))

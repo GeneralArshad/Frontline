@@ -2768,7 +2768,15 @@ table.rep-reports .barcell{width:88px}
 .pmv--perform{color:var(--success)}
 .pmv--none{color:var(--text-secondary);font-weight:400}
 .pmwhy{color:var(--text-secondary);font-size:12px}
-.pmconc{color:var(--warn);font-size:12px;white-space:nowrap}
+.pmconc{color:var(--warn);font-size:12px}
+.pmband{transition:background .12s ease}
+.pmband--open{cursor:pointer}
+.pmband--open:hover{background:var(--cds-layer-hover-01)}
+.pmmore{float:right;color:var(--link);font-size:12px}
+.pmbandrow>td{padding:0;background:var(--cds-layer-accent-01)}
+.pmbandbox{padding:var(--cds-spacing-04) 0}
+.pmgrp>td{background:var(--cds-layer-accent-01);font-size:13px}
+.pmperson>td:first-child{padding-left:var(--cds-spacing-06)}
 .ppltag{display:inline-flex;align-items:center;height:22px;padding:0 10px;
   border-radius:11px;white-space:nowrap;
   font:400 var(--cds-label-01-size)/1 var(--cds-font-sans)}
@@ -3026,7 +3034,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v125 · 18 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v127 · 18 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -3188,7 +3196,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v125 · 18 Sep 2026">
+<meta name="hfi-version" content="v127 · 18 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -3210,7 +3218,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v125 · 18 Sep 2026';
+window.HFI_BUILD='v127 · 18 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -11137,9 +11145,17 @@ function pmLead(P){
    'suspicion.</div>':'')+
   '<div class="tablewrap" style="max-height:none"><table><thead><tr>'+
    '<th>Band</th><th class="n">HQs</th><th>What it means</th></tr></thead><tbody>'+
-   (P.zones||[]).map(z=>'<tr><td><span class="pmv '+(PM_CLASS[z.code]||'')+'">'+
-     esc(z.code)+'</span></td><td class="n">'+(c[z.code]||0)+'</td><td>'+
-     esc(z.verdict)+' — '+esc(z.meaning)+'</td></tr>').join('')+
+   (P.zones||[]).map(z=>{
+     const n=c[z.code]||0;
+     /* The count was already here; the question it provokes is "which ones?", and the
+        only answer used to be scrolling 233 rows reading the last column. */
+     return '<tr class="pmband'+(n?' pmband--open':'')+'" data-band="'+esc(z.code)+'"'+
+      (n?' tabindex="0" role="button" aria-expanded="false"':'')+
+      '><td><span class="pmv '+(PM_CLASS[z.code]||'')+'">'+
+      esc(z.code)+'</span></td><td class="n">'+n+'</td><td>'+
+      esc(z.verdict)+' — '+esc(z.meaning)+
+      (n?'<span class="pmmore">Show the '+n+'</span>':'')+'</td></tr>';
+   }).join('')+
    '</tbody></table></div></div>';
 }
 
@@ -11155,22 +11171,27 @@ function pmTable(P){
   '<div class="tablewrap"><table><thead><tr><th>HQ</th><th>Zone</th><th>State</th>'+
   '<th class="n">Billed</th><th class="n">Posts</th><th class="n">Filled</th>'+
   '<th class="n">Per person / month</th><th class="n">Over sanctioned</th>'+
-  '<th>Verdict</th></tr></thead><tbody>'+
+  '<th>Verdict</th><th>Note</th></tr></thead><tbody>'+
   live.map(r=>{
-   const conc=r.town_concentration>=0.45
-     ? '<div class="pmconc">'+Math.round(r.town_concentration*100)+
-       '% of one super stockist bills into this town</div>' : '';
-   const why=(!r.denominator_safe&&r.shares_city_with&&r.shares_city_with.length)
-     ? '<div class="pmwhy">shares the city with '+r.shares_city_with.length+
-       ' other HQ'+(r.shares_city_with.length===1?'':'s')+': '+
-       esc(r.shares_city_with.join(', '))+'</div>' : '';
-   return '<tr><td><b>'+esc(r.hq)+'</b>'+conc+why+'</td>'+
+   /* Both annotations live in their own cell now. Stacked inside the name they made the
+      CSV export illegible, because the exporter reads a cell's text and cannot know that
+      three divs were three separate facts. */
+   const note=[
+     r.town_concentration>=0.45
+       ? '<span class="pmconc">'+Math.round(r.town_concentration*100)+
+         '% of one super stockist bills into this town</span>' : '',
+     (!r.denominator_safe&&r.shares_city_with&&r.shares_city_with.length)
+       ? '<span class="pmwhy">shares the city with '+r.shares_city_with.length+
+         ' other HQ'+(r.shares_city_with.length===1?'':'s')+': '+
+         esc(r.shares_city_with.join(', '))+'</span>' : ''
+   ].filter(Boolean).join('<br>');
+   return '<tr><td><b>'+esc(r.hq)+'</b></td>'+
     '<td>'+esc(r.zone_geo||'')+'</td><td>'+esc(r.state||'')+'</td>'+
     '<td class="n">'+pmL(r.sales)+'</td>'+
     '<td class="n">'+(r.posts||0)+'</td><td class="n">'+(r.filled||0)+'</td>'+
     '<td class="n"><b>'+pmL(r.pcpm_filled)+'</b></td>'+
     '<td class="n">'+pmL(r.pcpm_posts)+'</td>'+
-    '<td>'+pmVerdict(r)+'</td></tr>';
+    '<td>'+pmVerdict(r)+'</td><td>'+note+'</td></tr>';
   }).join('')+'</tbody></table></div></div>';
 }
 
@@ -11193,12 +11214,101 @@ function pmUnattributed(P){
    '</td></tr>').join('')+'</tbody></table></div></div>';
 }
 
+/* ---- band drill-down ---------------------------------------------------------
+   Opened in place, beneath the band that was clicked. Deliberately not a jump to the
+   big table with a filter applied: the reader asked a question about one band and
+   should get one band, without losing the four-row summary that prompted it. */
+function pmBandOpen(code){
+ const P=pcpmD(); if(!P.rows)return;
+ const rows=P.rows.filter(pmInScope).filter(r=>r.denominator_safe&&(r.zone||{}).code===code)
+   .sort((a,b)=>(a.pcpm_filled||0)-(b.pcpm_filled||0));
+ if(!rows.length)return '';
+ return '<tr class="pmbandrow"><td colspan="3"><div class="pmbandbox">'+
+  '<div class="cs">'+rows.length+' headquarters, weakest first. '+
+  'Per person per month, over filled posts.</div>'+
+  '<div class="tablewrap"><table><thead><tr><th>HQ</th><th>Zone</th><th>State</th>'+
+  '<th class="n">Billed</th><th class="n">Filled</th>'+
+  '<th class="n">Per person / month</th></tr></thead><tbody>'+
+  rows.map(r=>'<tr><td>'+esc(r.hq)+'</td><td>'+esc(r.zone_geo||'')+'</td><td>'+
+   esc(r.state||'')+'</td><td class="n">'+pmL(r.sales)+'</td><td class="n">'+
+   (r.filled||0)+'</td><td class="n"><b>'+pmL(r.pcpm_filled)+'</b></td></tr>').join('')+
+  '</tbody></table></div></div></td></tr>';
+}
+
+function pmBandWire(){
+ const box=$('pcpmbody'); if(!box)return;
+ box.querySelectorAll('tr.pmband--open').forEach(tr=>{
+  const open=()=>{
+   const on=tr.getAttribute('aria-expanded')==='true';
+   const nx=tr.nextElementSibling;
+   if(nx&&nx.classList.contains('pmbandrow'))nx.remove();
+   tr.setAttribute('aria-expanded',on?'false':'true');
+   if(!on){
+    const html=pmBandOpen(tr.dataset.band);
+    if(html)tr.insertAdjacentHTML('afterend',html);
+   }
+  };
+  tr.onclick=open;
+  tr.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();} };
+ });
+}
+
+/* ---- people, grouped by headquarters -----------------------------------------
+   THE HQ FIGURE IS STATED ONCE, ON THE GROUP. Every person below it carries only what
+   Frontline measures about them individually. There is deliberately no per-person rupee
+   column: channel billing is recorded against a stockist in a town, never against a
+   person, so any such column would be the HQ's number repeated down the page. A reader
+   cannot misread a column that does not exist. */
+function pmPeopleByHQ(P){
+ const byHQ={};
+ (P.rows||[]).forEach(r=>{ byHQ[r.hq]=r; });
+ const groups={};
+ ((D&&D.reps)||[]).forEach(p=>{
+  const hq=(p.hhq||p.hq||'').trim();
+  if(!hq||hq==='—')return;
+  (groups[hq]=groups[hq]||[]).push(p);
+ });
+ const names=Object.keys(groups).sort((a,b)=>{
+  const A=byHQ[a],B=byHQ[b];
+  return ((B&&B.pcpm_filled)||0)-((A&&A.pcpm_filled)||0)||a.localeCompare(b);
+ });
+ if(!names.length)return '';
+ return '<div class="card"><div class="ch"><div><h3>The people behind each '+
+  'headquarters</h3><div class="cs">The headquarters\' figure is stated once, on its '+
+  'row. Underneath it are the people posted there, with what Frontline measures about '+
+  'each of them. There is no per-person sales column because channel billing is '+
+  'recorded against a stockist in a town, never against a person — dividing it by '+
+  'headcount would give everyone at a headquarters the same number and call it '+
+  'theirs.</div></div></div>'+
+  '<div class="tablewrap"><table><thead><tr><th>Headquarters / person</th>'+
+  '<th>Role</th><th class="n">Rx</th><th class="n">Visits</th>'+
+  '<th class="n">Doctors met</th><th class="n">Attendance</th>'+
+  '<th class="n">HQ per person / month</th><th>HQ verdict</th></tr></thead><tbody>'+
+  names.map(hq=>{
+   const m=byHQ[hq], team=groups[hq];
+   const pcpm=m?(m.town_covered||m.sales>0?pmL(m.pcpm_filled):'no channel sale to divide')
+               :'not in the matrix';
+   const verdict=m?pmVerdict(m):'<span class="pmv pmv--none">—</span>';
+   return '<tr class="pmgrp"><td><b>'+esc(hq)+'</b> <span class="cs">'+team.length+
+    ' on Frontline</span></td><td></td><td class="n"></td><td class="n"></td>'+
+    '<td class="n"></td><td class="n"></td><td class="n"><b>'+pcpm+'</b></td><td>'+
+    verdict+'</td></tr>'+
+    team.slice().sort((a,b)=>(+b.rx||0)-(+a.rx||0)).map(p=>
+     '<tr class="pmperson"><td>'+esc(p.n||'')+' <span class="cs">'+esc(p.c||'')+
+     '</span></td><td>'+esc(p.r||'')+'</td><td class="n">'+fmt(+p.rx||0)+
+     '</td><td class="n">'+fmt(+p.vis||0)+'</td><td class="n">'+fmt(+p.ud||0)+
+     '</td><td class="n">'+(p.att!==undefined&&p.att!==''?(+p.att||0)+'%':'—')+
+     '</td><td class="n cs">same as the row above</td><td></td></tr>').join('');
+  }).join('')+'</tbody></table></div></div>';
+}
+
 function pcpmView(){
  const P=pcpmD();
  const box=$('pcpmbody');
  if(!box)return;
  if(!P||P.unavailable||!P.rows){ box.innerHTML=pmUnavailable(P&&P.unavailable); return; }
- box.innerHTML=pmLead(P)+pmTable(P)+pmUnattributed(P);
+ box.innerHTML=pmLead(P)+pmTable(P)+pmPeopleByHQ(P)+pmUnattributed(P);
+ try{pmBandWire();}catch(e){console.warn('band drill',e);}
 }
 
 function hgView(){
