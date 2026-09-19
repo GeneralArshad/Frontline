@@ -1,4 +1,6 @@
-<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><!-- GSAP, deferred and optional. Nothing on this page waits for it or breaks without it: every animation runs through fx(), which sets the final state synchronously when window.gsap is absent. See _motion.py. --><script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — Field Rx intelligence</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><style>
+<!DOCTYPE html><html data-theme="light"><head><meta charset="utf-8"><!-- GSAP, deferred and optional. Nothing on this page waits for it or breaks without it: every animation runs through fx(), which sets the final state synchronously when window.gsap is absent. See _motion.py. --><script defer src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" integrity="sha384-Ukv1p/xTma6P4/2bY5KzWBw+ydSpXmhCMtyciIQVDJ1RmOxtCYNMF1uXT9T63H67" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1"><title>Hive Frontline — Field Rx intelligence</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><style>
 /* ===================== IBM Carbon v11 tokens =====================
    Verbatim from carbon-tokens.css in this repo (kept there for provenance and
    for the lint gate). Inlined because the report ships as one file. */
@@ -2761,6 +2763,274 @@ table.rep-reports .barcell{width:88px}
 
 /* pill tags. The one place radius is not 0 — Carbon's tag is a pill, and a tag that
    looks like every other rectangle on the screen is not a tag. */
+
+/* ---------------------------------------------------------------- productivity matrix
+   The redesign. Carbon White/Gray-100 tokens throughout; the only literal colours are
+   the four filled status tags in the drawer, which are Carbon's own tag pairs and are
+   the one place a pill fill is allowed. */
+
+/* band colours, as tokens so the dark theme still reads */
+
+/* toolbar, panels and the two tables */
+
+/* drawer */
+.pmscrim{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;
+ transition:opacity 240ms cubic-bezier(.2,0,.38,.9);z-index:80}
+.pmscrim.pmon{opacity:1;visibility:visible}
+.pmdrawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100vw);z-index:81;
+ background:var(--cds-layer-01);display:flex;flex-direction:column;
+ transform:translateX(100%);visibility:hidden;
+ transition:transform 240ms cubic-bezier(.2,0,.38,.9);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.pmdrawer.pmon{transform:none;visibility:visible}
+.pmdhead{padding:20px 20px 16px;border-bottom:1px solid var(--cds-border-subtle-01);
+ display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px}
+.pmdhead h4{margin:0 0 4px;font-size:20px;font-weight:400}
+.pmdsub{font-size:12px;color:var(--cds-text-secondary)}
+.pmdx{width:40px;height:40px;border:0;background:transparent;cursor:pointer;
+ display:grid;place-items:center}
+.pmdx:hover{background:var(--cds-layer-hover-01)}
+.pmdx svg{fill:var(--cds-icon-primary)}
+.pmdbody{overflow:auto;flex:1 1 auto;padding:0 20px 32px}
+.pmdfig{padding:20px 0;border-bottom:1px solid var(--cds-border-subtle-01);display:flex;
+ align-items:baseline;gap:16px;flex-wrap:wrap}
+.pmdfig-v{font-size:42px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}
+.pmdfig-n{color:var(--cds-text-secondary);font-size:13px}
+.pmdsec{font-size:12px;letter-spacing:.32px;font-weight:600;text-transform:uppercase;
+ color:var(--cds-text-secondary);margin:24px 0 8px}
+.pmsum{font-size:13px;line-height:1.6;color:var(--cds-text-secondary)}
+.pmsum b{color:var(--cds-text-primary);font-weight:600}
+.pmkv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0;margin:0}
+.pmkv dt,.pmkv dd{margin:0;padding:9px 0;font-size:13px;
+ border-bottom:1px solid var(--cds-border-subtle-01)}
+.pmkv dt{color:var(--cds-text-secondary)}
+.pmkv dd{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.pmppl{width:100%;font-size:13px;border-collapse:collapse}
+.pmppl th{text-align:left;font-size:12px;letter-spacing:.32px;font-weight:600;
+ color:var(--cds-text-secondary);padding:6px 8px 6px 0;
+ border-bottom:1px solid var(--cds-border-subtle-01);white-space:nowrap}
+.pmppl th.n,.pmppl td.n{text-align:right;padding-right:0;
+ font-variant-numeric:tabular-nums}
+.pmppl td{padding:9px 8px 9px 0;border-bottom:1px solid var(--cds-border-subtle-01)}
+.pmppl td.pmwho b{display:block;font-weight:600}
+.pmppl td.pmwho span{color:var(--cds-text-secondary);font-size:12px}
+.pmdnote{margin-top:16px;padding:12px 16px;background:var(--cds-layer-02);
+ box-shadow:inset 3px 0 0 var(--cds-support-info);font-size:13px;
+ color:var(--cds-text-secondary)}
+.pmdnote b{color:var(--cds-text-primary)}
+.pmdlinks{margin-top:24px;font-size:13px}
+.pmdlinks a{display:inline-block;margin-right:12px}
+.pmwhoc b{display:block;font-weight:600}
+.pmwhoc span{color:var(--cds-text-secondary);font-size:12px}
+.pmtbar{display:flex;align-items:center;gap:1px;background:var(--cds-layer-02);
+ border:1px solid var(--cds-border-subtle-02);border-bottom:0;flex-wrap:wrap}
+.pmsrch{position:relative;flex:1 1 260px;min-width:200px}
+.pmsrch svg{position:absolute;left:14px;top:16px;fill:var(--cds-icon-secondary)}
+.pmsrch input{width:100%;height:48px;border:0;background:transparent;
+ padding:0 16px 0 42px;font:inherit;letter-spacing:.16px;color:inherit}
+.pmsrch input:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.pmsrch input::placeholder{color:var(--cds-text-placeholder)}
+.pmtcount{padding:0 16px;font-size:12px;color:var(--cds-text-secondary);
+ white-space:nowrap}
+.pmchips{display:flex;gap:1px;flex-wrap:wrap}
+.pmtbtn{height:48px;padding:0 16px;border:0;background:transparent;cursor:pointer;
+ font:inherit;font-size:14px;color:var(--cds-text-primary);display:flex;
+ align-items:center;gap:8px;white-space:nowrap}
+.pmtbtn:hover{background:var(--cds-layer-hover-02)}
+.pmtbtn[aria-expanded="true"]{background:var(--cds-layer-selected-01)}
+.pmtbtn svg{fill:var(--cds-icon-primary)}
+.pmfiltag{height:32px;display:flex;align-items:center;gap:6px;padding:0 4px 0 12px;
+ background:var(--cds-layer-01);font-size:12px;white-space:nowrap;border-radius:16px;
+ margin:8px 0 8px 8px}
+.pmfiltag button{border:0;background:transparent;cursor:pointer;width:24px;height:24px;
+ display:grid;place-items:center;padding:0}
+.pmfiltag button svg{fill:var(--cds-icon-primary)}
+.pmfiltag button:hover{background:var(--cds-layer-hover-01)}
+.pmcolpan{border:1px solid var(--cds-border-subtle-02);border-bottom:0;
+ background:var(--cds-layer-02);padding:20px;display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.pmcolpan[hidden]{display:none}
+.pmcolpan fieldset{border:0;margin:0;padding:0}
+.pmcolpan legend{font-size:12px;letter-spacing:.32px;font-weight:600;
+ text-transform:uppercase;color:var(--cds-text-secondary);margin-bottom:10px}
+.pmchk{display:flex;align-items:center;gap:10px;padding:5px 0;cursor:pointer;
+ font-size:14px}
+.pmchk input{width:16px;height:16px;accent-color:var(--cds-interactive);margin:0}
+.pmchk.pmlock{color:var(--cds-text-secondary);cursor:not-allowed}
+.pmpanfoot{grid-column:1/-1;display:flex;justify-content:flex-end;
+ border-top:1px solid var(--cds-border-subtle-01);padding-top:12px}
+.pmfsel{height:48px;border:0;background:transparent;padding:0 12px;font:inherit;
+ font-size:14px;letter-spacing:.16px;color:inherit;max-width:190px;cursor:pointer}
+.pmfsel:hover{background:var(--cds-layer-hover-02)}
+.pmfsel:focus{outline:2px solid var(--cds-focus);outline-offset:-2px}
+.pmbtn{height:40px;padding:0 16px;border:0;font:inherit;font-size:14px;cursor:pointer;
+ display:inline-flex;align-items:center;gap:8px;background:var(--cds-button-primary);
+ color:var(--cds-text-on-color)}
+.pmbtn svg{fill:currentColor}
+.pmbtn--g{background:transparent;color:var(--cds-link-primary);
+ box-shadow:inset 0 0 0 1px currentColor}
+.pmbtn--g:hover{background:var(--cds-background-hover);
+ color:var(--cds-link-primary-hover)}
+.pmbtn--gh{background:transparent;color:var(--cds-link-primary);box-shadow:none}
+.pmbtn--gh:hover{background:var(--cds-background-hover)}
+.pmmore{width:100%;justify-content:center;height:48px}
+.pmmore[hidden]{display:none}
+
+/* the table. Header anatomy is reference/DataTable.jsx; the white header is the one
+   intentional deviation and is deliberate. */
+.pmtwrap{border:1px solid var(--cds-border-subtle-02);overflow:auto;max-height:720px;
+ background:var(--cds-layer-02)}
+.pmtwrap table{border-collapse:collapse;width:100%;font-size:14px}
+.pmtwrap thead th{position:sticky;top:0;z-index:2;background:var(--cds-layer-02);
+ text-align:left;font-weight:600;font-size:.875rem;letter-spacing:.16px;
+ color:var(--cds-text-primary);padding:0;height:48px;white-space:nowrap;
+ box-shadow:inset 0 -1px 0 var(--cds-border-strong-01)}
+.pmtwrap thead th button{width:100%;height:48px;border:0;background:transparent;
+ cursor:pointer;font:inherit;font-weight:600;text-align:left;padding:0 16px;display:flex;
+ align-items:center;gap:6px;color:inherit}
+.pmtwrap thead th button:hover{background:var(--cds-layer-hover-02)}
+.pmtwrap thead th.n button{justify-content:flex-end}
+.pmtwrap thead th svg{fill:currentColor;opacity:0}
+.pmtwrap thead th[aria-sort] svg{opacity:1}
+.pmtwrap tbody td{padding:0 16px;height:48px;background:var(--cds-layer-02);
+ border-bottom:1px solid var(--cds-border-subtle-02);white-space:nowrap;
+ vertical-align:middle}
+.pmtwrap tbody tr{cursor:pointer}
+.pmtwrap tbody tr:last-child td{border-bottom:0}
+.pmtwrap tbody tr:hover td{background:var(--cds-layer-hover-02)}
+.pmtwrap tbody tr[data-sel="1"] td{background:var(--cds-layer-selected-01)}
+.pmtwrap td.n,.pmtwrap th.n{text-align:right;font-variant-numeric:tabular-nums}
+.pmtwrap td.pmhqc b{font-weight:600}
+.pmtwrap td.pmnotec{white-space:normal;min-width:220px;font-size:12px;
+ color:var(--cds-text-secondary)}
+.pmbig{font-weight:600}
+.pmdash{color:var(--cds-text-secondary)}
+.pmempty{padding:48px 16px;text-align:center;color:var(--cds-text-secondary);
+ background:var(--cds-layer-02)}
+
+/* map + state rail */
+.pmmapgrid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:1px;
+ background:var(--cds-border-subtle-01);border:1px solid var(--cds-border-subtle-01)}
+.pmmappane{background:var(--cds-layer-01);padding:16px;min-width:0;display:flex;
+ flex-direction:column;gap:12px}
+.pmmapbox{position:relative}
+#pmmapsvg{display:block;width:100%;height:auto;max-width:720px;margin:0 auto;
+ background:var(--cds-layer-02)}
+.pmst{cursor:pointer;stroke:var(--cds-layer-02);stroke-width:.6;
+ transition:fill-opacity 110ms cubic-bezier(.2,0,.38,.9)}
+.pmst:hover{fill-opacity:.55}
+.pmst[data-sel="1"]{stroke:var(--cds-text-primary);stroke-width:1.6}
+.pmdistmesh{fill:none;stroke:var(--cds-layer-02);stroke-opacity:.6;stroke-width:.3}
+.pmstborder{fill:none;stroke:var(--cds-border-strong-01);stroke-width:1.1;
+ stroke-linejoin:round;pointer-events:none}
+.pmmaplab{font-size:10px;fill:var(--cds-text-primary);pointer-events:none;
+ paint-order:stroke;stroke:var(--cds-layer-02);stroke-width:3px;stroke-linejoin:round;
+ font-weight:600}
+.pmdot{cursor:pointer;stroke:var(--cds-layer-02);stroke-width:1}
+.pmdot:hover{stroke:var(--cds-text-primary);stroke-width:2}
+.pmdot[data-dim="1"]{opacity:.12}
+.pmdot[data-sel="1"]{stroke:var(--cds-text-primary);stroke-width:2.5}
+.pmmapmsg{fill:var(--cds-text-secondary);font-size:13px}
+.pmmapctl{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;
+ gap:1px}
+.pmmapctl button{width:32px;height:32px;border:0;cursor:pointer;display:grid;
+ place-items:center;background:var(--cds-layer-02);
+ box-shadow:0 0 0 1px var(--cds-border-subtle-01)}
+.pmmapctl button:hover{background:var(--cds-layer-hover-02)}
+.pmmapctl button svg{fill:var(--cds-icon-primary)}
+.pmlegend{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:12px;
+ color:var(--cds-text-secondary)}
+.pmlegend button{border:0;background:transparent;cursor:pointer;font-size:12px;
+ color:inherit;display:flex;align-items:center;gap:8px;padding:4px 6px}
+.pmlegend button:hover{background:var(--cds-background-hover)}
+.pmlegend button[aria-pressed="true"]{background:var(--cds-layer-selected-01);
+ color:var(--cds-text-primary);font-weight:600}
+.pmlegend-s{display:flex;align-items:center;gap:8px;padding:4px 6px}
+.pmhint{font-size:12px;color:var(--cds-text-secondary)}
+.pmrail{background:var(--cds-layer-01);display:flex;flex-direction:column;min-width:0;
+ max-height:700px}
+.pmrailhead{padding:16px;border-bottom:1px solid var(--cds-border-subtle-01)}
+.pmrailhead b{display:block;font-size:14px}
+.pmrailhead span{font-size:12px;color:var(--cds-text-secondary)}
+.pmraillist{overflow:auto;flex:1 1 auto}
+.pmstrow{width:100%;border:0;background:transparent;text-align:left;cursor:pointer;
+ padding:10px 16px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;
+ font:inherit;color:inherit;border-bottom:1px solid var(--cds-border-subtle-01)}
+.pmstrow:hover{background:var(--cds-layer-hover-01)}
+.pmstrow[aria-pressed="true"]{background:var(--cds-layer-selected-01);
+ box-shadow:inset 3px 0 0 var(--cds-interactive)}
+.pmstname{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmstmeta{font-size:12px;color:var(--cds-text-secondary);
+ font-variant-numeric:tabular-nums;white-space:nowrap}
+.pmstbar{grid-column:1/-1;display:flex;height:6px;margin-top:4px;
+ background:var(--cds-layer-03)}
+.pmstbar i{display:block;height:100%}
+@media(max-width:1055px){.pmmapgrid{grid-template-columns:1fr}.pmrail{max-height:none}}
+.pmx{--pm-b0:var(--cds-support-error);--pm-b1:var(--cds-support-caution-major);
+ --pm-b2:var(--cds-support-caution-minor);--pm-b3:var(--cds-support-success);
+ --pm-bx:var(--cds-text-placeholder)}
+
+/* answer strip */
+.pmans{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;
+ background:var(--cds-border-subtle-01);margin-top:1px}
+.pmans-t{background:var(--cds-layer-01);padding:20px;border:0;text-align:left;
+ display:flex;flex-direction:column;gap:6px;min-height:140px;font:inherit;color:inherit;
+ cursor:pointer;transition:background 110ms cubic-bezier(.2,0,.38,.9)}
+.pmans-t:hover{background:var(--cds-layer-hover-01)}
+.pmans-t[aria-pressed="true"]{background:var(--cds-layer-selected-01);
+ box-shadow:inset 3px 0 0 var(--cds-interactive)}
+.pmans-v{font-size:36px;line-height:1.1;font-weight:300;letter-spacing:0;
+ font-variant-numeric:tabular-nums}
+.pmans-l{font-size:14px;color:var(--cds-text-secondary);max-width:24ch}
+.pmans-go{margin-top:auto;font-size:12px;letter-spacing:.32px;
+ color:var(--cds-link-primary);display:flex;align-items:center;gap:6px}
+.pmans-go svg{fill:currentColor}
+@media(max-width:1055px){.pmans{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:671px){.pmans{grid-template-columns:1fr}}
+
+/* read-first notes */
+.pmnotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:1px;
+ background:var(--cds-border-subtle-01)}
+.pmnote{background:var(--cds-layer-01);padding:16px 20px;
+ box-shadow:inset 3px 0 0 var(--cds-support-info)}
+.pmnote b{display:block;font-weight:600;margin-bottom:4px}
+.pmnote span{color:var(--cds-text-secondary);font-size:13px}
+@media(max-width:671px){.pmnotes{grid-template-columns:1fr}}
+
+/* method */
+.pmexp{border-top:1px solid var(--cds-border-subtle-01);
+ border-bottom:1px solid var(--cds-border-subtle-01)}
+.pmexp summary{cursor:pointer;list-style:none;min-height:48px;display:flex;
+ align-items:center;gap:8px;font-weight:600;padding:0 4px}
+.pmexp summary::-webkit-details-marker{display:none}
+.pmexp summary svg{fill:var(--cds-icon-primary);flex:0 0 auto;
+ transition:transform 110ms cubic-bezier(.2,0,.38,.9)}
+.pmexp[open] summary svg{transform:rotate(180deg)}
+.pmexp ul{margin:0 0 16px;padding:0 0 0 20px;max-width:90ch;
+ color:var(--cds-text-secondary)}
+.pmexp li{margin-bottom:8px}
+.pmexp li b{color:var(--cds-text-primary)}
+.pmdivtab{margin:0 0 24px;max-width:90ch;overflow:auto}
+
+/* section furniture */
+.pmsec{padding:40px 0 16px}
+.pmsec h3{margin:0;font-size:20px;font-weight:400;letter-spacing:0}
+.pmsec p{margin:6px 0 0;color:var(--cds-text-secondary);max-width:76ch;font-size:13px}
+.pmsec p b{color:var(--cds-text-primary);font-weight:600}
+.pmfoot{padding:32px 0 0;font-size:12px;color:var(--cds-text-secondary)}
+
+/* status tag: quiet in a table, filled only in the drawer headline */
+.pmtag{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px}
+.pmtag .pmsw{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.pmtag--quiet{font-weight:400;color:var(--cds-text-primary);font-size:14px}
+.pmtag--quiet.pmtag--x{color:var(--cds-text-secondary)}
+.pmtag--fill{height:24px;padding:0 10px;border-radius:12px;font-weight:600}
+.pmtag--fill.pmtag--b0{background:#fff1f1;color:#750e13}
+.pmtag--fill.pmtag--b1{background:#fff2e8;color:#8a3800}
+.pmtag--fill.pmtag--b2{background:#fcf4d6;color:#684e00}
+.pmtag--fill.pmtag--b3{background:#defbe6;color:#044317}
+.pmtag--fill.pmtag--x{background:var(--cds-layer-03);color:var(--cds-text-secondary);
+ font-weight:400}
+.pmswatch{width:12px;height:12px;flex:0 0 auto;display:inline-block}
 .pmv{font-weight:600;white-space:nowrap}
 .pmv--red{color:var(--critical)}
 .pmv--build{color:var(--warn)}
@@ -3036,7 +3306,7 @@ table.rep-reports .barcell{width:88px}
   </div>
     <div class="nav-footer">
     <div class="nav-user"><span class="avatar" id="navav">AR</span><span class="nav-user-text"><b id="navwho">Arshad</b><span id="navrole">HQ &middot; Admin</span></span></div>
-    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v129 · 18 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
+    <div class="nav-footer-row"><span class="nav-brand"><svg class="icon-24" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-icon="enterprise"><path d="M8 8H10V12H8z"/><path d="M8 14H10V18H8z"/><path d="M14 8H16V12H14z"/><path d="M14 14H16V18H14z"/><path d="M8 20H10V24H8z"/><path d="M14 20H16V24H14z"/><path d="M30,14a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H4A2,2,0,0,0,2,4V30H30ZM4,4H20V28H4ZM22,28V14h6V28Z"/></svg><span>British Biologicals</span></span><span class="nav-ver" id="hfiver">v137 · 19 Sep 2026</span><button class="icon-btn" id="theme2" type="button" title="Dark theme" aria-label="Dark theme"><svg class="icon-16" viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="asleep"><path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/></svg></button></div>
   </div>
 </aside>
 <div class="main">
@@ -3198,7 +3468,7 @@ table.rep-reports .barcell{width:88px}
 <section class="sec" id="sec_notes"><div class="secttl"><div class="eye">Team</div><div class="big">Notes and observations</div><div class="d">Shared context from the Opex team. Report-level notes cover the period; rep notes explain individual numbers and stay attached to that person.</div></div><div id="notesView"></div></section><section class="sec" id="sec_guide"><div class="secttl"><div class="eye">Reference</div><div class="big">Metrics guide</div></div><div class="gloss" id="gloss"></div></section>
 <div class="foot" id="foot"></div></div>
 </div></div>
-<meta name="hfi-version" content="v129 · 18 Sep 2026">
+<meta name="hfi-version" content="v137 · 19 Sep 2026">
   <div id="navtip" role="tooltip" aria-hidden="true"></div>
   <div class="pscrim" id="pscrim"><div class="pcard" id="pcard"></div></div>
 <div class="mscrim" id="mscrim"><div class="modal"><div class="mhead"><div><h3 id="mtitle"></h3><div class="cs" id="mdef"></div></div><button class="mx" type="button" onclick="cm()" title="Close" aria-label="Close"><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true" data-icon="close"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button></div><div class="mbody"><div class="mbox"><canvas id="ch_modal"></canvas></div><div class="tablewrap" style="margin-top:0"><table><thead><tr><th>Category</th><th style="text-align:right">Value</th><th style="text-align:right">Share</th></tr></thead><tbody id="modtab"></tbody></table></div></div></div></div>
@@ -3220,7 +3490,7 @@ function CDS(name){
  if(!v)console.warn('unresolved token '+name);
  return (_CDSC[name]=v||'transparent');
 }
-window.HFI_BUILD='v129 · 18 Sep 2026';
+window.HFI_BUILD='v137 · 19 Sep 2026';
 const $=id=>document.getElementById(id);const fmt=n=>(typeof n==='number'?n:0).toLocaleString('en-IN');
 let D,TAB='ppl';const F={q:'',di:'',zn:'',st:'',hq:'',rl:'',mg:'',ob:'',rx:'',sp:'',ac:'',pf:'',te:''};const DF={q:'',st:'',sp:'',ca:'',pr:'',id:''};
 let eS='rx',eA=false,pS='pi',pA=false,mS='rx',mA=false,xS='fl',xA=false,dS=1,dA=true,mmS=3,mmA=false,rS='rx',rA=false,tS=5,tA=false;
@@ -8245,7 +8515,7 @@ const SCREENS={
         (rows.length>act?(', '+fmt(rows.length-act)+' did not'):'')+'.',
     sub:'',cta:null};}},
 
- pcpm:{eye:'Performance',t:'Productivity matrix',
+ pcpm:{eye:'Performance',t:'Sales per person, by headquarters',
   d:'What each headquarters billed through the channel, per person, per month, against the company baseline. Sales come from Channel Health; people from the HR roster and the Frontline directory. This screen reads the complete months of the financial year and does not move with the period filter.',
   lead:()=>{
    const P=(D&&D.pcpm)||{};
@@ -11372,7 +11642,1198 @@ function pmPeopleByHQ(P){
   }).join('')+'</tbody></table></div></div>';
 }
 
+/* ============================================================ PRODUCTIVITY MATRIX v131
+   The screen the Opex team works from. Six bands: answer strip, read-first notes,
+   method, map + state rail, the work list, the people list — plus a headquarters drawer.
+
+   THE VOCABULARY IS THE CLIENT'S AND IS NOT NEGOTIABLE. "approved positions" not
+   sanctioned posts; "people in place" not filled; "matched / not matched" not
+   attributed / unattributed; the four bands are named, never RED/BUILD/STRETCH/PERFORM.
+   The ETL still speaks the old words internally — `pmBandOf` is the one place the two
+   vocabularies meet, so a rename in either does not have to be chased through markup. */
+
+/* Bands. Thresholds come from the ETL (D.pcpm.zones) so the grid is defined in exactly
+   one place; the names, colours and one-line verdicts are the design's. */
+const PM_BAND_META = [
+ {col:'var(--pm-b0)', name:'Needs help',
+  say:'Well below the target. Needs attention this month.'},
+ {col:'var(--pm-b1)', name:'Improving',
+  say:'Moving, but still short of the target.'},
+ {col:'var(--pm-b2)', name:'Close to target',
+  say:'Within reach. A small push clears the target.'},
+ {col:'var(--pm-b3)', name:'On target',
+  say:'At or above the ₹2.5 L target.'}
+];
+const PM_XB = {
+ vacant:{name:'Nobody in place yet', col:'var(--pm-bx)',
+  say:'Approved positions here, but nobody in them. Nothing to bill, and nothing to chase.'},
+ shared:{name:'Figure not reliable', col:'var(--pm-bx)',
+  say:'This city holds more than one headquarters of the same division. Invoices name '+
+      'the city only, so the billing cannot be split between them.'}
+};
+
+function pmBands(){
+ /* The ETL's zone list, in floor order, wearing the client's names. */
+ const z=(pcpmD().zones)||[];
+ return z.slice().sort((a,b)=>a.floor-b.floor).map((x,i)=>Object.assign(
+   {k:i, code:x.code, lo:(x.floor||0)/1e5,
+    hi:(x.ceiling==null?Infinity:x.ceiling/1e5)},
+   PM_BAND_META[i]||{col:'var(--pm-bx)',name:x.code,say:''}));
+}
+function pmBandOf(r){
+ /* The single crossing point between the ETL's vocabulary and the reader's. */
+ if(!r||!r.zone)return null;
+ const bs=pmBands(), i=bs.findIndex(b=>b.code===r.zone.code);
+ return i<0?null:bs[i];
+}
+function pmWhyNo(r){
+ /* Which of the two no-verdict states this row is in. Order matters: a headquarters
+    with nobody in it has no figure whatever else is true of its city. */
+ if(!r.filled)return 'vacant';
+ if(!r.denominator_safe)return 'shared';
+ return null;
+}
+function pmStatus(r){ const b=pmBandOf(r); return b || PM_XB[pmWhyNo(r)] ||
+ {name:'No figure', col:'var(--pm-bx)', say:''}; }
+function pmLk(v){ return '₹'+((v||0)/1e5).toFixed(2)+' L'; }
+function pmLk0(v){ return '₹'+Math.round((v||0)/1e5).toLocaleString('en-IN')+' L'; }
+
+/* ---------------------------------------------------------------- the rows
+   Only headquarters the channel actually reached. The 150 it did not are a coverage
+   question and are counted in a note rather than ranked as if they had underperformed. */
+function pmRows(){
+ const P=pcpmD();
+ return (P.rows||[]).filter(pmInScope).map(r=>Object.assign({},r,{
+  _pcpm:(r.pcpm_filled==null?null:r.pcpm_filled/1e5),
+  _pcpmPosts:(r.pcpm_posts==null?null:r.pcpm_posts/1e5),
+  _band:pmBandOf(r), _x:pmWhyNo(r)
+ }));
+}
+function pmOffscreen(){
+ const P=pcpmD(), all=P.rows||[];
+ const off=all.filter(r=>!pmInScope(r));
+ return {hqs:off.length, people:off.reduce((a,r)=>a+(r.filled||0),0)};
+}
+
+/* ---------------------------------------------------------------- the people
+   Built from the unfiltered roster, never from fr(). This screen divides by a fixed
+   number of complete months and must not move when somebody clicks a month at the top
+   of the report; a people list that did move would disagree with the figure beside it.
+   The filing rule is the ETL's: the HR headquarters where a person has an HR record,
+   Frontline's own name only where they do not. */
+let PM_TEAM_CACHE=null;
+function pmTeams(){
+ if(PM_TEAM_CACHE)return PM_TEAM_CACHE;
+ const by={};
+ ((D&&D.reps)||[]).forEach(r=>{
+  const hq=String(r.hhq||r.hq||'').trim();
+  if(!hq||hq==='—')return;
+  (by[hq]||(by[hq]=[])).push({
+   code:r.c||'', name:r.n||'', role:r.r||'', mgr:r.mg||'—', mgrCode:r.mgc||'',
+   vis:+r.vis||0, dr:+r.ud||0, rx:+r.rx||0, att:+r.att||0, hq:hq});
+ });
+ PM_TEAM_CACHE=by;
+ return by;
+}
+function pmPeople(){
+ /* One flat array, each person carrying the headquarters row they are counted in. */
+ const by=pmTeams(), out=[];
+ pmRows().forEach(r=>{
+  (by[r.hq]||[]).forEach(p=>out.push(Object.assign({},p,{row:r})));
+ });
+ return out;
+}
+
+/* ---------------------------------------------------------------- states */
+function pmStates(){
+ const m={}, bs=pmBands();
+ pmRows().forEach(r=>{
+  const k=r.state||'—';
+  const s=m[k]||(m[k]={state:k, zone:r.zone_geo||'', rows:[],
+    counts:bs.map(()=>0), other:0, sales:0, filled:0});
+  s.rows.push(r); s.sales+=r.sales||0; s.filled+=r.filled||0;
+  if(r._band)s.counts[r._band.k]++; else s.other++;
+ });
+ const n=(pcpmD().month_count)||1;
+ return Object.keys(m).map(k=>{
+  const s=m[k];
+  s.scored=s.counts.reduce((a,b)=>a+b,0);
+  s.weak=s.scored?(s.counts[0]+s.counts[1])/s.scored:0;
+  /* A state's own figure: its summed billing over its summed people, same months. */
+  s.pcpm=s.filled?(s.sales/s.filled/n)/1e5:0;
+  s.band=s.filled?(bs.find(b=>s.pcpm>=b.lo&&s.pcpm<b.hi)||null):null;
+  return s;
+ }).sort((a,b)=>(b.counts[0]+b.counts[1])-(a.counts[0]+a.counts[1])||
+                 b.weak-a.weak||a.state.localeCompare(b.state));
+}
+
+/* ---------------------------------------------------------------- shared state
+   ONE filter object, read by both tables, the map, the rail and the tiles. The
+   prototype's note on this is the whole reason it is written down: an earlier build
+   gave the people table its own state, and the map then claimed to narrow "everything
+   on this screen" while narrowing one table. PM_PV is an ADDITIONAL narrowing of the
+   people list, never a replacement for PM_V. */
+const PM_V={state:null, bands:new Set(), zones:new Set(), divisions:new Set(),
+ onlyVac:false, onlyConc:false, q:'', sort:'pcpm', dir:1, sel:null};
+const PM_PV={q:'', zone:'', state:'', mgr:'', role:'', band:'', sort:'pcpm', dir:1,
+ limit:60};
+function pmClearFilters(){
+ PM_V.state=null; PM_V.bands.clear(); PM_V.zones.clear(); PM_V.divisions.clear();
+ PM_V.onlyVac=false; PM_V.onlyConc=false; PM_V.q='';
+ const q=$('pmq'); if(q)q.value='';
+}
+function pmAnyFilter(){
+ return !!PM_V.state||PM_V.bands.size>0||PM_V.zones.size>0||PM_V.divisions.size>0||
+        PM_V.onlyVac||PM_V.onlyConc||!!PM_V.q;
+}
+function pmVisible(r){
+ if(PM_V.state&&r.state!==PM_V.state)return false;
+ if(PM_V.zones.size&&!PM_V.zones.has(r.zone_geo))return false;
+ if(PM_V.divisions.size&&!PM_V.divisions.has(r.division))return false;
+ if(PM_V.bands.size&&!PM_V.bands.has(r._band?r._band.k:r._x))return false;
+ if(PM_V.onlyVac&&(r.posts-r.filled)<=0)return false;
+ if(PM_V.onlyConc&&!(r.town_concentration>=0.45))return false;
+ if(PM_V.q){
+  const q=PM_V.q.toLowerCase();
+  if((r.hq+' '+r.state+' '+r.zone_geo+' '+r.division).toLowerCase().indexOf(q)<0)
+   return false;
+ }
+ return true;
+}
+
+/* ---------------------------------------------------------------- icons
+   Carbon's own 32x32 paths, verbatim. An approximation drawn by hand overflowed its
+   viewBox on an earlier pass and rendered as a black square. */
+const PM_ICON={
+ download:'M26 24v4H6v-4H4v4a2 2 0 002 2h20a2 2 0 002-2v-4zM26 14l-1.41-1.41L17 20.17V2'+
+  'h-2v18.17l-7.59-7.58L6 14l10 10z',
+ right:'M18 6l-1.43 1.393 7.15 7.18H4v2.014h19.72l-7.15 7.02L18 25l9-9.5z',
+ down:'M16 22 6 12l1.4-1.4L16 19.2l8.6-8.6L26 12z',
+ search:'M29 27.586 22.158 20.744A11.943 11.943 0 0025 13 12 12 0 1013 25a11.943 11.943'+
+  ' 0 007.744-2.842L27.586 29zM13 23a10 10 0 1110-10 10.011 10.011 0 01-10 10z',
+ filter:'M18 28h-4a2 2 0 01-2-2v-7.59L4.59 11A2 2 0 014 9.59V6a2 2 0 012-2h20a2 2 0 012'+
+  ' 2v3.59a2 2 0 01-.59 1.41L20 18.41V26a2 2 0 01-2 2zM6 6v3.59l8 8V26h4v-8.41l8-8V6z',
+ cols:'M28 8H10V6H8v2H4v2h4v2h2v-2h18zM4 22h14v2h2v-2h8v-2h-8v-2h-2v2H4z',
+ close:'M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.58'+
+  '59 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z',
+ add:'M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z',
+ subtract:'M8 15h16v2H8z',
+ renew:'M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z M20,22h5.22A11,11,0'+
+  ',0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z',
+ up:'M16 4 6 14l1.41 1.41L15 7.83V28h2V7.83l7.59 7.58L26 14z',
+ dn:'M24.59 16.59 17 24.17V4h-2v20.17l-7.59-7.58L6 18l10 10 10-10z'
+};
+function pmIco(k,sz){
+ const n=sz||16;
+ return '<svg width="'+n+'" height="'+n+'" viewBox="0 0 32 32" aria-hidden="true">'+
+  '<path d="'+PM_ICON[k]+'"/></svg>';
+}
+
+/* ---------------------------------------------------------------- answer strip
+   Five tiles. Four are the design's; the fifth is billing a division sold where it has
+   nobody posted, which is a different question from billing no headquarters can claim
+   and would be invisible folded into it. Every tile CLEARS the filters before applying
+   its own, so a tile is always a complete jump rather than a combination with whatever
+   the reader had set. */
+function pmAnswers(){
+ const P=pcpmD(), rows=pmRows();
+ const scored=rows.filter(r=>!!r._band);
+ const met=scored.filter(r=>r._band.k===3);
+ const matched=rows.reduce((a,r)=>a+(r.sales||0),0);
+ const vac=rows.filter(r=>r._x==='vacant');
+ const divs=(P.divisions||[]).filter(d=>(d.unplaced||0)>0);
+ const unplacedByDiv=divs.reduce((a,d)=>a+d.unplaced,0);
+ const noHQ=Math.max(((P.unattributed||{}).sales||0)-unplacedByDiv,0);
+ return [
+  {v:met.length+' of '+scored.length, l:'headquarters hit the ₹2.5 L target',
+   go:'Show the ones that did', press:()=>PM_V.bands.has(3),
+   act:()=>{pmClearFilters();PM_V.bands.add(3);pmDraw();}},
+  {v:pmLk0(matched), l:'of billing matched to a headquarters',
+   go:'Show the weakest first', press:()=>false,
+   act:()=>{pmClearFilters();pmDraw();}},
+  {v:pmLk0(noHQ), l:'of billing not matched to any headquarters',
+   go:'Why this is left out', press:()=>false, act:pmOpenMethod},
+  {v:pmLk0(unplacedByDiv),
+   l:'sold by a division in towns where it has nobody posted',
+   go:'Which division, and where', press:()=>false, act:pmOpenMethod},
+  {v:vac.length+' HQs', l:'have approved positions with nobody in them',
+   go:'Show the staffing gaps', press:()=>PM_V.bands.has('vacant'),
+   act:()=>{pmClearFilters();PM_V.bands.add('vacant');pmDraw();}}
+ ];
+}
+function pmOpenMethod(){
+ const d=$('pmexp'); if(!d)return;
+ d.open=true;
+ const su=d.querySelector('summary'); if(su&&su.focus)su.focus();
+}
+
+/* ---------------------------------------------------------------- notes
+   Five. The first four are the design's and each one prevents a specific misreading —
+   they are not decoration and they do not move below the data. The fifth is this
+   report's: a division with revenue and no employees is the finding a reader is most
+   likely to mistake for a defect. */
+function pmNotes(){
+ const off=pmOffscreen(), P=pcpmD();
+ const empty=(P.divisions||[]).filter(d=>!d.filled&&(d.total||0)>0);
+ const out=[
+  ['“Nobody in place yet” is not a bad result.',
+   'An approved position with no one in it bills nothing. That is a staffing gap to '+
+   'fill, not a person to chase.'],
+  ['“Figure not reliable” means the town is shared.',
+   'Two headquarters of the same division sit in one city, and an invoice names only '+
+   'the city. The billing cannot be split, so we show no status.'],
+  ['The figure belongs to the headquarters.',
+   'Billing is recorded against a stockist in a town, never against a person. Everyone '+
+   'posted at the same headquarters carries the same figure — it shows whose patch '+
+   'is behind, not who is behind.'],
+  [off.hqs+' headquarters are not on this screen at all.',
+   'No super stockist bills into their towns, so there is no channel sale to divide '+
+   'between the '+off.people+' people posted there. That is a coverage question, not a '+
+   'performance one.']
+ ];
+ empty.forEach(d=>out.push([
+  esc(d.division)+' has billing and nobody to divide it by.',
+  pmLk(d.total)+' was sold and no one is posted to that division yet, so none of it '+
+  'reaches a headquarters on this screen. That is a hiring decision, not a result.']));
+ return out;
+}
+
+/* ---------------------------------------------------------------- markup */
+function pmChrome(){
+ const P=pcpmD(), off=pmOffscreen();
+ const months=(P.months||[]).length;
+ const divs=P.divisions||[];
+ const unplacedByDiv=divs.reduce((a,d)=>a+(d.unplaced||0),0);
+ const un=(P.unattributed||{}).sales||0;
+ return '<div class="pmx">'+
+ /* lede + export */
+ '<p class="pmsec p" style="margin:0 0 4px;color:var(--cds-text-secondary);'+
+  'max-width:62ch;font-size:16px;line-height:1.5">For each headquarters: what the '+
+  'channel billed into its town, divided by the people in place, divided by the '+
+  'months. The target is <b style="color:var(--cds-text-primary);font-weight:600">'+
+  '₹2.5 L per person, per month</b>.</p>'+
+
+ '<div class="pmans" id="pmans"></div>'+
+ '<div class="pmnotes" id="pmnotes"></div>'+
+
+ '<details class="pmexp" id="pmexp"><summary>'+pmIco('down')+
+  'How this is worked out</summary><ul>'+
+  '<li><b>Sales</b> come from Hive Channel Health — what each super stockist '+
+   'billed its stockists. <b>People</b> come from the HR roster and the Frontline '+
+   'directory.</li>'+
+  '<li><b>'+months+' complete month'+(months===1?'':'s')+'</b> of '+esc(P.fy||'')+
+   ' — '+esc((P.months||[]).join(', '))+'. Measured on '+
+   esc(P.measure_note||'pre-tax goods value')+'.</li>'+
+  '<li>The status uses <b>people in place</b>. The figure over <b>approved positions'+
+   '</b> sits beside it, and the two differ by the vacancies.</li>'+
+  '<li>This screen reads the complete months of the financial year. <b>It does not '+
+   'move with the period filter</b> at the top of the report.</li>'+
+  '<li><b>'+pmLk(un)+' of billing is left out</b> of every figure here. '+
+   pmLk(un-unplacedByDiv)+' reached towns where the roster has nobody posted at all; '+
+   pmLk(unplacedByDiv)+' was sold by a division in a town where that division has '+
+   'nobody, and each force is measured only on its own products. Spreading either '+
+   'across nearby headquarters would flatter them for business they did not do.</li>'+
+  '<li><b>'+off.hqs+' headquarters holding '+off.people+' people are not on this '+
+   'screen.</b> No super stockist bills into their towns, so there is nothing to '+
+   'divide.</li>'+
+  '</ul>'+pmDivTable()+'</details>'+
+
+ /* map */
+ '<div class="pmsec"><h3>Where the weak headquarters are</h3>'+
+  '<p>Each dot is one headquarters, placed on its town and coloured by status. Click a '+
+  'dot to open that headquarters. Click a state on the right to narrow everything on '+
+  'this screen to that state.</p></div>'+
+ '<div class="pmmapgrid"><div class="pmmappane"><div class="pmmapbox">'+
+  '<svg id="pmmapsvg" viewBox="0 0 640 700" role="img" aria-label="Map of India. '+
+  'States are shaded by status and each headquarters is a dot."></svg>'+
+  '<div class="pmmapctl">'+
+   '<button type="button" id="pmzin" aria-label="Zoom in" title="Zoom in">'+pmIco('add')+'</button>'+
+   '<button type="button" id="pmzout" aria-label="Zoom out" title="Zoom out">'+pmIco('subtract')+'</button>'+
+   '<button type="button" id="pmzrst" aria-label="Reset the map" title="Reset the map">'+pmIco('renew')+'</button>'+
+  '</div></div>'+
+  '<div class="pmlegend" id="pmlegend"></div>'+
+  '<div class="pmhint">A state is shaded by its own figure across all its '+
+  'headquarters. Dot size shows how much the channel billed into that town. Scroll to '+
+  'zoom, drag to pan.</div></div>'+
+  '<div class="pmrail"><div class="pmrailhead"><b>States, weakest first</b>'+
+   '<span id="pmrailsub"></span></div>'+
+   '<div class="pmraillist" id="pmraillist"></div></div></div>'+
+
+ /* work list */
+ '<div class="pmsec"><h3>The work list</h3><p>Weakest first. Five columns to start '+
+  'with — use <b>Columns</b> to add the rest.</p></div>'+
+ pmToolbar()+
+ '<div class="pmcolpan" id="pmfilpan" hidden></div>'+
+ '<div class="pmcolpan" id="pmcolpan" hidden></div>'+
+ '<div class="pmtwrap"><table id="pmtbl"><thead><tr id="pmthr"></tr></thead>'+
+  '<tbody id="pmtb"></tbody></table></div>'+
+
+ /* people */
+ '<div class="pmsec"><h3>Every person, and the headquarters they are counted in</h3>'+
+  '<p>Who reports to whom, where they are posted, and the figure their posting carries. '+
+  '<b>That figure belongs to the headquarters, not to the person</b> — everyone '+
+  'posted at the same headquarters shows the same number, because channel billing is '+
+  'recorded against a stockist in a town and never against a person. Use it to see '+
+  'whose patch is behind, not to judge one person against another.</p>'+
+  '<p><b>This table follows the filters above</b> — the map, the state list, the '+
+  'tiles and the status legend all narrow it. The dropdowns here narrow it further.</p>'+
+  '</div>'+
+ pmPeopleToolbar()+
+ '<div class="pmtwrap"><table id="pmptbl"><thead><tr id="pmphr"></tr></thead>'+
+  '<tbody id="pmpb"></tbody></table></div>'+
+ '<button class="pmbtn pmbtn--g pmmore" id="pmmore" type="button" hidden></button>'+
+ pmDrawerMarkup()+
+ '</div>';
+}
+
+function pmDivTable(){
+ /* The divisions table lives inside the method rather than as a sixth band. The two
+    facts a reader needs — how much a division sold where it has nobody, and that one
+    division has nobody at all — are on a tile and in a note; this is the detail behind
+    them, one click away, where it does not push the map down the page. */
+ const ds=(pcpmD().divisions)||[];
+ if(ds.length<2)return '';
+ return '<div class="pmdivtab"><table><thead><tr><th>Division</th>'+
+  '<th class="n">Billed where it has people</th>'+
+  '<th class="n">Billed where it has none</th><th class="n">Placed</th>'+
+  '<th class="n">People</th><th class="n">HQs</th><th>Note</th></tr></thead><tbody>'+
+  ds.map(d=>'<tr><td>'+esc(d.division||'')+'</td>'+
+   '<td class="n">'+pmLk(d.sales)+'</td><td class="n">'+pmLk(d.unplaced)+'</td>'+
+   '<td class="n">'+(d.placed_share==null?'—':Math.round(d.placed_share*100)+'%')+
+   '</td><td class="n">'+(d.filled||0)+'</td><td class="n">'+(d.hqs||0)+'</td>'+
+   '<td>'+(d.pcpm_note?esc(d.pcpm_note):'')+'</td></tr>').join('')+
+  '</tbody></table></div>';
+}
+
+/* ---------------------------------------------------------------- chrome draw */
+function pmDrawChrome(){
+ const a=$('pmans');
+ if(a){
+  const A=pmAnswers();
+  a.innerHTML=A.map((x,i)=>'<button class="pmans-t" type="button" data-i="'+i+'" '+
+   'aria-pressed="'+String(!!x.press())+'"><span class="pmans-v">'+x.v+'</span>'+
+   '<span class="pmans-l">'+x.l+'</span><span class="pmans-go">'+x.go+
+   pmIco('right')+'</span></button>').join('');
+ }
+ const n=$('pmnotes');
+ if(n)n.innerHTML=pmNotes().map(x=>'<div class="pmnote"><b>'+x[0]+'</b><span>'+x[1]+
+  '</span></div>').join('');
+}
+
+/* ---------------------------------------------------------------- people columns */
+const PM_PCOLS=[
+ {id:'name', lab:'Person',
+  cell:p=>'<td class="pmwhoc"><b>'+esc(p.name||'—')+'</b><span>'+esc(p.code||'')+
+   '</span></td>', key:p=>p.name||'', csv:p=>p.name||''},
+ {id:'role', lab:'Role', cell:p=>'<td>'+esc(p.role||'')+'</td>', key:p=>p.role||'',
+  csv:p=>p.role||''},
+ {id:'mgr', lab:'Reports to', cell:p=>'<td>'+esc(p.mgr||'—')+'</td>',
+  key:p=>p.mgr||'', csv:p=>p.mgr||''},
+ {id:'hq', lab:'Headquarters', cell:p=>'<td class="pmhqc"><b>'+esc(p.row.hq)+'</b></td>',
+  key:p=>p.row.hq, csv:p=>p.row.hq},
+ {id:'state', lab:'State', cell:p=>'<td>'+esc(p.row.state||'')+'</td>',
+  key:p=>p.row.state||'', csv:p=>p.row.state||''},
+ {id:'zone', lab:'Zone', cell:p=>'<td>'+esc(p.row.zone_geo||'')+'</td>',
+  key:p=>p.row.zone_geo||'', csv:p=>p.row.zone_geo||''},
+ {id:'hqst', lab:'HQ status',
+  cell:p=>{const st=pmStatus(p.row);
+   return '<td><span class="pmtag pmtag--quiet '+
+    (p.row._band?'pmtag--b'+p.row._band.k:'pmtag--x')+'"><span class="pmsw" '+
+    'style="background:'+st.col+'"></span>'+esc(st.name)+'</span></td>';},
+  key:p=>p.row._band?p.row._band.k:-1, csv:p=>pmStatus(p.row).name},
+ /* Headed "HQ figure", not "PCPM". The two letters travel with the number into every
+    screenshot and every export, which a paragraph above the table does not. */
+ {id:'pcpm', lab:'HQ figure, per person', n:true,
+  cell:p=>'<td class="n">'+(p.row._band?'<span class="pmbig">'+pmLk(p.row.pcpm_filled)+
+   '</span>':'<span class="pmdash">—</span>')+'</td>',
+  key:p=>p.row._band?p.row._pcpm:-1,
+  csv:p=>p.row._band?p.row._pcpm.toFixed(2):''},
+ {id:'vis', lab:'Visits', n:true, cell:p=>'<td class="n">'+p.vis+'</td>',
+  key:p=>p.vis, csv:p=>p.vis},
+ {id:'dr', lab:'Doctors met', n:true, cell:p=>'<td class="n">'+p.dr+'</td>',
+  key:p=>p.dr, csv:p=>p.dr},
+ {id:'rx', lab:'Rx', n:true, cell:p=>'<td class="n">'+p.rx+'</td>',
+  key:p=>p.rx, csv:p=>p.rx},
+ {id:'att', lab:'Attendance', n:true, cell:p=>'<td class="n">'+p.att+'%</td>',
+  key:p=>p.att, csv:p=>p.att+'%'}
+];
+
+function pmPeopleToolbar(){
+ return '<div class="pmtbar" role="toolbar" aria-label="Find a person">'+
+  '<div class="pmsrch">'+pmIco('search')+
+   '<input id="pmpq" type="search" placeholder="Search a name, code, manager or '+
+   'headquarters" aria-label="Search a name, code, manager or headquarters"></div>'+
+  '<span class="pmtcount" id="pmpcount"></span>'+
+  '<span class="pmfiltag" id="pmpnarrow" hidden></span>'+
+  '<select class="pmfsel" id="pmpzone" aria-label="Zone"></select>'+
+  '<select class="pmfsel" id="pmpstate" aria-label="State"></select>'+
+  '<select class="pmfsel" id="pmpmgr" aria-label="Reports to"></select>'+
+  '<select class="pmfsel" id="pmprole" aria-label="Role"></select>'+
+  '<select class="pmfsel" id="pmpband" aria-label="Headquarters status"></select>'+
+  '<button class="pmtbtn" id="pmpclr" type="button">Clear</button>'+
+  '<button class="pmtbtn" id="pmpcsv" type="button">Download as CSV'+
+   pmIco('download')+'</button></div>';
+}
+
+function pmPeopleSelects(){
+ const P=pmPeople();
+ const uniq=f=>Array.from(new Set(P.map(f).filter(Boolean))).sort((a,b)=>
+  a.localeCompare(b));
+ const fill=(id,vals,label,sel)=>{
+  const el=$(id); if(!el)return;
+  el.innerHTML='<option value="">'+label+'</option>'+
+   vals.map(v=>'<option>'+esc(v)+'</option>').join('');
+  el.value=sel||'';
+ };
+ fill('pmpzone',pmZoneList(),'All zones',PM_PV.zone);
+ fill('pmpstate',uniq(p=>p.row.state),'All states',PM_PV.state);
+ fill('pmpmgr',uniq(p=>p.mgr),'All managers',PM_PV.mgr);
+ fill('pmprole',uniq(p=>p.role),'All roles',PM_PV.role);
+ const b=$('pmpband');
+ if(b){
+  b.innerHTML='<option value="">Any HQ status</option>'+
+   pmLegend().map(l=>'<option value="'+l.key+'">'+esc(l.name)+'</option>').join('');
+  b.value=PM_PV.band;
+ }
+}
+function pmPeopleControl(t){
+ const map={pmpzone:'zone',pmpstate:'state',pmpmgr:'mgr',pmprole:'role',
+  pmpband:'band'};
+ const k=map[t.id]; if(!k)return;
+ PM_PV[k]=t.value; pmPeopleDraw();
+}
+function pmPeopleClear(){
+ PM_PV.q=PM_PV.zone=PM_PV.state=PM_PV.mgr=PM_PV.role=PM_PV.band='';
+ PM_PV.limit=60;
+ ['pmpq','pmpzone','pmpstate','pmpmgr','pmprole','pmpband'].forEach(id=>{
+  const el=$(id); if(el)el.value='';
+ });
+ pmPeopleDraw();
+}
+
+function pmPeopleVisible(p){
+ /* The page filters first. This is the line that makes "narrows everything on this
+    screen" a true sentence rather than a claim. */
+ if(!pmVisible(p.row))return false;
+ if(PM_PV.zone&&p.row.zone_geo!==PM_PV.zone)return false;
+ if(PM_PV.state&&p.row.state!==PM_PV.state)return false;
+ if(PM_PV.mgr&&p.mgr!==PM_PV.mgr)return false;
+ if(PM_PV.role&&p.role!==PM_PV.role)return false;
+ if(PM_PV.band!==''){
+  const k=(PM_PV.band==='vacant'||PM_PV.band==='shared')?PM_PV.band:+PM_PV.band;
+  if((p.row._band?p.row._band.k:p.row._x)!==k)return false;
+ }
+ if(PM_PV.q){
+  const q=PM_PV.q.toLowerCase();
+  if((p.name+' '+p.code+' '+p.mgr+' '+p.row.hq+' '+p.row.state+' '+p.role)
+     .toLowerCase().indexOf(q)<0)return false;
+ }
+ return true;
+}
+
+function pmPeopleDraw(){
+ const tb=$('pmpb'); if(!tb)return;
+ pmPeopleSelects();
+ const ALL=pmPeople();
+ const col=PM_PCOLS.find(c=>c.id===PM_PV.sort)||PM_PCOLS[0];
+ const rows=ALL.filter(pmPeopleVisible).sort((a,b)=>{
+  const an=a.row._band?0:1, bn=b.row._band?0:1;
+  if(an!==bn)return an-bn;
+  const x=col.key(a), y=col.key(b);
+  const c=(typeof x==='string')?x.localeCompare(y):(x-y);
+  return c*PM_PV.dir||String(a.name).localeCompare(String(b.name));
+ });
+ const phr=$('pmphr');
+ if(phr)phr.innerHTML=PM_PCOLS.map(c=>{
+  const on=PM_PV.sort===c.id;
+  return '<th'+(c.n?' class="n"':'')+
+   (on?(' aria-sort="'+(PM_PV.dir<0?'descending':'ascending')+'"'):'')+
+   '><button type="button" data-s="'+c.id+'">'+esc(c.lab)+pmSortIcon(on,PM_PV.dir)+
+   '</button></th>';
+ }).join('');
+ const shown=rows.slice(0,PM_PV.limit);
+ tb.innerHTML=rows.length
+  ?shown.map(p=>'<tr data-hq="'+esc(p.row.hq)+'" tabindex="0">'+
+    PM_PCOLS.map(c=>c.cell(p)).join('')+'</tr>').join('')
+  :'<tr><td class="pmempty" colspan="'+PM_PCOLS.length+'">Nobody matches. Clear the '+
+   'filters to see all '+ALL.length+' people.</td></tr>';
+ const more=$('pmmore');
+ if(more){
+  if(rows.length>shown.length){
+   more.hidden=false;
+   more.textContent='Show the remaining '+(rows.length-shown.length)+' people';
+  } else { more.hidden=true; }
+ }
+ const nar=$('pmpnarrow');
+ if(nar){
+  if(pmAnyFilter()){
+   nar.hidden=false;
+   nar.innerHTML='Narrowed by the filters above<button type="button" id="pmpnarx" '+
+    'aria-label="Clear the filters above">'+pmIco('close')+'</button>';
+  } else { nar.hidden=true; nar.innerHTML=''; }
+ }
+ const pc=$('pmpcount');
+ if(pc)pc.textContent=rows.length>shown.length
+  ?(shown.length+' of '+rows.length+' shown, '+ALL.length+' in all')
+  :(rows.length+' of '+ALL.length+' people');
+}
+
+function pmPeopleExport(){
+ const head=PM_PCOLS.map(c=>pmCsvCell(c.lab)).join(',');
+ const body=pmPeople().filter(pmPeopleVisible)
+  .map(p=>PM_PCOLS.map(c=>pmCsvCell(c.csv(p))).join(',')).join('\n');
+ pmDownload('people-with-headquarters-figure.csv',head+'\n'+body);
+}
+
+/* ---------------------------------------------------------------- the drawer */
+function pmDrawerMarkup(){
+ return '<div class="pmscrim" id="pmscrim"></div>'+
+  '<aside class="pmdrawer" id="pmdrawer" role="dialog" aria-modal="true" '+
+   'aria-labelledby="pmdtitle" aria-hidden="true">'+
+   '<div class="pmdhead"><div><h4 id="pmdtitle"></h4>'+
+    '<div class="pmdsub" id="pmdsub"></div></div>'+
+    '<button class="pmdx" type="button" aria-label="Close">'+pmIco('close',20)+
+    '</button></div>'+
+   '<div class="pmdbody" id="pmdbody"></div></aside>';
+}
+
+function pmOpen(r){
+ if(!r)return;
+ PM_V.sel=r.hq;
+ const st=pmStatus(r), n=(pcpmD().month_count)||0;
+ const t=$('pmdtitle'), sub=$('pmdsub'), body=$('pmdbody');
+ if(!t||!body)return;
+ t.textContent=r.hq;
+ if(sub)sub.textContent=(r.state||'—')+' · '+(r.zone_geo||'—')+
+  ' zone · '+(r.division||'');
+ const out=[];
+ out.push('<div class="pmdfig"><span class="pmdfig-v">'+
+  (r._band?pmLk(r.pcpm_filled):'—')+'</span>'+
+  (r._band?'':'<span class="pmdfig-n">No figure for this headquarters</span>')+
+  '<span class="pmtag pmtag--fill '+(r._band?'pmtag--b'+r._band.k:'pmtag--x')+
+  '"><span class="pmsw" style="background:'+st.col+'"></span>'+esc(st.name)+
+  '</span></div>');
+ /* The verdict line only where there is a verdict. The no-figure explanation is a note
+    further down; printing both says the same sentence twice. */
+ if(r._band)out.push('<p class="pmsum">'+esc(st.say)+'</p>');
+
+ if(r._band){
+  out.push('<div class="pmdsec">How this figure was reached</div>');
+  out.push('<p class="pmsum"><b>'+pmLk(r.sales)+'</b> billed into '+esc(r.hq)+
+   ' over '+n+' month'+(n===1?'':'s')+', shared by <b>'+r.filled+' '+
+   (r.filled===1?'person':'people')+'</b> in place. That is <b>'+pmLk(r.pcpm_filled)+
+   '</b> per person, per month, against a target of ₹2.50 L.</p>');
+ }
+ out.push('<dl class="pmkv">'+
+  '<dt>Approved positions</dt><dd>'+(r.posts||0)+'</dd>'+
+  '<dt>People in place</dt><dd>'+(r.filled||0)+'</dd>'+
+  '<dt>Vacancies</dt><dd>'+((r.posts||0)-(r.filled||0))+'</dd>'+
+  '<dt>Total billed, '+n+' month'+(n===1?'':'s')+'</dt><dd>'+pmLk(r.sales)+'</dd>'+
+  '<dt>Over approved positions</dt><dd>'+
+   (r.pcpm_posts==null?'—':pmLk(r.pcpm_posts))+'</dd>'+
+  '<dt>Division</dt><dd>'+esc(r.division||'—')+'</dd></dl>');
+
+ if(r.town_concentration>=0.45)
+  out.push('<div class="pmdnote"><b>One stockist carries this town.</b> '+
+   Math.round(r.town_concentration*100)+'% of the billing here comes from a single '+
+   'super stockist. If that one account moves, this figure moves with it.</div>');
+ if(r._x==='shared')
+  out.push('<div class="pmdnote"><b>'+esc(PM_XB.shared.name)+'.</b> '+
+   esc(PM_XB.shared.say)+
+   (r.shares_city_with&&r.shares_city_with.length
+    ?' Shared with '+esc(r.shares_city_with.join(', '))+'.':'')+'</div>');
+ if(r._x==='vacant')
+  out.push('<div class="pmdnote"><b>'+esc(PM_XB.vacant.name)+'.</b> '+
+   esc(PM_XB.vacant.say)+'</div>');
+
+ out.push('<div class="pmdsec">People posted here</div>');
+ const team=(pmTeams()[r.hq]||[]).slice().sort((a,b)=>b.rx-a.rx);
+ if(team.length){
+  out.push('<p class="pmsum">What Frontline measures about each of them. The rupee '+
+   'figure above is this headquarters’, and is the same for all of them.</p>');
+  out.push('<table class="pmppl"><thead><tr><th>Person</th><th class="n">Visits</th>'+
+   '<th class="n">Doctors met</th><th class="n">Rx</th><th class="n">Attendance</th>'+
+   '</tr></thead><tbody>'+team.map(p=>
+    '<tr><td class="pmwho"><b>'+esc(p.name||'—')+'</b><span>'+esc(p.role||'')+
+    ' · '+esc(p.code||'')+'</span></td><td class="n">'+p.vis+'</td>'+
+    '<td class="n">'+p.dr+'</td><td class="n">'+p.rx+'</td>'+
+    '<td class="n">'+p.att+'%</td></tr>').join('')+'</tbody></table>');
+ } else {
+  out.push('<p class="pmsum">Nobody is posted here yet. '+(r.posts||0)+' approved '+
+   ((r.posts||0)===1?'position':'positions')+' waiting to be filled.</p>');
+ }
+
+ /* Back to the invoices. Every super stockist that billed this town, because the figure
+    is their sum and one link would imply one source. */
+ const base=(pcpmD().chr_url)||'', list=r.chr||[];
+ if(base&&list.length){
+  out.push('<div class="pmdlinks">'+list.map(c=>
+   '<a href="'+esc(base)+'/r/'+esc(c.slug)+'#geo" target="_blank" rel="noopener">'+
+   'Open '+esc(c.name)+' in Hive Channel Health</a>').join('')+'</div>');
+ }
+ body.innerHTML=out.join('');
+ const dr=$('pmdrawer'), sc=$('pmscrim');
+ if(dr){ dr.classList.add('pmon'); dr.setAttribute('aria-hidden','false'); }
+ if(sc)sc.classList.add('pmon');
+ const x=dr&&dr.querySelector('.pmdx'); if(x&&x.focus)x.focus();
+ pmDraw();
+}
+function pmClose(){
+ const dr=$('pmdrawer'), sc=$('pmscrim');
+ if(dr){ dr.classList.remove('pmon'); dr.setAttribute('aria-hidden','true'); }
+ if(sc)sc.classList.remove('pmon');
+ PM_V.sel=null;
+ pmDraw();
+}
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Escape')return;
+ const dr=document.getElementById('pmdrawer');
+ if(dr&&dr.classList.contains('pmon'))pmClose();
+});
+
+/* ---------------------------------------------------------------- columns
+   Eleven, five on by default. `csv` is separate from `cell` on purpose: an export that
+   re-parses markup to get its values is one markup change away from shipping tags into
+   a spreadsheet, which this report has done once already. */
+const PM_COLS=[
+ {id:'hq', lab:'Headquarters', grp:'Where', on:true, lock:true,
+  cell:r=>'<td class="pmhqc"><b>'+esc(r.hq)+'</b></td>',
+  key:r=>r.hq, csv:r=>r.hq},
+ {id:'state', lab:'State', grp:'Where', on:true,
+  cell:r=>'<td>'+esc(r.state||'')+'</td>', key:r=>r.state||'', csv:r=>r.state||''},
+ {id:'zone', lab:'Zone', grp:'Where', on:false,
+  cell:r=>'<td>'+esc(r.zone_geo||'')+'</td>', key:r=>r.zone_geo||'',
+  csv:r=>r.zone_geo||''},
+ {id:'status', lab:'Status', grp:'Result', on:true,
+  cell:r=>{const st=pmStatus(r);
+   return '<td><span class="pmtag pmtag--quiet '+(r._band?'pmtag--b'+r._band.k:'pmtag--x')+
+    '"><span class="pmsw" style="background:'+st.col+'"></span>'+esc(st.name)+
+    '</span></td>';},
+  key:r=>r._band?r._band.k:-1, csv:r=>pmStatus(r).name},
+ {id:'pcpm', lab:'Per person, per month', grp:'Result', on:true, n:true,
+  cell:r=>'<td class="n">'+(r._band?'<span class="pmbig">'+pmLk(r.pcpm_filled)+'</span>'
+                                   :'<span class="pmdash">—</span>')+'</td>',
+  key:r=>r._band?r._pcpm:-1, csv:r=>r._band?r._pcpm.toFixed(2):''},
+ {id:'filled', lab:'People in place', grp:'People', on:true, n:true,
+  cell:r=>'<td class="n">'+(r.filled||0)+'</td>', key:r=>r.filled||0,
+  csv:r=>r.filled||0},
+ {id:'posts', lab:'Approved positions', grp:'People', on:false, n:true,
+  cell:r=>'<td class="n">'+(r.posts||0)+'</td>', key:r=>r.posts||0, csv:r=>r.posts||0},
+ {id:'gap', lab:'Vacancies', grp:'People', on:false, n:true,
+  cell:r=>'<td class="n">'+((r.posts||0)-(r.filled||0))+'</td>',
+  key:r=>(r.posts||0)-(r.filled||0), csv:r=>(r.posts||0)-(r.filled||0)},
+ {id:'sales', lab:'Total billed', grp:'Money', on:false, n:true,
+  cell:r=>'<td class="n">'+pmLk(r.sales)+'</td>', key:r=>r.sales||0,
+  csv:r=>((r.sales||0)/1e5).toFixed(2)},
+ {id:'pcpmPosts', lab:'Per approved position', grp:'Money', on:false, n:true,
+  cell:r=>'<td class="n">'+(r.pcpm_posts==null?'<span class="pmdash">—</span>'
+                                              :pmLk(r.pcpm_posts))+'</td>',
+  key:r=>r._pcpmPosts==null?-1:r._pcpmPosts,
+  csv:r=>r._pcpmPosts==null?'':r._pcpmPosts.toFixed(2)},
+ {id:'note', lab:'Worth knowing', grp:'Result', on:false,
+  cell:r=>'<td class="pmnotec">'+esc(pmWorthKnowing(r).join(' '))+'</td>',
+  key:r=>pmWorthKnowing(r).join(' '), csv:r=>pmWorthKnowing(r).join('; ')}
+];
+const PM_GRPS=['Where','Result','People','Money'];
+function pmColsOn(){ return PM_COLS.filter(c=>c.on); }
+
+function pmWorthKnowing(r){
+ const bits=[];
+ if(r._x==='shared')
+  bits.push('Shares its city with another headquarters of the same division.');
+ if(r._x==='vacant') bits.push('Approved positions here, nobody in them yet.');
+ if(r.town_concentration>=0.45)
+  bits.push(Math.round(r.town_concentration*100)+
+            "% of this town's billing comes from one super stockist.");
+ return bits;
+}
+
+/* ---------------------------------------------------------------- toolbar markup */
+function pmToolbar(){
+ return '<div class="pmtbar" role="toolbar" aria-label="Find headquarters">'+
+  '<div class="pmsrch">'+pmIco('search')+
+   '<input id="pmq" type="search" placeholder="Search a headquarters, state or division" '+
+   'aria-label="Search a headquarters, state or division"></div>'+
+  '<span class="pmtcount" id="pmtcount"></span>'+
+  '<span class="pmchips" id="pmchips"></span>'+
+  '<button class="pmtbtn" id="pmfilb" type="button" aria-expanded="false" '+
+   'aria-controls="pmfilpan">'+pmIco('filter')+'<span id="pmfiln">Filters</span></button>'+
+  '<button class="pmtbtn" id="pmcolsb" type="button" aria-expanded="false" '+
+   'aria-controls="pmcolpan">'+pmIco('cols')+'<span id="pmcolsn">Columns</span></button>'+
+  '<button class="pmtbtn" id="pmcsv" type="button">Download as CSV'+
+   pmIco('download')+'</button>'+
+  '</div>';
+}
+
+/* ---------------------------------------------------------------- panels */
+function pmZoneList(){
+ const z={};
+ pmRows().forEach(r=>{ if(r.zone_geo)z[r.zone_geo]=1; });
+ return Object.keys(z).sort();
+}
+function pmDivList(){
+ const d={};
+ pmRows().forEach(r=>{ if(r.division)d[r.division]=1; });
+ return Object.keys(d).sort();
+}
+function pmFilPanel(){
+ const el=$('pmfilpan'); if(!el)return;
+ el.innerHTML=
+  '<fieldset><legend>Zone</legend>'+pmZoneList().map(z=>
+   '<label class="pmchk"><input type="checkbox" data-z="'+esc(z)+'">'+esc(z)+
+   '</label>').join('')+'</fieldset>'+
+  '<fieldset><legend>Status</legend>'+pmLegend().map(l=>
+   '<label class="pmchk"><input type="checkbox" data-b="'+l.key+'">'+
+   '<span class="pmswatch" style="background:'+l.col+'"></span>'+esc(l.name)+
+   '</label>').join('')+'</fieldset>'+
+  /* Division is a filter, not a column — see _pcpm6.py. */
+  '<fieldset><legend>Division</legend>'+pmDivList().map(d=>
+   '<label class="pmchk"><input type="checkbox" data-d="'+esc(d)+'">'+esc(d)+
+   '</label>').join('')+'</fieldset>'+
+  '<fieldset><legend>State</legend><select class="pmfsel" id="pmfilstate" '+
+   'style="max-width:100%"><option value="">All states</option>'+
+   pmStates().slice().sort((a,b)=>a.state.localeCompare(b.state))
+    .map(s=>'<option>'+esc(s.state)+'</option>').join('')+'</select></fieldset>'+
+  '<fieldset><legend>Worth a look</legend>'+
+   '<label class="pmchk"><input type="checkbox" data-f="vac">Has vacancies</label>'+
+   '<label class="pmchk"><input type="checkbox" data-f="conc">One stockist carries the '+
+   'town</label></fieldset>'+
+  '<div class="pmpanfoot"><button class="pmbtn pmbtn--gh" id="pmfilclr" type="button">'+
+   'Clear all filters</button></div>';
+}
+function pmColPanel(){
+ const el=$('pmcolpan'); if(!el)return;
+ el.innerHTML=PM_GRPS.map(g=>
+  '<fieldset><legend>'+g+'</legend>'+PM_COLS.filter(c=>c.grp===g).map(c=>
+   '<label class="pmchk'+(c.lock?' pmlock':'')+'"><input type="checkbox" data-c="'+
+   c.id+'"'+(c.on?' checked':'')+(c.lock?' disabled':'')+'>'+esc(c.lab)+
+   (c.lock?' <span style="font-size:12px">(always shown)</span>':'')+
+   '</label>').join('')+'</fieldset>').join('');
+}
+function pmFilSync(){
+ const p=$('pmfilpan'); if(!p)return;
+ p.querySelectorAll('input[data-z]').forEach(c=>{c.checked=PM_V.zones.has(c.dataset.z);});
+ p.querySelectorAll('input[data-d]').forEach(c=>{
+  c.checked=PM_V.divisions.has(c.dataset.d);});
+ p.querySelectorAll('input[data-b]').forEach(c=>{
+  const k=(c.dataset.b==='vacant'||c.dataset.b==='shared')?c.dataset.b:+c.dataset.b;
+  c.checked=PM_V.bands.has(k);});
+ const v=p.querySelector('input[data-f="vac"]'); if(v)v.checked=PM_V.onlyVac;
+ const cc=p.querySelector('input[data-f="conc"]'); if(cc)cc.checked=PM_V.onlyConc;
+ const ss=$('pmfilstate'); if(ss)ss.value=PM_V.state||'';
+ const n=PM_V.zones.size+PM_V.bands.size+PM_V.divisions.size+(PM_V.state?1:0)+
+  (PM_V.onlyVac?1:0)+(PM_V.onlyConc?1:0);
+ const fn=$('pmfiln'); if(fn)fn.textContent=n?('Filters ('+n+')'):'Filters';
+}
+
+/* ---------------------------------------------------------------- the table */
+function pmSortIcon(on,dir){
+ return '<svg width="16" height="16" viewBox="0 0 32 32" aria-hidden="true"><path d="'+
+  ((on&&dir<0)?PM_ICON.dn:PM_ICON.up)+'"/></svg>';
+}
+function pmTableDraw(){
+ const all=pmRows();
+ const col=PM_COLS.find(c=>c.id===PM_V.sort)||PM_COLS[0];
+ const rows=all.filter(pmVisible).sort((a,b)=>{
+  /* No figure is not a weak figure. Partition first, in both directions. */
+  const an=a._band?0:1, bn=b._band?0:1;
+  if(an!==bn)return an-bn;
+  const x=col.key(a), y=col.key(b);
+  const c=(typeof x==='string')?x.localeCompare(y):(x-y);
+  return c*PM_V.dir||a.hq.localeCompare(b.hq);
+ });
+ const cols=pmColsOn();
+ const thr=$('pmthr');
+ if(thr)thr.innerHTML=cols.map(c=>{
+  const on=PM_V.sort===c.id;
+  return '<th'+(c.n?' class="n"':'')+
+   (on?(' aria-sort="'+(PM_V.dir<0?'descending':'ascending')+'"'):'')+
+   '><button type="button" data-s="'+c.id+'">'+esc(c.lab)+pmSortIcon(on,PM_V.dir)+
+   '</button></th>';
+ }).join('');
+ const tb=$('pmtb');
+ if(tb)tb.innerHTML=rows.length
+  ?rows.map(r=>'<tr data-hq="'+esc(r.hq)+'" tabindex="0"'+
+    (PM_V.sel===r.hq?' data-sel="1"':'')+'>'+cols.map(c=>c.cell(r)).join('')+'</tr>')
+    .join('')
+  :'<tr><td class="pmempty" colspan="'+cols.length+'">No headquarters match. Clear the '+
+   'filters to see all '+all.length+'.</td></tr>';
+ const tc=$('pmtcount');
+ if(tc)tc.textContent=rows.length+' of '+all.length+' headquarters';
+ const cn=$('pmcolsn');
+ if(cn)cn.textContent='Columns ('+cols.length+' of '+PM_COLS.length+')';
+ pmChipsDraw();
+}
+function pmChipsDraw(){
+ const el=$('pmchips'); if(!el)return;
+ const chips=[];
+ if(PM_V.state)chips.push(['state',PM_V.state]);
+ PM_V.zones.forEach(z=>chips.push(['zone:'+z,z+' zone']));
+ PM_V.divisions.forEach(d=>chips.push(['div:'+d,d]));
+ PM_V.bands.forEach(k=>{
+  const l=pmLegend().find(x=>x.key===k);
+  chips.push(['band:'+k,l?l.name:'Status']);
+ });
+ if(PM_V.onlyVac)chips.push(['vac','Has vacancies']);
+ if(PM_V.onlyConc)chips.push(['conc','One stockist carries the town']);
+ if(chips.length)chips.push(['all','Clear all']);
+ el.innerHTML=chips.map(c=>'<span class="pmfiltag">'+esc(c[1])+
+  '<button type="button" data-clr="'+esc(c[0])+'" aria-label="Clear '+esc(c[1])+'">'+
+  pmIco('close')+'</button></span>').join('');
+}
+
+/* ---------------------------------------------------------------- export
+   Only the rows that are visible and only the columns that are shown, in display order.
+   A CSV that silently holds more than the screen did is how a filtered list gets
+   forwarded as a complete one. */
+function pmCsvCell(v){
+ v=String(v==null?'':v);
+ return /[",\n]/.test(v)?('"'+v.replace(/"/g,'""')+'"'):v;
+}
+function pmDownload(name,text){
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([text],{type:'text/csv;charset=utf-8'}));
+ a.download=name; a.click();
+ URL.revokeObjectURL(a.href);
+}
+function pmExport(){
+ const cols=pmColsOn();
+ const head=cols.map(c=>pmCsvCell(c.lab)).join(',');
+ const body=pmRows().filter(pmVisible)
+  .map(r=>cols.map(c=>pmCsvCell(c.csv(r))).join(',')).join('\n');
+ pmDownload('sales-per-person-by-headquarters.csv',head+'\n'+body);
+}
+
+/* ---------------------------------------------------------------- wiring
+   One delegated listener per container, attached once after pmChrome() writes the
+   markup. Re-rendering innerHTML destroys child listeners, which is why nothing is
+   bound to a row or a chip directly. */
+function pmWire(){
+ const box=$('pcpmbody'); if(!box||box.dataset.pmwired==='1')return;
+ box.dataset.pmwired='1';
+
+ pmFilPanel(); pmColPanel();
+
+ box.addEventListener('click',e=>{
+  const ans=e.target.closest('.pmans-t');
+  if(ans){ pmAnswers()[+ans.dataset.i].act(); return; }
+
+  const leg=e.target.closest('#pmlegend button[data-k]');
+  if(leg){
+   const k=(leg.dataset.k==='vacant'||leg.dataset.k==='shared')
+    ?leg.dataset.k:+leg.dataset.k;
+   if(PM_V.bands.has(k))PM_V.bands.delete(k); else PM_V.bands.add(k);
+   pmDraw(); return;
+  }
+  const st=e.target.closest('.pmstrow');
+  if(st){ PM_V.state=(PM_V.state===st.dataset.s)?null:st.dataset.s; pmDraw(); return; }
+
+  const chip=e.target.closest('button[data-clr]');
+  if(chip){
+   const c=chip.dataset.clr;
+   if(c==='state')PM_V.state=null;
+   else if(c==='all')pmClearFilters();
+   else if(c==='vac')PM_V.onlyVac=false;
+   else if(c==='conc')PM_V.onlyConc=false;
+   else if(c.indexOf('zone:')===0)PM_V.zones.delete(c.slice(5));
+   else if(c.indexOf('div:')===0)PM_V.divisions.delete(c.slice(4));
+   else if(c.indexOf('band:')===0){
+    const k=c.slice(5);
+    PM_V.bands.delete((k==='vacant'||k==='shared')?k:+k);
+   }
+   pmDraw(); return;
+  }
+  if(e.target.closest('#pmfilclr')){ pmClearFilters(); pmDraw(); return; }
+
+  const tgl=e.target.closest('#pmfilb,#pmcolsb');
+  if(tgl){
+   const p=$(tgl.id==='pmfilb'?'pmfilpan':'pmcolpan');
+   const opening=p.hasAttribute('hidden');
+   if(opening)p.removeAttribute('hidden'); else p.setAttribute('hidden','');
+   tgl.setAttribute('aria-expanded',String(opening));
+   return;
+  }
+  if(e.target.closest('#pmcsv')){ pmExport(); return; }
+  if(e.target.closest('#pmpcsv')){ pmPeopleExport(); return; }
+
+  const th=e.target.closest('#pmthr button[data-s]');
+  if(th){
+   if(PM_V.sort===th.dataset.s)PM_V.dir=-PM_V.dir;
+   else { PM_V.sort=th.dataset.s; PM_V.dir=1; }
+   pmDraw(); return;
+  }
+  const pth=e.target.closest('#pmphr button[data-s]');
+  if(pth){
+   if(PM_PV.sort===pth.dataset.s)PM_PV.dir=-PM_PV.dir;
+   else { PM_PV.sort=pth.dataset.s; PM_PV.dir=1; }
+   pmPeopleDraw(); return;
+  }
+  const tr=e.target.closest('#pmtb tr[data-hq],#pmpb tr[data-hq]');
+  if(tr){ pmOpen(pmRows().find(r=>r.hq===tr.dataset.hq)); return; }
+
+  if(e.target.closest('#pmmore')){ PM_PV.limit=Infinity; pmPeopleDraw(); return; }
+  if(e.target.closest('#pmpnarx')){ pmClearFilters(); pmDraw(); return; }
+  if(e.target.closest('#pmpclr')){ pmPeopleClear(); return; }
+  if(e.target.closest('.pmdx')||e.target.closest('.pmscrim')){ pmClose(); return; }
+ });
+
+ box.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const tr=e.target.closest('#pmtb tr[data-hq],#pmpb tr[data-hq]');
+  if(tr){ e.preventDefault(); pmOpen(pmRows().find(r=>r.hq===tr.dataset.hq)); }
+ });
+
+ box.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset && t.dataset.c){
+   const c=PM_COLS.find(x=>x.id===t.dataset.c); if(c)c.on=t.checked;
+   pmDraw(); return;
+  }
+  if(t.dataset && t.dataset.z){
+   if(t.checked)PM_V.zones.add(t.dataset.z); else PM_V.zones.delete(t.dataset.z);
+   pmDraw(); return;
+  }
+  if(t.dataset && t.dataset.d){
+   if(t.checked)PM_V.divisions.add(t.dataset.d); else PM_V.divisions.delete(t.dataset.d);
+   pmDraw(); return;
+  }
+  if(t.dataset && t.dataset.b){
+   const k=(t.dataset.b==='vacant'||t.dataset.b==='shared')?t.dataset.b:+t.dataset.b;
+   if(t.checked)PM_V.bands.add(k); else PM_V.bands.delete(k);
+   pmDraw(); return;
+  }
+  if(t.dataset && t.dataset.f==='vac'){ PM_V.onlyVac=t.checked; pmDraw(); return; }
+  if(t.dataset && t.dataset.f==='conc'){ PM_V.onlyConc=t.checked; pmDraw(); return; }
+  if(t.id==='pmfilstate'){ PM_V.state=t.value||null; pmDraw(); return; }
+  if(t.id&&t.id.indexOf('pmp')===0){ pmPeopleControl(t); return; }
+ });
+
+ box.addEventListener('input',e=>{
+  if(e.target.id==='pmq'){ PM_V.q=e.target.value; pmDraw(); return; }
+  if(e.target.id==='pmpq'){ PM_PV.q=e.target.value; pmPeopleDraw(); return; }
+ });
+}
+
+/* ---------------------------------------------------------------- the map
+   Lazy, optional, and never fatal. See _pcpm5.py for why it is not initialised at the
+   top of this script like the prototype does. */
+let PM_PROJ=null, PM_ZR=null, PM_ZK=1, PM_LABELS=[], PM_ZOOM=null, PM_SVG=null;
+let PM_MAP_STATE='idle';
+const PM_MAPSRC='https://cdn.jsdelivr.net/gh/udit-001/india-maps-data@main/topojson/india.json';
+
+/* The topology's own spellings, against the roster's. Only the differences are listed;
+   anything not here is already the same word on both sides. */
+const PM_ST_ALIAS={'nct of delhi':'Delhi','delhi':'Delhi',
+ 'jammu & kashmir':'Jammu & Kashmir','jammu and kashmir':'Jammu & Kashmir',
+ 'orissa':'Odisha','uttaranchal':'Uttarakhand','pondicherry':'Puducherry'};
+function pmStKey(n){
+ const k=String(n||'').trim().toLowerCase();
+ return PM_ST_ALIAS[k]||String(n||'').trim();
+}
+function pmStIndex(){
+ const ix={};
+ pmStates().forEach(s=>{ix[String(s.state).toLowerCase()]=s;});
+ return ix;
+}
+
+function pmMapMsg(t){
+ const el=$('pmmapsvg'); if(!el)return;
+ el.innerHTML='<text x="24" y="40" class="pmmapmsg">'+esc(t)+'</text>';
+}
+
+function pmMapInit(){
+ const el=$('pmmapsvg'); if(!el)return;
+ if(PM_MAP_STATE==='ready'){ pmMapDraw(); return; }
+ if(typeof d3==='undefined'||typeof topojson==='undefined'){
+  PM_MAP_STATE='nolib';
+  pmMapMsg('The map needs its drawing libraries, which did not load. '+
+           'Every figure below is unaffected.');
+  return;
+ }
+ if(PM_MAP_STATE==='loading')return;
+ PM_MAP_STATE='loading';
+ PM_SVG=d3.select(el);
+ d3.json(PM_MAPSRC).then(topo=>{
+  const obj=topo.objects.districts||topo.objects[Object.keys(topo.objects)[0]];
+  const byState=d3.group(obj.geometries,g=>pmStKey(g.properties.st_nm));
+  const feats=Array.from(byState,e=>({type:'Feature',properties:{name:e[0]},
+   geometry:topojson.merge(topo,e[1])}));
+  PM_PROJ=d3.geoMercator().fitExtent([[18,18],[622,682]],
+   {type:'FeatureCollection',features:feats});
+  const path=d3.geoPath(PM_PROJ);
+  PM_SVG.selectAll('*').remove();
+  PM_ZR=PM_SVG.append('g').attr('id','pmzoomroot');
+  PM_ZR.append('g').attr('id','pmstates').selectAll('path').data(feats).join('path')
+   .attr('class','pmst').attr('d',path)
+   .attr('tabindex',0).attr('role','button')
+   .on('click',(e,d)=>pmPickState(d.properties.name))
+   .on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();
+    pmPickState(d.properties.name);}})
+   .append('title');
+  PM_ZR.append('path').attr('class','pmdistmesh')
+   .attr('d',path(topojson.mesh(topo,obj,(a,b)=>a!==b)));
+  PM_ZR.append('path').attr('class','pmstborder')
+   .attr('d',path(topojson.mesh(topo,obj,(a,b)=>a===b)));
+  PM_ZR.append('g').attr('id','pmdots');
+  PM_ZR.append('g').attr('id','pmlabs');
+
+  PM_ZOOM=d3.zoom().scaleExtent([1,9]).on('zoom',ev=>{
+   PM_ZK=ev.transform.k;
+   PM_ZR.attr('transform',ev.transform);
+   /* Divide by k or the map turns to mush at 4x. */
+   PM_ZR.selectAll('.pmdistmesh').attr('stroke-width',0.3/PM_ZK);
+   PM_ZR.selectAll('.pmstborder').attr('stroke-width',1.1/PM_ZK);
+   PM_ZR.selectAll('.pmst').attr('stroke-width',0.6/PM_ZK);
+   PM_ZR.selectAll('.pmdot').attr('r',d=>pmDotR(d.sales)/PM_ZK)
+    .attr('stroke-width',1/PM_ZK);
+   PM_ZR.selectAll('.pmmaplab').attr('font-size',(10/PM_ZK)+'px')
+    .attr('stroke-width',(3/PM_ZK)+'px').attr('dy',(-6/PM_ZK));
+  });
+  PM_SVG.call(PM_ZOOM);
+  PM_MAP_STATE='ready';
+  pmMapDraw();
+ }).catch(err=>{
+  PM_MAP_STATE='failed';
+  pmMapMsg('The map could not load. Every figure below is unaffected.');
+  if(window.console&&console.warn)console.warn('pcpm map',err);
+ });
+}
+
+function pmPickState(name){
+ const ix=pmStIndex(), s=ix[String(name).toLowerCase()];
+ if(!s)return;
+ PM_V.state=(PM_V.state===s.state)?null:s.state;
+ pmDraw();
+}
+function pmDotR(v){ return 3+Math.sqrt(Math.max(0,(v||0)/1e5))*0.9; }
+
+function pmMapDraw(){
+ if(PM_MAP_STATE!=='ready'||!PM_PROJ||!PM_ZR)return;
+ const ix=pmStIndex();
+ const rows=pmRows().filter(r=>r.lat!=null&&r.lng!=null);
+
+ PM_ZR.select('#pmstates').selectAll('path')
+  .attr('fill',d=>{
+   const s=ix[String(d.properties.name).toLowerCase()];
+   if(!s)return 'var(--cds-layer-03)';
+   return s.band?s.band.col:'var(--pm-bx)';
+  })
+  .attr('fill-opacity',d=>{
+   const s=ix[String(d.properties.name).toLowerCase()];
+   if(!s)return .22;
+   if(PM_V.state&&PM_V.state!==s.state)return .1;
+   return .3;
+  })
+  .attr('data-sel',d=>{
+   const s=ix[String(d.properties.name).toLowerCase()];
+   return (s&&PM_V.state===s.state)?'1':null;
+  })
+  .select('title').text(d=>{
+   const s=ix[String(d.properties.name).toLowerCase()];
+   if(!s)return d.properties.name+'\nNo headquarters here.';
+   return s.state+'\n'+(s.band?('₹'+s.pcpm.toFixed(2)+' L per person, per month '+
+     '— '+s.band.name):'No figure for this state')+
+    '\n'+s.rows.length+' headquarters · '+s.filled+' people in place';
+  });
+
+ /* Largest first, so the small dots end up on top and stay clickable. */
+ const data=rows.slice().sort((a,b)=>(b.sales||0)-(a.sales||0));
+ PM_ZR.select('#pmdots').selectAll('circle').data(data,d=>d.hq).join(
+  en=>en.append('circle').attr('class','pmdot')
+   .attr('cx',d=>PM_PROJ([d.lng,d.lat])[0])
+   .attr('cy',d=>PM_PROJ([d.lng,d.lat])[1])
+   .attr('r',d=>pmDotR(d.sales)/PM_ZK)
+   .attr('tabindex',0).attr('role','button')
+   .on('click',(e,d)=>{e.stopPropagation();pmOpen(d);})
+   .on('keydown',(e,d)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pmOpen(d);}})
+   .call(sel=>sel.append('title')),
+  up=>up)
+  .attr('fill',d=>pmStatus(d).col)
+  .attr('data-dim',d=>pmVisible(d)?null:'1')
+  .attr('data-sel',d=>PM_V.sel===d.hq?'1':null)
+  .attr('aria-label',d=>d.hq+', '+pmStatus(d).name)
+  .select('title').text(d=>
+   d.hq+' · '+d.state+'\n'+pmStatus(d).name+
+   (d._band?('\n₹'+d._pcpm.toFixed(2)+' L per person, per month'):'')+
+   '\n'+pmLk(d.sales)+' billed · '+d.filled+' of '+d.posts+' positions filled');
+
+ PM_LABELS=data.slice(0,14);
+ PM_ZR.select('#pmlabs').selectAll('text').data(PM_LABELS,d=>d.hq)
+  .join('text').attr('class','pmmaplab')
+  .attr('x',d=>PM_PROJ([d.lng,d.lat])[0])
+  .attr('y',d=>PM_PROJ([d.lng,d.lat])[1])
+  .attr('dy',-6/PM_ZK).attr('text-anchor','middle')
+  .attr('font-size',(10/PM_ZK)+'px').attr('stroke-width',(3/PM_ZK)+'px')
+  .attr('opacity',d=>pmVisible(d)?1:.2)
+  .text(d=>d.hq);
+}
+
+/* ---------------------------------------------------------------- legend */
+function pmLegend(){
+ return pmBands().map(b=>({key:b.k,name:b.name,col:b.col,
+  note:b.hi===Infinity?'₹2.5 L and above'
+                      :'₹'+b.lo.toFixed(1)+'–'+b.hi.toFixed(1)+' L'}))
+ .concat([{key:'vacant',name:PM_XB.vacant.name,col:PM_XB.vacant.col,note:'no verdict'},
+          {key:'shared',name:PM_XB.shared.name,col:PM_XB.shared.col,note:'no verdict'}]);
+}
+function pmLegendDraw(){
+ const el=$('pmlegend'); if(!el)return;
+ const placed=pmRows().filter(r=>r.lat==null||r.lng==null).length;
+ el.innerHTML=pmLegend().map(l=>
+  '<button type="button" data-k="'+l.key+'" aria-pressed="'+
+   String(PM_V.bands.has(l.key))+'"><span class="pmswatch" style="background:'+l.col+
+   '"></span>'+esc(l.name)+' <span style="opacity:.7">'+l.note+'</span></button>').join('')+
+  '<span class="pmlegend-s"><span class="pmswatch" style="background:var(--cds-layer-03)">'+
+  '</span>State shading uses the same scale</span>'+
+  (placed?'<span class="pmlegend-s">'+placed+' headquarters have no coordinate and are '+
+   'in the list below but not on the map</span>':'');
+}
+
+/* ---------------------------------------------------------------- state rail */
+function pmRailDraw(){
+ pmLegendDraw();
+ const sub=$('pmrailsub'), list=$('pmraillist');
+ const ST=pmStates(), bs=pmBands();
+ if(sub)sub.textContent=ST.length+' states · click one to narrow the screen';
+ if(!list)return;
+ list.innerHTML=ST.map(s=>{
+  const tot=s.rows.length;
+  const seg=bs.map(b=>s.counts[b.k]
+   ?'<i style="background:'+b.col+';flex:'+s.counts[b.k]+'"></i>':'').join('')+
+   (s.other?'<i style="background:var(--pm-bx);flex:'+s.other+'"></i>':'');
+  return '<button class="pmstrow" type="button" data-s="'+esc(s.state)+'" aria-pressed="'+
+   (PM_V.state===s.state)+'"><span class="pmstname">'+esc(s.state)+'</span>'+
+   '<span class="pmstmeta">'+(s.counts[0]+s.counts[1])+' of '+tot+' need work</span>'+
+   '<span class="pmstbar">'+seg+'</span></button>';
+ }).join('');
+}
+
+/* ---------------------------------------------------------------- one render pass
+   Everything that can change writes to PM_V or PM_PV and then calls this. Nothing else
+   re-renders anything, so the map, the rail, the chips, the tiles and both tables
+   cannot disagree about what is filtered. */
+function pmDraw(){
+ pmDrawChrome();
+ pmFilSync();
+ pmRailDraw();
+ pmTableDraw();
+ pmPeopleDraw();
+ pmMapDraw();
+}
+
 function pcpmView(){
+ const P=pcpmD();
+ const box=$('pcpmbody');
+ if(!box)return;
+ if(!P||P.unavailable||!P.rows){ box.innerHTML=pmUnavailable(P&&P.unavailable); return; }
+ PM_TEAM_CACHE=null;
+ box.innerHTML=pmChrome();
+ pmWire();
+ pmDraw();
+ pmMapInit();
+}
+
+function pcpmViewOld(){
  const P=pcpmD();
  const box=$('pcpmbody');
  if(!box)return;

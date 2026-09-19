@@ -283,6 +283,37 @@ def concentration(rows):
     return dict(out)
 
 
+def gazetteer(path=None):
+    """{town key: (lat, lng)} from the HQ gazetteer, or {} when it is not there.
+
+    The coordinates are the ones mapgeo.py derived from India Post's PIN directory, so
+    the map and the geography screen put the same headquarters in the same place. Keyed
+    through T.key_of and with the division prefix stripped, because the gazetteer knows
+    `Belgaum` and the matrix row is called `BBS BELGAUM BO`.
+
+    A headquarters with no coordinate is not an error and is not dropped: it keeps its
+    row, `lat` and `lng` stay None, and the screen counts how many are missing under the
+    map. Quietly losing them would hide the small towns this screen exists to find.
+    """
+    path = path or os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                'hq_gazetteer.json')
+    if not os.path.exists(path):
+        return {}
+    try:
+        raw = json.load(open(path, encoding='utf-8'))
+    except Exception:                                                 # noqa: BLE001
+        return {}
+    out = {}
+    for name, v in (raw.get('hq') or {}).items():
+        if not isinstance(v, dict):
+            continue
+        lat, lng = v.get('lat'), v.get('lng')
+        if lat is None or lng is None:
+            continue
+        out.setdefault(T.key_of(name), (float(lat), float(lng)))
+    return out
+
+
 def _by_division(rows, orphan):
     """One summary per division, placed and unplaced billing kept apart.
 
@@ -406,6 +437,7 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
             placed_no_division[0] += v
 
     n = len(months) or 1
+    gaz = gazetteer()
     out = []
     for name, row in sorted(ix['rows'].items()):
         s = by_hq.get(name)
@@ -443,6 +475,10 @@ def matrix(payload, hq_rows, fy=None, as_of=None, include_unlabelled=False):
             'division': div_of_hq.get(name, T.MAIN),
             'town_covered': (div_of_hq.get(name, T.MAIN),
                              T.key_of(_HQ_PLACE.sub('', str(name)))) in covered,
+            # Where to draw it. None where the gazetteer has no PIN for the town, which
+            # the map reports rather than hides.
+            'lat': (gaz.get(T.key_of(_HQ_PLACE.sub('', str(name)))) or (None, None))[0],
+            'lng': (gaz.get(T.key_of(_HQ_PLACE.sub('', str(name)))) or (None, None))[1],
             # Printed on the row, not in a footnote. 0.85 means one town holds 85% of a
             # super stockist's billing, so this HQ's figure is a warehousing fact as much
             # as a selling one.
