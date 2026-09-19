@@ -4,20 +4,38 @@ Binding spec for every screen of this app. Values come from `carbon-tokens.css`;
 
 ## Absolute rules
 
-1. **Radius 0** on everything except tags/pills (fully rounded), the toggle knob and
-   the loading spinner. From v115 the audit checks the SELECTOR as well as the value,
-   so the exceptions are named rather than allowed by shape: `.ppltag` may be `11px`
-   (Carbon's tag height ÷ 2), `.pplchip`, the 24px preset chip, may be `12px`, and
-   `.pplsgd`, the 8px status dot, may be `50%`. A `24px`
-   radius on `.ppltag`, or `11px` on `.card`, still fails.
-1b. **No colour literal below the tokens**, with one named exception: the four status
-   tints `.ppltag--err/--warn/--ok/--neu` are deliberately TRANSLUCENT rgba. A token is
-   opaque, and an opaque pink behind red text is a g100 contrast failure — which design
-   review caught. Any rgba() on any other selector fails.
+1. **Radius 4px** on every raised surface, button and icon button — `--r`, declared
+   once. REVERSED AT v147: this rule said "radius 0 everywhere" from v21 to v145, and
+   `STYLING.md` in the productivity-matrix bundle replaced it. Both versions were
+   design decisions properly made; this file records the current one, and the history
+   is here so nobody re-litigates it from memory. Tags, pills and filter chips are
+   still fully rounded and status dots still `50%`, named by selector rather than
+   allowed by shape. A `24px` radius on `.ppltag` still fails, and so does `12px` on a
+   surface that should be on `--r`.
+1b. **No colour literal below the tokens**, with the named exceptions listed in
+   `STYLING.md` §8 and nowhere else. The four status tints
+   `.ppltag--err/--warn/--ok/--neu` are deliberately TRANSLUCENT rgba — a token is
+   opaque, and an opaque pink behind red text is a g100 contrast failure that design
+   review caught. The alias block may carry `#FAFAFA` and the two shadow values, because
+   Carbon ships no page colour between white and gray-10 and no card shadow at all. The
+   four band colours, the two no-verdict greys and the four filled-tag pairs are named
+   by selector. Any literal anywhere else fails.
 2. **Blue 60 `--cds-interactive` is the only interactive colour.** Links, focus, selection, primary buttons, active nav, chart series 1. If something is blue it is interactive or it is data.
 3. **Colour carries meaning or it is absent.** A tile gets a coloured left border only in error or warning. Neutral tiles get `--cds-border-subtle-00`. No decorative accent bars.
 4. **Spacing on the 8px scale only**: 2 / 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64.
-5. **No shadows except overlays and sticky bars.** Menus, modals, the drill panel and the sticky filter strip get `0 2px 6px var(--cds-shadow)`. Tiles and cards are flat, no border, no shadow — separation comes from 1px grid gaps over `--cds-border-subtle-00`.
+5. **Two elevations, and nothing else casts a shadow.** REVERSED AT v147, same
+   bundle as rule 1. `--sh-card` (`0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.07)`)
+   for things that sit ON the page: cards, tables, toolbars, tiles, the map pane, the
+   state rail. `--sh-pop` (`0 2px 4px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.12)`) for
+   things that float ABOVE it: dropdown menus, the drawer, the tooltip. Not rows, not
+   buttons, not inputs, and **never on hover**.
+
+   The page is `#FAFAFA` and every surface that holds content is white
+   (`--cds-layer-02`). **The 1px-gap-over-a-border-colour gridline technique is now
+   forbidden** where rule 5 used to mandate it: raised cards separate by real space,
+   `gap: 16px` between them, and `gap: 1px` only *inside* a single raised surface such
+   as a toolbar. In Gray 100 the page returns to `--cds-background` and `--sh-card` is
+   `none` — a drop shadow on `#161616` is a shadow nobody can see.
 6. **No gradients, no background images, no textures beyond the sanctioned set below, no emoji.**
 7. **Motion: GSAP, 70–320ms, ease `power2.out` or Carbon's `cubic-bezier(0.2,0,0.38,0.9)`.** Relaxed from "70–240ms, fades and slides, nothing scales, springs or bounces" at Arshad's decision, v101. Scale and spring are now permitted where they carry meaning; gratuitous motion still is not, and **numbers must not move while someone is reading them**. Three binding constraints remain:
    - **GSAP is a progressive enhancement.** It loads deferred from cdnjs. Every animation goes through `fx()` / `fxIn()`, which apply the end state synchronously when `window.gsap` is absent. Nothing's visibility, position or content may depend on an animation having run — the jsdom suite runs without GSAP on every pass and asserts exactly this.
@@ -158,7 +176,7 @@ Every one of these shipped at least once during the design and cost a review cyc
 - [ ] Zero hex, `rgb()` or `rgba()` literals outside `carbon-tokens.css`.
 - [ ] Zero undefined tokens: every `var(--cds-*)` used resolves to a non-empty computed value.
 - [ ] Every icon mount renders non-zero (numeric `size`, mask URL resolves).
-- [ ] Every border radius is 0, except `.ppltag` (11px), `.pplchip` (12px) and `.pplsgd` (50%), the
+- [ ] Every border radius is `var(--r)` (4px), except `.ppltag` (11px), `.pplchip` (12px) and `.pplsgd` (50%), the
       toggle knob and the spinner — checked by selector, not by value alone.
 - [ ] Content resolves to the grid: hero 6/10, tile rows in fours, 16px page margins, flex-wrap wherever a row can leave a remainder.
 - [ ] No orphaned grid cells: no gap-background visible as a slab anywhere.
